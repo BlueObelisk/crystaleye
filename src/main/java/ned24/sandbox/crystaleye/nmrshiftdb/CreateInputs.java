@@ -21,7 +21,7 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 
 public class CreateInputs implements GaussianConstants {
 
-	static String outFolder = "e:/gaussian/second-protocol";
+	static String outFolder = "e:/gaussian/second-protocol_mod1";
 	static String[] allowedElements = {"C", "N", "O", "P", "I", "F", "N", "S", "B", "Cl", "H", "Si", "Br"};
 	static List<String> elList;
 
@@ -192,40 +192,26 @@ public class CreateInputs implements GaussianConstants {
 					int solventNumber = i+1;
 					name += "-"+solventNumber;
 					
-					/*
-					boolean hasCDoubleBondC = false;
-					boolean hasCarbonyl = false;
-					for (CMLBond bond : molecule.getBonds()) {
-						String order = bond.getOrder();
-						if (order.equals(CMLBond.DOUBLE_D) ||
-								order.equals(CMLBond.DOUBLE)) {
-							int c = 0;
-							int o = 0;
-							for (CMLAtom atom : bond.getAtoms()) {
-								if ("C".equals(atom.getElementType())) {
-									c++;
-								} else if ("O".equals(atom.getElementType())) {
-									o++;
-								}
-							}
-							if (c == 2) {
-								hasCDoubleBondC = true;
-							}
-							if (c == 1 && o == 1) {
-								hasCarbonyl = true;
-							}
+					
+					boolean hasC = false;
+					boolean hasO = false;
+					for (CMLAtom atom : molecule.getAtoms()) {
+						if ("C".equals(atom.getElementType())) {
+							hasC = true;
+						}
+						if ("O".equals(atom.getElementType())) {
+							hasO = true;
 						}
 					}
-					
-					if (!hasCDoubleBondC && !hasCarbonyl) {
+					if (!hasC && !hasO) {
 						continue;
 					}
-					*/
+					
 					
 					GaussianTemplate g = new GaussianTemplate(name, sb.toString(), inputFileSolvent);
-					//g.setExtraBasis(true);
-					//g.setHasCDoubleBondC(hasCDoubleBondC);
-					//g.setHasCarbonyl(hasCarbonyl);
+					g.setExtraBasis(true);
+					g.setHasC(hasC);
+					g.setHasO(hasO);
 					String input = g.getInput();
 					
 					String folderName = outFile.getName()+"/"+numberFileCount;

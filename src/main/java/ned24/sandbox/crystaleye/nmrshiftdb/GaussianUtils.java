@@ -3,6 +3,23 @@ package ned24.sandbox.crystaleye.nmrshiftdb;
 
 public class GaussianUtils {
 	
+	public static final double TMS_ACETONE = 196.6971;
+	public static final double TMS_ACETONITRILE = 196.7066;
+	public static final double TMS_BENZENE = 196.5173;
+	public static final double TMS_CCL4 = 196.5157;
+	public static final double TMS_CHLOROFORM = 196.6263;
+	public static final double TMS_DICHLOROMETHANE = 196.6681;
+	public static final double TMS_DMSO = 196.7093;
+	public static final double TMS_ETHER = 196.6142;
+	public static final double TMS_METHANOL = 196.7051;
+	public static final double TMS_THF = 196.6590;
+	public static final double TMS_TOLUENE = 196.5285;
+	public static final double TMS_WATER = 196.7116;
+	
+	public enum TmsShifts {
+		
+	}
+	
 	public static String nmrShiftDbSolvent2GaussianSolvent(String solvent) {
 		String gauSolvent = null;
 		//System.out.println(solvent);

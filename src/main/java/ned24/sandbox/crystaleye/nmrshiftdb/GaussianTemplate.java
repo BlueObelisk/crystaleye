@@ -6,7 +6,7 @@ public class GaussianTemplate {
 	String connectionTable;
 	String solvent;
 
-	boolean hasCDoubleBondC;
+	boolean hasC;
 	boolean hasCarbonyl;
 	boolean setExtraBasis;
 
@@ -36,11 +36,12 @@ public class GaussianTemplate {
 		sb.append("\n");
 		sb.append("--Link1--\n");
 		sb.append("%chk="+name+".chk\n");
-		sb.append("#P rmpw1pw91/6-31g(d,p) geom=checkpoint guess=read\n");
 		
 		if (!setExtraBasis) {
+			sb.append("#P rmpw1pw91/6-31g(d,p) geom=checkpoint guess=read\n");
 			sb.append("#P NMR scrf(cpcm,solvent="+solvent+")\n");
 		} else {
+			sb.append("#P rmpw1pw91/6-31g(d,p) geom=Modify guess=read\n");
 			sb.append("#P NMR scrf(cpcm,solvent="+solvent+") ExtraBasis\n");
 		}
 
@@ -50,7 +51,7 @@ public class GaussianTemplate {
 		sb.append("0 1\n");
 
 		if (setExtraBasis) {
-			if (hasCDoubleBondC) {
+			if (hasC) {
 				sb.append("C     0\n");
 				sb.append("SP     1     1.00\n");
 				sb.append("             0.05             1.00000000             1.00000000\n");  
@@ -69,12 +70,12 @@ public class GaussianTemplate {
 		return sb.toString();
 	}
 
-	public void setHasCarbonyl(boolean b) {
+	public void setHasO(boolean b) {
 		this.hasCarbonyl = b;
 	}
 
-	public void setHasCDoubleBondC(boolean b) {
-		this.hasCDoubleBondC = b;
+	public void setHasC(boolean b) {
+		this.hasC = b;
 	}
 
 	public void setExtraBasis(boolean b) {
@@ -85,7 +86,7 @@ public class GaussianTemplate {
 		return hasCarbonyl;
 	}
 
-	public boolean hasCDoubleBondC() {
-		return hasCDoubleBondC;
+	public boolean hasC() {
+		return hasC;
 	}
 }

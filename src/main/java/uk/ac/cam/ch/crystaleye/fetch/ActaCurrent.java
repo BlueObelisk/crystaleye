@@ -53,7 +53,6 @@ public class ActaCurrent extends CurrentIssueFetcher {
 	}
 
 	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issueNum) {
-		expectedNoCifs = 0;
 		Pattern pattern = Pattern.compile("http://scripts.iucr.org/cgi-bin/sendcif\\?(.*)");
 		String url = "http://journals.iucr.org/"+journalAbbreviation+"/issues/"+year+"/"+issueNum.replaceAll("-", "/")+"/isscontsbdy.html";
 		Document doc = IOUtils.parseWebPage(url);
@@ -76,7 +75,6 @@ public class ActaCurrent extends CurrentIssueFetcher {
 							throw new CrystalEyeRuntimeException("Could not find the CIF ID.");
 						}
 						String cif = getWebPage(cifUrl);
-						expectedNoCifs++;
 						String doi = null;
 
 						if (j == 0) {

@@ -42,6 +42,8 @@ public class MergeCalculation2Cml implements GaussianConstants {
 	}
 
 	public Document merge() {
+		Pattern e = Pattern.compile("\\s+Error termination.*");
+		
 		Pattern p = Pattern
 				.compile("\\s*\\d+\\s+\\w+\\s+Isotropic\\s+=\\s+([^\\s]*)\\s+Anisotropy\\s+=\\s+[^\\s]*\\s*");
 		Pattern p2 = Pattern
@@ -55,6 +57,10 @@ public class MergeCalculation2Cml implements GaussianConstants {
 			String line = null;
 			while ((line = input.readLine()) != null) {
 				if (line != null && !"".equals(line)) {
+					Matcher me = e.matcher(line);
+					if (me.find()) {
+						return null;
+					}
 					Matcher m = p.matcher(line);
 					if (m.find()) {
 						values.add(m.group(1));
@@ -81,7 +87,8 @@ public class MergeCalculation2Cml implements GaussianConstants {
 		}
 
 		if (solvent == null) {
-			throw new RuntimeException("Could not find solvent.");
+			System.err.println("Could not find solvent.");
+			return null;
 		}
 
 		CMLMolecule molecule = (CMLMolecule) IOUtils.parseCmlFile(cmlFile)
@@ -227,16 +234,16 @@ public class MergeCalculation2Cml implements GaussianConstants {
 
 	public static void main(String[] args) {
 		String cmlFolderPath = "e:/gaussian/all-mols";
-		String calcOutputPath = "e:/gaussian/second-protocol/0";
+		String calcOutputPath = "e:/gaussian/output/1";
 
-		String outFolder = "e:/gaussian/second-protocol-merged";
+		String outFolder = "e:/gaussian/merged/second-protocol-merged";
 
 		for (File file : new File(calcOutputPath).listFiles()) {
 			String path = file.getAbsolutePath();
-			System.out.println(path);
 			if (!path.endsWith(".out")) {
 				continue;
 			}
+			System.out.println(path);
 			String name = file.getName();
 			int idx = name.indexOf("-");
 			name = name.substring(0, idx);
@@ -252,6 +259,10 @@ public class MergeCalculation2Cml implements GaussianConstants {
 			}
 			MergeCalculation2Cml m = new MergeCalculation2Cml(file, cmlFile);
 			Document doc = m.merge();
+			if (doc == null) {
+				System.err.println("Problem reading doc");
+				continue;
+			}
 			String outPath = outFolder + File.separator
 					+ file.getName().replaceAll(".out", ".cml.xml");
 			IOUtils.writePrettyXML(doc, outPath);
