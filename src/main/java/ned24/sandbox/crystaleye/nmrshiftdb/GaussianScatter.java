@@ -23,7 +23,8 @@ public class GaussianScatter implements GaussianConstants {
 	int ymax = Y_MAX;
 	int pageWidth = PAGE_WIDTH;
 	int pageHeight = PAGE_HEIGHT;
-	int tickMarks = TICK_MARKS;
+	int xtickMarks = TICK_MARKS;
+	int ytickMarks = TICK_MARKS;
 
 	public void setXmax(int xmax) {
 		this.xmax = xmax;
@@ -58,7 +59,8 @@ public class GaussianScatter implements GaussianConstants {
 			PageLayout pLayout = new PageLayout();
 			pLayout.setPageWidth(pageWidth);
 			pLayout.setPageHeight(pageHeight);
-			gLayout.setNXTickMarks(tickMarks);
+			gLayout.setNXTickMarks(xtickMarks);
+			gLayout.setNYTickMarks(ytickMarks);
 			Scatter scatter = new Scatter(pLayout, gLayout);
 			scatter.addDataToPlot(pointList);
 			scatter.setXlab(X_LAB);
@@ -94,7 +96,11 @@ public class GaussianScatter implements GaussianConstants {
 		this.pointList = pointList;
 	}
 
-	public void setTickMarks(int tickMarks) {
-		this.tickMarks = tickMarks;
+	public void setXTickMarks(int xtickMarks) {
+		this.xtickMarks = xtickMarks;
+	}
+	
+	public void setYTickMarks(int ytickMarks) {
+		this.ytickMarks = ytickMarks;
 	}
 }

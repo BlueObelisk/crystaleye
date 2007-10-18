@@ -51,8 +51,10 @@ public class C13SpectraTool implements GaussianConstants {
 
 	private boolean spectrumUsedSolvent(CMLSpectrum spectrum, String solvent) {
 		Nodes nodes = spectrum.query("./cml:substanceList/cml:substance/@title", X_CML);
-		if (nodes.size() != 1) {
-			throw new RuntimeException("Only expected one solvent to be found.");
+		if (nodes.size() > 1) {
+			throw new RuntimeException("Only expected one solvent to be found: "+molecule.getId());
+		} else if (nodes.size() == 0) {
+			return false;
 		}
 		String foundSolvent = nodes.get(0).getValue().trim();
 		foundSolvent = GaussianUtils.nmrShiftDbSolvent2GaussianSolvent(foundSolvent);

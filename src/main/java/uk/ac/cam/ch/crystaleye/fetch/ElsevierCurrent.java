@@ -63,7 +63,6 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 	}
 
 	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issue) {
-		expectedNoCifs = 0;
 		Document currentIssueDoc = IOUtils.parseWebPageMinusComments(currentIssueUrl);
 		List<String> fullTextUrls = getFullTextUrls(currentIssueDoc);
 		for (String fullTextUrl : fullTextUrls) {
@@ -93,7 +92,6 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 					for (File file : parent.listFiles()) {
 						if (file.getAbsolutePath().endsWith(".cif") || file.getAbsolutePath().endsWith(".CIF")) {
 							cifCount++;
-							expectedNoCifs++;
 							String cif = Utils.file2String(file.getAbsolutePath());
 							writeFiles(issueWriteDir, parent.getName(), cifCount, cif, doi);							
 						}

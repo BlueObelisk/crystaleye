@@ -56,7 +56,6 @@ public class AcsCurrent extends CurrentIssueFetcher {
 	}
 
 	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issueNum) {
-		expectedNoCifs = 0;
 		String url = "http://pubs.acs.org/journals/"+journalAbbreviation+"/index.html";
 		Document doc = IOUtils.parseWebPage(url);
 		Nodes suppLinks = doc.query("//x:a[contains(text(),'Supporting')]", X_XHTML);
@@ -80,7 +79,6 @@ public class AcsCurrent extends CurrentIssueFetcher {
 						int suppNum = k+1;
 						cifUrl = cifUrl.replaceAll("pubs\\.acs\\.org/", "pubs\\.acs\\.org//");
 						String cif = getWebPage(cifUrl);
-						expectedNoCifs++;
 						Nodes doiAnchors = doc.query("//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
 						String doi = null;
 						if (doiAnchors.size() > 0) {

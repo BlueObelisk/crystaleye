@@ -13,8 +13,6 @@ public interface GaussianConstants extends CMLConstants {
 	public static final String NMR_TYPE= "NMR";
 	public static final String UNITS_PPM = "units:ppm";
 	
-	public static final double TMS_SHIFT = 200;	
-	
 	// MIMES
 	public static final String FLOW_MIME = ".gjf";
 	public static final String SUBMIT_FILE_MIME = ".condor.sh";
@@ -24,7 +22,7 @@ public interface GaussianConstants extends CMLConstants {
 	public static final String X_LAB = "Observed shift (ppm)";
 	public static final String Y_LAB = "Gaussian calculated shift (ppm)";
 	public static final String TITLE = "Observed versus Gaussian calculated chemical shift for 13C spectra";
-	public static final int PAGE_WIDTH = 675;
+	public static final int PAGE_WIDTH = 715;
 	public static final int PAGE_HEIGHT = 675;
 	public static final int TICK_MARKS = 10;
 	public static final int X_MIN = 0;
