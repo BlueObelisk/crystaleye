@@ -14,7 +14,6 @@ import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.SMILESLIST;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.WEBPAGE;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import nu.xom.Attribute;
 import nu.xom.Document;
@@ -22,13 +21,10 @@ import nu.xom.Element;
 import nu.xom.Nodes;
 import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.CrystalEyeUtils;
-import uk.ac.cam.ch.crystaleye.FileListing;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
 
 public abstract class CurrentIssueFetcher extends Fetcher {
-
-	int expectedNoCifs;
 
 	protected CurrentIssueFetcher(String publisherAbbreviation, File propertiesFile) {
 		super(publisherAbbreviation, propertiesFile);
@@ -56,12 +52,7 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 			} else {
 				String issueWriteDir = properties.getWriteDir()+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue;
 				this.fetch(issueWriteDir, journalAbbreviation, year, issue);
-				boolean validated = validateDownload(issueWriteDir);
-				if (validated) {
-					updateLog(journalAbbreviation, year, issue);
-				} else {
-					throw new CrystalEyeRuntimeException("Invalid download ("+issueCode+")");
-				}
+				updateLog(journalAbbreviation, year, issue);
 			}
 		}
 	}
@@ -75,26 +66,6 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 			alreadyGot = true;
 		}
 		return alreadyGot;
-	}
-
-	protected boolean validateDownload(String issueWriteDir) {
-		boolean validated = false;	
-		int writtenCifs = 0;
-		try {
-			writtenCifs = FileListing.byRegex(new File(issueWriteDir), "[^\\._]*\\.cif").size();
-		} catch (FileNotFoundException e) {
-			if (expectedNoCifs == 0) {
-				validated = true;
-			} else {
-				throw new CrystalEyeRuntimeException("Could not find file "+issueWriteDir);
-			}
-		}
-		System.out.println("written cifs: "+writtenCifs);
-		System.out.println("expectedNoCifs: "+expectedNoCifs);
-		if (writtenCifs == expectedNoCifs) {
-			validated = true;
-		}	
-		return validated;
 	}
 
 	protected void updateLog(String journalAbbreviation, String year, String issueNum) {
@@ -174,9 +145,6 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 		Element atompub = new Element(ATOMPUB);
 		atompub.addAttribute(new Attribute("value", "false"));
 		issue.appendChild(atompub);
-		Element cifArticles = new Element("cifs");
-		cifArticles.addAttribute(new Attribute("number", String.valueOf(expectedNoCifs)));
-		issue.appendChild(cifArticles);
 
 		return issue;
 	}

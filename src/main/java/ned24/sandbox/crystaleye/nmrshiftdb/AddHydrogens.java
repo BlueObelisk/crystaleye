@@ -19,7 +19,7 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class AddHydrogens {
 
 	public static void main(String[] args) {
-		String path = "e:/nmrshiftdb/required-mols";
+		String path = "e:/gaussian/TMS";
 		int i = 0;
 		List<File> deleteList = new ArrayList<File>();
 		for (File file : new File(path).listFiles()) {
@@ -43,6 +43,7 @@ public class AddHydrogens {
 				}
 			}
 			for (CMLAtom atom : hLigands) {
+				System.out.println(atom.getId());
 				try {
 					mt.calculate3DCoordinatesForLigands(atom, Molutils.DEFAULT, 1.0, 108);
 				} catch (Exception e) {
@@ -50,6 +51,7 @@ public class AddHydrogens {
 					deleteList.add(file);
 				}
 			}
+			//molecule.debug();
 			IOUtils.writePrettyXML(molecule.getDocument(), file.getAbsolutePath());
 		}
 		

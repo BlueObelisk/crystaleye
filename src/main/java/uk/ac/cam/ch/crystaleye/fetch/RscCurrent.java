@@ -50,7 +50,6 @@ public class RscCurrent extends CurrentIssueFetcher {
 	}
 
 	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issue) {
-		expectedNoCifs = 0;
 		String url = "http://rsc.org/Publishing/Journals/"+journalAbbreviation+"/Article.asp?Type=CurrentIssue";
 		Document doc = IOUtils.parseWebPageMinusComments(url);
 		Nodes articleLinks = doc.query("//x:a[contains(@href,'/Publishing/Journals/"+journalAbbreviation.toUpperCase()+"/article.asp?doi=') and preceding-sibling::x:strong[contains(text(),'DOI:')]]", X_XHTML);
@@ -77,7 +76,6 @@ public class RscCurrent extends CurrentIssueFetcher {
 								int suppNum = k+1;
 								String cif = getWebPage(cifUrl);
 								writeFiles(issueWriteDir, cifId, suppNum, cif, RSC_DOI_PREFIX+"/"+cifId);
-								expectedNoCifs++;
 								sleep();
 							}
 						}

@@ -51,7 +51,6 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 	}
 
 	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issue) {
-		expectedNoCifs = 0;
 		String url = "http://www.csj.jp/journals/"+journalAbbreviation+"/cl-cont/newissue.html";
 		Document doc = IOUtils.parseWebPageMinusComments(url);
 		Nodes abstractPageLinks = doc.query("//x:a[contains(text(),'Supporting Information')]", X_XHTML);
@@ -86,7 +85,6 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 										doi = ((Element)doiElements.get(0)).getValue().substring(4).trim();
 									}
 									writeFiles(issueWriteDir, cifId, suppNum, cif, doi);
-									expectedNoCifs++;
 									sleep();
 								} finally {
 									try {

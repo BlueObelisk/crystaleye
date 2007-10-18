@@ -46,8 +46,8 @@ public class CreateShiftPlot implements GaussianConstants {
 			for (int i = 0; i < calcPeaks.size(); i++) {
 				CMLPeak calcPeak = (CMLPeak)calcPeaks.get(i);
 				double calcShift = calcPeak.getXValue();
-				calcShift = TMS_SHIFT-calcShift;
-
+				//calcShift = TMS_SHIFT-calcShift;
+				//TODO
 				String calcId = calcPeak.getAtomRefs()[0];
 				for (int j = 0; j < obsPeaks.size(); j++) {
 					CMLPeak obsPeak = (CMLPeak)obsPeaks.get(j);
@@ -77,10 +77,12 @@ public class CreateShiftPlot implements GaussianConstants {
 		}
 
 		GaussianScatter gs = new GaussianScatter(pointList);
-		gs.setXmin((int)min-10);
-		gs.setYmin((int)min-10);
-		gs.setXmax((int)max+10);
-		gs.setYmax((int)max+10);
+		gs.setXmin(0);
+		gs.setYmin(0);
+		gs.setXmax(240);
+		gs.setYmax(240);
+		gs.setXTickMarks(12);
+		gs.setYTickMarks(12);
 		Document doc = gs.getPlot();	
 		return doc;
 	}
@@ -110,24 +112,23 @@ public class CreateShiftPlot implements GaussianConstants {
 	}
 
 	public String getHtmlContent() {
-		return  "<!DOCTYPE html"+
-				"      PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\""+
-				"      \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"+
-				"<html"+
-				"<head>"+
-				"<script src=\""+JMOL_JS_PATH+"\" type=\"text/ecmascript\">"+
-				"</script>"+
-				"<script src=\""+SUMMARY_JS_PATH+"\" type=\"text/ecmascript\">"+
-				"</script>"+
-				"</head>"+
-				"<body>"+
-				"<embed src=\"./index.svg\" width=\"675\" height=\"675\" style=\"display: inline;\" />"+
-				"    <div style=\"display: inline\">"+
-				"		<script type=\"text/javascript\">jmolInitialize(\""+JMOL_APPLET_FOLDER+"\");</script>"+
-				"		<script type=\"text/javascript\">jmolApplet(360, \"\");</script>"+
-				"    </div>"+
-				"</body>"+
-				"</html>";
+		return "<html><head>"+
+		"<script src=\""+JMOL_JS_PATH+"\" type=\"text/ecmascript\">"+
+		"</script>"+
+		"<script src=\""+SUMMARY_JS_PATH+"\" type=\"text/ecmascript\">"+
+		"</script>"+
+		"</head>"+
+		"<body>"+
+		"<div style=\"position: absolute; text-align: center; width: 100%;\"><h2>nmrshiftdb10003678 (solvent: methanol)</h2></div>"+
+		"<div style=\"position: absolute; top: -50px;\">"+
+		"<embed src=\"./index.svg\" width=\"715\" height=\"675\" style=\"position:absolute;\" />"+
+		"<div style=\"position: absolute; left: 675px; top: 200px;\">"+
+		"<script type=\"text/javascript\">jmolInitialize(\""+JMOL_APPLET_FOLDER+"\");"+
+		"</script>		<script type=\"text/javascript\">jmolApplet(300, \"\");</script>"+
+		"</div>"+
+		"</div>"+
+		"</body>"+
+		"</html>";
 	}
 
 	public void run() {
