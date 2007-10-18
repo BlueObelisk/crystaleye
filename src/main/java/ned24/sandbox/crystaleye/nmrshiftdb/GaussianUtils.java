@@ -3,21 +3,70 @@ package ned24.sandbox.crystaleye.nmrshiftdb;
 
 public class GaussianUtils {
 	
-	public static final double TMS_ACETONE = 196.6971;
-	public static final double TMS_ACETONITRILE = 196.7066;
-	public static final double TMS_BENZENE = 196.5173;
-	public static final double TMS_CCL4 = 196.5157;
-	public static final double TMS_CHLOROFORM = 196.6263;
-	public static final double TMS_DICHLOROMETHANE = 196.6681;
-	public static final double TMS_DMSO = 196.7093;
-	public static final double TMS_ETHER = 196.6142;
-	public static final double TMS_METHANOL = 196.7051;
-	public static final double TMS_THF = 196.6590;
-	public static final double TMS_TOLUENE = 196.5285;
-	public static final double TMS_WATER = 196.7116;
+	public enum Solvent {
+		ACETONE, ACETONITRILE, BENZENE, CCL4, CHLOROFORM, DICHLOROMETHANE,
+		DMSO, ETHER, METHANOL, THF, TOLUENE, WATER
+	}
 	
-	public enum TmsShifts {
-		
+	public static double getTmsShift(Solvent solvent) {
+		if (solvent.equals(Solvent.ACETONE)) {
+			return 196.6971;
+		} else if (solvent.equals(Solvent.ACETONITRILE)) {
+			return 196.7066;
+		} else if (solvent.equals(Solvent.BENZENE)) {
+			return 196.5173;
+		} else if (solvent.equals(Solvent.CCL4)) {
+			return 196.5157;
+		} else if (solvent.equals(Solvent.CHLOROFORM)) {
+			return 196.6263;
+		} else if (solvent.equals(Solvent.DICHLOROMETHANE)) {
+			return 196.6681;
+		} else if (solvent.equals(Solvent.DMSO)) {
+			return 196.7093;
+		} else if (solvent.equals(Solvent.ETHER)) {
+			return 196.6142;
+		} else if (solvent.equals(Solvent.METHANOL)) {
+			return 196.7051;
+		} else if (solvent.equals(Solvent.THF)) {
+			return 196.6590;
+		} else if (solvent.equals(Solvent.TOLUENE)) {
+			return 196.5285;
+		} else if (solvent.equals(Solvent.WATER)) {
+			return 196.7116;
+		} else {
+			throw new RuntimeException("Unknown solvent.");
+		}
+	}
+	
+	public static double getTmsShift(String solvent) {
+		String solv = nmrShiftDbSolvent2GaussianSolvent(solvent);
+		Solvent s = null;
+		if (solv.equals("Acetone")) {
+			s = Solvent.ACETONE;
+		} else if (solv.equals("DiChloroMethane")) {
+			s = Solvent.DICHLOROMETHANE;
+		} else if (solv.equals("Benzene")) {
+			s = Solvent.BENZENE;
+		} else if (solv.equals("Water")) {
+			s = Solvent.WATER;
+		} else if (solv.equals("Ether")) {
+			s = Solvent.ETHER;
+		} else if (solv.equals("Methanol")) {
+			s = Solvent.METHANOL;
+		} else if (solv.equals("Chloroform")) {
+			s = Solvent.CHLOROFORM;
+		} else if (solv.equals("DMSO")) {
+			s = Solvent.DMSO;
+		} else if (solv.equals("Acetonitrile")) {
+			s = Solvent.ACETONITRILE;
+		} else if (solv.equals("Toluene")) {
+			s = Solvent.TOLUENE;
+		} else if (solv.equals("THF")) {
+			s = Solvent.THF;
+		} else if (solv.equals("CCl4")) {
+			s = Solvent.CCL4;
+		}
+		return getTmsShift(s);
 	}
 	
 	public static String nmrShiftDbSolvent2GaussianSolvent(String solvent) {
