@@ -4,12 +4,12 @@ import org.xmlcml.cml.base.CMLConstants;
 
 public interface GaussianConstants extends CMLConstants {
 	
+	public static final String GAUSSIAN_DICT = "e:/legacy2cml/dict/gaussianArchiveDict.xml";
+	
 	public static final String SOLVENT_ROLE = "subst:solvent";
 	public static final String FIELD_DICTREF = "cml:field";
-	
 	public static final String GAUSSIAN_NMR = "nmr:GAUSSIAN";
 	public static final String OBSERVED_NMR = "nmr:OBSERVENUCLEUS";
-	
 	public static final String NMR_TYPE= "NMR";
 	public static final String UNITS_PPM = "units:ppm";
 	
@@ -18,6 +18,7 @@ public interface GaussianConstants extends CMLConstants {
 	// MIMES
 	public static final String FLOW_MIME = ".gjf";
 	public static final String SUBMIT_FILE_MIME = ".condor.sh";
+	public static final String GAUSSIAN_CONVERTER_OUT_MIME = ".xml";
 	
 	// constants for scatter plots
 	public static final String X_LAB = "Observed shift (ppm)";
