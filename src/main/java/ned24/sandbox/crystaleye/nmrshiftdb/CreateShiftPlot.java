@@ -121,7 +121,7 @@ public class CreateShiftPlot implements GaussianConstants {
 				"</script>"+
 				"</head>"+
 				"<body>"+
-				"<embed src=\"./test.svg\" width=\"675\" height=\"675\" style=\"display: inline;\" />"+
+				"<embed src=\"./index.svg\" width=\"675\" height=\"675\" style=\"display: inline;\" />"+
 				"    <div style=\"display: inline\">"+
 				"		<script type=\"text/javascript\">jmolInitialize(\""+JMOL_APPLET_FOLDER+"\");</script>"+
 				"		<script type=\"text/javascript\">jmolApplet(360, \"\");</script>"+
