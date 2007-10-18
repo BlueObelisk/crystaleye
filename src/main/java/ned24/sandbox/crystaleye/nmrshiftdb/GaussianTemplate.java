@@ -41,8 +41,7 @@ public class GaussianTemplate {
 			sb.append("#P rmpw1pw91/6-31g(d,p) geom=checkpoint guess=read\n");
 			sb.append("#P NMR scrf(cpcm,solvent="+solvent+")\n");
 		} else {
-			sb.append("#P rmpw1pw91/6-31g(d,p) geom=Modify guess=read\n");
-			sb.append("#P NMR scrf(cpcm,solvent="+solvent+") ExtraBasis\n");
+			sb.append("# rmpw1pw91/6-31g(d,p) NMR scrf(cpcm,solvent="+solvent+") ExtraBasis\n");
 		}
 
 		sb.append("\n");

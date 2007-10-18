@@ -21,7 +21,7 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 
 public class CreateInputs implements GaussianConstants {
 
-	static String outFolder = "e:/gaussian/second-protocol_mod1";
+	static String outFolder = "e:/gaussian/inputs/second-protocol_mod1";
 	static String[] allowedElements = {"C", "N", "O", "P", "I", "F", "N", "S", "B", "Cl", "H", "Si", "Br"};
 	static List<String> elList;
 
