@@ -2,7 +2,6 @@ package ned24.sandbox.crystaleye.nmrshiftdb;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import nu.xom.Document;
@@ -19,10 +18,17 @@ public class CreateShiftPlot implements GaussianConstants {
 
 	List<File> fileList;
 	String outFolderName;
+	String htmlTitle;
+	
+	String startFile = null;
 
-	public CreateShiftPlot(List<File> fileList, String outFolderName) {
+	public CreateShiftPlot(List<File> fileList, String outFolderName, String htmlTitle) {
 		this.fileList = fileList;
+		if (fileList.size() == 1) {
+			startFile = fileList.get(0).getName();
+		}
 		this.outFolderName = outFolderName;
+		this.htmlTitle = htmlTitle;
 	}
 
 	public Document getPlot() {
@@ -39,6 +45,7 @@ public class CreateShiftPlot implements GaussianConstants {
 			if (!b) {
 				continue;
 			}
+			double tmsShift = GaussianUtils.getTmsShift(solvent);
 
 			CMLElements<CMLPeak> calcPeaks = c.getCalculatedPeaks();
 			List<CMLPeak> obsPeaks = c.getObservedPeaks(solvent);
@@ -46,8 +53,7 @@ public class CreateShiftPlot implements GaussianConstants {
 			for (int i = 0; i < calcPeaks.size(); i++) {
 				CMLPeak calcPeak = (CMLPeak)calcPeaks.get(i);
 				double calcShift = calcPeak.getXValue();
-				//calcShift = TMS_SHIFT-calcShift;
-				//TODO
+				calcShift = tmsShift-calcShift;
 				String calcId = calcPeak.getAtomRefs()[0];
 				for (int j = 0; j < obsPeaks.size(); j++) {
 					CMLPeak obsPeak = (CMLPeak)obsPeaks.get(j);
@@ -112,6 +118,11 @@ public class CreateShiftPlot implements GaussianConstants {
 	}
 
 	public String getHtmlContent() {
+		String startStruct = "";
+		if (startFile != null) {
+			startStruct = "load "+JMOL_APPLET_FOLDER+CML_DIR_NAME+"/"+startFile;
+		}
+		
 		return "<html><head>"+
 		"<script src=\""+JMOL_JS_PATH+"\" type=\"text/ecmascript\">"+
 		"</script>"+
@@ -119,12 +130,12 @@ public class CreateShiftPlot implements GaussianConstants {
 		"</script>"+
 		"</head>"+
 		"<body>"+
-		"<div style=\"position: absolute; text-align: center; width: 100%;\"><h2>nmrshiftdb10003678 (solvent: methanol)</h2></div>"+
+		"<div style=\"position: absolute; text-align: center; width: 100%; z-index: 100;\"><h2>"+htmlTitle+"</h2></div>"+
 		"<div style=\"position: absolute; top: -50px;\">"+
 		"<embed src=\"./index.svg\" width=\"715\" height=\"675\" style=\"position:absolute;\" />"+
 		"<div style=\"position: absolute; left: 675px; top: 200px;\">"+
 		"<script type=\"text/javascript\">jmolInitialize(\""+JMOL_APPLET_FOLDER+"\");"+
-		"</script>		<script type=\"text/javascript\">jmolApplet(300, \"\");</script>"+
+		"</script>		<script type=\"text/javascript\">jmolApplet(300, \""+startStruct+"\");</script>"+
 		"</div>"+
 		"</div>"+
 		"</body>"+
@@ -144,15 +155,23 @@ public class CreateShiftPlot implements GaussianConstants {
 	public static void main(String[] args) {
 		String path = JMOL_ROOT_DIR+CML_DIR_NAME;
 		String outFolderName = "first";
-		List<File> fileList = Arrays.asList(new File(path).listFiles());
-		/*
-		List<File> fileList = new ArrayList<File>();
+		
+		String urlPrefix = "http://nmrshiftdb.ice.mpg.de/portal/js_pane/P-Results;jsessionid=FA2A776224CDA757D4B710F5FC12A899.tomcat2?nmrshiftdbaction=showDetailsFromHome&molNumber=";
+		//List<File> fileList = Arrays.asList(new File(path).listFiles());
+		//String htmlTitle = "Selection of structures from NMRShiftDB with MW < 300";
+		
 		for (File file : new File(path).listFiles()) {
+			List<File> fileList = new ArrayList<File>();
 			fileList.add(file);
-			break;
+			C13SpectraTool c13 = new C13SpectraTool(file);
+			String solvent = c13.getCalculatedSolvent().toLowerCase();
+			String name = file.getName();
+			name = name.substring(0,name.indexOf("-"));
+			String number = name.substring(10);
+			String htmlTitle = "<a href='"+urlPrefix+number+"'>"+name+" (solvent: "+solvent+")</a>";
+			outFolderName = name;
+			CreateShiftPlot c = new CreateShiftPlot(fileList, outFolderName, htmlTitle);
+			c.run();
 		}
-		*/
-		CreateShiftPlot c = new CreateShiftPlot(fileList, outFolderName);
-		c.run();
 	}
 }
