@@ -63,7 +63,7 @@ public class GaussianScatter implements GaussianConstants {
 			scatter.addDataToPlot(pointList);
 			scatter.setXlab(X_LAB);
 			scatter.setYlab(Y_LAB);
-			scatter.setGraphTitle(TITLE);
+			scatter.setGraphTitle("");
 			scatter.plot();
 			doc = new Document(scatter.getSVG());
 		} catch (GraphException e) {

@@ -111,21 +111,23 @@ public class CreateShiftPlot implements GaussianConstants {
 
 	public String getHtmlContent() {
 		return  "<!DOCTYPE html"+
-		"      PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\""+
-		"      \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"+
-		"<html"+
-		"<head>"+
-		"<script src=\""+SUMMARY_JS_PATH+"\" type=\"text/ecmascript\">"+
-		"</script>"+
-		"<script src=\""+JMOL_JS_PATH+"\" type=\"text/ecmascript\">"+
-		"</script>"+
-		"</head>"+
-		"<body>"+
-		"<script type=\"text/javascript\">jmolInitialize(\""+JMOL_APPLET_FOLDER+"\");</script>"+
-		"<script type=\"text/javascript\">jmolApplet(360, \"\");</script>"+
-		"<embed src=\"./index.svg\" width=\"1000\" height=\"1000\" />"+
-		"</body>"+
-		"</html>";
+				"      PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\""+
+				"      \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"+
+				"<html"+
+				"<head>"+
+				"<script src=\""+JMOL_JS_PATH+"\" type=\"text/ecmascript\">"+
+				"</script>"+
+				"<script src=\""+SUMMARY_JS_PATH+"\" type=\"text/ecmascript\">"+
+				"</script>"+
+				"</head>"+
+				"<body>"+
+				"<embed src=\"./test.svg\" width=\"675\" height=\"675\" style=\"display: inline;\" />"+
+				"    <div style=\"display: inline\">"+
+				"		<script type=\"text/javascript\">jmolInitialize(\""+JMOL_APPLET_FOLDER+"\");</script>"+
+				"		<script type=\"text/javascript\">jmolApplet(360, \"\");</script>"+
+				"    </div>"+
+				"</body>"+
+				"</html>";
 	}
 
 	public void run() {
@@ -141,12 +143,14 @@ public class CreateShiftPlot implements GaussianConstants {
 	public static void main(String[] args) {
 		String path = JMOL_ROOT_DIR+CML_DIR_NAME;
 		String outFolderName = "first";
-		//List<File> fileList = Arrays.asList(new File(path).listFiles());
+		List<File> fileList = Arrays.asList(new File(path).listFiles());
+		/*
 		List<File> fileList = new ArrayList<File>();
 		for (File file : new File(path).listFiles()) {
 			fileList.add(file);
 			break;
 		}
+		*/
 		CreateShiftPlot c = new CreateShiftPlot(fileList, outFolderName);
 		c.run();
 	}
