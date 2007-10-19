@@ -2,6 +2,7 @@ package ned24.sandbox.crystaleye.nmrshiftdb;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import nu.xom.Document;
@@ -160,6 +161,7 @@ public class CreateShiftPlot implements GaussianConstants {
 		//List<File> fileList = Arrays.asList(new File(path).listFiles());
 		//String htmlTitle = "Selection of structures from NMRShiftDB with MW < 300";
 		
+		
 		for (File file : new File(path).listFiles()) {
 			List<File> fileList = new ArrayList<File>();
 			fileList.add(file);
@@ -173,5 +175,6 @@ public class CreateShiftPlot implements GaussianConstants {
 			CreateShiftPlot c = new CreateShiftPlot(fileList, outFolderName, htmlTitle);
 			c.run();
 		}
+		
 	}
 }
