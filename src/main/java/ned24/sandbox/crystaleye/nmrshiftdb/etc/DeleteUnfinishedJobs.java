@@ -1,4 +1,4 @@
-package ned24.sandbox.crystaleye.nmrshiftdb;
+package ned24.sandbox.crystaleye.nmrshiftdb.etc;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,18 +10,18 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import uk.ac.cam.ch.crystaleye.Utils;
-
-public class GetTmsShifts {
+public class DeleteUnfinishedJobs {
 
 	public static void main(String[] args) {
+		String folder = "e:/gaussian/outputs/second-protocol/1/";
+		List<File> list = new ArrayList<File>();
 		Pattern p = Pattern
 		.compile("\\s*\\d+\\s+\\w+\\s+Isotropic\\s+=\\s+([^\\s]*)\\s+Anisotropy\\s+=\\s+[^\\s]*\\s*");
-		String folder = "e:/gaussian/TMS/inputs/second-protocol/1";
 		for (File file : new File(folder).listFiles()) {
 			String path = file.getAbsolutePath();
 			if (path.endsWith(".out")) {
-				List<String> values = new ArrayList<String>();
+				System.out.println(path);
+				boolean found = false;
 				BufferedReader input = null;
 				try {
 					input = new BufferedReader(new FileReader(path));
@@ -30,7 +30,8 @@ public class GetTmsShifts {
 						if (line != null && !"".equals(line)) {
 							Matcher m = p.matcher(line);
 							if (m.find()) {
-								values.add(m.group(1));
+								found = true;
+								break;
 							}
 						}
 					}
@@ -48,16 +49,22 @@ public class GetTmsShifts {
 						ex.printStackTrace();
 					}
 				}
-				if (values.size() != 17) {
-					throw new RuntimeException("Wrong number of atoms.");
+				if (!found) {
+					list.add(file);
 				}
-				double total = 0; 
-				for (int i = 1; i < 5; i++) {
-					total += Double.valueOf(values.get(i));
-				}
-				double average = total/4;
-				System.out.println(file.getName()+" - "+Utils.round(average, 4));
 			}
+		}
+		
+		for (File file : list){
+			String name = file.getName();
+			name = name.substring(0,name.length()-4);
+			
+			File parent = file.getParentFile();
+			File gjf = new File(parent+File.separator+name+".gjf");
+
+			file.delete();
+			gjf.delete();
 		}
 	}
 }
+

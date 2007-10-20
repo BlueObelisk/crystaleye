@@ -1,10 +1,14 @@
-package ned24.sandbox.crystaleye.nmrshiftdb;
+package ned24.sandbox.crystaleye.nmrshiftdb.results;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ned24.sandbox.crystaleye.nmrshiftdb.C13SpectraTool;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianScatter;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import nu.xom.Document;
 
 import org.graph.Point;
@@ -120,8 +124,11 @@ public class CreateShiftPlot implements GaussianConstants {
 
 	public String getHtmlContent() {
 		String startStruct = "";
+		String button = "";
 		if (startFile != null) {
 			startStruct = "load "+JMOL_APPLET_FOLDER+CML_DIR_NAME+"/"+startFile;
+		} else {
+			button = "<button onclick=\"showPlot(currentStructure);\">Show plot for this structure</button>";
 		}
 		
 		return "<html><head>"+
@@ -133,10 +140,12 @@ public class CreateShiftPlot implements GaussianConstants {
 		"<body>"+
 		"<div style=\"position: absolute; text-align: center; width: 100%; z-index: 100;\"><h2>"+htmlTitle+"</h2></div>"+
 		"<div style=\"position: absolute; top: -50px;\">"+
-		"<embed src=\"./index.svg\" width=\"715\" height=\"675\" style=\"position:absolute;\" />"+
+		"<embed id='svgPlot' src=\"./index.svg\" width=\"715\" height=\"675\" style=\"position:absolute;\" />"+
 		"<div style=\"position: absolute; left: 675px; top: 200px;\">"+
 		"<script type=\"text/javascript\">jmolInitialize(\""+JMOL_APPLET_FOLDER+"\");"+
-		"</script>		<script type=\"text/javascript\">jmolApplet(300, \""+startStruct+"\");</script>"+
+		"</script>"+
+		"<script type=\"text/javascript\">jmolApplet(300, \""+startStruct+"\");</script>"+
+		button+
 		"</div>"+
 		"</div>"+
 		"</body>"+
@@ -154,27 +163,6 @@ public class CreateShiftPlot implements GaussianConstants {
 	}
 
 	public static void main(String[] args) {
-		String path = JMOL_ROOT_DIR+CML_DIR_NAME;
-		String outFolderName = "first";
-		
-		String urlPrefix = "http://nmrshiftdb.ice.mpg.de/portal/js_pane/P-Results;jsessionid=FA2A776224CDA757D4B710F5FC12A899.tomcat2?nmrshiftdbaction=showDetailsFromHome&molNumber=";
-		//List<File> fileList = Arrays.asList(new File(path).listFiles());
-		//String htmlTitle = "Selection of structures from NMRShiftDB with MW < 300";
-		
-		
-		for (File file : new File(path).listFiles()) {
-			List<File> fileList = new ArrayList<File>();
-			fileList.add(file);
-			C13SpectraTool c13 = new C13SpectraTool(file);
-			String solvent = c13.getCalculatedSolvent().toLowerCase();
-			String name = file.getName();
-			name = name.substring(0,name.indexOf("-"));
-			String number = name.substring(10);
-			String htmlTitle = "<a href='"+urlPrefix+number+"'>"+name+" (solvent: "+solvent+")</a>";
-			outFolderName = name;
-			CreateShiftPlot c = new CreateShiftPlot(fileList, outFolderName, htmlTitle);
-			c.run();
-		}
-		
+		//
 	}
 }

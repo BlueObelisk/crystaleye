@@ -1,4 +1,4 @@
-package ned24.sandbox.crystaleye.nmrshiftdb;
+package ned24.sandbox.crystaleye.nmrshiftdb.etc;
 
 import java.io.File;
 import java.util.ArrayList;

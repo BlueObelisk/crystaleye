@@ -5,7 +5,7 @@ public class GaussianUtils {
 	
 	public enum Solvent {
 		ACETONE, ACETONITRILE, BENZENE, CCL4, CHLOROFORM, DICHLOROMETHANE,
-		DMSO, ETHER, METHANOL, THF, TOLUENE, WATER
+		DMSO, ETHER, METHANOL, THF, TOLUENE, WATER;
 	}
 	
 	public static double getTmsShift(Solvent solvent) {
@@ -40,6 +40,11 @@ public class GaussianUtils {
 	
 	public static double getTmsShift(String solvent) {
 		String solv = nmrShiftDbSolvent2GaussianSolvent(solvent);
+		Solvent s = getSolvent(solv);
+		return getTmsShift(s);
+	}
+	
+	public static Solvent getSolvent(String solv) {
 		Solvent s = null;
 		if (solv.equals("Acetone")) {
 			s = Solvent.ACETONE;
@@ -66,7 +71,7 @@ public class GaussianUtils {
 		} else if (solv.equals("CCl4")) {
 			s = Solvent.CCL4;
 		}
-		return getTmsShift(s);
+		return s;
 	}
 	
 	public static String nmrShiftDbSolvent2GaussianSolvent(String solvent) {
