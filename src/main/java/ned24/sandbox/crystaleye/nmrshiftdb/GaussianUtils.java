@@ -1,7 +1,22 @@
 package ned24.sandbox.crystaleye.nmrshiftdb;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class GaussianUtils {
+import org.xmlcml.cml.element.CMLAtom;
+import org.xmlcml.cml.element.CMLCml;
+import org.xmlcml.cml.element.CMLMolecule;
+import org.xmlcml.cml.legacy2cml.molecule.GaussianArchiveConverter;
+import org.xmlcml.euclid.Point3;
+
+import uk.ac.cam.ch.crystaleye.IOUtils;
+
+
+public class GaussianUtils implements GaussianConstants {
 	
 	public enum Solvent {
 		ACETONE, ACETONITRILE, BENZENE, CCL4, CHLOROFORM, DICHLOROMETHANE,
@@ -145,5 +160,62 @@ public class GaussianUtils {
 			gauSolvent = "CCl4";
 		}
 		return gauSolvent;
+	}
+	
+	public static CMLCml getFinalCml(File gaussianFile) {
+		String gaussianPath = gaussianFile.getAbsolutePath();
+		String gaussianName = gaussianFile.getName();
+		gaussianName = gaussianName.substring(0, gaussianName.length() - 4);
+		runGaussianConverter(gaussianPath, gaussianPath);
+		File parent = gaussianFile.getParentFile();
+
+		List<Integer> intList = new ArrayList<Integer>();
+		List<File> gauCmlFiles = new ArrayList<File>();
+		for (File file : parent.listFiles()) {
+			String filename = file.getName();
+			Pattern p = Pattern.compile(gaussianName + "_(\\d+)"
+					+ GAUSSIAN_CONVERTER_OUT_MIME);
+			Matcher m = p.matcher(filename);
+			if (m.find()) {
+				int i = Integer.valueOf(m.group(1));
+				intList.add(i);
+				gauCmlFiles.add(file);
+			}
+		}
+		Collections.sort(intList);
+		Collections.reverse(intList);
+		String finalname = parent.getAbsolutePath() + File.separator
+				+ gaussianName + "_" + intList.get(0)
+				+ GAUSSIAN_CONVERTER_OUT_MIME;
+		CMLCml cml = (CMLCml) IOUtils.parseCmlFile(finalname).getRootElement();
+		for (File f : gauCmlFiles) {
+			f.delete();
+		}
+		return cml;
+	}
+
+	public static void runGaussianConverter(String infile, String outfile) {
+		String[] args = { "-INFILE", infile, "-OUTFILE", outfile, "-DICT",
+				GAUSSIAN_DICT };
+		GaussianArchiveConverter converter = new GaussianArchiveConverter();
+		try {
+			converter.runCommands(args);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("GaussianArchiveConverter EXCEPTION... " + e);
+		}
+	}
+	
+	public static String getConnectionTable(CMLMolecule molecule) {
+		StringBuilder sb = new StringBuilder();
+		for (CMLAtom atom : molecule.getAtoms()) {
+			sb.append(" "+atom.getElementType()+" ");
+			Point3 p3 = atom.getXYZ3();
+			double[] a = p3.getArray();
+			sb.append(a[0]+" ");
+			sb.append(a[1]+" ");
+			sb.append(a[2]+"\n");
+		}
+		return sb.toString();
 	}
 }

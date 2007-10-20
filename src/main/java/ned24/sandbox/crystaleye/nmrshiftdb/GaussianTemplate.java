@@ -15,8 +15,45 @@ public class GaussianTemplate {
 		this.connectionTable = connectionTable;
 		this.solvent = solvent;
 	}
+	
+	public String getNmrStepInput() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("--Link1--\n");
+		sb.append("%chk="+name+".chk\n");
+		
+		if (!setExtraBasis) {
+			sb.append("#P rmpw1pw91/6-31g(d,p)\n");
+			sb.append("#P NMR scrf(cpcm,solvent="+solvent+")\n");
+		} else {
+			sb.append("# rmpw1pw91/6-31g(d,p) NMR scrf(cpcm,solvent="+solvent+") ExtraBasis\n");
+		}
 
-	public String getInput() {
+		sb.append("\n");
+		sb.append("Calculating  GIAO-shifts.  \n");
+		sb.append("\n");
+		sb.append("0 1\n");
+		sb.append(connectionTable);
+		sb.append("\n");
+		if (setExtraBasis) {
+			if (hasC) {
+				sb.append("C     0\n");
+				sb.append("SP     1     1.00\n");
+				sb.append("             0.05             1.00000000             1.00000000\n");  
+				sb.append("****\n");
+			}
+			if (hasCarbonyl) {
+				sb.append("O     0\n");
+				sb.append("SP     1     1.00\n");
+				sb.append("             0.070000              1.0000000              1.0000000\n");     
+				sb.append("****\n");
+			}
+		}
+
+		sb.append("\n");
+		return sb.toString();
+	}
+
+	public String getThreeStepWorkflowInput() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("%chk="+name+".chk\n");
 		sb.append("#N RHF/STO-3G opt(loose) \n");

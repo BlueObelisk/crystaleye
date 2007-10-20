@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class DeleteUnfinishedJobs {
 
 	public static void main(String[] args) {
-		String folder = "e:/gaussian/outputs/second-protocol/1/";
+		String folder = "e:/gaussian/outputs/second-protocol_mod1/1/";
 		List<File> list = new ArrayList<File>();
 		Pattern p = Pattern
 		.compile("\\s*\\d+\\s+\\w+\\s+Isotropic\\s+=\\s+([^\\s]*)\\s+Anisotropy\\s+=\\s+[^\\s]*\\s*");

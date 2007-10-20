@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +22,6 @@ import org.xmlcml.cml.element.CMLPeakList;
 import org.xmlcml.cml.element.CMLSpectrum;
 import org.xmlcml.cml.element.CMLSubstance;
 import org.xmlcml.cml.element.CMLSubstanceList;
-import org.xmlcml.cml.legacy2cml.molecule.GaussianArchiveConverter;
 import org.xmlcml.euclid.Point3;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
@@ -100,7 +98,7 @@ public class MergeCalculation2Cml implements GaussianConstants {
 					+ " not the same as number of shifts" + values.size() + ".");
 		}
 
-		CMLCml finalCml = getFinalCml(gaussianFile);
+		CMLCml finalCml = GaussianUtils.getFinalCml(gaussianFile);
 		CMLMolecule finalMol = (CMLMolecule) finalCml
 				.getFirstCMLChild(CMLMolecule.TAG);
 
@@ -141,50 +139,6 @@ public class MergeCalculation2Cml implements GaussianConstants {
 
 	public CMLCml getGaussianCml() {
 		return gaussianCml;
-	}
-
-	private CMLCml getFinalCml(File gaussianFile) {
-		String gaussianPath = gaussianFile.getAbsolutePath();
-		String gaussianName = gaussianFile.getName();
-		gaussianName = gaussianName.substring(0, gaussianName.length() - 4);
-		runGaussianConverter(gaussianPath, gaussianPath);
-		File parent = gaussianFile.getParentFile();
-
-		List<Integer> intList = new ArrayList<Integer>();
-		List<File> gauCmlFiles = new ArrayList<File>();
-		for (File file : parent.listFiles()) {
-			String filename = file.getName();
-			Pattern p = Pattern.compile(gaussianName + "_(\\d+)"
-					+ GAUSSIAN_CONVERTER_OUT_MIME);
-			Matcher m = p.matcher(filename);
-			if (m.find()) {
-				int i = Integer.valueOf(m.group(1));
-				intList.add(i);
-				gauCmlFiles.add(file);
-			}
-		}
-		Collections.sort(intList);
-		Collections.reverse(intList);
-		String finalname = parent.getAbsolutePath() + File.separator
-				+ gaussianName + "_" + intList.get(0)
-				+ GAUSSIAN_CONVERTER_OUT_MIME;
-		CMLCml cml = (CMLCml) IOUtils.parseCmlFile(finalname).getRootElement();
-		for (File f : gauCmlFiles) {
-			f.delete();
-		}
-		return cml;
-	}
-
-	private void runGaussianConverter(String infile, String outfile) {
-		String[] args = { "-INFILE", infile, "-OUTFILE", outfile, "-DICT",
-				GAUSSIAN_DICT };
-		GaussianArchiveConverter converter = new GaussianArchiveConverter();
-		try {
-			converter.runCommands(args);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("GaussianArchiveConverter EXCEPTION... " + e);
-		}
 	}
 
 	public void addSpectrumToMolecule(CMLMolecule molecule,
