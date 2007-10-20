@@ -21,7 +21,7 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 
 public class CreateInputs implements GaussianConstants {
 
-	static String outFolder = "e:/gaussian/inputs/second-protocol_mod1";
+	static String outFolder = "e:/gaussian/inputs/everything";
 	static String[] allowedElements = {"C", "N", "O", "P", "I", "F", "N", "S", "B", "Cl", "H", "Si", "Br"};
 	static List<String> elList;
 
@@ -30,7 +30,7 @@ public class CreateInputs implements GaussianConstants {
 	}
 
 	private static boolean passesProtocol2(CMLMolecule molecule) {
-		
+
 		// MW < 300
 		// no charges 
 		// must have cyclic bonds
@@ -44,13 +44,13 @@ public class CreateInputs implements GaussianConstants {
 		if (molecule.getCalculatedFormalCharge(FormalChargeControl.DEFAULT) != 0) {
 			return false;
 		}
-		
+
 		ConnectionTableTool ct = new ConnectionTableTool(molecule);
 		List<CMLAtom> cyclicAtoms = ct.getCyclicAtoms();
 		if (cyclicAtoms.size() == 0) {
 			return false;
 		}	
-		
+
 		boolean containsC = false;
 		for (CMLAtom atom : molecule.getAtoms()) {
 			if ("C".equals(atom.getElementType())) {
@@ -64,7 +64,7 @@ public class CreateInputs implements GaussianConstants {
 		if (!containsC) {
 			return false;
 		}
-		
+
 		List<CMLAtom> acyclicAtoms = new ArrayList<CMLAtom>();
 		for (CMLAtom atom : molecule.getAtoms()) {
 			if (!"H".equals(atom.getElementType()) && !cyclicAtoms.contains(atom)) {
@@ -135,98 +135,96 @@ public class CreateInputs implements GaussianConstants {
 		int idx = name.indexOf(".");
 		return name.substring(0,idx);
 	}
-	
+
 	public static void main(String[] args) {
 		String path = "E:\\gaussian\\all-mols";
-		
+
 		File startFile = new File(path);
 		File outFile = new File(outFolder);
 
 		int count = 0;
 		int numberFileCount = 1;
-		
-		for (File file : startFile.listFiles()) {		
-			CMLMolecule molecule = (CMLMolecule)IOUtils.parseCmlFile(file).getRootElement();
 
-			if (!passesProtocol2(molecule)) {
-				continue;
-			}
+		for (File file : startFile.listFiles()) {	
+			try {
+				CMLMolecule molecule = (CMLMolecule)IOUtils.parseCmlFile(file).getRootElement();
 
-			Nodes specNodes = molecule.query("./cml:spectrum[cml:metadataList/cml:metadata[@content='13C']]", X_CML);
-			if (specNodes.size() == 0) {
-				continue;
-			}
-			for (int i = 0; i < specNodes.size(); i++) {
-				CMLSpectrum spect = (CMLSpectrum)specNodes.get(i);
-				Nodes solventNodes = spect.query("./cml:substanceList/cml:substance[@role='"+SOLVENT_ROLE+"']", X_CML);
-				String cmlSolvent = "";
-				if (solventNodes.size() > 0) {
-					cmlSolvent = ((Element)solventNodes.get(0)).getAttributeValue("title").trim();
-				}
-				if (cmlSolvent.contains("+")) {
-					// the solvent will contain more than one component, don't know how to 
-					// deal with this so just skip this molecule
+				if (!passesProtocol2(molecule)) {
 					continue;
 				}
-				String inputFileSolvent = "";
-				if ("".equals(cmlSolvent)) {
-					continue;
-				} else {
-					inputFileSolvent = GaussianUtils.nmrShiftDbSolvent2GaussianSolvent(cmlSolvent);
-					
-					if (inputFileSolvent == null) {
-						System.err.println("Can't match solvent "+cmlSolvent+" in "+file.getAbsolutePath());
-						continue;
-					}
 
-					StringBuilder sb = new StringBuilder();
-					for (CMLAtom atom : molecule.getAtoms()) {
-						sb.append(" "+atom.getElementType()+" ");
-						Point3 p3 = atom.getXYZ3();
-						double[] a = p3.getArray();
-						sb.append(a[0]+" ");
-						sb.append(a[1]+" ");
-						sb.append(a[2]+"\n");
+				Nodes specNodes = molecule.query("./cml:spectrum[cml:metadataList/cml:metadata[@content='13C']]", X_CML);
+				if (specNodes.size() == 0) {
+					continue;
+				}
+				for (int i = 0; i < specNodes.size(); i++) {
+					CMLSpectrum spect = (CMLSpectrum)specNodes.get(i);
+					Nodes solventNodes = spect.query("./cml:substanceList/cml:substance[@role='"+SOLVENT_ROLE+"']", X_CML);
+					String cmlSolvent = "";
+					if (solventNodes.size() > 0) {
+						cmlSolvent = ((Element)solventNodes.get(0)).getAttributeValue("title").trim();
 					}
-					String name = getFileName(file);
-					int solventNumber = i+1;
-					name += "-"+solventNumber;
-					
-					
-					boolean hasC = false;
-					boolean hasO = false;
-					for (CMLAtom atom : molecule.getAtoms()) {
-						if ("C".equals(atom.getElementType())) {
-							hasC = true;
-						}
-						if ("O".equals(atom.getElementType())) {
-							hasO = true;
-						}
-					}
-					if (!hasC && !hasO) {
+					if (cmlSolvent.contains("+")) {
+						// the solvent will contain more than one component, don't know how to 
+						// deal with this so just skip this molecule
 						continue;
 					}
-					
-					
-					GaussianTemplate g = new GaussianTemplate(name, sb.toString(), inputFileSolvent);
-					g.setExtraBasis(true);
-					g.setHasC(hasC);
-					g.setHasO(hasO);
-					String input = g.getInput();
-					
-					String folderName = outFile.getName()+"/"+numberFileCount;
-					String outPath = outFolder+File.separator+numberFileCount+File.separator+name+FLOW_MIME;
-					
-					
-					IOUtils.writeText(input, outPath);
-					writeCondorSubmitFile(folderName, name, numberFileCount);
-					writeShFile(folderName, name, numberFileCount);
-					count++;
-					if (count == 500) {
-						numberFileCount++;
-						count = 0;
+					String inputFileSolvent = "";
+					if ("".equals(cmlSolvent)) {
+						continue;
+					} else {
+						inputFileSolvent = GaussianUtils.nmrShiftDbSolvent2GaussianSolvent(cmlSolvent);
+
+						if (inputFileSolvent == null) {
+							System.err.println("Can't match solvent "+cmlSolvent+" in "+file.getAbsolutePath());
+							continue;
+						}
+
+						String connTable = GaussianUtils.getConnectionTable(molecule);
+
+						String name = getFileName(file);
+						int solventNumber = i+1;
+						name += "-"+solventNumber;
+
+						/*
+						boolean hasC = false;
+						boolean hasO = false;
+						for (CMLAtom atom : molecule.getAtoms()) {
+							if ("C".equals(atom.getElementType())) {
+								hasC = true;
+							}
+							if ("O".equals(atom.getElementType())) {
+								hasO = true;
+							}
+						}
+						if (!hasC && !hasO) {
+							continue;
+						}
+						*/
+
+
+						GaussianTemplate g = new GaussianTemplate(name, connTable, inputFileSolvent);
+						//g.setExtraBasis(true);
+						//g.setHasC(hasC);
+						//g.setHasO(hasO);
+						String input = g.getThreeStepWorkflowInput();
+
+						String folderName = outFile.getName()+"/"+numberFileCount;
+						String outPath = outFolder+File.separator+numberFileCount+File.separator+name+FLOW_MIME;
+
+
+						IOUtils.writeText(input, outPath);
+						writeCondorSubmitFile(folderName, name, numberFileCount);
+						writeShFile(folderName, name, numberFileCount);
+						count++;
+						if (count == 500) {
+							numberFileCount++;
+							count = 0;
+						}
 					}
 				}
+			} catch (Exception e) {
+				System.err.println("Exception processing : "+file.getAbsolutePath());
 			}
 		}
 	}
