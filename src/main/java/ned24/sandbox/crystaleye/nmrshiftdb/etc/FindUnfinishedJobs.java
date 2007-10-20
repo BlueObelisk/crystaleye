@@ -1,4 +1,4 @@
-package ned24.sandbox.crystaleye.nmrshiftdb;
+package ned24.sandbox.crystaleye.nmrshiftdb.etc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,7 +7,7 @@ import java.util.List;
 
 import uk.ac.cam.ch.crystaleye.FileListing;
 
-public class FindNotFinishedJobs {
+public class FindUnfinishedJobs {
 
 	public static void main(String[] args) {
 		String p1 = "e:/gaussian/second-protocol-out";

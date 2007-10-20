@@ -1,8 +1,10 @@
-package ned24.sandbox.crystaleye.nmrshiftdb;
+package ned24.sandbox.crystaleye.nmrshiftdb.etc;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import ned24.sandbox.crystaleye.nmrshiftdb.C13SpectraTool;
 
 public class FindMismatchedAtomNumFiles {
 
