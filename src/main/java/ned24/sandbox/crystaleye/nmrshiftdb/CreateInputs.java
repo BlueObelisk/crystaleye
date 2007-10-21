@@ -15,7 +15,6 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLSpectrum;
 import org.xmlcml.cml.element.CMLMolecule.HydrogenControl;
 import org.xmlcml.cml.tools.ConnectionTableTool;
-import org.xmlcml.euclid.Point3;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
