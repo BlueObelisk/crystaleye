@@ -7,7 +7,7 @@ import java.util.List;
 public class FindMissingModJobs {
 
 	public static void main(String[] args) {
-		String outPath = "e:/gaussian/outputs/second-protocol_mod1/1";
+		String outPath = "e:/gaussian/outputs/second-protocol/1";
 		String otherPath = "e:/test/cml";
 		
 		List<String> others = new ArrayList<String>();
@@ -33,10 +33,11 @@ public class FindMissingModJobs {
 		System.out.println(others.size());
 		System.out.println(outs.size());
 		
-		for (String name : others) {
-			if (!outs.contains(name)) {
+		for (String name : outs) {
+			if (!others.contains(name)) {
 				System.out.println(name);
 			}
 		}
+
 	}
 }

@@ -102,7 +102,7 @@ public class CreateInputs implements GaussianConstants {
 		return true;
 	}
 
-	private static void writeCondorSubmitFile(String folderName, String name, int numberFileCount) {
+	public static void writeCondorSubmitFile(String folderName, String name, int numberFileCount) {
 		String submitFile = "universe=vanilla\n"+
 		"getenv=True\n"+
 		"requirements = Arch == \"X86_64\" && OpSys == \"LINUX\" && Machine != \"gridlock20--ch.grid.private.cam.ac.uk\" && Machine != \"gridlock26--ch.grid.private.cam.ac.uk\" && Machine != \"gridlock27--ch.grid.private.cam.ac.uk\" && HAS_GAUSSIAN == TRUE\n"+
@@ -118,14 +118,16 @@ public class CreateInputs implements GaussianConstants {
 		"\n"+
 		"Queue\n";
 
+		System.out.println("condor: "+outFolder+File.separator+numberFileCount+File.separator+name+SUBMIT_FILE_MIME);
 		IOUtils.writeText(submitFile, outFolder+File.separator+numberFileCount+File.separator+name+SUBMIT_FILE_MIME);
 	}
 
-	private static void writeShFile(String folderName, String name, int numberFileCount) {
+	public static void writeShFile(String folderName, String name, int numberFileCount) {
 		String content = "#!/bin/sh\n"+
 		"\n"+
 		"# Run g03 job\n"+
 		"/usr/local/g03/g03 < "+name+FLOW_MIME+" > "+name+".out \n";
+		System.out.println("sh "+outFolder+File.separator+numberFileCount+File.separator+name+".sh");
 		IOUtils.writeText(content, outFolder+File.separator+numberFileCount+File.separator+name+".sh");
 	}
 
