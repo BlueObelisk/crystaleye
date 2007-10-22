@@ -14,11 +14,11 @@ import org.xmlcml.cml.element.CMLSpectrum;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class C13SpectraTool implements GaussianConstants {
+public class GaussianCmlTool implements GaussianConstants {
 
 	CMLMolecule molecule;
 
-	public C13SpectraTool(File file) {
+	public GaussianCmlTool(File file) {
 		this.molecule = (CMLMolecule)IOUtils.parseCmlFile(file).getRootElement();
 	}
 
@@ -114,13 +114,23 @@ public class C13SpectraTool implements GaussianConstants {
 		CMLPeakList calcPL = (CMLPeakList)calculated.getFirstCMLChild(CMLPeakList.TAG);
 		return calcPL.getPeakElements();
 	}
+	
+	public List<CMLPeak> getListOfCalculatedPeaks() {
+		CMLElements<CMLPeak> peaks = getCalculatedPeaks();
+		List<CMLPeak> list = new ArrayList<CMLPeak>();
+		for (int i = 0; i < peaks.size(); i++) {
+			CMLPeak peak = peaks.get(i);
+			list.add(peak);
+		}
+		return list;
+	}
 
 	public boolean testSpectraConcordant(String solvent) {
 		List<CMLSpectrum> obsSp = getObservedSpectra(solvent);
 		List<Integer> intList = new ArrayList<Integer>();
 		int obsAtoms = 0;
 		for (CMLSpectrum sp : obsSp) {
-			int count = C13SpectraTool.getSpectrumAtomCount(sp);
+			int count = GaussianCmlTool.getSpectrumAtomCount(sp);
 			intList.add(count);
 			obsAtoms += count;
 		}

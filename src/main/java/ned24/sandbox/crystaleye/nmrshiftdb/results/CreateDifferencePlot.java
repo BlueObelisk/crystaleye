@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ned24.sandbox.crystaleye.nmrshiftdb.C13SpectraTool;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianScatter;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
@@ -62,9 +62,9 @@ public class CreateDifferencePlot implements GaussianConstants {
 			System.out.println(file1.getAbsolutePath());
 			File file2 = fileList2.get(j);
 
-			C13SpectraTool hsrC = new C13SpectraTool(file1);
+			GaussianCmlTool hsrC = new GaussianCmlTool(file1);
 			CMLSpectrum hsrSpect = hsrC.getCalculatedSpectra();
-			C13SpectraTool defC = new C13SpectraTool(file2);
+			GaussianCmlTool defC = new GaussianCmlTool(file2);
 			CMLSpectrum defSpect = defC.getCalculatedSpectra();
 
 			CMLMolecule molecule = hsrC.getMolecule();
@@ -204,7 +204,7 @@ public class CreateDifferencePlot implements GaussianConstants {
 			List<File> list2 = new ArrayList<File>();
 			list2.add(fileList2.get(i));
 			File file = fileList1.get(i);
-			C13SpectraTool c13 = new C13SpectraTool(file);
+			GaussianCmlTool c13 = new GaussianCmlTool(file);
 			String solvent = c13.getCalculatedSolvent().toLowerCase();
 			String name = file.getName();
 			name = name.substring(0,name.indexOf("."));
