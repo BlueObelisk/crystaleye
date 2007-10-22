@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ned24.sandbox.crystaleye.nmrshiftdb.CreateInputs;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianTemplate;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
@@ -20,15 +19,17 @@ public class CreateNmrInputFromOutput implements GaussianConstants {
 
 	List<File> fileList;
 	String outFolder;
+	File tempFile;
 	
-	public CreateNmrInputFromOutput(String outFolder, List<File> fileList) {
+	public CreateNmrInputFromOutput(String outFolder, List<File> fileList, File tempFile) {
 		this.fileList = fileList;
 		this.outFolder = outFolder;
+		this.tempFile = tempFile;
 	}
 	
 	public void run() {
 		for (File f : fileList) {
-			CMLCml cml = GaussianUtils.getFinalCml(f);
+			CMLCml cml = GaussianUtils.getFinalCml(f, tempFile);
 			cml.debug();
 			CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
 			String connTable = GaussianUtils.getConnectionTable(molecule);
@@ -112,6 +113,7 @@ public class CreateNmrInputFromOutput implements GaussianConstants {
 	public static void main(String[] args) {
 		String path = "e:/gaussian/outputs/second-protocol/1";
 		String outFolder = "e:/gaussian/inputs/second-protocol_mod1/";
+		String tmpFolder = "e:/temp";
 		
 		List<File> fileList = new ArrayList<File>();
 		for (File f : new File(path).listFiles()) {
@@ -119,7 +121,7 @@ public class CreateNmrInputFromOutput implements GaussianConstants {
 				fileList.add(f);
 			}
 		}
-		CreateNmrInputFromOutput c = new CreateNmrInputFromOutput(outFolder, fileList);
+		CreateNmrInputFromOutput c = new CreateNmrInputFromOutput(outFolder, fileList, new File(tmpFolder));
 		c.run();
 	}
 }

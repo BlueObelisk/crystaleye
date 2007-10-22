@@ -12,7 +12,7 @@ import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils.Solvent;
 public class Solvents implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String path = JMOL_ROOT_DIR+CML_DIR_NAME;
+		String path = SECOND_PROTOCOL_FOLDER+File.separator+CML_DIR_NAME;
 
 		for (Solvent s : GaussianUtils.Solvent.values()) {
 			List<File> fileList = new ArrayList<File>();
@@ -28,7 +28,7 @@ public class Solvents implements GaussianConstants {
 				}
 			}
 			if (fileList.size() > 0) {
-				CreateShiftPlot c2 = new CreateShiftPlot(fileList, outFolderName, htmlTitle);
+				CreateShiftPlot c2 = new CreateShiftPlot(fileList, outFolderName, htmlTitle, SECOND_PROTOCOL_URL, SECOND_PROTOCOL_JMOL_JS, SECOND_PROTOCOL_SUMMARY_JS);
 				c2.run();
 			}
 		}		

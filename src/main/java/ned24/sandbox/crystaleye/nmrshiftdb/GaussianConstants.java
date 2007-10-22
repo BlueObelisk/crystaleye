@@ -1,5 +1,7 @@
 package ned24.sandbox.crystaleye.nmrshiftdb;
 
+import java.io.File;
+
 import org.xmlcml.cml.base.CMLConstants;
 
 public interface GaussianConstants extends CMLConstants {
@@ -32,9 +34,21 @@ public interface GaussianConstants extends CMLConstants {
 	
 	// jmol
 	public static final String FILE_PREFIX = "file:///";
-	public static final String JMOL_ROOT_DIR = "e:/test/";
-	public static final String JMOL_APPLET_FOLDER	= FILE_PREFIX+JMOL_ROOT_DIR;
-	public static final String JMOL_JS_PATH = FILE_PREFIX+JMOL_ROOT_DIR+"/Jmol.js";
-	public static final String SUMMARY_JS_PATH = FILE_PREFIX+JMOL_ROOT_DIR+"/summary.js";
+	public static final String ROOT_HTML_DIR = "e:/gaussian/html/";
 	public static final String CML_DIR_NAME = "cml";
+	// second-protocol
+	public static final String SECOND_PROTOCOL_FOLDER	= ROOT_HTML_DIR+"second-protocol";
+	public static final String SECOND_PROTOCOL_URL	= FILE_PREFIX+SECOND_PROTOCOL_FOLDER;
+	public static final String SECOND_PROTOCOL_JMOL_JS = SECOND_PROTOCOL_URL+"/Jmol.js";
+	public static final String SECOND_PROTOCOL_SUMMARY_JS = SECOND_PROTOCOL_URL+"/summary.js";
+	// second-protocol_mod1
+	public static final String SECOND_PROTOCOL_MOD1_FOLDER	= ROOT_HTML_DIR+"second-protocol_mod1";
+	public static final String SECOND_PROTOCOL_MOD1_URL	= FILE_PREFIX+SECOND_PROTOCOL_MOD1_FOLDER;
+	public static final String SECOND_PROTOCOL_MOD1_JMOL_JS = SECOND_PROTOCOL_MOD1_URL+"/Jmol.js";
+	public static final String SECOND_PROTOCOL_MOD1_SUMMARY_JS = SECOND_PROTOCOL_MOD1_URL+"/summary.js";
+	// first diff
+	public static final String FIRST_DIFF_FOLDER	= ROOT_HTML_DIR+"first-diff";
+	public static final String FIRST_DIFF_URL	= FILE_PREFIX+FIRST_DIFF_FOLDER;
+	public static final String FIRST_DIFF_JMOL_JS = FIRST_DIFF_URL+"/Jmol.js";
+	public static final String FIRST_DIFF_SUMMARY_JS = FIRST_DIFF_URL+"/summary.js";
 }

@@ -2,7 +2,6 @@ package ned24.sandbox.crystaleye.nmrshiftdb.results;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.C13SpectraTool;
@@ -24,16 +23,23 @@ public class CreateShiftPlot implements GaussianConstants {
 	List<File> fileList;
 	String outFolderName;
 	String htmlTitle;
-	
+
+	String protocolUrl;
+	String jmoljsPath;
+	String summaryjsPath;
+
 	String startFile = null;
 
-	public CreateShiftPlot(List<File> fileList, String outFolderName, String htmlTitle) {
+	public CreateShiftPlot(List<File> fileList, String outFolderName, String htmlTitle, String protocolUrl, String jmoljsPath, String summaryJsPath) {
 		this.fileList = fileList;
 		if (fileList.size() == 1) {
 			startFile = fileList.get(0).getName();
 		}
 		this.outFolderName = outFolderName;
 		this.htmlTitle = htmlTitle;
+		this.protocolUrl = protocolUrl;
+		this.jmoljsPath = jmoljsPath;
+		this.summaryjsPath = summaryJsPath;
 	}
 
 	public Document getPlot() {
@@ -60,30 +66,29 @@ public class CreateShiftPlot implements GaussianConstants {
 				double calcShift = calcPeak.getXValue();
 				calcShift = tmsShift-calcShift;
 				String calcId = calcPeak.getAtomRefs()[0];
-				for (int j = 0; j < obsPeaks.size(); j++) {
-					CMLPeak obsPeak = (CMLPeak)obsPeaks.get(j);
-					String[] ids = obsPeak.getAtomRefs();
-					for (String id : ids) {
-						if (id.equals(calcId)) {
-							if (!isAtomSuitable(molecule, id)) {
-								continue;
-							}
-							double obsShift = obsPeak.getXValue();
-							Point p = new Point();
-							p.setX(obsShift);
-							p.setY(calcShift);									
-							int count = getAtomPosition(molecule, id);
-							p.setLink("javascript:changeAtom('"+JMOL_APPLET_FOLDER+CML_DIR_NAME+"/"+file.getName()+"', "+count+");");
-							pointList.add(p);
-							if (calcShift > max) {
-								max = calcShift;
-							}
-							if (calcShift < min) {
-								min = calcShift;
-							}
-						}
-					}
-				}			
+
+				if (!isAtomSuitable(molecule, calcId)) {
+					continue;
+				}
+				
+				double obsShift = GaussianUtils.getPeakValue(obsPeaks, calcId);
+				Point p = new Point();
+				p.setX(obsShift);
+				p.setY(calcShift);									
+				int count = GaussianUtils.getAtomPosition(molecule, calcId);
+				if (startFile == null) {
+					p.setLink("javascript:changeAtom('"+protocolUrl+"/"+CML_DIR_NAME+"/"+file.getName()+"', "+count+");");
+				} else {
+					p.setLink("javascript:changeAtom('', "+count+");");
+				}
+				pointList.add(p);
+				if (calcShift > max) {
+					max = calcShift;
+				}
+				if (calcShift < min) {
+					min = calcShift;
+				}
+
 			}
 		}
 
@@ -111,30 +116,19 @@ public class CreateShiftPlot implements GaussianConstants {
 		return true;
 	}
 
-	private int getAtomPosition(CMLMolecule molecule, String atomId) {
-		int count = 1;
-		for (CMLAtom atom : molecule.getAtoms()) {
-			if (atomId.equals(atom.getId())) {
-				break;
-			}
-			count++;
-		}
-		return count;
-	}
-
 	public String getHtmlContent() {
 		String startStruct = "";
 		String button = "";
 		if (startFile != null) {
-			startStruct = "load "+JMOL_APPLET_FOLDER+CML_DIR_NAME+"/"+startFile;
+			startStruct = "load "+protocolUrl+"/"+CML_DIR_NAME+"/"+startFile+"/";
 		} else {
 			button = "<button onclick=\"showPlot(currentStructure);\">Show plot for this structure</button>";
 		}
-		
+
 		return "<html><head>"+
-		"<script src=\""+JMOL_JS_PATH+"\" type=\"text/ecmascript\">"+
+		"<script src=\""+jmoljsPath+"\" type=\"text/ecmascript\">"+
 		"</script>"+
-		"<script src=\""+SUMMARY_JS_PATH+"\" type=\"text/ecmascript\">"+
+		"<script src=\""+summaryjsPath+"\" type=\"text/ecmascript\">"+
 		"</script>"+
 		"</head>"+
 		"<body>"+
@@ -142,7 +136,7 @@ public class CreateShiftPlot implements GaussianConstants {
 		"<div style=\"position: absolute; top: -50px;\">"+
 		"<embed id='svgPlot' src=\"./index.svg\" width=\"715\" height=\"675\" style=\"position:absolute;\" />"+
 		"<div style=\"position: absolute; left: 675px; top: 200px;\">"+
-		"<script type=\"text/javascript\">jmolInitialize(\""+JMOL_APPLET_FOLDER+"\");"+
+		"<script type=\"text/javascript\">jmolInitialize(\""+protocolUrl+"/\");"+
 		"</script>"+
 		"<script type=\"text/javascript\">jmolApplet(300, \""+startStruct+"\");</script>"+
 		button+
@@ -154,7 +148,7 @@ public class CreateShiftPlot implements GaussianConstants {
 
 	public void run() {
 		Document doc = getPlot();
-		String outFolderPath = JMOL_ROOT_DIR+outFolderName;
+		String outFolderPath = protocolUrl.substring(8)+File.separator+outFolderName;
 		String svgPath = outFolderPath+"/index.svg";
 		IOUtils.writePrettyXML(doc, svgPath);
 		String htmlContent = getHtmlContent();
