@@ -25,6 +25,8 @@ public class GaussianScatter implements GaussianConstants {
 	int pageHeight = PAGE_HEIGHT;
 	int xtickMarks = TICK_MARKS;
 	int ytickMarks = TICK_MARKS;
+	String xlab = X_LAB;
+	String ylab = Y_LAB;
 
 	public void setXmax(int xmax) {
 		this.xmax = xmax;
@@ -40,6 +42,14 @@ public class GaussianScatter implements GaussianConstants {
 
 	public void setYmin(int ymin) {
 		this.ymin = ymin;
+	}
+	
+	public void setXLab(String xlab) {
+		this.xlab = xlab;
+	}
+	
+	public void setYLab(String ylab) {
+		this.ylab = ylab;
 	}
 
 	public GaussianScatter(List<Point> pointList) {
@@ -63,8 +73,8 @@ public class GaussianScatter implements GaussianConstants {
 			gLayout.setNYTickMarks(ytickMarks);
 			Scatter scatter = new Scatter(pLayout, gLayout);
 			scatter.addDataToPlot(pointList);
-			scatter.setXlab(X_LAB);
-			scatter.setYlab(Y_LAB);
+			scatter.setXlab(xlab);
+			scatter.setYlab(ylab);
 			scatter.setGraphTitle("");
 			scatter.plot();
 			doc = new Document(scatter.getSVG());
