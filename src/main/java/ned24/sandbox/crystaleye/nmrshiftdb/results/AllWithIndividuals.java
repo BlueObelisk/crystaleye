@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ned24.sandbox.crystaleye.nmrshiftdb.C13SpectraTool;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 
 public class AllWithIndividuals implements GaussianConstants {
@@ -26,7 +26,7 @@ public class AllWithIndividuals implements GaussianConstants {
 		for (File file : new File(path).listFiles()) {
 			List<File> fileList2 = new ArrayList<File>();
 			fileList2.add(file);
-			C13SpectraTool c13 = new C13SpectraTool(file);
+			GaussianCmlTool c13 = new GaussianCmlTool(file);
 			String solvent = c13.getCalculatedSolvent().toLowerCase();
 			String name = file.getName();
 			name = name.substring(0,name.indexOf("."));

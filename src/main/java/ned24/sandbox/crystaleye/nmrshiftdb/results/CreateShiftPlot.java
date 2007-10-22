@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ned24.sandbox.crystaleye.nmrshiftdb.C13SpectraTool;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianScatter;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
@@ -49,7 +49,7 @@ public class CreateShiftPlot implements GaussianConstants {
 
 		for (File file : fileList) {
 			System.out.println(file.getAbsolutePath());
-			C13SpectraTool c = new C13SpectraTool(file);
+			GaussianCmlTool c = new GaussianCmlTool(file);
 			CMLMolecule molecule = c.getMolecule();
 			String solvent = c.getCalculatedSolvent();
 			boolean b = c.testSpectraConcordant(solvent);
