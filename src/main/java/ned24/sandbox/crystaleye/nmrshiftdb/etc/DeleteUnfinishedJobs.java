@@ -20,7 +20,7 @@ public class DeleteUnfinishedJobs {
 		for (File file : new File(folder).listFiles()) {
 			String path = file.getAbsolutePath();
 			if (path.endsWith(".out")) {
-				System.out.println(path);
+				//System.out.println(path);
 				boolean found = false;
 				BufferedReader input = null;
 				try {
@@ -56,6 +56,8 @@ public class DeleteUnfinishedJobs {
 		}
 		
 		for (File file : list){
+			System.out.println(file.getAbsolutePath());
+			/*
 			String name = file.getName();
 			name = name.substring(0,name.length()-4);
 			
@@ -64,6 +66,7 @@ public class DeleteUnfinishedJobs {
 
 			file.delete();
 			gjf.delete();
+			*/
 		}
 	}
 }

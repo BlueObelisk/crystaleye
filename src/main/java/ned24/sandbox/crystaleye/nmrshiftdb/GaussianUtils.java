@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.graph.Point;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLMolecule;
+import org.xmlcml.cml.element.CMLPeak;
 import org.xmlcml.cml.legacy2cml.molecule.GaussianArchiveConverter;
 import org.xmlcml.euclid.Point3;
 
@@ -17,12 +19,12 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 
 
 public class GaussianUtils implements GaussianConstants {
-	
+
 	public enum Solvent {
 		ACETONE, ACETONITRILE, BENZENE, CCL4, CHLOROFORM, DICHLOROMETHANE,
 		DMSO, ETHER, METHANOL, THF, TOLUENE, WATER;
 	}
-	
+
 	public static double getTmsShift(Solvent solvent) {
 		if (solvent.equals(Solvent.ACETONE)) {
 			return 196.6971;
@@ -52,13 +54,13 @@ public class GaussianUtils implements GaussianConstants {
 			throw new RuntimeException("Unknown solvent.");
 		}
 	}
-	
+
 	public static double getTmsShift(String solvent) {
 		String solv = nmrShiftDbSolvent2GaussianSolvent(solvent);
 		Solvent s = getSolvent(solv);
 		return getTmsShift(s);
 	}
-	
+
 	public static Solvent getSolvent(String solv) {
 		Solvent s = null;
 		if (solv.equals("Acetone")) {
@@ -88,7 +90,7 @@ public class GaussianUtils implements GaussianConstants {
 		}
 		return s;
 	}
-	
+
 	public static String nmrShiftDbSolvent2GaussianSolvent(String solvent) {
 		String gauSolvent = null;
 		//System.out.println(solvent);
@@ -161,34 +163,46 @@ public class GaussianUtils implements GaussianConstants {
 		}
 		return gauSolvent;
 	}
-	
-	public static CMLCml getFinalCml(File gaussianFile) {
+
+	public static CMLCml getFinalCml(File gaussianFile, File tmpFolder) {
 		String gaussianPath = gaussianFile.getAbsolutePath();
 		String gaussianName = gaussianFile.getName();
-		gaussianName = gaussianName.substring(0, gaussianName.length() - 4);
-		runGaussianConverter(gaussianPath, gaussianPath);
-		File parent = gaussianFile.getParentFile();
+		String outPath = tmpFolder.getAbsolutePath()+File.separator+gaussianName;
+		String gaussianNameMM = gaussianName.substring(0, gaussianName.length() - 4);
+		runGaussianConverter(gaussianPath, outPath);
 
-		List<Integer> intList = new ArrayList<Integer>();
-		List<File> gauCmlFiles = new ArrayList<File>();
-		for (File file : parent.listFiles()) {
-			String filename = file.getName();
-			Pattern p = Pattern.compile(gaussianName + "_(\\d+)"
-					+ GAUSSIAN_CONVERTER_OUT_MIME);
-			Matcher m = p.matcher(filename);
-			if (m.find()) {
-				int i = Integer.valueOf(m.group(1));
-				intList.add(i);
-				gauCmlFiles.add(file);
+		String finalName = null;
+		File singleFile = new File(outPath);
+		if (singleFile.exists()) {
+			finalName = singleFile.getName();
+		} else {
+			List<Integer> intList = new ArrayList<Integer>();
+			List<File> gauCmlFiles = new ArrayList<File>();
+			for (File file : tmpFolder.listFiles()) {
+				String filename = file.getName();
+				Pattern p = Pattern.compile(gaussianNameMM + "_(\\d+)"
+						+ GAUSSIAN_CONVERTER_OUT_MIME);
+				Matcher m = p.matcher(filename);
+				if (m.find()) {
+					int i = Integer.valueOf(m.group(1));
+					intList.add(i);
+					gauCmlFiles.add(file);
+				}
 			}
+			Collections.sort(intList);
+			Collections.reverse(intList);
+			if (intList.size() == 0) { 
+				return null;
+			}
+			finalName = gaussianNameMM + "_" + intList.get(0)
+			+ GAUSSIAN_CONVERTER_OUT_MIME;
 		}
-		Collections.sort(intList);
-		Collections.reverse(intList);
-		String finalname = parent.getAbsolutePath() + File.separator
-				+ gaussianName + "_" + intList.get(0)
-				+ GAUSSIAN_CONVERTER_OUT_MIME;
+		
+		String finalname = tmpFolder.getAbsolutePath() + File.separator
+		+ finalName;
 		CMLCml cml = (CMLCml) IOUtils.parseCmlFile(finalname).getRootElement();
-		for (File f : gauCmlFiles) {
+		
+		for (File f : tmpFolder.listFiles()) {
 			f.delete();
 		}
 		return cml;
@@ -205,7 +219,30 @@ public class GaussianUtils implements GaussianConstants {
 			System.err.println("GaussianArchiveConverter EXCEPTION... " + e);
 		}
 	}
-	
+
+	public static double getPeakValue(List<CMLPeak> peaks, String atomId) {
+		for (int j = 0; j < peaks.size(); j++) {
+			CMLPeak obsPeak = (CMLPeak)peaks.get(j);
+			String[] ids = obsPeak.getAtomRefs();
+			for (String id : ids) {
+				if (id.equals(atomId)) {
+					return obsPeak.getXValue();
+				}
+			}
+		} return Double.NaN;
+	}	
+
+	public static int getAtomPosition(CMLMolecule molecule, String atomId) {
+		int count = 1;
+		for (CMLAtom atom : molecule.getAtoms()) {
+			if (atomId.equals(atom.getId())) {
+				break;
+			}
+			count++;
+		}
+		return count;
+	}
+
 	public static String getConnectionTable(CMLMolecule molecule) {
 		StringBuilder sb = new StringBuilder();
 		for (CMLAtom atom : molecule.getAtoms()) {

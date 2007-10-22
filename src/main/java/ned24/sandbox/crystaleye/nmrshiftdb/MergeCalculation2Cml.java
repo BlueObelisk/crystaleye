@@ -33,10 +33,12 @@ public class MergeCalculation2Cml implements GaussianConstants {
 	File cmlFile;
 
 	CMLCml gaussianCml;
+	File tmpFolder;
 
-	public MergeCalculation2Cml(File gaussianFile, File cmlFile) {
+	public MergeCalculation2Cml(File gaussianFile, File cmlFile, File tmpFolder) {
 		this.gaussianFile = gaussianFile;
 		this.cmlFile = cmlFile;
+		this.tmpFolder = tmpFolder;
 	}
 
 	public Document merge() {
@@ -98,7 +100,10 @@ public class MergeCalculation2Cml implements GaussianConstants {
 					+ " not the same as number of shifts" + values.size() + ".");
 		}
 
-		CMLCml finalCml = GaussianUtils.getFinalCml(gaussianFile);
+		CMLCml finalCml = GaussianUtils.getFinalCml(gaussianFile, tmpFolder);
+		if (finalCml == null) {
+			return null;
+		}
 		CMLMolecule finalMol = (CMLMolecule) finalCml
 				.getFirstCMLChild(CMLMolecule.TAG);
 
@@ -188,9 +193,9 @@ public class MergeCalculation2Cml implements GaussianConstants {
 
 	public static void main(String[] args) {
 		String cmlFolderPath = "e:/gaussian/all-mols";
-		String calcOutputPath = "e:/gaussian/output/1";
+		String calcOutputPath = "e:/gaussian/outputs/second-protocol_mod1/1";
 
-		String outFolder = "e:/gaussian/merged/second-protocol-merged";
+		String outFolder = "e:/gaussian/merged/second-protocol_mod1";
 
 		for (File file : new File(calcOutputPath).listFiles()) {
 			String path = file.getAbsolutePath();
@@ -211,7 +216,7 @@ public class MergeCalculation2Cml implements GaussianConstants {
 			if (cmlFile == null) {
 				throw new RuntimeException("Can't find CML file.");
 			}
-			MergeCalculation2Cml m = new MergeCalculation2Cml(file, cmlFile);
+			MergeCalculation2Cml m = new MergeCalculation2Cml(file, cmlFile, new File("e:/temp"));
 			Document doc = m.merge();
 			if (doc == null) {
 				System.err.println("Problem reading doc");
