@@ -17,13 +17,15 @@ import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateCDistribution {
+public class PlotCvsRMSD {
 
 	public static void main(String[] args) {
 		String path = "e:/gaussian/html/second-protocol/cml";
 		
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
+		
+		StringBuilder sb = new StringBuilder();
 		
 		List<Point> pointList = new ArrayList<Point>();
 		for (File file : new File(path).listFiles()) {
@@ -33,11 +35,12 @@ public class CreateCDistribution {
 			List<CMLPeak> obsPeaks = g.getObservedPeaks(solvent);
 			List<CMLPeak> calcPeaks = g.getListOfCalculatedPeaks();
 			
+			double tmsShift = GaussianUtils.getTmsShift(solvent);
 			double total = 0;
 			for (CMLPeak calcPeak : calcPeaks) {
 				String atomId = calcPeak.getAtomRefs()[0];
 				double obsShift = GaussianUtils.getPeakValue(obsPeaks, atomId);
-				double calcShift = GaussianUtils.getTmsShift(solvent)-calcPeak.getXValue();
+				double calcShift = tmsShift-calcPeak.getXValue();
 				double diff = calcShift-obsShift;
 				total += diff;
 			}
@@ -48,17 +51,31 @@ public class CreateCDistribution {
 				throw new RuntimeException("c is NaN: "+file.getAbsolutePath());
 			}
 			
-			if (c > max) {
-				max = c;
+			double totalSquared = 0;
+			for (CMLPeak calcPeak : calcPeaks) {
+				String atomId = calcPeak.getAtomRefs()[0];
+				double obsShift = GaussianUtils.getPeakValue(obsPeaks, atomId);
+				double calcShift = tmsShift-calcPeak.getXValue();
+				double d = Math.pow(calcShift-(obsShift+c), 2);
+				totalSquared += d;
 			}
-			if (c < min) {
-				min = c;
-			}
+			double newC = totalSquared / numPeaks;
+			double rmsd = Math.sqrt(newC);
 			
+			sb.append(c+","+rmsd+","+file.getName()+"\n");
+			
+			System.out.println(rmsd);
 			Point p = new Point();
-			p.setX(c);
+			p.setX(rmsd);
 			p.setLink(file.getName());
 			pointList.add(p);
+					
+			if (rmsd > max) {
+				max = rmsd;
+			}
+			if (rmsd < min) {
+				min = rmsd;
+			}
 		}
 		
 		double minR = -12;
@@ -68,8 +85,10 @@ public class CreateCDistribution {
 		int numBins = (int)(28/binWidth);
 
 		GraphLayout layout = new GraphLayout();
-		layout.setXmin(minR);
-		layout.setXmax(maxR);
+		layout.setXmin(min);
+		layout.setXmax(max);
+		layout.setYmin(0);
+		layout.setYmax(60);
 		layout.setPlotXGridLines(false);
 		layout.setPlotYGridLines(false);
 		try {
@@ -87,7 +106,7 @@ public class CreateCDistribution {
 			hist1.addDataToPlot(pointList);
 			hist1.setXlab("Bond Length (angstroms)");
 			hist1.setYlab("No. occurences");
-			hist1.setGraphTitle("C plot for HSR0");
+			hist1.setGraphTitle("RMSD plot");
 
 			hist1.plot();
 			doc = new Document(hist1.getSVG());
@@ -96,6 +115,7 @@ public class CreateCDistribution {
 			System.err.println(e.getMessage());
 		}
 		
-		IOUtils.writePrettyXML(doc, "e:/gaussian/html/hsr0-cplot.svg");
+		IOUtils.writeText(sb.toString(), "e:/gaussian/html/hsr0-c_rmsd_name.csv");
+		IOUtils.writePrettyXML(doc, "e:/gaussian/html/hsr0-rmsd.svg");
 	}
 }

@@ -255,4 +255,31 @@ public class GaussianUtils implements GaussianConstants {
 		}
 		return sb.toString();
 	}
+	
+	public static void writeShFile(String outFolder, String name, int numberFileCount) {
+		String content = "#!/bin/sh\n"+
+		"\n"+
+		"# Run g03 job\n"+
+		"/usr/local/g03/g03 < "+name+FLOW_MIME+" > "+name+".out \n";
+		IOUtils.writeText(content, outFolder+File.separator+name+".sh");
+	}
+
+	public static void writeCondorSubmitFile(String outFolder, String folderName, String name, int numberFileCount) {
+		String submitFile = "universe=vanilla\n"+
+		"getenv=True\n"+
+		"requirements = Arch == \"X86_64\" && OpSys == \"LINUX\" && Machine != \"gridlock20--ch.grid.private.cam.ac.uk\" && Machine != \"gridlock26--ch.grid.private.cam.ac.uk\" && Machine != \"gridlock27--ch.grid.private.cam.ac.uk\" && HAS_GAUSSIAN == TRUE\n"+
+		"executable = /home/ned24/gaussian/"+folderName+"/"+name+".sh\n"+
+		"input = /home/ned24/gaussian/"+folderName+"/"+name+FLOW_MIME+"\n"+
+		"output = "+name+".out\n"+
+		"error = "+name+".err\n"+
+		"log = "+name+".log\n"+
+		"\n"+
+		"should_transfer_files=YES\n"+
+		"transfer_executable=True\n"+
+		"when_to_transfer_output=ON_EXIT_OR_EVICT\n"+
+		"\n"+
+		"Queue\n";
+
+		IOUtils.writeText(submitFile, outFolder+File.separator+name+SUBMIT_FILE_MIME);
+	}
 }

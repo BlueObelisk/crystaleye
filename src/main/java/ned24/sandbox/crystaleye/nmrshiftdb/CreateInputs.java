@@ -20,7 +20,7 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 
 public class CreateInputs implements GaussianConstants {
 
-	static String outFolder = "e:/gaussian/inputs/everything";
+	static String outFolder = "e:/gaussian/inputs/second-protocol_freq";
 	static String[] allowedElements = {"C", "N", "O", "P", "I", "F", "N", "S", "B", "Cl", "H", "Si", "Br"};
 	static List<String> elList;
 
@@ -102,35 +102,6 @@ public class CreateInputs implements GaussianConstants {
 		return true;
 	}
 
-	public static void writeCondorSubmitFile(String folderName, String name, int numberFileCount) {
-		String submitFile = "universe=vanilla\n"+
-		"getenv=True\n"+
-		"requirements = Arch == \"X86_64\" && OpSys == \"LINUX\" && Machine != \"gridlock20--ch.grid.private.cam.ac.uk\" && Machine != \"gridlock26--ch.grid.private.cam.ac.uk\" && Machine != \"gridlock27--ch.grid.private.cam.ac.uk\" && HAS_GAUSSIAN == TRUE\n"+
-		"executable = /home/ned24/gaussian/"+folderName+"/"+name+".sh\n"+
-		"input = /home/ned24/gaussian/"+folderName+"/"+name+FLOW_MIME+"\n"+
-		"output = "+name+".out\n"+
-		"error = "+name+".err\n"+
-		"log = "+name+".log\n"+
-		"\n"+
-		"should_transfer_files=YES\n"+
-		"transfer_executable=True\n"+
-		"when_to_transfer_output=ON_EXIT_OR_EVICT\n"+
-		"\n"+
-		"Queue\n";
-
-		System.out.println("condor: "+outFolder+File.separator+numberFileCount+File.separator+name+SUBMIT_FILE_MIME);
-		IOUtils.writeText(submitFile, outFolder+File.separator+numberFileCount+File.separator+name+SUBMIT_FILE_MIME);
-	}
-
-	public static void writeShFile(String folderName, String name, int numberFileCount) {
-		String content = "#!/bin/sh\n"+
-		"\n"+
-		"# Run g03 job\n"+
-		"/usr/local/g03/g03 < "+name+FLOW_MIME+" > "+name+".out \n";
-		System.out.println("sh "+outFolder+File.separator+numberFileCount+File.separator+name+".sh");
-		IOUtils.writeText(content, outFolder+File.separator+numberFileCount+File.separator+name+".sh");
-	}
-
 	private static String getFileName(File file) {
 		String name = file.getName();
 		int idx = name.indexOf(".");
@@ -203,8 +174,8 @@ public class CreateInputs implements GaussianConstants {
 						}
 						*/
 
-
-						GaussianTemplate g = new GaussianTemplate(name, connTable, inputFileSolvent);
+						boolean freq = true;
+						GaussianTemplate g = new GaussianTemplate(name, connTable, inputFileSolvent, freq);
 						//g.setExtraBasis(true);
 						//g.setHasC(hasC);
 						//g.setHasO(hasO);
@@ -215,8 +186,9 @@ public class CreateInputs implements GaussianConstants {
 
 
 						IOUtils.writeText(input, outPath);
-						writeCondorSubmitFile(folderName, name, numberFileCount);
-						writeShFile(folderName, name, numberFileCount);
+						String outFol = outFolder+File.separator+numberFileCount;
+						GaussianUtils.writeCondorSubmitFile(outFol, folderName, name, numberFileCount);
+						GaussianUtils.writeShFile(outFol, name, numberFileCount);
 						count++;
 						if (count == 500) {
 							numberFileCount++;

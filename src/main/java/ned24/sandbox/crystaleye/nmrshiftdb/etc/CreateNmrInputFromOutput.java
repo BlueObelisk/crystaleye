@@ -38,7 +38,8 @@ public class CreateNmrInputFromOutput implements GaussianConstants {
 				throw new RuntimeException("Could not find solvent: "+f.getAbsolutePath());
 			}
 			String name = getFileName(f);
-			GaussianTemplate gau = new GaussianTemplate(name, connTable, solvent);
+			boolean freq = false;
+			GaussianTemplate gau = new GaussianTemplate(name, connTable, solvent, freq);
 			gau.setExtraBasis(true);
 
 			boolean hasC = false;
