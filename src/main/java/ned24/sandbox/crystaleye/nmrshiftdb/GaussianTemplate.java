@@ -5,22 +5,24 @@ public class GaussianTemplate {
 	String name;
 	String connectionTable;
 	String solvent;
+	boolean freq;
 
 	boolean hasC;
 	boolean hasCarbonyl;
 	boolean setExtraBasis;
 
-	public GaussianTemplate(String name, String connectionTable, String solvent) {
+	public GaussianTemplate(String name, String connectionTable, String solvent, boolean freq) {
 		this.name = name;
 		this.connectionTable = connectionTable;
 		this.solvent = solvent;
+		this.freq = freq;
 	}
-	
+
 	public String getNmrStepInput() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("--Link1--\n");
 		sb.append("%chk="+name+".chk\n");
-		
+
 		if (!setExtraBasis) {
 			sb.append("#P rmpw1pw91/6-31g(d,p)\n");
 			sb.append("#P NMR scrf(cpcm,solvent="+solvent+")\n");
@@ -65,7 +67,11 @@ public class GaussianTemplate {
 		sb.append("\n");
 		sb.append("--Link1--\n");
 		sb.append("%chk="+name+".chk\n");
-		sb.append("#N rmpw1pw91/6-31g(d,p) geom=checkpoint opt guess=read\n");
+		if (freq) {
+			sb.append("#N rmpw1pw91/6-31g(d,p) geom=checkpoint opt freq guess=read\n");
+		} else {
+			sb.append("#N rmpw1pw91/6-31g(d,p) geom=checkpoint opt guess=read\n");
+		}
 		sb.append("\n");
 		sb.append("Optimisation using STO-3G coordinates and DFT\n");
 		sb.append("\n");
@@ -73,7 +79,7 @@ public class GaussianTemplate {
 		sb.append("\n");
 		sb.append("--Link1--\n");
 		sb.append("%chk="+name+".chk\n");
-		
+
 		if (!setExtraBasis) {
 			sb.append("#P rmpw1pw91/6-31g(d,p) geom=checkpoint guess=read\n");
 			sb.append("#P NMR scrf(cpcm,solvent="+solvent+")\n");
