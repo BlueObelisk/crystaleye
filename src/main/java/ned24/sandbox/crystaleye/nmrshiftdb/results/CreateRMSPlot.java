@@ -20,7 +20,7 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class CreateRMSPlot {
 
 	public static void main(String[] args) {
-		String path = "e:/gaussian/html/second-protocol/cml";
+		String path = "e:/gaussian/html/second-protocol_mod1/cml";
 		
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
@@ -85,8 +85,8 @@ public class CreateRMSPlot {
 		int numBins = (int)(28/binWidth);
 
 		GraphLayout layout = new GraphLayout();
-		layout.setXmin(min);
-		layout.setXmax(max);
+		layout.setXmin(0);
+		layout.setXmax(28);
 		layout.setYmin(0);
 		layout.setYmax(60);
 		layout.setPlotXGridLines(false);
@@ -106,7 +106,7 @@ public class CreateRMSPlot {
 			hist1.addDataToPlot(pointList);
 			hist1.setXlab("Bond Length (angstroms)");
 			hist1.setYlab("No. occurences");
-			hist1.setGraphTitle("RMSD plot");
+			hist1.setGraphTitle("RMSD about C (from y = m + c)");
 
 			hist1.plot();
 			doc = new Document(hist1.getSVG());
@@ -115,7 +115,7 @@ public class CreateRMSPlot {
 			System.err.println(e.getMessage());
 		}
 		
-		IOUtils.writeText(sb.toString(), "e:/gaussian/html/hsr0-c_rmsd_name.csv");
-		IOUtils.writePrettyXML(doc, "e:/gaussian/html/hsr0-rmsd.svg");
+		IOUtils.writeText(sb.toString(), "e:/gaussian/html/hsr1-c_rmsd_name.csv");
+		IOUtils.writePrettyXML(doc, "e:/gaussian/html/hsr1-rmsd.svg");
 	}
 }

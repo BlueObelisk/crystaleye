@@ -12,7 +12,6 @@ import nu.xom.Document;
 
 import org.graph.Point;
 import org.xmlcml.cml.base.CMLElements;
-import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLPeak;
 
@@ -116,42 +115,12 @@ public class CreateShiftPlot implements GaussianConstants {
 		return true;
 	}
 
-	public String getHtmlContent() {
-		String startStruct = "";
-		String button = "";
-		if (startFile != null) {
-			startStruct = "load "+protocolUrl+"/"+CML_DIR_NAME+"/"+startFile+"/";
-		} else {
-			button = "<button onclick=\"showPlot(currentStructure);\">Show plot for this structure</button>";
-		}
-
-		return "<html><head>"+
-		"<script src=\""+jmoljsPath+"\" type=\"text/ecmascript\">"+
-		"</script>"+
-		"<script src=\""+summaryjsPath+"\" type=\"text/ecmascript\">"+
-		"</script>"+
-		"</head>"+
-		"<body>"+
-		"<div style=\"position: absolute; text-align: center; width: 100%; z-index: 100;\"><h2>"+htmlTitle+"</h2></div>"+
-		"<div style=\"position: absolute; top: -50px;\">"+
-		"<embed id='svgPlot' src=\"./index.svg\" width=\"715\" height=\"675\" style=\"position:absolute;\" />"+
-		"<div style=\"position: absolute; left: 675px; top: 200px;\">"+
-		"<script type=\"text/javascript\">jmolInitialize(\""+protocolUrl+"/\");"+
-		"</script>"+
-		"<script type=\"text/javascript\">jmolApplet(300, \""+startStruct+"\");</script>"+
-		button+
-		"</div>"+
-		"</div>"+
-		"</body>"+
-		"</html>";
-	}
-
 	public void run() {
 		Document doc = getPlot();
 		String outFolderPath = protocolUrl.substring(8)+File.separator+outFolderName;
 		String svgPath = outFolderPath+"/index.svg";
 		IOUtils.writePrettyXML(doc, svgPath);
-		String htmlContent = getHtmlContent();
+		String htmlContent = PlotUtils.getHtmlContent(protocolUrl, htmlTitle, startFile, jmoljsPath, summaryjsPath);
 		String htmlPath = outFolderPath+"/index.html";
 		IOUtils.writeText(htmlContent, htmlPath);
 	}
