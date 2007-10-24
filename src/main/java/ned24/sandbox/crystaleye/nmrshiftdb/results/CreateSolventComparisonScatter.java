@@ -56,9 +56,9 @@ public class CreateSolventComparisonScatter implements GaussianConstants, Crysta
 
 		String html = null;
 		if (rootFolder.equals(SECOND_PROTOCOL_FOLDER)) {
-			html = PlotUtils.getHtmlContent(SECOND_PROTOCOL_URL, "Comparison of solvents", null, SECOND_PROTOCOL_JMOL_JS, SECOND_PROTOCOL_SUMMARY_JS);
+			html = PlotUtils.getHtmlContent(SECOND_PROTOCOL_CML_DIR, "Comparison of solvents", null);
 		} else if (rootFolder.equals(SECOND_PROTOCOL_MOD1_FOLDER)){
-			html = PlotUtils.getHtmlContent(SECOND_PROTOCOL_MOD1_URL, "Comparison of solvents", null, SECOND_PROTOCOL_MOD1_JMOL_JS, SECOND_PROTOCOL_MOD1_SUMMARY_JS);
+			html = PlotUtils.getHtmlContent(SECOND_PROTOCOL_MOD1_CML_DIR, "Comparison of solvents", null);
 		}
 		String root = rootFolder+File.separator+"solvents";
 		IOUtils.writeText(html, root+File.separator+"index.html");
