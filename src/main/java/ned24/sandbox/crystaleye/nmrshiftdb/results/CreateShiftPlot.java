@@ -20,23 +20,21 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class CreateShiftPlot implements GaussianConstants {
 
 	List<File> fileList;
-	String outFolderName;
 	String htmlTitle;
 
-	String protocolUrl;
-	String cmlDirName;
+	String protocolName;
+	String folderName;
 
 	String startFile = null;
 
-	public CreateShiftPlot(List<File> fileList, String outFolderName, String htmlTitle, String cmlDirName, String protocolUrl) {
+	public CreateShiftPlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
 		this.fileList = fileList;
 		if (fileList.size() == 1) {
 			startFile = fileList.get(0).getName();
 		}
-		this.outFolderName = outFolderName;
 		this.htmlTitle = htmlTitle;
-		this.protocolUrl = protocolUrl;
-		this.cmlDirName = cmlDirName;
+		this.protocolName = protocolName;
+		this.folderName = folderName;
 	}
 
 	public Document getPlot() {
@@ -74,7 +72,7 @@ public class CreateShiftPlot implements GaussianConstants {
 				p.setY(calcShift);									
 				int count = GaussianUtils.getAtomPosition(molecule, calcId);
 				if (startFile == null) {
-					p.setLink("javascript:changeAtom('"+cmlDirName+"/"+file.getName()+"', "+count+");");
+					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");");
 				} else {
 					p.setLink("javascript:changeAtom('', "+count+");");
 				}
@@ -115,10 +113,10 @@ public class CreateShiftPlot implements GaussianConstants {
 
 	public void run() {
 		Document doc = getPlot();
-		String outFolderPath = protocolUrl.substring(8)+File.separator+outFolderName;
+		String outFolderPath = HTML_DIR+File.separator+protocolName+File.separator+folderName;
 		String svgPath = outFolderPath+"/index.svg";
 		IOUtils.writePrettyXML(doc, svgPath);
-		String htmlContent = PlotUtils.getHtmlContent(cmlDirName, htmlTitle, startFile);
+		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile);
 		String htmlPath = outFolderPath+"/index.html";
 		IOUtils.writeText(htmlContent, htmlPath);
 	}

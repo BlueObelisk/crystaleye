@@ -21,9 +21,9 @@ import java.util.regex.Pattern;
 import nu.xom.Element;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.properties.SiteProperties;
-import uk.ac.cam.ch.crystaleye.site.feeds.AtomHtmlContent;
 import uk.ac.cam.ch.crystaleye.site.feeds.AtomEnclosure;
 import uk.ac.cam.ch.crystaleye.site.feeds.AtomEntry;
+import uk.ac.cam.ch.crystaleye.site.feeds.AtomHtmlContent;
 import uk.ac.cam.ch.crystaleye.site.feeds.AtomPubFeed;
 import uk.ac.cam.ch.crystaleye.templates.feeds.AtomPubTemplate;
 
