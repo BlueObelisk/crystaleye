@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
-import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import nu.xom.Document;
 
 import org.graph.GraphException;
@@ -34,33 +33,9 @@ public class PlotCvsRMSD {
 			
 			List<CMLPeak> obsPeaks = g.getObservedPeaks(solvent);
 			List<CMLPeak> calcPeaks = g.getListOfCalculatedPeaks();
-			
-			double tmsShift = GaussianUtils.getTmsShift(solvent);
-			double total = 0;
-			for (CMLPeak calcPeak : calcPeaks) {
-				String atomId = calcPeak.getAtomRefs()[0];
-				double obsShift = GaussianUtils.getPeakValue(obsPeaks, atomId);
-				double calcShift = tmsShift-calcPeak.getXValue();
-				double diff = calcShift-obsShift;
-				total += diff;
-			}
-			int numPeaks = calcPeaks.size();
-			double c = total / numPeaks;
-			
-			if (Double.isNaN(c)) {
-				throw new RuntimeException("c is NaN: "+file.getAbsolutePath());
-			}
-			
-			double totalSquared = 0;
-			for (CMLPeak calcPeak : calcPeaks) {
-				String atomId = calcPeak.getAtomRefs()[0];
-				double obsShift = GaussianUtils.getPeakValue(obsPeaks, atomId);
-				double calcShift = tmsShift-calcPeak.getXValue();
-				double d = Math.pow(calcShift-(obsShift+c), 2);
-				totalSquared += d;
-			}
-			double newC = totalSquared / numPeaks;
-			double rmsd = Math.sqrt(newC);
+
+			double c = PlotUtils.getC(calcPeaks, obsPeaks, solvent);
+			double rmsd = PlotUtils.getRMSDAboutC(c, calcPeaks, obsPeaks, solvent);
 			
 			sb.append(c+","+rmsd+","+file.getName()+"\n");
 			
@@ -77,9 +52,6 @@ public class PlotCvsRMSD {
 				min = rmsd;
 			}
 		}
-		
-		double minR = -12;
-		double maxR = 16;
 
 		double binWidth = 0.5;
 		int numBins = (int)(28/binWidth);

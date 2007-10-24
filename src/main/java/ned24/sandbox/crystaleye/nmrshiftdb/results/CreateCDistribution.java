@@ -33,16 +33,7 @@ public class CreateCDistribution {
 			List<CMLPeak> obsPeaks = g.getObservedPeaks(solvent);
 			List<CMLPeak> calcPeaks = g.getListOfCalculatedPeaks();
 			
-			double total = 0;
-			for (CMLPeak calcPeak : calcPeaks) {
-				String atomId = calcPeak.getAtomRefs()[0];
-				double obsShift = GaussianUtils.getPeakValue(obsPeaks, atomId);
-				double calcShift = GaussianUtils.getTmsShift(solvent)-calcPeak.getXValue();
-				double diff = calcShift-obsShift;
-				total += diff;
-			}
-			int numPeaks = calcPeaks.size();
-			double c = total / numPeaks;
+			double c = PlotUtils.getC(calcPeaks, obsPeaks, solvent);
 			
 			if (Double.isNaN(c)) {
 				throw new RuntimeException("c is NaN: "+file.getAbsolutePath());
