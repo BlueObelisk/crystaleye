@@ -24,16 +24,12 @@ public class CreateDifferencePlot implements GaussianConstants {
 
 	List<File> fileList1;
 	List<File> fileList2;
-	String outFolderName;
 	String htmlTitle;
-
-	String protocolUrl;
-	String jmoljsPath;
-	String summaryjsPath;
-
+	String protocolName;
 	String startFile = null;
+	String folderName;
 
-	public CreateDifferencePlot(List<File> fileList1, List<File> fileList2, String outFolderName, String htmlTitle, String protocolUrl) {
+	public CreateDifferencePlot(List<File> fileList1, List<File> fileList2, String protocolName, String folderName, String htmlTitle) {
 		this.fileList1 = fileList1;
 		this.fileList2 = fileList2;
 		if (fileList1.size() != fileList2.size()) {
@@ -42,9 +38,9 @@ public class CreateDifferencePlot implements GaussianConstants {
 		if (fileList1.size() == 1) {
 			startFile = fileList1.get(0).getName();
 		}
-		this.outFolderName = outFolderName;
 		this.htmlTitle = htmlTitle;
-		this.protocolUrl = protocolUrl;
+		this.protocolName = protocolName;
+		this.folderName = folderName;
 	}
 
 
@@ -100,7 +96,7 @@ public class CreateDifferencePlot implements GaussianConstants {
 				p.setY(hMinusD);
 				int count = GaussianUtils.getAtomPosition(molecule, atomId);
 				if (startFile == null) {
-					p.setLink("javascript:changeAtom('"+protocolUrl+"/"+CML_DIR_NAME+"/"+file1.getName()+"', "+count+");");
+					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file1.getName()+"', "+count+");");
 				} else {
 					p.setLink("javascript:changeAtom('', "+count+");");
 				}
@@ -132,51 +128,22 @@ public class CreateDifferencePlot implements GaussianConstants {
 		Document doc = gs.getPlot();	
 		return doc;
 	}
-	
-	public String getHtmlContent() {
-		String startStruct = "";
-		String button = "";
-		if (startFile != null) {
-			startStruct = "load "+protocolUrl+"/"+CML_DIR_NAME+"/"+startFile;
-		} else {
-			button = "<button onclick=\"showPlot(currentStructure);\">Show plot for this structure</button>";
-		}
 
-		return "<html><head>"+
-		"<script src=\""+jmoljsPath+"\" type=\"text/ecmascript\">"+
-		"</script>"+
-		"<script src=\""+summaryjsPath+"\" type=\"text/ecmascript\">"+
-		"</script>"+
-		"</head>"+
-		"<body>"+
-		"<div style=\"position: absolute; text-align: center; width: 100%; z-index: 100;\"><h2>"+htmlTitle+"</h2></div>"+
-		"<div style=\"position: absolute; top: -50px;\">"+
-		"<embed id='svgPlot' src=\"./index.svg\" width=\"715\" height=\"675\" style=\"position:absolute;\" />"+
-		"<div style=\"position: absolute; left: 675px; top: 200px;\">"+
-		"<script type=\"text/javascript\">jmolInitialize(\""+protocolUrl+"/\");"+
-		"</script>"+
-		"<script type=\"text/javascript\">jmolApplet(300, \""+startStruct+"\");</script>"+
-		button+
-		"</div>"+
-		"</div>"+
-		"</body>"+
-		"</html>";
-	}
-
-	public void run() {
+	public void run() {	
 		Document doc = getPlot();
-		String outFolderPath = protocolUrl.substring(8)+File.separator+outFolderName;
+		String outFolderPath = HTML_DIR+File.separator+"hsr1-hsr0"+File.separator+folderName;
 		String svgPath = outFolderPath+"/index.svg";
 		IOUtils.writePrettyXML(doc, svgPath);
-		String htmlContent = getHtmlContent();
+		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile);
 		String htmlPath = outFolderPath+"/index.html";
 		IOUtils.writeText(htmlContent, htmlPath);
 	}
 
 	public static void main(String[] args) {
-		String defaultPath = "e:/gaussian/html/second-protocol/cml/";
-		String hsrPath = "e:/gaussian/html/second-protocol_mod1/cml/";
-		String outFolderName = "all";
+		String protocolName = SECOND_PROTOCOL_NAME;
+		String defaultPath = CML_DIR+SECOND_PROTOCOL_NAME;
+		String hsrPath = CML_DIR+SECOND_PROTOCOL_MOD1_NAME;
+		String folderName = "all";
 		
 		List<File> fileList1 = Arrays.asList(new File(hsrPath).listFiles());
 		List<File> fileList2 = new ArrayList<File>();
@@ -191,8 +158,8 @@ public class CreateDifferencePlot implements GaussianConstants {
 			}
 		}
 		
-		String htmlTitle = "Experimentally observed shift VS. difference in Gaussian methods (HSR1 - DEFAULT)";
-		CreateDifferencePlot c = new CreateDifferencePlot(fileList1, fileList2, outFolderName, htmlTitle, FIRST_DIFF_URL);
+		String htmlTitle = "Experimentally observed shift VS. difference in Gaussian methods (HSR1 - HSR0)";
+		CreateDifferencePlot c = new CreateDifferencePlot(fileList1, fileList2, protocolName, folderName, htmlTitle);
 		c.run();
 		
 		String urlPrefix = "http://nmrshiftdb.ice.mpg.de/portal/js_pane/P-Results;jsessionid=FA2A776224CDA757D4B710F5FC12A899.tomcat2?nmrshiftdbaction=showDetailsFromHome&molNumber=";
@@ -211,8 +178,7 @@ public class CreateDifferencePlot implements GaussianConstants {
 			number = number.substring(0,number.indexOf("-"));
 			
 			String htmlTitle2 = "<a href='"+urlPrefix+number+"'>"+name+" (solvent: "+solvent+")</a>";
-			outFolderName = name;
-			CreateDifferencePlot c2 = new CreateDifferencePlot(list1, list2, outFolderName, htmlTitle2, FIRST_DIFF_URL);
+			CreateDifferencePlot c2 = new CreateDifferencePlot(list1, list2, protocolName, name, htmlTitle2);
 			c2.run();
 		}
 	}

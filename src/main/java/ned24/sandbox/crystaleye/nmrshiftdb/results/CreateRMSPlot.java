@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import nu.xom.Document;
 
@@ -17,10 +18,14 @@ import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateRMSPlot {
+public class CreateRMSPlot implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String path = "e:/gaussian/html/second-protocol_mod1/cml";
+		String protocolName = SECOND_PROTOCOL_NAME;
+		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+		String outPath = "e:/gaussian/html/hsr1-rmsd.svg";		
+		
+		String path = CML_DIR+protocolName;
 		
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
@@ -77,9 +82,6 @@ public class CreateRMSPlot {
 				min = rmsd;
 			}
 		}
-		
-		double minR = -12;
-		double maxR = 16;
 
 		double binWidth = 0.5;
 		int numBins = (int)(28/binWidth);
@@ -115,7 +117,6 @@ public class CreateRMSPlot {
 			System.err.println(e.getMessage());
 		}
 		
-		IOUtils.writeText(sb.toString(), "e:/gaussian/html/hsr1-c_rmsd_name.csv");
-		IOUtils.writePrettyXML(doc, "e:/gaussian/html/hsr1-rmsd.svg");
+		IOUtils.writePrettyXML(doc, outPath);
 	}
 }

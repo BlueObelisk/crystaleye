@@ -16,8 +16,10 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class CreateSolventComparisonScatter implements GaussianConstants, CrystalEyeConstants {
 
 	public static void main(String[] args) {
-		//String rootFolder = SECOND_PROTOCOL_FOLDER;
-		String rootFolder = SECOND_PROTOCOL_MOD1_FOLDER;
+		String protocolName = SECOND_PROTOCOL_NAME;
+		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+
+		String rootFolder = HTML_DIR+protocolName;
 
 		String[] colours = {"blue", "green", "olive", "purple", "orange", "gray"};
 
@@ -54,12 +56,7 @@ public class CreateSolventComparisonScatter implements GaussianConstants, Crysta
 			count++;
 		}
 
-		String html = null;
-		if (rootFolder.equals(SECOND_PROTOCOL_FOLDER)) {
-			html = PlotUtils.getHtmlContent(SECOND_PROTOCOL_CML_DIR, "Comparison of solvents", null);
-		} else if (rootFolder.equals(SECOND_PROTOCOL_MOD1_FOLDER)){
-			html = PlotUtils.getHtmlContent(SECOND_PROTOCOL_MOD1_CML_DIR, "Comparison of solvents", null);
-		}
+		String html = PlotUtils.getHtmlContent("Comparison of solvents", protocolName, null);
 		String root = rootFolder+File.separator+"solvents";
 		IOUtils.writeText(html, root+File.separator+"index.html");
 		IOUtils.writePrettyXML(mainDoc, root+File.separator+"index.svg");

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import nu.xom.Document;
 
 import org.graph.GraphException;
@@ -16,15 +17,17 @@ import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class PlotCvsRMSD {
+public class PlotCvsRMSD implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String path = "e:/gaussian/html/second-protocol_mod1/cml";
+		String protocolName = SECOND_PROTOCOL_NAME;
+		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+		String outPath = "e:/gaussian/html/hsr1-rmsd.svg";
+		
+		String path = CML_DIR+protocolName;
 		
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
-		
-		StringBuilder sb = new StringBuilder();
 		
 		List<Point> pointList = new ArrayList<Point>();
 		for (File file : new File(path).listFiles()) {
@@ -36,8 +39,6 @@ public class PlotCvsRMSD {
 
 			double c = PlotUtils.getC(calcPeaks, obsPeaks, solvent);
 			double rmsd = PlotUtils.getRMSDAboutC(c, calcPeaks, obsPeaks, solvent);
-			
-			sb.append(c+","+rmsd+","+file.getName()+"\n");
 			
 			//System.out.println(rmsd);
 			Point p = new Point();
@@ -87,7 +88,6 @@ public class PlotCvsRMSD {
 			System.err.println(e.getMessage());
 		}
 		
-		IOUtils.writeText(sb.toString(), "e:/gaussian/html/hsr1-c_rmsd_name.csv");
-		IOUtils.writePrettyXML(doc, "e:/gaussian/html/hsr1-rmsd.svg");
+		IOUtils.writePrettyXML(doc, outPath);
 	}
 }
