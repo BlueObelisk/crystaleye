@@ -15,7 +15,7 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class TempVsC implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String folder = SECOND_PROTOCOL_FOLDER+File.separator+CML_DIR_NAME;
+		String folder = SECOND_PROTOCOL_CML_DIR;
 		
 		for (File file : new File(folder).listFiles()) {
 			GaussianCmlTool g = new GaussianCmlTool(file);
