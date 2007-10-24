@@ -20,7 +20,7 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class PlotCvsRMSD {
 
 	public static void main(String[] args) {
-		String path = "e:/gaussian/html/second-protocol/cml";
+		String path = "e:/gaussian/html/second-protocol_mod1/cml";
 		
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
@@ -64,7 +64,7 @@ public class PlotCvsRMSD {
 			
 			sb.append(c+","+rmsd+","+file.getName()+"\n");
 			
-			System.out.println(rmsd);
+			//System.out.println(rmsd);
 			Point p = new Point();
 			p.setX(rmsd);
 			p.setLink(file.getName());
@@ -85,15 +85,15 @@ public class PlotCvsRMSD {
 		int numBins = (int)(28/binWidth);
 
 		GraphLayout layout = new GraphLayout();
-		layout.setXmin(min);
-		layout.setXmax(max);
+		layout.setXmin(0);
+		layout.setXmax(28);
 		layout.setYmin(0);
 		layout.setYmax(60);
 		layout.setPlotXGridLines(false);
 		layout.setPlotYGridLines(false);
 		try {
 			layout.setNXTickMarks(14);
-			layout.setNYTickMarks(16);
+			layout.setNYTickMarks(15);
 		} catch (GraphException e1) {
 			System.err.println("Problem setting NXTickMarks");
 		}
@@ -104,7 +104,7 @@ public class PlotCvsRMSD {
 			//hist1.setPlotfrequency(false);
 			hist1.setNBins(numBins);
 			hist1.addDataToPlot(pointList);
-			hist1.setXlab("Bond Length (angstroms)");
+			hist1.setXlab("RMSD");
 			hist1.setYlab("No. occurences");
 			hist1.setGraphTitle("RMSD plot");
 
@@ -115,7 +115,7 @@ public class PlotCvsRMSD {
 			System.err.println(e.getMessage());
 		}
 		
-		IOUtils.writeText(sb.toString(), "e:/gaussian/html/hsr0-c_rmsd_name.csv");
-		IOUtils.writePrettyXML(doc, "e:/gaussian/html/hsr0-rmsd.svg");
+		IOUtils.writeText(sb.toString(), "e:/gaussian/html/hsr1-c_rmsd_name.csv");
+		IOUtils.writePrettyXML(doc, "e:/gaussian/html/hsr1-rmsd.svg");
 	}
 }
