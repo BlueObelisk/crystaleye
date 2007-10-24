@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
-import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import nu.xom.Document;
 
 import org.graph.GraphException;
@@ -17,10 +17,14 @@ import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateCDistribution {
+public class CreateCDistribution implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String path = "e:/gaussian/html/second-protocol/cml";
+		String protocolName = SECOND_PROTOCOL_NAME;
+		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+		String outPath = "e:/gaussian/html/hsr0-cplot.svg";		
+		
+		String path = CML_DIR+protocolName;
 		
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
@@ -87,6 +91,6 @@ public class CreateCDistribution {
 			System.err.println(e.getMessage());
 		}
 		
-		IOUtils.writePrettyXML(doc, "e:/gaussian/html/hsr0-cplot.svg");
+		IOUtils.writePrettyXML(doc, outPath);
 	}
 }

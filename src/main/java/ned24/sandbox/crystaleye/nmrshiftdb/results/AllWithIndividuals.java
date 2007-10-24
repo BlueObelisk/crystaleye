@@ -11,19 +11,19 @@ import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 public class AllWithIndividuals implements GaussianConstants {
 
 	public static void main(String[] args) {
-		//String path = SECOND_PROTOCOL_FOLDER+File.separator+CML_DIR_NAME;
-		String path = SECOND_PROTOCOL_MOD1_CML_DIR;
-		System.out.println(path);
-		String outFolderName = "all";
+		String protocolName = SECOND_PROTOCOL_NAME;
+		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+		System.out.println(protocolName);
+		String folderName = "all";
+		String cmlFolder = CML_DIR+protocolName;
 				
-		List<File> fileList = Arrays.asList(new File(path).listFiles());
+		List<File> fileList = Arrays.asList(new File(cmlFolder).listFiles());
 		String htmlTitle = "Selection of structures from NMRShiftDB with MW < 300";
-		//CreateShiftPlot c = new CreateShiftPlot(fileList, outFolderName, htmlTitle, SECOND_PROTOCOL_URL, SECOND_PROTOCOL_JMOL_JS, SECOND_PROTOCOL_SUMMARY_JS);
-		CreateShiftPlot c = new CreateShiftPlot(fileList, outFolderName, htmlTitle, path, SECOND_PROTOCOL_MOD1_URL);
+		CreateShiftPlot c = new CreateShiftPlot(fileList, protocolName, folderName, htmlTitle);
 		c.run();
 		
 		String urlPrefix = "http://nmrshiftdb.ice.mpg.de/portal/js_pane/P-Results;jsessionid=FA2A776224CDA757D4B710F5FC12A899.tomcat2?nmrshiftdbaction=showDetailsFromHome&molNumber=";
-		for (File file : new File(path).listFiles()) {
+		for (File file : new File(cmlFolder).listFiles()) {
 			List<File> fileList2 = new ArrayList<File>();
 			fileList2.add(file);
 			GaussianCmlTool c13 = new GaussianCmlTool(file);
@@ -35,9 +35,7 @@ public class AllWithIndividuals implements GaussianConstants {
 			number = number.substring(0,number.indexOf("-"));
 			
 			String htmlTitle2 = "<a href='"+urlPrefix+number+"'>"+name+" (solvent: "+solvent+")</a>";
-			outFolderName = name;
-			//CreateShiftPlot c2 = new CreateShiftPlot(fileList2, outFolderName, htmlTitle2, SECOND_PROTOCOL_URL, SECOND_PROTOCOL_JMOL_JS, SECOND_PROTOCOL_SUMMARY_JS);
-			CreateShiftPlot c2 = new CreateShiftPlot(fileList2, outFolderName, htmlTitle2, path, SECOND_PROTOCOL_MOD1_URL);
+			CreateShiftPlot c2 = new CreateShiftPlot(fileList2, protocolName, name, htmlTitle2);
 			c2.run();
 		}
 		

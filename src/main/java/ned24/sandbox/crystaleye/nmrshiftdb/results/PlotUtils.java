@@ -44,19 +44,19 @@ public class PlotUtils implements GaussianConstants {
 		return total / numPeaks;		
 	}
 
-	public static String getHtmlContent(String cmlDirName, String htmlTitle, String startFile) {
+	public static String getHtmlContent(String htmlTitle, String protocolName, String startFile) {
 		String startStruct = "";
 		String button = "";
 		if (startFile != null) {
-			startStruct = "load "+cmlDirName+"/"+startFile+"/";
+			startStruct = "load ../../../cml/"+protocolName+"/"+startFile;
 		} else {
 			button = "<button onclick=\"showPlot(currentStructure);\">Show plot for this structure</button>";
 		}
 
 		return "<html><head>"+
-		"<script src=\""+JMOL_JS_PATH+"\" type=\"text/ecmascript\">"+
+		"<script src=\"../../../Jmol.js\" type=\"text/ecmascript\">"+
 		"</script>"+
-		"<script src=\""+SUMMARY_JS_PATH+"\" type=\"text/ecmascript\">"+
+		"<script src=\"../../../summary.js\" type=\"text/ecmascript\">"+
 		"</script>"+
 		"</head>"+
 		"<body>"+
@@ -64,7 +64,7 @@ public class PlotUtils implements GaussianConstants {
 		"<div style=\"position: absolute; top: -50px;\">"+
 		"<embed id='svgPlot' src=\"./index.svg\" width=\"715\" height=\"675\" style=\"position:absolute;\" />"+
 		"<div style=\"position: absolute; left: 675px; top: 200px;\">"+
-		"<script type=\"text/javascript\">jmolInitialize(\""+HTML_DIR+"/\");"+
+		"<script type=\"text/javascript\">jmolInitialize(\"../../../\");"+
 		"</script>"+
 		"<script type=\"text/javascript\">jmolApplet(300, \""+startStruct+"\");</script>"+
 		button+
