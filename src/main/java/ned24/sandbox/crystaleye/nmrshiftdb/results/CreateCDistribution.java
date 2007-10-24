@@ -85,7 +85,7 @@ public class CreateCDistribution {
 			//hist1.setPlotfrequency(false);
 			hist1.setNBins(numBins);
 			hist1.addDataToPlot(pointList);
-			hist1.setXlab("Bond Length (angstroms)");
+			hist1.setXlab("C (from y = x + c)");
 			hist1.setYlab("No. occurences");
 			hist1.setGraphTitle("C plot for HSR0");
 
