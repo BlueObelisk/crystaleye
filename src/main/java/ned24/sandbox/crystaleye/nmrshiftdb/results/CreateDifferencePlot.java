@@ -33,7 +33,7 @@ public class CreateDifferencePlot implements GaussianConstants {
 
 	String startFile = null;
 
-	public CreateDifferencePlot(List<File> fileList1, List<File> fileList2, String outFolderName, String htmlTitle, String protocolUrl, String jmoljsPath, String summaryJsPath) {
+	public CreateDifferencePlot(List<File> fileList1, List<File> fileList2, String outFolderName, String htmlTitle, String protocolUrl) {
 		this.fileList1 = fileList1;
 		this.fileList2 = fileList2;
 		if (fileList1.size() != fileList2.size()) {
@@ -45,8 +45,6 @@ public class CreateDifferencePlot implements GaussianConstants {
 		this.outFolderName = outFolderName;
 		this.htmlTitle = htmlTitle;
 		this.protocolUrl = protocolUrl;
-		this.jmoljsPath = jmoljsPath;
-		this.summaryjsPath = summaryJsPath;
 	}
 
 
@@ -194,7 +192,7 @@ public class CreateDifferencePlot implements GaussianConstants {
 		}
 		
 		String htmlTitle = "Experimentally observed shift VS. difference in Gaussian methods (HSR1 - DEFAULT)";
-		CreateDifferencePlot c = new CreateDifferencePlot(fileList1, fileList2, outFolderName, htmlTitle, FIRST_DIFF_URL, FIRST_DIFF_JMOL_JS, FIRST_DIFF_SUMMARY_JS);
+		CreateDifferencePlot c = new CreateDifferencePlot(fileList1, fileList2, outFolderName, htmlTitle, FIRST_DIFF_URL);
 		c.run();
 		
 		String urlPrefix = "http://nmrshiftdb.ice.mpg.de/portal/js_pane/P-Results;jsessionid=FA2A776224CDA757D4B710F5FC12A899.tomcat2?nmrshiftdbaction=showDetailsFromHome&molNumber=";
@@ -214,7 +212,7 @@ public class CreateDifferencePlot implements GaussianConstants {
 			
 			String htmlTitle2 = "<a href='"+urlPrefix+number+"'>"+name+" (solvent: "+solvent+")</a>";
 			outFolderName = name;
-			CreateDifferencePlot c2 = new CreateDifferencePlot(list1, list2, outFolderName, htmlTitle2, FIRST_DIFF_URL, FIRST_DIFF_JMOL_JS, FIRST_DIFF_SUMMARY_JS);
+			CreateDifferencePlot c2 = new CreateDifferencePlot(list1, list2, outFolderName, htmlTitle2, FIRST_DIFF_URL);
 			c2.run();
 		}
 	}
