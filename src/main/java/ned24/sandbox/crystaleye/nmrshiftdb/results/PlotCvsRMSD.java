@@ -6,13 +6,12 @@ import java.util.List;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianScatter;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import nu.xom.Document;
 
-import org.graph.GraphException;
 import org.graph.Point;
-import org.hist.Histogram;
-import org.interpret.SVGInterpretter;
-import org.layout.GraphLayout;
+import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
@@ -20,11 +19,12 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class PlotCvsRMSD implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String protocolName = SECOND_PROTOCOL_NAME;
+		//String protocolName = SECOND_PROTOCOL_NAME;
 		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
-		String outPath = "e:/gaussian/html/hsr1-rmsd.svg";
+		String protocolName = SECOND_PROTOCOL_MANUALMOD_NAME;
 		
 		String path = CML_DIR+protocolName;
+		String folderName = "RMSD-vs-C";
 		
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
@@ -32,6 +32,7 @@ public class PlotCvsRMSD implements GaussianConstants {
 		List<Point> pointList = new ArrayList<Point>();
 		for (File file : new File(path).listFiles()) {
 			GaussianCmlTool g = new GaussianCmlTool(file);
+			CMLMolecule molecule = g.getMolecule();
 			String solvent = g.getCalculatedSolvent();
 			
 			List<CMLPeak> obsPeaks = g.getObservedPeaks(solvent);
@@ -43,7 +44,9 @@ public class PlotCvsRMSD implements GaussianConstants {
 			//System.out.println(rmsd);
 			Point p = new Point();
 			p.setX(rmsd);
-			p.setLink(file.getName());
+			p.setY(c);
+			int count = GaussianUtils.getAtomPosition(molecule, "99999");
+			p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");");
 			pointList.add(p);
 					
 			if (rmsd > max) {
@@ -54,40 +57,22 @@ public class PlotCvsRMSD implements GaussianConstants {
 			}
 		}
 
-		double binWidth = 0.5;
-		int numBins = (int)(28/binWidth);
-
-		GraphLayout layout = new GraphLayout();
-		layout.setXmin(0);
-		layout.setXmax(28);
-		layout.setYmin(0);
-		layout.setYmax(60);
-		layout.setPlotXGridLines(false);
-		layout.setPlotYGridLines(false);
-		try {
-			layout.setNXTickMarks(14);
-			layout.setNYTickMarks(15);
-		} catch (GraphException e1) {
-			System.err.println("Problem setting NXTickMarks");
-		}
-
-		Histogram hist1 = new Histogram(layout);
-		Document doc = null;
-		try {
-			//hist1.setPlotfrequency(false);
-			hist1.setNBins(numBins);
-			hist1.addDataToPlot(pointList);
-			hist1.setXlab("RMSD");
-			hist1.setYlab("No. occurences");
-			hist1.setGraphTitle("RMSD plot");
-
-			hist1.plot();
-			doc = new Document(hist1.getSVG());
-			SVGInterpretter svgi = new SVGInterpretter (hist1);
-		} catch (GraphException e) {
-			System.err.println(e.getMessage());
-		}
+		GaussianScatter gs = new GaussianScatter(pointList);
+		gs.setXmin(0);
+		gs.setYmin(-12);
+		gs.setXmax(12);
+		gs.setYmax(12);
+		gs.setXTickMarks(12);
+		gs.setYTickMarks(12);
+		gs.setXLab("RMSD");
+		gs.setYLab("C");
+		Document doc = gs.getPlot();
 		
-		IOUtils.writePrettyXML(doc, outPath);
+		String outFolderPath = HTML_DIR+File.separator+protocolName+File.separator+folderName;
+		String svgPath = outFolderPath+"/index.svg";
+		IOUtils.writePrettyXML(doc, svgPath);
+		String htmlContent = PlotUtils.getHtmlContent("RMSD vs. C", protocolName, null);
+		String htmlPath = outFolderPath+"/index.html";
+		IOUtils.writeText(htmlContent, htmlPath);
 	}
 }
