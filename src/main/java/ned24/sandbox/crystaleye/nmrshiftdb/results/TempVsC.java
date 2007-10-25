@@ -5,6 +5,7 @@ import java.util.List;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import nu.xom.Document;
 
 import org.xmlcml.cml.element.CMLPeak;
@@ -28,7 +29,8 @@ public class TempVsC implements GaussianConstants {
 			if (spectra.size() > 1) {
 				System.out.println(file.getAbsolutePath());
 			}
-			List<CMLPeak> obsPeaks = g.getObservedPeaks(solvent);
+			int s = GaussianUtils.getSpectNum(file);
+			List<CMLPeak> obsPeaks = g.getObservedPeaks(s);
 			List<CMLPeak> calcPeaks = g.getListOfCalculatedPeaks();
 
 			double c = PlotUtils.getC(calcPeaks, obsPeaks, solvent);

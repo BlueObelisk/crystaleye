@@ -6,6 +6,7 @@ import java.util.List;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import nu.xom.Document;
 
 import org.graph.GraphException;
@@ -33,8 +34,9 @@ public class CreateCDistribution implements GaussianConstants {
 		for (File file : new File(path).listFiles()) {
 			GaussianCmlTool g = new GaussianCmlTool(file);
 			String solvent = g.getCalculatedSolvent();
+			int spectNum = GaussianUtils.getSpectNum(file);
 			
-			List<CMLPeak> obsPeaks = g.getObservedPeaks(solvent);
+			List<CMLPeak> obsPeaks = g.getObservedPeaks(spectNum);
 			List<CMLPeak> calcPeaks = g.getListOfCalculatedPeaks();
 			
 			double c = PlotUtils.getC(calcPeaks, obsPeaks, solvent);

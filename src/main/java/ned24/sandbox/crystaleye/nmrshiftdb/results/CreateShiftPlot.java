@@ -53,8 +53,9 @@ public class CreateShiftPlot implements GaussianConstants {
 			}
 			double tmsShift = GaussianUtils.getTmsShift(solvent);
 
+			int s = GaussianUtils.getSpectNum(file);
 			CMLElements<CMLPeak> calcPeaks = c.getCalculatedPeaks();
-			List<CMLPeak> obsPeaks = c.getObservedPeaks(solvent);
+			List<CMLPeak> obsPeaks = c.getObservedPeaks(s);
 
 			for (int i = 0; i < calcPeaks.size(); i++) {
 				CMLPeak calcPeak = (CMLPeak)calcPeaks.get(i);

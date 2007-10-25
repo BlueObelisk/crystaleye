@@ -1,21 +1,19 @@
 package ned24.sandbox.crystaleye.nmrshiftdb.etc;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 
-import org.openscience.cdk.graph.invariant.MorganNumbersTools;
-import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.xmlcml.cml.element.CMLAtom;
+import org.xmlcml.cml.element.CMLAtomSet;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLPeak;
+import org.xmlcml.cml.tools.Morgan;
 
-import uk.ac.cam.ch.crystaleye.CDKUtils;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
 public class CreateMorganAveragedCmls {
@@ -24,9 +22,9 @@ public class CreateMorganAveragedCmls {
 		String path = "e:/gaussian/cml/second-protocol_mod1";
 		String outFolder = "e:/gaussian/cml/second-protocol_manualAndMorgan/";
 		for (File file : new File(path).listFiles()) {
-			if (!file.getAbsolutePath().contains("nmrshiftdb10005691")) {
-				continue;
-			}
+			//if (!file.getAbsolutePath().contains("nmrshiftdb10005718")) {
+			//	continue;
+			//}
 			System.out.println(file.getAbsolutePath());
 			GaussianCmlTool g = new GaussianCmlTool(file);
 			CMLMolecule molecule = g.getMolecule();
@@ -52,26 +50,52 @@ public class CreateMorganAveragedCmls {
 				peak.setXValue(newShift);
 			}
 			
-			Map<Long, List<String>> morganMap = getMorganMap(molecule);
+			Morgan mt = new Morgan(molecule);
+			List<CMLAtomSet> atomSetList = mt.getAtomSetList();
+			Map<String, Double> map = new HashMap<String, Double>();
 			
 			for (CMLPeak peak : calcPeaks) {
 				String id = peak.getAtomRefs()[0];
-				long morganNum = getMorganNumber(molecule, id);
-				List<String> atomIdList = morganMap.get(morganNum);
-				if (atomIdList.size() > 1) {
+				CMLAtomSet atomSet = getEquivalentAtoms(atomSetList, id);
+				if (atomSet.size() > 1) {
 					double totalShift = 0;
-					for (String atomId : atomIdList) {
-						totalShift += getShift(calcPeaks, atomId);
+					for (CMLAtom atom : atomSet.getAtoms()) {
+						totalShift += getShift(calcPeaks, atom.getId());
 					}
-					double modShift = totalShift/atomIdList.size();
-					peak.setXValue(modShift);
+					double modShift = totalShift/atomSet.size();
+					map.put(id, modShift);
 				}
+			}
+			for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
+				Map.Entry entry = (Map.Entry)it.next();
+				CMLPeak peak = getPeak(calcPeaks, (String)entry.getKey());
+				peak.setXValue((Double)entry.getValue());
 			}
 			String name = file.getName();
 			String outPath = outFolder+name;
 			IOUtils.writePrettyXML(molecule.getDocument(), outPath);
-			
 		}
+	}
+	
+	public static CMLAtomSet getEquivalentAtoms(List<CMLAtomSet> atomSetList, String atomId) {
+		for (CMLAtomSet atomSet : atomSetList) {
+			for (CMLAtom atom : atomSet.getAtoms()) {
+				if (atom.getId().equals(atomId)) {
+					return atomSet;
+				}
+			}
+		}
+		throw new RuntimeException("Could not find atomset for: "+atomId);
+	}
+	
+	public static CMLPeak getPeak(List<CMLPeak> peaks, String atomId) {
+		for (CMLPeak peak : peaks) {
+			String id = peak.getAtomRefs()[0];
+			if (id.equals(atomId)) {
+				return peak;
+			}
+		}
+		throw new RuntimeException("Shouldn't reach here: "+atomId);
 	}
 	
 	public static double getShift(List<CMLPeak> peaks, String atomId) {
@@ -83,47 +107,5 @@ public class CreateMorganAveragedCmls {
 		}
 		throw new RuntimeException("Shouldn't reach here: "+atomId);
 	}
-	
-	public static long getMorganNumber(CMLMolecule molecule, String atomId) {
-		IMolecule cdkMol = CDKUtils.cmlMol2CdkMol(molecule);
-		int num = -1;
-		for (int i = 0; i < cdkMol.getAtomCount(); i++) {
-			IAtom atom = cdkMol.getAtom(i);
-			if (atom.getID().equals(atomId)) {
-				num = i;
-			}
-		}
-		long[] morganNums = MorganNumbersTools.getLongMorganNumbers(cdkMol);
-		return morganNums[num];
-	}
-	
-	public static Map<Long, List<String>> getMorganMap(CMLMolecule molecule) {		
-		Map<Long, List<String>> map = new HashMap<Long, List<String>>();
-		IMolecule cdkMol = CDKUtils.getCdkMol(molecule);
-		String[] a = new String[cdkMol.getAtomCount()];
-		for (int i = 0; i < cdkMol.getAtomCount(); i++) {
-			IAtom atom = cdkMol.getAtom(i);
-			a[i] = atom.getID();
-		}
-		long[] morganNums = MorganNumbersTools.getLongMorganNumbers(cdkMol);
-		int count = 0;
-		for (long i : morganNums) {
-			List<String> list = map.get(i); 
-			if (list == null) {
-				list = new ArrayList<String>();
-				list.add(a[count]);
-			} else {
-				list.add(a[count]);
-			}
-			map.put(i, list);
-			count++;
-		}
-		
-		int c = 0;
-		for (String s : a) {
-			System.out.println(s+" "+morganNums[c]);
-			c++;
-		}
-		return map;
-	}
+
 }

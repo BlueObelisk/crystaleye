@@ -36,8 +36,8 @@ public class CreateRMSPlot implements GaussianConstants {
 		for (File file : new File(path).listFiles()) {
 			GaussianCmlTool g = new GaussianCmlTool(file);
 			String solvent = g.getCalculatedSolvent();
-			
-			List<CMLPeak> obsPeaks = g.getObservedPeaks(solvent);
+			int s = GaussianUtils.getSpectNum(file);
+			List<CMLPeak> obsPeaks = g.getObservedPeaks(s);
 			List<CMLPeak> calcPeaks = g.getListOfCalculatedPeaks();
 			
 			double tmsShift = GaussianUtils.getTmsShift(solvent);
