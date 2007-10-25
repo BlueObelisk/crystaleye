@@ -18,79 +18,58 @@ import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateRMSPlot implements GaussianConstants {
+public class CDistribution implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String protocolName = SECOND_PROTOCOL_NAME;
+		//String protocolName = SECOND_PROTOCOL_NAME;
 		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
-		String outPath = "e:/gaussian/html/hsr1-rmsd.svg";		
+		//String protocolName = SECOND_PROTOCOL_MANUALMOD_NAME;
+		String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
+		String outPath = "e:/gaussian/html/morgan-cplot.svg";		
 		
 		String path = CML_DIR+protocolName;
 		
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
 		
-		StringBuilder sb = new StringBuilder();
-		
 		List<Point> pointList = new ArrayList<Point>();
 		for (File file : new File(path).listFiles()) {
 			GaussianCmlTool g = new GaussianCmlTool(file);
 			String solvent = g.getCalculatedSolvent();
-			int s = GaussianUtils.getSpectNum(file);
-			List<CMLPeak> obsPeaks = g.getObservedPeaks(s);
+			int spectNum = GaussianUtils.getSpectNum(file);
+			
+			List<CMLPeak> obsPeaks = g.getObservedPeaks(spectNum);
 			List<CMLPeak> calcPeaks = g.getListOfCalculatedPeaks();
 			
-			double tmsShift = GaussianUtils.getTmsShift(solvent);
-			double total = 0;
-			for (CMLPeak calcPeak : calcPeaks) {
-				String atomId = calcPeak.getAtomRefs()[0];
-				double obsShift = GaussianUtils.getPeakValue(obsPeaks, atomId);
-				double calcShift = tmsShift-calcPeak.getXValue();
-				double diff = calcShift-obsShift;
-				total += diff;
-			}
-			int numPeaks = calcPeaks.size();
-			double c = total / numPeaks;
+			double c = PlotUtils.getC(calcPeaks, obsPeaks, solvent);
 			
 			if (Double.isNaN(c)) {
 				throw new RuntimeException("c is NaN: "+file.getAbsolutePath());
 			}
 			
-			double totalSquared = 0;
-			for (CMLPeak calcPeak : calcPeaks) {
-				String atomId = calcPeak.getAtomRefs()[0];
-				double obsShift = GaussianUtils.getPeakValue(obsPeaks, atomId);
-				double calcShift = tmsShift-calcPeak.getXValue();
-				double d = Math.pow(calcShift-(obsShift+c), 2);
-				totalSquared += d;
+			if (c > max) {
+				max = c;
 			}
-			double newC = totalSquared / numPeaks;
-			double rmsd = Math.sqrt(newC);
+			if (c < min) {
+				min = c;
+			}
 			
-			sb.append(c+","+rmsd+","+file.getName()+"\n");
-			
-			System.out.println(rmsd);
 			Point p = new Point();
-			p.setX(rmsd);
+			p.setX(c);
 			p.setLink(file.getName());
 			pointList.add(p);
-					
-			if (rmsd > max) {
-				max = rmsd;
-			}
-			if (rmsd < min) {
-				min = rmsd;
-			}
 		}
+		
+		double minR = -12;
+		double maxR = 16;
 
 		double binWidth = 0.5;
 		int numBins = (int)(28/binWidth);
 
 		GraphLayout layout = new GraphLayout();
-		layout.setXmin(0);
-		layout.setXmax(28);
-		layout.setYmin(0);
-		layout.setYmax(60);
+		layout.setXmin(minR);
+		layout.setXmax(maxR);
+		layout.setYmax(38);
 		layout.setPlotXGridLines(false);
 		layout.setPlotYGridLines(false);
 		try {
@@ -106,9 +85,9 @@ public class CreateRMSPlot implements GaussianConstants {
 			//hist1.setPlotfrequency(false);
 			hist1.setNBins(numBins);
 			hist1.addDataToPlot(pointList);
-			hist1.setXlab("Bond Length (angstroms)");
+			hist1.setXlab("C (from y = x + c)");
 			hist1.setYlab("No. occurences");
-			hist1.setGraphTitle("RMSD about C (from y = m + c)");
+			hist1.setGraphTitle("C plot for HSR0");
 
 			hist1.plot();
 			doc = new Document(hist1.getSVG());

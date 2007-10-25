@@ -16,7 +16,7 @@ import org.xmlcml.cml.tools.Morgan;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateMorganAveragedCmls {
+public class CreateMorganAveragedHalogenModifiedCmls {
 
 	public static void main(String[] args) {
 		String path = "e:/gaussian/cml/second-protocol_mod1";
