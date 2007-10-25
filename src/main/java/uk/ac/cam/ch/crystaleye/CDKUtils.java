@@ -32,6 +32,33 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.euclid.Real2;
 
 public class CDKUtils implements CMLConstants {
+	
+	public static IMolecule getCdkMol(CMLMolecule cmlMol) {
+		ByteArrayInputStream bais = null;
+		IMolecule cdkMol = null;
+		try {
+			bais = new ByteArrayInputStream(cmlMol.toXML().getBytes());
+			IChemFile cf = (IChemFile) new CMLReader(bais).read(new ChemFile());
+			bais.close();
+			IMoleculeSet mols = cf.getChemSequence(0).getChemModel(0).getMoleculeSet();
+			if (mols.getMoleculeCount() > 1) {
+				throw new CMLRuntimeException("CDK found more than one molecule in molecule.");
+			}
+			cdkMol = mols.getMolecule(0);
+		} catch (IOException e) {
+			throw new CMLRuntimeException("Error reading molecule: "+e.getMessage());
+		} catch (CDKException e) {
+			throw new CMLRuntimeException("CDK Error reading molecule: "+e.getMessage());
+		} finally {
+			if (bais != null)
+				try {
+					bais.close();
+				} catch (IOException e) {
+					System.err.println("Cannot close input stream: "+bais);
+				}
+		}
+		return cdkMol;
+	}
 
 	public static IMolecule cmlMol2CdkMol(CMLMolecule cmlMol) {
 		//FIXME - remove this section and fix CDK instead!

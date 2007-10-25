@@ -20,9 +20,9 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class CreateCDistribution implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String protocolName = SECOND_PROTOCOL_NAME;
-		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
-		String outPath = "e:/gaussian/html/hsr0-cplot.svg";		
+		//String protocolName = SECOND_PROTOCOL_NAME;
+		String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+		String outPath = "e:/gaussian/html/hsr1-cplot.svg";		
 		
 		String path = CML_DIR+protocolName;
 		
