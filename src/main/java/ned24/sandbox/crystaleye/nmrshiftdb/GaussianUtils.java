@@ -18,6 +18,13 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 
 
 public class GaussianUtils implements GaussianConstants {
+	
+	public static int getSpectNum(File file) {
+		String name = file.getName();
+		int idx = name.indexOf("-");
+		int idx2 = name.indexOf(".");
+		return Integer.valueOf(name.substring(idx+1,idx2));
+	}
 
 	public enum Solvent {
 		ACETONE, ACETONITRILE, BENZENE, CCL4, CHLOROFORM, DICHLOROMETHANE,
