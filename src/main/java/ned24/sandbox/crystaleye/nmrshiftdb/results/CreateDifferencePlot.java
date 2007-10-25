@@ -72,8 +72,9 @@ public class CreateDifferencePlot implements GaussianConstants {
 				throw new RuntimeException("Expected same number of peaks, found DEFAULT ("+defPeaks.size()+"), HSR ("+hsrPeaks.size()+")");
 			}
 
+			int s = GaussianUtils.getSpectNum(file1);
 			String solvent = hsrC.getCalculatedSolvent();
-			List<CMLPeak> obsPeaks = hsrC.getObservedPeaks(solvent);
+			List<CMLPeak> obsPeaks = hsrC.getObservedPeaks(s);
 			double tmsShift = GaussianUtils.getTmsShift(solvent);
 			for (int i = 0; i < hsrPeaks.size(); i++) {
 				CMLPeak hsr = hsrPeaks.get(i);

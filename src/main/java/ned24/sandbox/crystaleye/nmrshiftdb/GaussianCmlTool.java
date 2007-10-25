@@ -91,22 +91,16 @@ public class GaussianCmlTool implements GaussianConstants {
 		return molecule;
 	}
 
-	public List<CMLPeak> getObservedPeaks(String solvent) {
-		List<CMLSpectrum> observedNodes = getObservedSpectra(solvent);
+	public List<CMLPeak> getObservedPeaks(int spectNum) {
+		List<CMLSpectrum> observedNodes = getObservedSpectra();
+		CMLSpectrum observed = observedNodes.get(spectNum-1);
 		List<CMLPeak> peaks = new ArrayList<CMLPeak>();
-		for (int i = 0; i < observedNodes.size(); i++) {
-			CMLSpectrum observed = observedNodes.get(i);
-			CMLPeakList obsPL = (CMLPeakList)observed.getFirstCMLChild(CMLPeakList.TAG);
-			CMLElements<CMLPeak> ps = obsPL.getPeakElements();
-			for (int j = 0; j < ps.size(); j++) {
-				peaks.add(ps.get(j));
-			}
+		CMLPeakList obsPL = (CMLPeakList)observed.getFirstCMLChild(CMLPeakList.TAG);
+		CMLElements<CMLPeak> ps = obsPL.getPeakElements();
+		for (int j = 0; j < ps.size(); j++) {
+			peaks.add(ps.get(j));
 		}
 		return peaks;
-	}
-
-	public int getObservedSpectraCount(String solvent) {
-		return getObservedSpectra(solvent).size();
 	}
 
 	public CMLElements<CMLPeak> getCalculatedPeaks() {
@@ -114,7 +108,7 @@ public class GaussianCmlTool implements GaussianConstants {
 		CMLPeakList calcPL = (CMLPeakList)calculated.getFirstCMLChild(CMLPeakList.TAG);
 		return calcPL.getPeakElements();
 	}
-	
+
 	public List<CMLPeak> getListOfCalculatedPeaks() {
 		CMLElements<CMLPeak> peaks = getCalculatedPeaks();
 		List<CMLPeak> list = new ArrayList<CMLPeak>();
