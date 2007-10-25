@@ -20,7 +20,7 @@ import org.xmlcml.cml.element.CMLSpectrum;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateDifferencePlot implements GaussianConstants {
+public class ShiftDifferencePlot implements GaussianConstants {
 
 	List<File> fileList1;
 	List<File> fileList2;
@@ -29,7 +29,7 @@ public class CreateDifferencePlot implements GaussianConstants {
 	String startFile = null;
 	String folderName;
 
-	public CreateDifferencePlot(List<File> fileList1, List<File> fileList2, String protocolName, String folderName, String htmlTitle) {
+	public ShiftDifferencePlot(List<File> fileList1, List<File> fileList2, String protocolName, String folderName, String htmlTitle) {
 		this.fileList1 = fileList1;
 		this.fileList2 = fileList2;
 		if (fileList1.size() != fileList2.size()) {
@@ -160,7 +160,7 @@ public class CreateDifferencePlot implements GaussianConstants {
 		}
 		
 		String htmlTitle = "Experimentally observed shift VS. difference in Gaussian methods (HSR1 - HSR0)";
-		CreateDifferencePlot c = new CreateDifferencePlot(fileList1, fileList2, protocolName, folderName, htmlTitle);
+		ShiftDifferencePlot c = new ShiftDifferencePlot(fileList1, fileList2, protocolName, folderName, htmlTitle);
 		c.run();
 		
 		String urlPrefix = "http://nmrshiftdb.ice.mpg.de/portal/js_pane/P-Results;jsessionid=FA2A776224CDA757D4B710F5FC12A899.tomcat2?nmrshiftdbaction=showDetailsFromHome&molNumber=";
@@ -179,7 +179,7 @@ public class CreateDifferencePlot implements GaussianConstants {
 			number = number.substring(0,number.indexOf("-"));
 			
 			String htmlTitle2 = "<a href='"+urlPrefix+number+"'>"+name+" (solvent: "+solvent+")</a>";
-			CreateDifferencePlot c2 = new CreateDifferencePlot(list1, list2, protocolName, name, htmlTitle2);
+			ShiftDifferencePlot c2 = new ShiftDifferencePlot(list1, list2, protocolName, name, htmlTitle2);
 			c2.run();
 		}
 	}

@@ -16,7 +16,7 @@ import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class PlotCvsRMSD implements GaussianConstants {
+public class CvsRMSD implements GaussianConstants {
 
 	public static void main(String[] args) {
 		//String protocolName = SECOND_PROTOCOL_NAME;

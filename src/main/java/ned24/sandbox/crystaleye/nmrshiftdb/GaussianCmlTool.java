@@ -68,6 +68,10 @@ public class GaussianCmlTool implements GaussianConstants {
 			return false;
 		}
 	}
+	
+	public CMLSpectrum getObservedSpectrum(int i) {
+		return getObservedSpectra().get(i-1);
+	}
 
 	public List<CMLSpectrum> getObservedSpectra() {
 		List<CMLSpectrum> list = new ArrayList<CMLSpectrum>();
