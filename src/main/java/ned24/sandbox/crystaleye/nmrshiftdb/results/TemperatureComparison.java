@@ -1,38 +1,49 @@
 package ned24.sandbox.crystaleye.nmrshiftdb.results;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
-import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils.Solvent;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
+
+import org.xmlcml.cml.element.CMLSpectrum;
+
 import uk.ac.cam.ch.crystaleye.CrystalEyeConstants;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateSolventComparisonScatter implements GaussianConstants, CrystalEyeConstants {
+public class TemperatureComparison implements GaussianConstants, CrystalEyeConstants {
 
 	public static void main(String[] args) {
 		String protocolName = SECOND_PROTOCOL_NAME;
 		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
 
-		String rootFolder = HTML_DIR+protocolName;
+		String path = HTML_DIR+protocolName;
+		String cmlPath = CML_DIR+protocolName;
 
-		String[] colours = {"blue", "green", "olive", "purple", "orange", "gray"};
+		String[] colours = {"AntiqueWhite", "Aqua", "Blue", "GoldenRod", "BlueViolet", "SlateGrey", "Chocolate", "Green"};
 
-		List<String> solvents = new ArrayList<String>();
-		for (Solvent solvent : GaussianUtils.Solvent.values()) {
-			String s = solvent.toString();
-			solvents.add(s);
+		Set<String> set = new HashSet<String>();
+		for (File file : new File(cmlPath).listFiles()) {
+			GaussianCmlTool g = new GaussianCmlTool(file);
+
+			int s = GaussianUtils.getSpectNum(file);
+			CMLSpectrum spect = g.getObservedSpectrum(s);
+			Nodes tempNodes = spect.query(".//cml:scalar[@dictRef='cml:temp']", X_CML);
+			for (int i = 0; i < tempNodes.size(); i++) {
+				Element tempNode = (Element)tempNodes.get(i);
+				set.add(tempNode.getValue());
+			}
 		}
 
 		int count = 0;
 		Document mainDoc = null;
-		for (File folder : new File(rootFolder).listFiles()) {
-			if (!solvents.contains(folder.getName())) {
+		for (File folder : new File(path).listFiles()) {
+			if (!set.contains(folder.getName())) {
 				continue;
 			}
 			File svgFile = new File(folder+File.separator+"index.svg");
@@ -56,8 +67,8 @@ public class CreateSolventComparisonScatter implements GaussianConstants, Crysta
 			count++;
 		}
 
-		String html = PlotUtils.getHtmlContent("Comparison of solvents", protocolName, null);
-		String root = rootFolder+File.separator+"solvents";
+		String html = PlotUtils.getHtmlContent("Comparison of temperatures", protocolName, null);
+		String root = path+File.separator+"temperatures";
 		IOUtils.writeText(html, root+File.separator+"index.html");
 		IOUtils.writePrettyXML(mainDoc, root+File.separator+"index.svg");
 	}
