@@ -19,8 +19,9 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class TemperatureComparison implements GaussianConstants, CrystalEyeConstants {
 
 	public static void main(String[] args) {
-		String protocolName = SECOND_PROTOCOL_NAME;
+		//String protocolName = SECOND_PROTOCOL_NAME;
 		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+		String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
 
 		String path = HTML_DIR+protocolName;
 		String cmlPath = CML_DIR+protocolName;
@@ -42,6 +43,7 @@ public class TemperatureComparison implements GaussianConstants, CrystalEyeConst
 
 		int count = 0;
 		Document mainDoc = null;
+		Set<String> outSet = new HashSet<String>();
 		for (File folder : new File(path).listFiles()) {
 			if (!set.contains(folder.getName())) {
 				continue;
@@ -61,10 +63,15 @@ public class TemperatureComparison implements GaussianConstants, CrystalEyeConst
 					mainDoc.getRootElement().insertChild(link, 0);
 
 					String colour = colours[count-1];
+					outSet.add(colour+" "+folder.getName());
 					link.getChildElements().get(0).getAttribute("fill").setValue(colour);
 				}
 			}
 			count++;
+		}
+		
+		for (String out : outSet) {
+			System.out.println(out);
 		}
 
 		String html = PlotUtils.getHtmlContent("Comparison of temperatures", protocolName, null);

@@ -22,7 +22,7 @@ public class ByAtomScatter implements GaussianConstants {
 	public static void main(String[] args) {
 		String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
 		String path = CML_DIR+protocolName;
-		String[] atoms = {"Cl"};
+		String[] atoms = {"S"};
 
 		String htmlTitle = "Carbons bonded to Henry atoms";
 		String folderName = "henry-atoms";
