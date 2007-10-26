@@ -18,9 +18,6 @@ public class CreateHalogenShiftedCml {
 		String outFolder = "e:/gaussian/cml/second-protocol_manualmod/";
 		for (File file : new File(path).listFiles()) {
 			System.out.println(file.getAbsolutePath());
-			if (!file.getAbsolutePath().contains("nmrshiftdb10005592-3.cml.xml")) {
-				continue;
-			}
 			GaussianCmlTool g = new GaussianCmlTool(file);
 			CMLMolecule molecule = g.getMolecule();
 			List<CMLPeak> calcPeaks = g.getListOfCalculatedPeaks();
