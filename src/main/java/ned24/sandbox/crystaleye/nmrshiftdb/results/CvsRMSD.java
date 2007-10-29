@@ -44,6 +44,8 @@ public class CvsRMSD implements GaussianConstants {
 			
 			//System.out.println(rmsd);
 			Point p = new Point();
+			
+			System.out.println(file.getAbsolutePath()+" "+c+" "+rmsd);
 			p.setX(rmsd);
 			p.setY(c);
 			int count = GaussianUtils.getAtomPosition(molecule, "99999");
