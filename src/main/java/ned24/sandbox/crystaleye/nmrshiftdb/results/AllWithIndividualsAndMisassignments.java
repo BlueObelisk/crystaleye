@@ -28,6 +28,7 @@ public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 		CreateShiftPlot c = new CreateShiftPlot(fileList, protocolName, folderName, htmlTitle);
 		c.run();
 		
+		/*
 		String allMisassignmentFolderName = "all-misassignments";
 		CreateMisassignmentPlot cm = new CreateMisassignmentPlot(fileList, protocolName, allMisassignmentFolderName, htmlTitle);
 		cm.run();
@@ -71,6 +72,6 @@ public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 			CreateMisassignmentPlot c2 = new CreateMisassignmentPlot(fileList2, protocolName, title, htmlTitle2);
 			c2.run();
 		}
-		
+		*/
 	}
 }
