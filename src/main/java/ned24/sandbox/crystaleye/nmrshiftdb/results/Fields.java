@@ -9,6 +9,7 @@ import java.util.Set;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottype.CreateShiftPlot;
 import nu.xom.Element;
 import nu.xom.Nodes;
 

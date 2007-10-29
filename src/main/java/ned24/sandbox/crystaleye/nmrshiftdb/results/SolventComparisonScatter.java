@@ -66,7 +66,7 @@ public class SolventComparisonScatter implements GaussianConstants, CrystalEyeCo
 			System.out.println(out);
 		}
 
-		String html = PlotUtils.getHtmlContent("Comparison of solvents", protocolName, null);
+		String html = PlotUtils.getHtmlContent("Comparison of solvents", protocolName, null, false);
 		String root = rootFolder+File.separator+"solvents";
 		IOUtils.writeText(html, root+File.separator+"index.html");
 		IOUtils.writePrettyXML(mainDoc, root+File.separator+"index.svg");
