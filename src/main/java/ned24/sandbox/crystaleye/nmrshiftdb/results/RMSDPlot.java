@@ -22,10 +22,10 @@ public class RMSDPlot implements GaussianConstants {
 
 	public static void main(String[] args) {
 		// String protocolName = SECOND_PROTOCOL_NAME;
-		String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
 		//String protocolName = SECOND_PROTOCOL_MANUALMOD_NAME;
-		//String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
-		String outPath = "e:/gaussian/html/hsr1-rmsd.svg";		
+		String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
+		String outPath = "e:/gaussian/html/manmorg-rmsd.svg";		
 		
 		String path = CML_DIR+protocolName;
 		
@@ -43,6 +43,8 @@ public class RMSDPlot implements GaussianConstants {
 			List<CMLPeak> calcPeaks = g.getListOfCalculatedPeaks();
 			
 			double tmsShift = GaussianUtils.getTmsShift(solvent);
+		
+			/*
 			double total = 0;
 			for (CMLPeak calcPeak : calcPeaks) {
 				String atomId = calcPeak.getAtomRefs()[0];
@@ -68,8 +70,12 @@ public class RMSDPlot implements GaussianConstants {
 			}
 			double newC = totalSquared / numPeaks;
 			double rmsd = Math.sqrt(newC);
+			*/
 			
-			sb.append(c+","+rmsd+","+file.getName()+"\n");
+			double rmsd = PlotUtils.getRMSDAboutC(calcPeaks, obsPeaks, solvent);
+			System.out.println(file.getAbsolutePath()+" "+rmsd);
+			
+			//sb.append(c+","+rmsd+","+file.getName()+"\n");
 			
 			Point p = new Point();
 			p.setX(rmsd);
@@ -107,7 +113,7 @@ public class RMSDPlot implements GaussianConstants {
 			//hist1.setPlotfrequency(false);
 			hist1.setNBins(numBins);
 			hist1.addDataToPlot(pointList);
-			hist1.setXlab("Bond Length (angstroms)");
+			hist1.setXlab("RMSD");
 			hist1.setYlab("No. occurences");
 			hist1.setGraphTitle("RMSD about C (from y = m + c)");
 
