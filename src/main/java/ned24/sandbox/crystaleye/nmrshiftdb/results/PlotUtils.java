@@ -49,6 +49,7 @@ public class PlotUtils implements GaussianConstants {
 		String button = "";
 		if (startFile != null) {
 			startStruct = "load ../../../cml/"+protocolName+"/"+startFile;
+			button = "<button onclick=\"showMisassignmentPlot(currentStructure);\">Show misassignment plot</button>";
 		} else {
 			button = "<button onclick=\"showPlot(currentStructure);\">Show plot for this structure</button>";
 		}
