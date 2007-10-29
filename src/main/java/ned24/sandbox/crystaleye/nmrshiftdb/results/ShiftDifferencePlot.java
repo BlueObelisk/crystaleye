@@ -135,7 +135,7 @@ public class ShiftDifferencePlot implements GaussianConstants {
 		String outFolderPath = HTML_DIR+File.separator+"hsr1-hsr0"+File.separator+folderName;
 		String svgPath = outFolderPath+"/index.svg";
 		IOUtils.writePrettyXML(doc, svgPath);
-		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile);
+		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile, false);
 		String htmlPath = outFolderPath+"/index.html";
 		IOUtils.writeText(htmlContent, htmlPath);
 	}
