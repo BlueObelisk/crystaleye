@@ -8,7 +8,7 @@ import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import org.xmlcml.cml.element.CMLPeak;
 
 public class PlotUtils implements GaussianConstants {
-	
+
 	public static double getRMSDAboutC(List<CMLPeak> calcPeaks, List<CMLPeak> obsPeaks, String solvent) {
 		double c = getC(calcPeaks, obsPeaks, solvent);
 		if (Double.isNaN(c)) {
@@ -16,7 +16,7 @@ public class PlotUtils implements GaussianConstants {
 		}
 		return getRMSDAboutC(c, calcPeaks, obsPeaks, solvent);
 	}
-	
+
 	public static double getRMSDAboutC(double c, List<CMLPeak> calcPeaks, List<CMLPeak> obsPeaks, String solvent) {
 		double totalSquared = 0;
 		for (CMLPeak calcPeak : calcPeaks) {
@@ -30,7 +30,7 @@ public class PlotUtils implements GaussianConstants {
 		double newC = totalSquared / numPeaks;
 		return Math.sqrt(newC);
 	}
-	
+
 	public static double getC(List<CMLPeak> calcPeaks, List<CMLPeak> obsPeaks, String solvent) {
 		double total = 0;
 		for (CMLPeak calcPeak : calcPeaks) {
@@ -44,14 +44,21 @@ public class PlotUtils implements GaussianConstants {
 		return total / numPeaks;		
 	}
 
-	public static String getHtmlContent(String htmlTitle, String protocolName, String startFile) {
+	public static String getHtmlContent(String htmlTitle, String protocolName, String startFile, boolean misassignmentPlot) {
 		String startStruct = "";
-		String button = "";
+		String button = null;
 		if (startFile != null) {
 			startStruct = "load ../../../cml/"+protocolName+"/"+startFile;
-			button = "<button onclick=\"showMisassignmentPlot(currentStructure);\">Show misassignment plot</button>";
 		} else {
 			button = "<button onclick=\"showPlot(currentStructure);\">Show plot for this structure</button>";
+		}
+
+		if (button == null) {
+			if (misassignmentPlot) {
+				button = "<button onclick=\"showCalcVsObsPlot(currentStructure);\">Show calc vs. obs plot</button>";
+			} else {
+				button = "<button onclick=\"showMisassignmentPlot(currentStructure);\">Show misassignment plot</button>";
+			}
 		}
 
 		return "<html><head>"+
