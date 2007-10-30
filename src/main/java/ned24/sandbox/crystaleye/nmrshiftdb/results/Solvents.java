@@ -8,7 +8,7 @@ import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils.Solvent;
-import ned24.sandbox.crystaleye.nmrshiftdb.plottype.CreateShiftPlot;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottypes.CreateShiftPlot;
 
 public class Solvents implements GaussianConstants {
 

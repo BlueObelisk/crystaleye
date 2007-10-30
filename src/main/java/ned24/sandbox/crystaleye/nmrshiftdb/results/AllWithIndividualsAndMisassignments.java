@@ -1,14 +1,11 @@
 package ned24.sandbox.crystaleye.nmrshiftdb.results;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
-import ned24.sandbox.crystaleye.nmrshiftdb.plottype.CreateMisassignmentPlot;
-import ned24.sandbox.crystaleye.nmrshiftdb.plottype.CreateShiftPlot;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottypes.CreateShiftPlot;
 
 public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 
