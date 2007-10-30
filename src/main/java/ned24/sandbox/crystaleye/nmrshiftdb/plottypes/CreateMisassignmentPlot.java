@@ -1,4 +1,4 @@
-package ned24.sandbox.crystaleye.nmrshiftdb.plottype;
+package ned24.sandbox.crystaleye.nmrshiftdb.plottypes;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateShiftPlot implements GaussianConstants {
+public class CreateMisassignmentPlot implements GaussianConstants {
 
 	List<File> fileList;
 	String htmlTitle;
@@ -28,7 +28,7 @@ public class CreateShiftPlot implements GaussianConstants {
 
 	String startFile = null;
 
-	public CreateShiftPlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
+	public CreateMisassignmentPlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
 		this.fileList = fileList;
 		if (fileList.size() == 1) {
 			startFile = fileList.get(0).getName();
@@ -43,9 +43,7 @@ public class CreateShiftPlot implements GaussianConstants {
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
 
-		StringBuilder sb = new StringBuilder();
 		for (File file : fileList) {
-			System.out.println(file.getAbsolutePath());
 			GaussianCmlTool c = new GaussianCmlTool(file);
 			CMLMolecule molecule = c.getMolecule();
 			String solvent = c.getCalculatedSolvent();
@@ -68,14 +66,15 @@ public class CreateShiftPlot implements GaussianConstants {
 				if (!isAtomSuitable(molecule, calcId)) {
 					continue;
 				}
-				
+
 				double obsShift = GaussianUtils.getPeakValue(obsPeaks, calcId);
+
+				double y = getYValue(obsShift, calcShift);
+				double x = getXValue(obsShift, calcShift);
+
 				Point p = new Point();
-				p.setX(obsShift);
-				p.setY(calcShift);
-				
-				sb.append(obsShift+","+calcShift+"\n");
-				
+				p.setX(x);
+				p.setY(y);									
 				int count = GaussianUtils.getAtomPosition(molecule, calcId);
 				if (startFile == null) {
 					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");");
@@ -92,18 +91,30 @@ public class CreateShiftPlot implements GaussianConstants {
 
 			}
 		}
-		
-		IOUtils.writeText(sb.toString(), "e:/gaussian/hsr1.csv");
 
 		GaussianScatter gs = new GaussianScatter(pointList);
 		gs.setXmin(0);
-		gs.setYmin(0);
-		gs.setXmax(240);
-		gs.setYmax(240);
-		gs.setXTickMarks(12);
-		gs.setYTickMarks(12);
+		gs.setYmin(-20);
+		gs.setXmax(260);
+		gs.setYmax(20);
+		gs.setXTickMarks(10);
+		gs.setYTickMarks(10);
+		gs.setXLab("x label");
+		gs.setYLab("y label");
 		Document doc = gs.getPlot();	
 		return doc;
+	}
+
+	public double getXValue(double calc, double obs) {
+		double ret = (obs+calc)/2;
+		
+		return ret;
+	}
+
+	public double getYValue(double calc, double obs) {
+		double ret = (calc-obs)/2;
+		
+		return ret;
 	}
 
 	private boolean isAtomSuitable(CMLMolecule molecule, String id) {
@@ -124,7 +135,7 @@ public class CreateShiftPlot implements GaussianConstants {
 		String outFolderPath = HTML_DIR+File.separator+protocolName+File.separator+folderName;
 		String svgPath = outFolderPath+"/index.svg";
 		IOUtils.writePrettyXML(doc, svgPath);
-		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile, false);
+		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile, true);
 		String htmlPath = outFolderPath+"/index.html";
 		IOUtils.writeText(htmlContent, htmlPath);
 	}
