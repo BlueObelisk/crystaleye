@@ -12,7 +12,7 @@ import nu.xom.Elements;
 import nu.xom.Nodes;
 
 public abstract class AbstractManager {
-	
+
 	public void updateProps(String downloadLogPath, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum, String managerTag) {
 		String issueCode = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum;
 		File propsPath = new File(downloadLogPath);
@@ -49,33 +49,24 @@ public abstract class AbstractManager {
 					if ("true".equalsIgnoreCase(value)) {
 						continue;
 					} else if ("false".equalsIgnoreCase(value)) {
-						Nodes cifsNodes = issueElement.query(".//cifs");
-						int cifNum = 0;
-						if (cifsNodes.size() == 1) {
-							cifNum = Integer.parseInt(((Element)cifsNodes.get(0)).getAttributeValue("number"));
+						boolean start = false;
+						if (previousManagerTag == null) {
+							start = true;
 						} else {
-							throw new RuntimeException("Should have found one 'cifs' element.");
-						}
-						if (cifNum > 0) {
-							boolean start = false;
-							if (previousManagerTag == null) {
-								start = true;
-							} else {
-								Elements previousManagerElements = issueElement.getChildElements(previousManagerTag);
-								if (previousManagerElements.size() > 0) {
-									String procValue = previousManagerElements.get(0).getAttributeValue(VALUE);
-									if ("true".equalsIgnoreCase(procValue)) {
-										start = true;
-									}
+							Elements previousManagerElements = issueElement.getChildElements(previousManagerTag);
+							if (previousManagerElements.size() > 0) {
+								String procValue = previousManagerElements.get(0).getAttributeValue(VALUE);
+								if ("true".equalsIgnoreCase(procValue)) {
+									start = true;
 								}
 							}
-							if (start) {
-								String iss = issueElement.getAttributeValue("id");
-								Element yearNode = (Element)issueElement.getParent();
-								String year = yearNode.getAttributeValue("id");
-								System.out.println("CIFs from "+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+iss+" have yet to be processed through '"+managerTag+"' manager");
-								outputList.add(new IssueDate(year, iss));
-							}
+						}
+						if (start) {
+							String iss = issueElement.getAttributeValue("id");
+							Element yearNode = (Element)issueElement.getParent();
+							String year = yearNode.getAttributeValue("id");
+							System.out.println("CIFs from "+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+iss+" have yet to be processed through '"+managerTag+"' manager");
+							outputList.add(new IssueDate(year, iss));
 						}
 					} else {
 						throw new IllegalStateException("Invalid '"+managerTag+"' value.");
