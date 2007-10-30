@@ -250,8 +250,6 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 					}
 				}
 			}		
-		} else {
-			throw new CrystalEyeRuntimeException("Issue write directory does not exist: "+issueWriteDir);
 		}
 	}
 
