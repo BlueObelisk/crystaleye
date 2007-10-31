@@ -1,11 +1,13 @@
 package ned24.sandbox.crystaleye.nmrshiftdb.results;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
-import ned24.sandbox.crystaleye.nmrshiftdb.plottypes.CreateShiftPlot;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottype.CreateMisassignmentPlot;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottype.CreateShiftPlot;
 
 public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 
@@ -18,14 +20,19 @@ public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 		
 		System.out.println(protocolName);
 		String cmlFolder = CML_DIR+protocolName;			
-		List<File> fileList = Arrays.asList(new File(cmlFolder).listFiles());
+		List<File> fileList = new ArrayList<File>();
+		for (File file : new File(cmlFolder).listFiles()) {
+			if (file.getAbsolutePath().endsWith(".cml.xml")) {
+				fileList.add(file);
+			}
+		}
 		String htmlTitle = "Selection of structures from NMRShiftDB with MW < 300";
 		
 		String folderName = "all";
 		CreateShiftPlot c = new CreateShiftPlot(fileList, protocolName, folderName, htmlTitle);
 		c.run();
 		
-		/*
+		
 		String allMisassignmentFolderName = "all-misassignments";
 		CreateMisassignmentPlot cm = new CreateMisassignmentPlot(fileList, protocolName, allMisassignmentFolderName, htmlTitle);
 		cm.run();
@@ -33,6 +40,9 @@ public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 		String urlPrefix = "http://nmrshiftdb.ice.mpg.de/portal/js_pane/P-Results;jsessionid=FA2A776224CDA757D4B710F5FC12A899.tomcat2?nmrshiftdbaction=showDetailsFromHome&molNumber=";
 		
 		for (File file : new File(cmlFolder).listFiles()) {
+			if (!file.getAbsolutePath().endsWith(".cml.xml")) {
+				continue;
+			}
 			List<File> fileList2 = new ArrayList<File>();
 			fileList2.add(file);
 			GaussianCmlTool c13 = new GaussianCmlTool(file);
@@ -52,6 +62,9 @@ public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 		}
 		
 		for (File file : new File(cmlFolder).listFiles()) {
+			if (!file.getAbsolutePath().endsWith(".cml.xml")) {
+				continue;
+			}
 			List<File> fileList2 = new ArrayList<File>();
 			fileList2.add(file);
 			GaussianCmlTool c13 = new GaussianCmlTool(file);
@@ -69,6 +82,6 @@ public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 			CreateMisassignmentPlot c2 = new CreateMisassignmentPlot(fileList2, protocolName, title, htmlTitle2);
 			c2.run();
 		}
-		*/
+		
 	}
 }
