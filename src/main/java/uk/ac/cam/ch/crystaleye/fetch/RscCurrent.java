@@ -59,7 +59,9 @@ public class RscCurrent extends CurrentIssueFetcher {
 				String articleUrl = SITE_PREFIX+((Element)articleLinks.get(i)).getAttributeValue("href");
 				doc = IOUtils.parseWebPageMinusComments(articleUrl);
 				sleep();
-				Nodes suppLinks = doc.query("//x:a[text()='Electronic Supplementary Information']", X_XHTML);
+				Nodes suppLinks = doc.query("//x:a[contains(text(),'Electronic supplementary information')]", X_XHTML);
+				System.out.println(articleUrl);
+				System.out.println("supplinks: "+suppLinks.size());
 				if (suppLinks.size() > 0) {
 					for (int j = 0; j < suppLinks.size(); j++) {
 						String link = ((Element)suppLinks.get(j)).getAttributeValue("href");
