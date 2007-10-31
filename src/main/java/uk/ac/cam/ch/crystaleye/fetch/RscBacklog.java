@@ -71,7 +71,7 @@ public class RscBacklog extends Fetcher {
 		for (int i = 0; i < articleLinks.size(); i++) {
 			String articleUrl = HOMEPAGE_PREFIX+((Element)articleLinks.get(i)).getAttributeValue("href");
 			Document articleDoc = IOUtils.parseWebPageMinusComments(articleUrl);
-			Nodes suppdataLinks = articleDoc.query("//x:a[text()='Electronic Supplementary Information']", X_XHTML);
+			Nodes suppdataLinks = articleDoc.query("//x:a[contains(text(),'Electronic supplementary information')]", X_XHTML);
 			for (int j = 0; j < suppdataLinks.size(); j++) {
 				sleep();
 				String suppdataUrl = HOMEPAGE_PREFIX+((Element)suppdataLinks.get(j)).getAttributeValue("href");
@@ -97,7 +97,45 @@ public class RscBacklog extends Fetcher {
 	}
 
 	public static void main(String[] args) {
-		RscBacklog ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "dt", "2007", "38");
+		RscBacklog ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "gc", "2007", "11");
 		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "jm", "2007", "40");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "jm", "2007", "41");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "jm", "2007", "42");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "jm", "2007", "43");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "nj", "2007", "11");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "ob", "2007", "21");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "ob", "2007", "22");
+		ore.fetch();
+		
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "33");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "34");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "35");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "36");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "37");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "38");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "39");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "40");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "41");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "42");
+		ore.fetch();
+		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "43");
+		ore.fetch();
+		
 	}
 }
