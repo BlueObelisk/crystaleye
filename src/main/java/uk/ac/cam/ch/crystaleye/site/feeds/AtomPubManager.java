@@ -112,7 +112,6 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 			a = tp.getFeedSkeleton();
 		}
 		updateFeeds(a, fileList, 0); 
-		throw new RuntimeException("jk");
 	}
 
 	public void updateFeeds(AtomPubFeed currentFeed, List<File> fileList, int position) {

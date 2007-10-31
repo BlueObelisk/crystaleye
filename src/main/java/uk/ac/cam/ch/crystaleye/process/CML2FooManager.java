@@ -189,8 +189,6 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 					}
 				}		
 			}
-		} else {
-			throw new CrystalEyeRuntimeException("Issue write directory does not exist: "+issueWriteDir);
 		}
 	}
 
