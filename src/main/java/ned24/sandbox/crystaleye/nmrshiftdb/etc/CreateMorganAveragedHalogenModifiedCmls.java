@@ -25,6 +25,9 @@ public class CreateMorganAveragedHalogenModifiedCmls {
 			//if (!file.getAbsolutePath().contains("nmrshiftdb10005718")) {
 			//	continue;
 			//}
+			if (!file.getAbsolutePath().endsWith(".cml.xml")) {
+				continue;
+			}
 			System.out.println(file.getAbsolutePath());
 			GaussianCmlTool g = new GaussianCmlTool(file);
 			CMLMolecule molecule = g.getMolecule();
