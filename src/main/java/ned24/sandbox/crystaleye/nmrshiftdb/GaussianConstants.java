@@ -40,6 +40,8 @@ public interface GaussianConstants extends CMLConstants {
 	public static final String SECOND_PROTOCOL_MOD1_NAME = "second-protocol_mod1";
 	public static final String SECOND_PROTOCOL_MANUALMOD_NAME = "second-protocol_manualmod";
 	public static final String SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME = "second-protocol_manualAndMorgan";
+	public static final String SECOND_PROTOCOL_NO_MISASSIGNS = "second-protocol_nomisassigns";
+	public static final String SECOND_PROTOCOL_MOD1_NO_MISASSIGNS = "second-protocol_mod1nomisassigns";
 	// first diff
 	public static final String FIRST_DIFF_FOLDER	= HTML_DIR+"first-diff";
 }
