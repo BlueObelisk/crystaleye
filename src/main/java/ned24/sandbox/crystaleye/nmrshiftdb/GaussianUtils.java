@@ -18,7 +18,7 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 
 
 public class GaussianUtils implements GaussianConstants {
-	
+
 	public static int getSpectNum(File file) {
 		String name = file.getName();
 		int idx = name.indexOf("-");
@@ -93,6 +93,36 @@ public class GaussianUtils implements GaussianConstants {
 			s = Solvent.THF;
 		} else if (solv.equals("CCl4")) {
 			s = Solvent.CCL4;
+		}
+		return s;
+	}
+
+	public static String getSolventString(Solvent solv) {
+		String s = null;		
+		if (solv.equals(Solvent.ACETONE)) {
+			s = "Acetone";
+		} else if (solv.equals(Solvent.DICHLOROMETHANE)) {
+			s = "DiChloroMethane";
+		} else if (solv.equals(Solvent.BENZENE)) {
+			s = "Benzene";
+		} else if (solv.equals(Solvent.WATER)) {
+			s = "Water";
+		} else if (solv.equals(Solvent.ETHER)) {
+			s = "Ether";
+		} else if (solv.equals(Solvent.METHANOL)) {
+			s = "Methanol";
+		} else if (solv.equals(Solvent.CHLOROFORM)) {
+			s = "Chloroform";
+		} else if (solv.equals(Solvent.DMSO)) {
+			s = "DMSO";
+		} else if (solv.equals(Solvent.ACETONITRILE)) {
+			s = "Acetonitrile";
+		} else if (solv.equals(Solvent.TOLUENE)) {
+			s = "Toluene";
+		} else if (solv.equals(Solvent.THF)) {
+			s = "THF";
+		} else if (solv.equals(Solvent.CCL4)) {
+			s = "CCl4";
 		}
 		return s;
 	}
@@ -203,11 +233,11 @@ public class GaussianUtils implements GaussianConstants {
 			finalName = gaussianNameMM + "_" + intList.get(0)
 			+ GAUSSIAN_CONVERTER_OUT_MIME;
 		}
-		
+
 		String finalname = tmpFolder.getAbsolutePath() + File.separator
 		+ finalName;
 		CMLCml cml = (CMLCml) IOUtils.parseCmlFile(finalname).getRootElement();
-		
+
 		for (File f : tmpFolder.listFiles()) {
 			f.delete();
 		}
@@ -261,7 +291,7 @@ public class GaussianUtils implements GaussianConstants {
 		}
 		return sb.toString();
 	}
-	
+
 	public static void writeShFile(String outFolder, String name, int numberFileCount) {
 		String content = "#!/bin/sh\n"+
 		"\n"+
