@@ -176,14 +176,16 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			}
 		}
 	}
-	
+
 	private void removeCreatedFiles(String issueWriteDir) {
 		File issueWriteFile = new File(issueWriteDir);
-		for (File articleFile : issueWriteFile.listFiles()) {
-			if (articleFile.isDirectory()) {
-				for (File file : articleFile.listFiles()) {
-					if (file.isDirectory()) {
-						Utils.delDir(file.getAbsolutePath());
+		if (issueWriteFile.exists()) {
+			for (File articleFile : issueWriteFile.listFiles()) {
+				if (articleFile.isDirectory()) {
+					for (File file : articleFile.listFiles()) {
+						if (file.isDirectory()) {
+							Utils.delDir(file.getAbsolutePath());
+						}
 					}
 				}
 			}
@@ -459,23 +461,23 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		Nodes titleNodes = cml.query(".//cml:scalar[@dictRef=\"iucr:_publ_section_title\"]", X_CML);
 		String title = "";
 		try {
-		if (titleNodes.size() != 0) {
-			title = titleNodes.get(0).getValue();
-			title = CIFUtil.translateCIF2ISO(title);
-			title = title.replaceAll("\\\\", "");
+			if (titleNodes.size() != 0) {
+				title = titleNodes.get(0).getValue();
+				title = CIFUtil.translateCIF2ISO(title);
+				title = title.replaceAll("\\\\", "");
 
-			String patternStr = "\\^(\\d+)\\^";
-			String replaceStr = "<sup>$1</sup>";
-			Pattern pattern = Pattern.compile(patternStr);
-			Matcher matcher = pattern.matcher(title);
-			title = matcher.replaceAll(replaceStr);
+				String patternStr = "\\^(\\d+)\\^";
+				String replaceStr = "<sup>$1</sup>";
+				Pattern pattern = Pattern.compile(patternStr);
+				Matcher matcher = pattern.matcher(title);
+				title = matcher.replaceAll(replaceStr);
 
-			patternStr = "~(\\d+)~";
-			replaceStr = "<sub>$1</sub>";
-			pattern = Pattern.compile(patternStr);
-			matcher = pattern.matcher(title);
-			title = matcher.replaceAll(replaceStr);
-		}
+				patternStr = "~(\\d+)~";
+				replaceStr = "<sub>$1</sub>";
+				pattern = Pattern.compile(patternStr);
+				matcher = pattern.matcher(title);
+				title = matcher.replaceAll(replaceStr);
+			}
 		} catch (Exception e) {
 			System.err.println("Could not translate CIF string to ISO: "+title);
 			title = "";

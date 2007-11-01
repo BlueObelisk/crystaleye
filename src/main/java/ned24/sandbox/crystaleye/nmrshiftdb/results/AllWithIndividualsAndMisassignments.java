@@ -6,15 +6,14 @@ import java.util.List;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
-import ned24.sandbox.crystaleye.nmrshiftdb.plottype.CreateMisassignmentPlot;
-import ned24.sandbox.crystaleye.nmrshiftdb.plottype.CreateShiftPlot;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottypes.CreateMisassignmentPlot;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottypes.CreateShiftPlot;
 
 public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 
 	public static void main(String[] args) {
 		//String protocolName = SECOND_PROTOCOL_NAME;
-		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
-		
+		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;	
 		//String protocolName = SECOND_PROTOCOL_MANUALMOD_NAME;
 		String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
 		

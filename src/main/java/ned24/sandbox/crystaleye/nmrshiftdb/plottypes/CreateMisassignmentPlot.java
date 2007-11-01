@@ -99,8 +99,8 @@ public class CreateMisassignmentPlot implements GaussianConstants {
 		gs.setYmax(20);
 		gs.setXTickMarks(10);
 		gs.setYTickMarks(10);
-		gs.setXLab("x label");
-		gs.setYLab("y label");
+		gs.setXLab("Average shift (observed and calculated");
+		gs.setYLab("Shift - average shift");
 		Document doc = gs.getPlot();	
 		return doc;
 	}
