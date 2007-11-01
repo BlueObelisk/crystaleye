@@ -18,11 +18,15 @@ public class FindPossibleMisassignments implements GaussianConstants {
 	static int PPM_EPS = 2;
 
 	public static void main(String[] args) {		
+		//String protocolName = SECOND_PROTOCOL_NAME;
 		String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
 		String path = CML_DIR+protocolName;
 
 		Set<File> fileList = new HashSet<File>();
 		for (File file : new File(path).listFiles()) {
+			if (!file.getAbsolutePath().endsWith(".cml.xml")) {
+				continue;
+			}
 			List<Double> xList = new ArrayList<Double>();
 			GaussianCmlTool c = new GaussianCmlTool(file);
 			String solvent = c.getCalculatedSolvent();
@@ -63,6 +67,7 @@ public class FindPossibleMisassignments implements GaussianConstants {
 		for (File file : fileList) {
 			System.out.println(file.getAbsolutePath());
 		}
+		
 	}
 
 	public static double getXValue(double calc, double obs) {
