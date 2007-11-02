@@ -8,7 +8,7 @@ import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils.Solvent;
-import ned24.sandbox.crystaleye.nmrshiftdb.plottypes.CreateShiftPlot;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottools.ShiftPlot;
 
 public class Solvents implements GaussianConstants {
 
@@ -32,7 +32,7 @@ public class Solvents implements GaussianConstants {
 				}
 			}
 			if (fileList.size() > 0) {
-				CreateShiftPlot c2 = new CreateShiftPlot(fileList, protocolName, s.toString(), htmlTitle);
+				ShiftPlot c2 = new ShiftPlot(fileList, protocolName, s.toString(), htmlTitle);
 				c2.run();
 			}
 		}		
