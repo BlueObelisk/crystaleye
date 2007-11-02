@@ -1,4 +1,4 @@
-package ned24.sandbox.crystaleye.nmrshiftdb.plottypes;
+package ned24.sandbox.crystaleye.nmrshiftdb.plottools;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateDifferencePlot implements GaussianConstants {
+public class ShiftPlot implements GaussianConstants {
 
 	List<File> fileList;
 	String htmlTitle;
@@ -28,7 +28,7 @@ public class CreateDifferencePlot implements GaussianConstants {
 
 	String startFile = null;
 
-	public CreateDifferencePlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
+	public ShiftPlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
 		this.fileList = fileList;
 		if (fileList.size() == 1) {
 			startFile = fileList.get(0).getName();
@@ -72,7 +72,7 @@ public class CreateDifferencePlot implements GaussianConstants {
 				double obsShift = GaussianUtils.getPeakValue(obsPeaks, calcId);
 				Point p = new Point();
 				p.setX(obsShift);
-				p.setY(calcShift-obsShift);
+				p.setY(calcShift);
 				
 				sb.append(obsShift+","+calcShift+"\n");
 				
@@ -97,13 +97,11 @@ public class CreateDifferencePlot implements GaussianConstants {
 
 		GaussianScatter gs = new GaussianScatter(pointList);
 		gs.setXmin(0);
-		gs.setYmin(-30);
+		gs.setYmin(0);
 		gs.setXmax(240);
-		gs.setYmax(30);
+		gs.setYmax(240);
 		gs.setXTickMarks(12);
 		gs.setYTickMarks(12);
-		gs.setXLab("observed shift");
-		gs.setYLab("difference (calc- obs)");
 		Document doc = gs.getPlot();	
 		return doc;
 	}
@@ -132,23 +130,6 @@ public class CreateDifferencePlot implements GaussianConstants {
 	}
 
 	public static void main(String[] args) {
-		//String protocolName = SECOND_PROTOCOL_NAME;
-		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;	
-		//String protocolName = SECOND_PROTOCOL_MANUALMOD_NAME;
-		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
-		
-		System.out.println(protocolName);
-		String cmlFolder = CML_DIR+protocolName;			
-		List<File> fileList = new ArrayList<File>();
-		for (File file : new File(cmlFolder).listFiles()) {
-			if (file.getAbsolutePath().endsWith(".cml.xml")) {
-				fileList.add(file);
-			}
-		}
-		String htmlTitle = "Selection of structures from NMRShiftDB with MW < 300";
-		
-		String folderName = "difference";
-		CreateDifferencePlot c = new CreateDifferencePlot(fileList, protocolName, folderName, htmlTitle);
-		c.run();
+		//
 	}
 }

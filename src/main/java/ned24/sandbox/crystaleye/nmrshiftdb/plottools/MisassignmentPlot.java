@@ -1,4 +1,4 @@
-package ned24.sandbox.crystaleye.nmrshiftdb.plottypes;
+package ned24.sandbox.crystaleye.nmrshiftdb.plottools;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateMisassignmentPlot implements GaussianConstants {
+public class MisassignmentPlot implements GaussianConstants {
 
 	List<File> fileList;
 	String htmlTitle;
@@ -28,7 +28,7 @@ public class CreateMisassignmentPlot implements GaussianConstants {
 
 	String startFile = null;
 
-	public CreateMisassignmentPlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
+	public MisassignmentPlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
 		this.fileList = fileList;
 		if (fileList.size() == 1) {
 			startFile = fileList.get(0).getName();
