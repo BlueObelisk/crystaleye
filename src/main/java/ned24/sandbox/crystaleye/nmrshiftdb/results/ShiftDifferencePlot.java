@@ -141,9 +141,9 @@ public class ShiftDifferencePlot implements GaussianConstants {
 	}
 
 	public static void main(String[] args) {
-		String protocolName = SECOND_PROTOCOL_NAME;
-		String defaultPath = CML_DIR+SECOND_PROTOCOL_NAME;
-		String hsrPath = CML_DIR+SECOND_PROTOCOL_MOD1_NAME;
+		String protocolName = HSR0_NAME;
+		String defaultPath = CML_DIR+HSR0_NAME;
+		String hsrPath = CML_DIR+HSR1_NAME;
 		String folderName = "all";
 		
 		List<File> fileList1 = Arrays.asList(new File(hsrPath).listFiles());

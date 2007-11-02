@@ -28,7 +28,7 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class SubstitutedBenzenes implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
+		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
 		String path = CML_DIR+protocolName;
 
 		String htmlTitle = "Carbons of benzene rings";

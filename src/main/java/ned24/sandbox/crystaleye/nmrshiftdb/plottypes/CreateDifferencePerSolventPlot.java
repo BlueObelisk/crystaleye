@@ -28,8 +28,6 @@ public class CreateDifferencePerSolventPlot implements GaussianConstants {
 	String folderName;
 
 	String startFile = null;
-	
-	String[] colours = {"AntiqueWhite", "GoldenRod", "Blue", "Aqua", "BlueViolet", "SlateGrey", "Chocolate", "Green", "DarkCyan", "LightCoral", "MediumOrchid", "YellowGreen"};
 
 	public CreateDifferencePerSolventPlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
 		this.fileList = fileList;
@@ -104,9 +102,9 @@ public class CreateDifferencePerSolventPlot implements GaussianConstants {
 
 		GaussianScatter gs = new GaussianScatter(pointList);
 		gs.setXmin(0);
-		gs.setYmin(-30);
+		gs.setYmin(-20);
 		gs.setXmax(240);
-		gs.setYmax(30);
+		gs.setYmax(20);
 		gs.setXTickMarks(12);
 		gs.setYTickMarks(12);
 		gs.setXLab("observed shift");
@@ -156,12 +154,10 @@ public class CreateDifferencePerSolventPlot implements GaussianConstants {
 	}
 
 	public static void main(String[] args) {
-		//String protocolName = SECOND_PROTOCOL_NAME;
-		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;	
-		//String protocolName = SECOND_PROTOCOL_MANUALMOD_NAME;
-		//String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
-		String protocolName = SECOND_PROTOCOL_NO_MISASSIGNS;
-		//String protocolName = SECOND_PROTOCOL_MOD1_NO_MISASSIGNS;
+		//String protocolName = HSR0_NAME;
+		//String protocolName = HSR1_NAME;	
+		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
+		//String protocolName = HSR1_MANUAL_AND_MORGAN_NAME;
 		
 		System.out.println(protocolName);
 		String cmlFolder = CML_DIR+protocolName;			
