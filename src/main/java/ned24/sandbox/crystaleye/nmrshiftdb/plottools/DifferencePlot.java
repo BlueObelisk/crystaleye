@@ -1,4 +1,4 @@
-package ned24.sandbox.crystaleye.nmrshiftdb.plottypes;
+package ned24.sandbox.crystaleye.nmrshiftdb.plottools;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,7 +8,6 @@ import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianScatter;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
-import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils.Solvent;
 import ned24.sandbox.crystaleye.nmrshiftdb.results.PlotUtils;
 import nu.xom.Document;
 
@@ -19,7 +18,7 @@ import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateDifferencePerSolventPlot implements GaussianConstants {
+public class DifferencePlot implements GaussianConstants {
 
 	List<File> fileList;
 	String htmlTitle;
@@ -29,7 +28,7 @@ public class CreateDifferencePerSolventPlot implements GaussianConstants {
 
 	String startFile = null;
 
-	public CreateDifferencePerSolventPlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
+	public DifferencePlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
 		this.fileList = fileList;
 		if (fileList.size() == 1) {
 			startFile = fileList.get(0).getName();
@@ -50,9 +49,6 @@ public class CreateDifferencePerSolventPlot implements GaussianConstants {
 			GaussianCmlTool c = new GaussianCmlTool(file);
 			CMLMolecule molecule = c.getMolecule();
 			String solvent = c.getCalculatedSolvent();
-
-			String colour = getSolventColour(solvent);
-			
 			boolean b = c.testSpectraConcordant(solvent);
 			if (!b) {
 				continue;
@@ -86,7 +82,6 @@ public class CreateDifferencePerSolventPlot implements GaussianConstants {
 				} else {
 					p.setLink("javascript:changeAtom('', "+count+");");
 				}
-				p.setColour(colour);
 				pointList.add(p);
 				if (calcShift > max) {
 					max = calcShift;
@@ -102,32 +97,15 @@ public class CreateDifferencePerSolventPlot implements GaussianConstants {
 
 		GaussianScatter gs = new GaussianScatter(pointList);
 		gs.setXmin(0);
-		gs.setYmin(-20);
+		gs.setYmin(-30);
 		gs.setXmax(240);
-		gs.setYmax(20);
+		gs.setYmax(30);
 		gs.setXTickMarks(12);
 		gs.setYTickMarks(12);
 		gs.setXLab("observed shift");
 		gs.setYLab("difference (calc- obs)");
 		Document doc = gs.getPlot();	
 		return doc;
-	}
-	
-	private String getSolventColour(String solvent) {	
-		List<String> solvents = new ArrayList<String>();
-		for (Solvent s : GaussianUtils.Solvent.values()) {
-			solvents.add(GaussianUtils.getSolventString(s));
-		}
-		int i = 0;
-		solvent = GaussianUtils.nmrShiftDbSolvent2GaussianSolvent(solvent);
-		for (String s : solvents) {
-			if (s.equals(solvent)) {
-				System.out.println(i+" "+colours[i]);
-				return colours[i];
-			}
-			i++;
-		}
-		throw new RuntimeException("Could not find solvent: "+solvent);
 	}
 
 	private boolean isAtomSuitable(CMLMolecule molecule, String id) {
@@ -154,10 +132,10 @@ public class CreateDifferencePerSolventPlot implements GaussianConstants {
 	}
 
 	public static void main(String[] args) {
-		//String protocolName = HSR0_NAME;
-		//String protocolName = HSR1_NAME;	
+		//String protocolName = SECOND_PROTOCOL_NAME;
+		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;	
+		//String protocolName = SECOND_PROTOCOL_MANUALMOD_NAME;
 		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
-		//String protocolName = HSR1_MANUAL_AND_MORGAN_NAME;
 		
 		System.out.println(protocolName);
 		String cmlFolder = CML_DIR+protocolName;			
@@ -169,8 +147,8 @@ public class CreateDifferencePerSolventPlot implements GaussianConstants {
 		}
 		String htmlTitle = "Selection of structures from NMRShiftDB with MW < 300";
 		
-		String folderName = "differencebysolvent";
-		CreateDifferencePerSolventPlot c = new CreateDifferencePerSolventPlot(fileList, protocolName, folderName, htmlTitle);
+		String folderName = "difference";
+		DifferencePlot c = new DifferencePlot(fileList, protocolName, folderName, htmlTitle);
 		c.run();
 	}
 }

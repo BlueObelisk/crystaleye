@@ -6,8 +6,8 @@ import java.util.List;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
-import ned24.sandbox.crystaleye.nmrshiftdb.plottypes.CreateMisassignmentPlot;
-import ned24.sandbox.crystaleye.nmrshiftdb.plottypes.CreateShiftPlot;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottools.MisassignmentPlot;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottools.ShiftPlot;
 
 public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 
@@ -28,12 +28,12 @@ public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 		String htmlTitle = "Selection of structures from NMRShiftDB with MW < 300";
 		
 		String folderName = "all";
-		CreateShiftPlot c = new CreateShiftPlot(fileList, protocolName, folderName, htmlTitle);
+		ShiftPlot c = new ShiftPlot(fileList, protocolName, folderName, htmlTitle);
 		c.run();
 		
 		
 		String allMisassignmentFolderName = "all-misassignments";
-		CreateMisassignmentPlot cm = new CreateMisassignmentPlot(fileList, protocolName, allMisassignmentFolderName, htmlTitle);
+		MisassignmentPlot cm = new MisassignmentPlot(fileList, protocolName, allMisassignmentFolderName, htmlTitle);
 		cm.run();
 		
 		String urlPrefix = "http://nmrshiftdb.ice.mpg.de/portal/js_pane/P-Results;jsessionid=FA2A776224CDA757D4B710F5FC12A899.tomcat2?nmrshiftdbaction=showDetailsFromHome&molNumber=";
@@ -56,7 +56,7 @@ public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 			number = number.substring(0,number.indexOf("-"));
 			
 			String htmlTitle2 = "<a href='"+urlPrefix+number+"'>"+name+" (solvent: "+solvent+")</a>";
-			CreateShiftPlot c2 = new CreateShiftPlot(fileList2, protocolName, title, htmlTitle2);
+			ShiftPlot c2 = new ShiftPlot(fileList2, protocolName, title, htmlTitle2);
 			c2.run();
 		}
 		
@@ -78,7 +78,7 @@ public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 			number = number.substring(0,number.indexOf("-"));
 			
 			String htmlTitle2 = "<a href='"+urlPrefix+number+"'>"+name+" (solvent: "+solvent+")</a>";
-			CreateMisassignmentPlot c2 = new CreateMisassignmentPlot(fileList2, protocolName, title, htmlTitle2);
+			MisassignmentPlot c2 = new MisassignmentPlot(fileList2, protocolName, title, htmlTitle2);
 			c2.run();
 		}
 		

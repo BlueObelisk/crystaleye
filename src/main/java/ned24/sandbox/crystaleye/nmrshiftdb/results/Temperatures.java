@@ -9,7 +9,7 @@ import java.util.Set;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
-import ned24.sandbox.crystaleye.nmrshiftdb.plottypes.CreateShiftPlot;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottools.ShiftPlot;
 import nu.xom.Element;
 import nu.xom.Nodes;
 
@@ -62,7 +62,7 @@ public class Temperatures implements CMLConstants, GaussianConstants {
 				}
 			}
 			if (fileList.size() > 0) {
-				CreateShiftPlot c2 = new CreateShiftPlot(fileList, protocolName, temp, htmlTitle);
+				ShiftPlot c2 = new ShiftPlot(fileList, protocolName, temp, htmlTitle);
 				c2.run();
 			}
 		}	
