@@ -24,7 +24,7 @@ public class CDistribution implements GaussianConstants {
 		//String protocolName = HSR0_NAME;
 		//String protocolName = HSR1_NAME;
 		//String protocolName = HSR0_MANUALMOD_NAME;
-		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
+		String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
 		String outPath = "e:/gaussian/html/manmorg-cplot.svg";		
 		
 		String path = CML_DIR+protocolName;

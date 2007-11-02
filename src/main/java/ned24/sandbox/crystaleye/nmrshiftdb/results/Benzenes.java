@@ -22,16 +22,17 @@ import org.xmlcml.cml.tools.RingNucleus;
 import org.xmlcml.cml.tools.RingNucleusSet;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
+import uk.ac.cam.ch.crystaleye.Utils;
 
 public class Benzenes implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
+		String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
 		String path = CML_DIR+protocolName;
 
 		String htmlTitle = "Carbons of benzene rings";
 		String folderName = "benzenes";
-		
+
 		List<Point> pointList = new ArrayList<Point>();
 		for (File file : new File(path).listFiles()) {
 			GaussianCmlTool g = new GaussianCmlTool(file);
@@ -65,14 +66,16 @@ public class Benzenes implements GaussianConstants {
 							p.setX(obsShift);
 							p.setY(tmsShift-calcShift);									
 							int count = GaussianUtils.getAtomPosition(molecule, atomId);
-							p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");");
+							p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");" +
+									"changeCoordLabel("+Utils.round(obsShift, 1)+","+Utils.round(calcShift, 1)+");");
+
 							pointList.add(p);
 						}
 					}
 				}
 			}
 		}
-		
+
 		GaussianScatter gs = new GaussianScatter(pointList);
 		gs.setXmin(0);
 		gs.setYmin(0);
@@ -81,7 +84,7 @@ public class Benzenes implements GaussianConstants {
 		gs.setXTickMarks(12);
 		gs.setYTickMarks(12);
 		Document doc = gs.getPlot();	
-		
+
 		String outFolderPath = HTML_DIR+File.separator+protocolName+File.separator+folderName;
 		String svgPath = outFolderPath+"/index.svg";
 		IOUtils.writePrettyXML(doc, svgPath);

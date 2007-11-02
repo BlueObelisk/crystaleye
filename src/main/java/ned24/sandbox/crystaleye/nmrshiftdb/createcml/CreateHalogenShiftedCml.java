@@ -1,22 +1,44 @@
 package ned24.sandbox.crystaleye.nmrshiftdb.createcml;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
+import ned24.sandbox.crystaleye.nmrshiftdb.etc.SyncRemovedFiles;
 
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLPeak;
 
+import uk.ac.cam.ch.crystaleye.FileListing;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateHalogenShiftedCml {
+public class CreateHalogenShiftedCml implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String path = "e:/gaussian/cml/second-protocol_mod1";
-		String outFolder = "e:/gaussian/cml/second-protocol_manualmod/";
-		for (File file : new File(path).listFiles()) {
+		String protocolName = HSR0_NAME;
+		
+		String inCmlDir = CML_DIR+protocolName;
+		String inRemovedCmlDir = REMOVED_CML_DIR+protocolName;
+		
+		String outCmlDir = inCmlDir+"_hal/";
+		
+		List<File> fileList = new ArrayList<File>();
+		try {
+			fileList = FileListing.byMime(new File(inRemovedCmlDir), ".cml.xml");
+			for (File file : new File(inCmlDir).listFiles()) {
+				if (file.getAbsolutePath().endsWith(".cml.xml")) {
+					fileList.add(file);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		for (File file : fileList) {
 			System.out.println(file.getAbsolutePath());
 			GaussianCmlTool g = new GaussianCmlTool(file);
 			CMLMolecule molecule = g.getMolecule();
@@ -43,9 +65,10 @@ public class CreateHalogenShiftedCml {
 			}
 
 			String name = file.getName();
-			String outPath = outFolder+name;
+			String outPath = outCmlDir+name;
 			IOUtils.writePrettyXML(molecule.getDocument(), outPath);
 		}
+		new SyncRemovedFiles().run();
 	}
 	
 }

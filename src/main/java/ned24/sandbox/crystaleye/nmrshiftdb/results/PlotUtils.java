@@ -71,11 +71,12 @@ public class PlotUtils implements GaussianConstants {
 		"<div style=\"position: absolute; text-align: center; width: 100%; z-index: 100;\"><h2>"+htmlTitle+"</h2></div>"+
 		"<div style=\"position: absolute; top: -50px;\">"+
 		"<embed id='svgPlot' src=\"./index.svg\" width=\"715\" height=\"675\" style=\"position:absolute;\" />"+
-		"<div style=\"position: absolute; left: 675px; top: 200px;\">"+
+		"<div style=\"position: absolute; left: 675px; top: 200px; text-align: center;\">"+
 		"<script type=\"text/javascript\">jmolInitialize(\"../../../\");"+
 		"</script>"+
 		"<script type=\"text/javascript\">jmolApplet(300, \""+startStruct+"\");</script>"+
 		button+
+		"<p><span id='coords'>No point selected.</span></p>"+
 		"</div>"+
 		"</div>"+
 		"</body>"+

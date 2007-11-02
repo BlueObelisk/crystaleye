@@ -19,6 +19,7 @@ import org.xmlcml.cml.element.CMLPeakList;
 import org.xmlcml.cml.element.CMLSpectrum;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
+import uk.ac.cam.ch.crystaleye.Utils;
 
 public class ShiftDifferencePlot implements GaussianConstants {
 
@@ -97,9 +98,10 @@ public class ShiftDifferencePlot implements GaussianConstants {
 				p.setY(hMinusD);
 				int count = GaussianUtils.getAtomPosition(molecule, atomId);
 				if (startFile == null) {
-					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file1.getName()+"', "+count+");");
+					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file1.getName()+"', "+count+");" +
+							"changeCoordLabel("+Utils.round(obs, 1)+","+Utils.round(hMinusD, 1)+");");
 				} else {
-					p.setLink("javascript:changeAtom('', "+count+");");
+					p.setLink("javascript:changeAtom('', "+count+");changeCoordLabel("+Utils.round(obs, 1)+","+Utils.round(hMinusD, 1)+");");
 				}
 				
 				pointList.add(p);

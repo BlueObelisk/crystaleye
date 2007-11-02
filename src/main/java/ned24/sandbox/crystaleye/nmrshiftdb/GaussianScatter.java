@@ -90,7 +90,8 @@ public class GaussianScatter implements GaussianConstants {
 		SVGElement script = new SVGElement("script");
 		element.appendChild(script);
 		script.addAttribute(new Attribute("type", "text/ecmascript"));
-		Text content = new Text("function changeAtom(path, num) {parent.changeAtomInJmol(path, num);}");
+		Text content = new Text("function changeAtom(path, num) {parent.changeAtomInJmol(path, num);}" +
+				"function changeCoordLabel(x, y) {parent.changeCoordLabel(x, y);}");
 		script.appendChild(content);
 	}
 

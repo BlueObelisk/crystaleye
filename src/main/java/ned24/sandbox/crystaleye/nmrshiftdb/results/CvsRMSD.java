@@ -15,14 +15,13 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
+import uk.ac.cam.ch.crystaleye.Utils;
 
 public class CvsRMSD implements GaussianConstants {
 
 	public static void main(String[] args) {
-		//String protocolName = SECOND_PROTOCOL_NAME;
-		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
-		//String protocolName = SECOND_PROTOCOL_MANUALMOD_NAME;
-		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
+		//String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
+		String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
 		
 		String path = CML_DIR+protocolName;
 		String folderName = "RMSD-vs-C";
@@ -49,7 +48,8 @@ public class CvsRMSD implements GaussianConstants {
 			p.setX(rmsd);
 			p.setY(c);
 			int count = GaussianUtils.getAtomPosition(molecule, "99999");
-			p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");");
+			p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");" +
+					"changeCoordLabel("+Utils.round(rmsd, 1)+","+Utils.round(c, 1)+");");
 			pointList.add(p);
 					
 			if (rmsd > max) {
