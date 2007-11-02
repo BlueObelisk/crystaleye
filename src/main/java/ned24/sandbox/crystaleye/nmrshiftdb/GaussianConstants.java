@@ -6,6 +6,8 @@ public interface GaussianConstants extends CMLConstants {
 	
 	public static final String GAUSSIAN_DICT = "e:/legacy2cml/dict/gaussianArchiveDict.xml";
 	
+	static String[] colours = {"DarkCyan", "GoldenRod", "Blue", "Aqua", "BlueViolet", "SlateGrey", "Chocolate", "Green", "AntiqueWhite", "LightCoral", "MediumOrchid", "YellowGreen"};
+	
 	public static final String SOLVENT_ROLE = "subst:solvent";
 	public static final String FIELD_DICTREF = "cml:field";
 	public static final String GAUSSIAN_NMR = "nmr:GAUSSIAN";
@@ -36,12 +38,11 @@ public interface GaussianConstants extends CMLConstants {
 	public static final String HTML_DIR = GAUSSIAN_DIR+"html/";
 	public static final String CML_DIR = GAUSSIAN_DIR+"cml/";
 	
-	public static final String SECOND_PROTOCOL_NAME = "second-protocol";
-	public static final String SECOND_PROTOCOL_MOD1_NAME = "second-protocol_mod1";
-	public static final String SECOND_PROTOCOL_MANUALMOD_NAME = "second-protocol_manualmod";
-	public static final String SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME = "second-protocol_manualAndMorgan";
-	public static final String SECOND_PROTOCOL_NO_MISASSIGNS = "second-protocol_nomisassigns";
-	public static final String SECOND_PROTOCOL_MOD1_NO_MISASSIGNS = "second-protocol_mod1nomisassigns";
+	public static final String HSR0_NAME = "hsr0";
+	public static final String HSR1_NAME = "hsr1";
+	public static final String HSR0_MANUAL_AND_MORGAN_NAME = "hsr0_manualAndMorgan";
+	public static final String HSR1_MANUAL_AND_MORGAN_NAME = "hsr1_manualAndMorgan";
+	
 	// first diff
 	public static final String FIRST_DIFF_FOLDER	= HTML_DIR+"first-diff";
 }

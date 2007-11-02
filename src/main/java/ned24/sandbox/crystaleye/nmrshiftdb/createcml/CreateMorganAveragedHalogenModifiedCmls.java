@@ -1,4 +1,4 @@
-package ned24.sandbox.crystaleye.nmrshiftdb.etc;
+package ned24.sandbox.crystaleye.nmrshiftdb.createcml;
 
 import java.io.File;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
+import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLAtomSet;
@@ -16,15 +17,16 @@ import org.xmlcml.cml.tools.Morgan;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class CreateMorganAveragedHalogenModifiedCmls {
+public class CreateMorganAveragedHalogenModifiedCmls implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String path = "e:/gaussian/cml/second-protocol_mod1";
-		String outFolder = "e:/gaussian/cml/second-protocol_manualAndMorgan/";
-		for (File file : new File(path).listFiles()) {
-			//if (!file.getAbsolutePath().contains("nmrshiftdb10005718")) {
-			//	continue;
-			//}
+		String protocolName = HSR0_NAME;
+		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+		
+		String cmlPath = CML_DIR+protocolName;
+		
+		String outFolder = CML_DIR+protocolName+"_manualAndMorgan/";
+		for (File file : new File(cmlPath).listFiles()) {
 			if (!file.getAbsolutePath().endsWith(".cml.xml")) {
 				continue;
 			}

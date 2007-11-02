@@ -12,12 +12,10 @@ import ned24.sandbox.crystaleye.nmrshiftdb.plottypes.CreateShiftPlot;
 public class AllWithIndividualsAndMisassignments implements GaussianConstants {
 
 	public static void main(String[] args) {
-		//String protocolName = SECOND_PROTOCOL_NAME;
-		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;	
-		//String protocolName = SECOND_PROTOCOL_MANUALMOD_NAME;
-		//String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
-		String protocolName = SECOND_PROTOCOL_NO_MISASSIGNS;
-		//String protocolName = SECOND_PROTOCOL_MOD1_NO_MISASSIGNS;
+		//String protocolName = HSR0_NAME;
+		//String protocolName = HSR1_NAME;	
+		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
+		//String protocolName = HSR1_MANUAL_AND_MORGAN_NAME;
 		
 		System.out.println(protocolName);
 		String cmlFolder = CML_DIR+protocolName;			

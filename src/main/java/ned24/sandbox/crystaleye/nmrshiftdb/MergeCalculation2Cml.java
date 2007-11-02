@@ -193,9 +193,9 @@ public class MergeCalculation2Cml implements GaussianConstants {
 
 	public static void main(String[] args) {
 		String cmlFolderPath = "e:/gaussian/all-mols";
-		String calcOutputPath = "e:/gaussian/outputs/second-protocol/1";
+		String calcOutputPath = "e:/gaussian/outputs/second-protocol_mod1/1";
 
-		String outFolder = "e:/gaussian/merged/second-protocol";
+		String outFolder = "e:/gaussian/merged/second-protocol_mod1";
 
 		for (File file : new File(calcOutputPath).listFiles()) {
 			String path = file.getAbsolutePath();

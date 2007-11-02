@@ -1,4 +1,4 @@
-package ned24.sandbox.crystaleye.nmrshiftdb.etc;
+package ned24.sandbox.crystaleye.nmrshiftdb.createcml;
 
 import java.io.File;
 import java.util.List;
