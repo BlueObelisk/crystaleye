@@ -37,11 +37,15 @@ public interface GaussianConstants extends CMLConstants {
 	public static final String GAUSSIAN_DIR = "e:/gaussian/";
 	public static final String HTML_DIR = GAUSSIAN_DIR+"html/";
 	public static final String CML_DIR = GAUSSIAN_DIR+"cml/";
+	public static final String REMOVED_FILE_NAME = "removed-files";
+	public static final String REMOVED_CML_DIR = CML_DIR+REMOVED_FILE_NAME+"/";
 	
 	public static final String HSR0_NAME = "hsr0";
 	public static final String HSR1_NAME = "hsr1";
-	public static final String HSR0_MANUAL_AND_MORGAN_NAME = "hsr0_manualAndMorgan";
-	public static final String HSR1_MANUAL_AND_MORGAN_NAME = "hsr1_manualAndMorgan";
+	public static final String HSR0_HALOGEN_NAME = "hsr0_hal";
+	public static final String HSR1_HALOGEN_NAME = "hsr1_hal";
+	public static final String HSR0_HALOGEN_AND_MORGAN_NAME = "hsr0_hal_morgan";
+	public static final String HSR1_HALOGEN_AND_MORGAN_NAME = "hsr1_hal_morgan";
 	
 	// first diff
 	public static final String FIRST_DIFF_FOLDER	= HTML_DIR+"first-diff";

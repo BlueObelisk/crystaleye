@@ -20,7 +20,7 @@ public class FindPossibleMisassignments implements GaussianConstants {
 	public static void main(String[] args) {		
 		//String protocolName = HSR0_NAME;
 		//String protocolName = HSR1_NAME;
-		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
+		String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
 		String path = CML_DIR+protocolName;
 
 		Set<File> fileList = new HashSet<File>();

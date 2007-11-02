@@ -7,15 +7,15 @@ import java.util.List;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 
 public class SyncRemovedFiles implements GaussianConstants {
-
-	public static void main(String[] args) {
-		String removedPath = CML_DIR+"removed-files/";
-		String spPath = removedPath+HSR0_NAME+"/";
-		
+	
+	String removedPath = REMOVED_CML_DIR;
+	String spPath = removedPath+HSR0_NAME+"/";
+	
+	public void run() {
 		List<String> cmlNames = new ArrayList<String>();
 		for (File folder : new File(CML_DIR).listFiles()) {
-			if (folder.isDirectory() && !folder.getName().equals("removed-files")
-					&& !folder.getName().equals("second-protocol")
+			if (folder.isDirectory() && !folder.getName().equals(REMOVED_FILE_NAME)
+					&& !folder.getName().equals(HSR0_NAME)
 					&& !folder.getName().equals(".svn")) {
 				cmlNames.add(folder.getName());
 			}
@@ -37,11 +37,10 @@ public class SyncRemovedFiles implements GaussianConstants {
 			}
 			
 		}
-		
 	}
-	
-	public static void moveFiles(List<String> cmlnames, String filename, String parentname) {
-		String removedPath = CML_DIR+"removed-files/";
+
+	public void moveFiles(List<String> cmlnames, String filename, String parentname) {
+		String removedPath = CML_DIR+REMOVED_FILE_NAME+"/";
 		for (String cmlname : cmlnames) {
 			String cmlDir = CML_DIR+cmlname;
 			for (File cmlFile : new File(cmlDir).listFiles()) {
@@ -58,6 +57,10 @@ public class SyncRemovedFiles implements GaussianConstants {
 				}
 			}
 		}
+	}
+
+	public static void main(String[] args) {
+		//
 	}
 	
 }
