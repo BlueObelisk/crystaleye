@@ -21,12 +21,10 @@ public class FieldComparison implements GaussianConstants, CrystalEyeConstants {
 	public static void main(String[] args) {
 		//String protocolName = SECOND_PROTOCOL_NAME;
 		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
-		String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
+		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
 
 		String path = HTML_DIR+protocolName;
 		String cmlPath = CML_DIR+protocolName;
-
-		String[] colours = {"AntiqueWhite", "Aqua", "Blue", "GoldenRod", "BlueViolet", "SlateGrey", "Chocolate", "Green"};
 
 		Set<String> set = new HashSet<String>();
 		for (File file : new File(cmlPath).listFiles()) {

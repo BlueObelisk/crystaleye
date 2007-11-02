@@ -20,11 +20,9 @@ public class SolventComparisonScatter implements GaussianConstants, CrystalEyeCo
 	public static void main(String[] args) {
 		//String protocolName = SECOND_PROTOCOL_NAME;
 		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
-		String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
+		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
 
 		String rootFolder = HTML_DIR+protocolName;
-
-		String[] colours = {"AntiqueWhite", "Aqua", "Blue", "GoldenRod", "BlueViolet", "SlateGrey", "Chocolate", "Green"};
 
 		List<String> solvents = new ArrayList<String>();
 		for (Solvent solvent : GaussianUtils.Solvent.values()) {

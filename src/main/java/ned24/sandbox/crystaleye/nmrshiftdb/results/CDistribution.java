@@ -21,10 +21,10 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class CDistribution implements GaussianConstants {
 
 	public static void main(String[] args) {
-		//String protocolName = SECOND_PROTOCOL_NAME;
-		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
-		//String protocolName = SECOND_PROTOCOL_MANUALMOD_NAME;
-		String protocolName = SECOND_PROTOCOL_MANUAL_AND_MORGAN_NAME;
+		//String protocolName = HSR0_NAME;
+		//String protocolName = HSR1_NAME;
+		//String protocolName = HSR0_MANUALMOD_NAME;
+		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
 		String outPath = "e:/gaussian/html/manmorg-cplot.svg";		
 		
 		String path = CML_DIR+protocolName;

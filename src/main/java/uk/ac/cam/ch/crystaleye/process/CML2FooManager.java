@@ -55,7 +55,6 @@ import org.xmlcml.molutil.ChemicalElement.Type;
 
 import uk.ac.cam.ch.crystaleye.AbstractManager;
 import uk.ac.cam.ch.crystaleye.CDKUtils;
-import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.CrystalEyeUtils;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
