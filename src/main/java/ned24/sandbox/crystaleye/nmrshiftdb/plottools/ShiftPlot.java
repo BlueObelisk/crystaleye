@@ -17,6 +17,7 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
+import uk.ac.cam.ch.crystaleye.Utils;
 
 public class ShiftPlot implements GaussianConstants {
 
@@ -27,6 +28,10 @@ public class ShiftPlot implements GaussianConstants {
 	String folderName;
 
 	String startFile = null;
+	
+	protected ShiftPlot() {
+		;
+	}
 
 	public ShiftPlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
 		this.fileList = fileList;
@@ -78,9 +83,10 @@ public class ShiftPlot implements GaussianConstants {
 				
 				int count = GaussianUtils.getAtomPosition(molecule, calcId);
 				if (startFile == null) {
-					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");");
+					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");" +
+							"changeCoordLabel("+Utils.round(obsShift, 1)+","+Utils.round(calcShift, 1)+");");
 				} else {
-					p.setLink("javascript:changeAtom('', "+count+");");
+					p.setLink("javascript:changeAtom('', "+count+");changeCoordLabel("+Utils.round(obsShift, 1)+","+Utils.round(calcShift, 1)+");");
 				}
 				pointList.add(p);
 				if (calcShift > max) {
@@ -106,16 +112,7 @@ public class ShiftPlot implements GaussianConstants {
 		return doc;
 	}
 
-	private boolean isAtomSuitable(CMLMolecule molecule, String id) {
-		/*
-		CMLAtom atom = molecule.getAtomById(id);
-		for (CMLAtom ligand : atom.getLigandAtoms()) {
-			if ("O".equals(ligand.getElementType()) && ligand.getLigandAtoms().size() == 1) {
-				return true;
-			}
-		}
-		return false;
-		 */
+	protected boolean isAtomSuitable(CMLMolecule molecule, String atomId) {
 		return true;
 	}
 

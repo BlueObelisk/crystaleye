@@ -18,6 +18,7 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
+import uk.ac.cam.ch.crystaleye.Utils;
 
 public class DifferencePerSolventPlot implements GaussianConstants {
 
@@ -82,9 +83,10 @@ public class DifferencePerSolventPlot implements GaussianConstants {
 				
 				int count = GaussianUtils.getAtomPosition(molecule, calcId);
 				if (startFile == null) {
-					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");");
+					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");" +
+							"changeCoordLabel("+Utils.round(obsShift, 1)+","+Utils.round(calcShift, 1)+");");
 				} else {
-					p.setLink("javascript:changeAtom('', "+count+");");
+					p.setLink("javascript:changeAtom('', "+count+");changeCoordLabel("+Utils.round(obsShift, 1)+","+Utils.round(calcShift, 1)+");");
 				}
 				p.setColour(colour);
 				pointList.add(p);
@@ -154,23 +156,6 @@ public class DifferencePerSolventPlot implements GaussianConstants {
 	}
 
 	public static void main(String[] args) {
-		//String protocolName = HSR0_NAME;
-		//String protocolName = HSR1_NAME;	
-		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
-		//String protocolName = HSR1_MANUAL_AND_MORGAN_NAME;
-		
-		System.out.println(protocolName);
-		String cmlFolder = CML_DIR+protocolName;			
-		List<File> fileList = new ArrayList<File>();
-		for (File file : new File(cmlFolder).listFiles()) {
-			if (file.getAbsolutePath().endsWith(".cml.xml")) {
-				fileList.add(file);
-			}
-		}
-		String htmlTitle = "Selection of structures from NMRShiftDB with MW < 300";
-		
-		String folderName = "differencebysolvent";
-		DifferencePerSolventPlot c = new DifferencePerSolventPlot(fileList, protocolName, folderName, htmlTitle);
-		c.run();
+		//
 	}
 }

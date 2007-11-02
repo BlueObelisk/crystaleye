@@ -21,7 +21,7 @@ public class Fields implements CMLConstants, GaussianConstants {
 	public static void main(String[] args) {
 		//String protocolName = SECOND_PROTOCOL_NAME;
 		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
-		String protocolName = HSR0_MANUAL_AND_MORGAN_NAME;
+		String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
 
 		String path = CML_DIR+protocolName;
 		String dictRef = "cml:field";

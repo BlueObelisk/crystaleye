@@ -17,6 +17,7 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLPeak;
 
 import uk.ac.cam.ch.crystaleye.IOUtils;
+import uk.ac.cam.ch.crystaleye.Utils;
 
 public class MisassignmentPlot implements GaussianConstants {
 
@@ -77,9 +78,10 @@ public class MisassignmentPlot implements GaussianConstants {
 				p.setY(y);									
 				int count = GaussianUtils.getAtomPosition(molecule, calcId);
 				if (startFile == null) {
-					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");");
+					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");" +
+							"changeCoordLabel("+Utils.round(obsShift, 1)+","+Utils.round(calcShift, 1)+");");
 				} else {
-					p.setLink("javascript:changeAtom('', "+count+");");
+					p.setLink("javascript:changeAtom('', "+count+");changeCoordLabel("+Utils.round(obsShift, 1)+","+Utils.round(calcShift, 1)+");");
 				}
 				pointList.add(p);
 				if (calcShift > max) {
