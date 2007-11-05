@@ -73,7 +73,7 @@ public class FieldComparison implements GaussianConstants, CrystalEyeConstants {
 			System.out.println(out);
 		}
 
-		String html = PlotUtils.getHtmlContent("Comparison of fields", protocolName, null, false);
+		String html = PlotUtils.getHtmlContent("Comparison of fields", protocolName, null, null, "");
 		String root = path+File.separator+"fields";
 		IOUtils.writeText(html, root+File.separator+"index.html");
 		IOUtils.writePrettyXML(mainDoc, root+File.separator+"index.svg");

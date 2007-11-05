@@ -9,6 +9,7 @@ import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianScatter;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import ned24.sandbox.crystaleye.nmrshiftdb.results.PlotUtils;
+import ned24.sandbox.crystaleye.nmrshiftdb.results.PlotUtils.PlotType;
 import nu.xom.Document;
 
 import org.graph.Point;
@@ -28,6 +29,8 @@ public class MisassignmentPlot implements GaussianConstants {
 	String folderName;
 
 	String startFile = null;
+	
+	String pointColour;
 
 	public MisassignmentPlot(List<File> fileList, String protocolName, String folderName, String htmlTitle) {
 		this.fileList = fileList;
@@ -37,6 +40,10 @@ public class MisassignmentPlot implements GaussianConstants {
 		this.htmlTitle = htmlTitle;
 		this.protocolName = protocolName;
 		this.folderName = folderName;
+	}
+	
+	public void setPointColour(String colour) {
+		pointColour = colour;
 	}
 
 	public Document getPlot() {
@@ -75,13 +82,17 @@ public class MisassignmentPlot implements GaussianConstants {
 
 				Point p = new Point();
 				p.setX(x);
-				p.setY(y);									
+				p.setY(y);	
+				if (pointColour != null) {
+					p.setColour(pointColour);
+				}
+				
 				int count = GaussianUtils.getAtomPosition(molecule, calcId);
 				if (startFile == null) {
 					p.setLink("javascript:changeAtom('../../../cml/"+protocolName+"/"+file.getName()+"', "+count+");" +
 							"changeCoordLabel("+Utils.round(obsShift, 1)+","+Utils.round(calcShift, 1)+");");
 				} else {
-					p.setLink("javascript:changeAtom('', "+count+");changeCoordLabel("+Utils.round(obsShift, 1)+","+Utils.round(calcShift, 1)+");");
+					p.setLink("javascript:changeAtom('', "+count+");changeCoordLabel("+Utils.round(x, 1)+","+Utils.round(y, 1)+");");
 				}
 				pointList.add(p);
 				if (calcShift > max) {
@@ -101,8 +112,8 @@ public class MisassignmentPlot implements GaussianConstants {
 		gs.setYmax(20);
 		gs.setXTickMarks(10);
 		gs.setYTickMarks(10);
-		gs.setXLab("Average shift (observed and calculated");
-		gs.setYLab("Shift - average shift");
+		gs.setXLab("Average shift (observed and calculated)");
+		gs.setYLab("observed - calculated");
 		Document doc = gs.getPlot();	
 		return doc;
 	}
@@ -114,21 +125,12 @@ public class MisassignmentPlot implements GaussianConstants {
 	}
 
 	public double getYValue(double calc, double obs) {
-		double ret = (calc-obs)/2;
+		double ret = (obs-calc);
 		
 		return ret;
 	}
 
 	private boolean isAtomSuitable(CMLMolecule molecule, String id) {
-		/*
-		CMLAtom atom = molecule.getAtomById(id);
-		for (CMLAtom ligand : atom.getLigandAtoms()) {
-			if ("O".equals(ligand.getElementType()) && ligand.getLigandAtoms().size() == 1) {
-				return true;
-			}
-		}
-		return false;
-		 */
 		return true;
 	}
 
@@ -137,7 +139,7 @@ public class MisassignmentPlot implements GaussianConstants {
 		String outFolderPath = HTML_DIR+File.separator+protocolName+File.separator+folderName;
 		String svgPath = outFolderPath+"/index.svg";
 		IOUtils.writePrettyXML(doc, svgPath);
-		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile, true);
+		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile, PlotType.MISASSIGNMENT, "");
 		String htmlPath = outFolderPath+"/index.html";
 		IOUtils.writeText(htmlContent, htmlPath);
 	}

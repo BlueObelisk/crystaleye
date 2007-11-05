@@ -6,8 +6,6 @@ public interface GaussianConstants extends CMLConstants {
 	
 	public static final String GAUSSIAN_DICT = "e:/legacy2cml/dict/gaussianArchiveDict.xml";
 	
-	static String[] colours = {"DarkCyan", "GoldenRod", "Blue", "Aqua", "BlueViolet", "SlateGrey", "Chocolate", "Green", "AntiqueWhite", "LightCoral", "MediumOrchid", "YellowGreen"};
-	
 	public static final String SOLVENT_ROLE = "subst:solvent";
 	public static final String FIELD_DICTREF = "cml:field";
 	public static final String GAUSSIAN_NMR = "nmr:GAUSSIAN";
@@ -37,8 +35,6 @@ public interface GaussianConstants extends CMLConstants {
 	public static final String GAUSSIAN_DIR = "e:/gaussian/";
 	public static final String HTML_DIR = GAUSSIAN_DIR+"html/";
 	public static final String CML_DIR = GAUSSIAN_DIR+"cml/";
-	public static final String REMOVED_FILE_NAME = "removed-files";
-	public static final String REMOVED_CML_DIR = CML_DIR+REMOVED_FILE_NAME+"/";
 	
 	public static final String HSR0_NAME = "hsr0";
 	public static final String HSR1_NAME = "hsr1";
@@ -47,6 +43,13 @@ public interface GaussianConstants extends CMLConstants {
 	public static final String HSR0_HALOGEN_AND_MORGAN_NAME = "hsr0_hal_morgan";
 	public static final String HSR1_HALOGEN_AND_MORGAN_NAME = "hsr1_hal_morgan";
 	
-	// first diff
-	public static final String FIRST_DIFF_FOLDER	= HTML_DIR+"first-diff";
+	public static final String NOT_REMOVED_CML_DICTREF = "ned24:not-removed";
+	public static final String REMOVED_CML_DICTREF = "ned24:removed";
+	public static final String HUMANEDIT_CML_DICTREF = "ned24:human-edited";
+	public static final String MISASSIGNED_CML_DICTREF = "ned24:misassigned";
+	public static final String POSS_MISASSIGNED_CML_DICTREF = "ned24:possibly-misassigned";
+	public static final String LARGE_RING_CML_DICTREF = "ned24:ring-too-large";
+	public static final String TAUTOMERS_CML_DICTREF = "ned24:tautomers";
+	public static final String POOR_STRUCT_CML_DICTREF = "ned24:poor-structure";
+	
 }

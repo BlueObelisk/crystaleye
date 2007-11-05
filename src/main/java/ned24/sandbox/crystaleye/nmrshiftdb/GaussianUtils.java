@@ -18,6 +18,31 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 
 
 public class GaussianUtils implements GaussianConstants {
+	
+	public static String getSolventPointColour(String solvent) {
+		String s = nmrShiftDbSolvent2GaussianSolvent(solvent);
+		if (s.equals("DMSO")) {
+			return "GoldenRod";
+		} else if (s.equals("Chloroform")) {
+			return "Red";
+		} else if (s.equals("Water")) {
+			return "Blue";
+		} else if (s.equals("Methanol")) {
+			return "AntiqueWhite";
+		} else if (s.equals("CCl4")) {
+			return "Aqua";
+		} else if (s.equals("Benzene")) {
+			return "DarkCyan";
+		} else if (s.equals("Acetone")) {
+			return "YellowGreen";
+		} else {
+			throw new RuntimeException("Do not recognise solvent: "+s);
+		}
+	}
+	
+	static String[] colours = {"DarkCyan", "GoldenRod", "Blue", 
+		"Aqua", "BlueViolet", "SlateGrey", "Chocolate", "Green", 
+		"AntiqueWhite", "LightCoral", "MediumOrchid", "YellowGreen"};
 
 	public static int getSpectNum(File file) {
 		String name = file.getName();
@@ -161,6 +186,7 @@ public class GaussianUtils implements GaussianConstants {
 			gauSolvent = "Ether";
 		} else if (solvent.equals("Methanol-D4 (CD3OD)") ||
 				solvent.equalsIgnoreCase("CD3OD") ||
+				solvent.equalsIgnoreCase("methanol") ||
 				solvent.equalsIgnoreCase("METHANOL-D1 (CH3OD)") ||
 				solvent.equalsIgnoreCase("MeOH") ||
 				solvent.equalsIgnoreCase("Methanol-D3(CD3OH)") ||
@@ -176,6 +202,7 @@ public class GaussianUtils implements GaussianConstants {
 			gauSolvent = "Chloroform";
 		} else if (solvent.equals("DMSO") ||
 				solvent.equalsIgnoreCase("d6-DMSO") ||
+				solvent.equalsIgnoreCase("dmso") ||
 				solvent.equalsIgnoreCase("DMSO-d6") ||
 				solvent.equalsIgnoreCase("Dimethylsulphoxide-D6 (DMSO-D6, C2D6SO))") ||
 				solvent.equals("DMSO")) {
