@@ -109,7 +109,7 @@ public class SubstitutedBenzenes implements GaussianConstants {
 		String outFolderPath = HTML_DIR+File.separator+protocolName+File.separator+folderName;
 		String svgPath = outFolderPath+"/index.svg";
 		IOUtils.writePrettyXML(doc, svgPath);
-		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, null, false);
+		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, null, null, "");
 		String htmlPath = outFolderPath+"/index.html";
 		IOUtils.writeText(htmlContent, htmlPath);
 	}

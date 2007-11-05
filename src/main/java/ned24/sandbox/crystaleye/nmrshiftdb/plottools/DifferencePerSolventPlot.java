@@ -10,6 +10,7 @@ import ned24.sandbox.crystaleye.nmrshiftdb.GaussianScatter;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils.Solvent;
 import ned24.sandbox.crystaleye.nmrshiftdb.results.PlotUtils;
+import ned24.sandbox.crystaleye.nmrshiftdb.results.PlotUtils.PlotType;
 import nu.xom.Document;
 
 import org.graph.Point;
@@ -150,7 +151,7 @@ public class DifferencePerSolventPlot implements GaussianConstants {
 		String outFolderPath = HTML_DIR+File.separator+protocolName+File.separator+folderName;
 		String svgPath = outFolderPath+"/index.svg";
 		IOUtils.writePrettyXML(doc, svgPath);
-		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile, false);
+		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile, PlotType.DIFFERENCE, "");
 		String htmlPath = outFolderPath+"/index.html";
 		IOUtils.writeText(htmlContent, htmlPath);
 	}

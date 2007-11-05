@@ -15,19 +15,20 @@ import nu.xom.Nodes;
 import uk.ac.cam.ch.crystaleye.CrystalEyeConstants;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class SolventComparisonScatter implements GaussianConstants, CrystalEyeConstants {
+public class SolventDiffComparison implements GaussianConstants, CrystalEyeConstants {
 
 	public static void main(String[] args) {
 		//String protocolName = SECOND_PROTOCOL_NAME;
 		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
-		String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
+		//String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
+		String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
 
 		String rootFolder = HTML_DIR+protocolName;
 
 		List<String> solvents = new ArrayList<String>();
 		for (Solvent solvent : GaussianUtils.Solvent.values()) {
 			String s = solvent.toString();
-			solvents.add(s);
+			solvents.add(s+"-difference");
 		}
 
 		int count = 0;
@@ -38,6 +39,7 @@ public class SolventComparisonScatter implements GaussianConstants, CrystalEyeCo
 			if (!solvents.contains(folder.getName())) {
 				continue;
 			}
+			String solvent = folder.getName().substring(0,folder.getName().length()-11);
 			File svgFile = new File(folder+File.separator+"index.svg");
 			if (!svgFile.exists()) {
 				throw new RuntimeException("Can't find svg file: "+svgFile.getAbsolutePath());
@@ -52,9 +54,10 @@ public class SolventComparisonScatter implements GaussianConstants, CrystalEyeCo
 					link.detach();
 					mainDoc.getRootElement().insertChild(link, 0);
 
-					String colour = colours[count-1];
+					String colour = GaussianUtils.getSolventPointColour(solvent.toLowerCase());
 					outSet.add(colour+" "+folder.getName());
-					link.getChildElements().get(0).getAttribute("fill").setValue(colour);
+					Element el = link.getChildElements().get(0);
+					el.getAttribute("fill").setValue(colour);
 				}
 			}
 			count++;
@@ -64,8 +67,19 @@ public class SolventComparisonScatter implements GaussianConstants, CrystalEyeCo
 			System.out.println(out);
 		}
 
-		String html = PlotUtils.getHtmlContent("Comparison of solvents", protocolName, null, false);
-		String root = rootFolder+File.separator+"solvents";
+		String extraHtml = "<div style='text-align: left; padding-left: 20px;'>" +
+				"<span>Key:</span><br />" +
+				"<span style='border: 1px solid; background-color: red; margin-bottom: 2px;'>...</span><span> = Chloroform</span><br />" +
+				"<span style='border: 1px solid; background-color: GoldenRod; margin-bottom: 2px;'>...</span><span> = DMSO</span><br />" +
+				"<span style='border: 1px solid; background-color: Blue; margin-bottom: 2px;'>...</span><span> = Water</span><br />" +
+				"<span style='border: 1px solid; background-color: AntiqueWhite; margin-bottom: 2px;'>...</span><span> = Methanol</span><br />" +
+				"<span style='border: 1px solid; background-color: Aqua; margin-bottom: 2px;'>...</span><span> = Carbon Tetrachloride</span><br />" +
+				"<span style='border: 1px solid; background-color: DarkCyan; margin-bottom: 2px;'>...</span><span> = Benzene</span><br />" +
+				"<span style='border: 1px solid; background-color: YellowGreen; margin-bottom: 2px;'>...</span><span> = Acetone</span><br />" +
+				"</div>";
+		
+		String html = PlotUtils.getHtmlContent("Comparison of solvents", protocolName, null, null, extraHtml);
+		String root = rootFolder+File.separator+"solvents-difference";
 		IOUtils.writeText(html, root+File.separator+"index.html");
 		IOUtils.writePrettyXML(mainDoc, root+File.separator+"index.svg");
 	}
