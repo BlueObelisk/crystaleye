@@ -9,6 +9,7 @@ import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianScatter;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 import ned24.sandbox.crystaleye.nmrshiftdb.results.PlotUtils;
+import ned24.sandbox.crystaleye.nmrshiftdb.results.PlotUtils.PlotType;
 import nu.xom.Document;
 
 import org.graph.Point;
@@ -29,6 +30,8 @@ public class ShiftPlot implements GaussianConstants {
 
 	String startFile = null;
 	
+	String pointColour;
+	
 	protected ShiftPlot() {
 		;
 	}
@@ -41,6 +44,10 @@ public class ShiftPlot implements GaussianConstants {
 		this.htmlTitle = htmlTitle;
 		this.protocolName = protocolName;
 		this.folderName = folderName;
+	}
+	
+	public void setPointColour(String colour) {
+		pointColour = colour;
 	}
 
 	public Document getPlot() {
@@ -78,6 +85,9 @@ public class ShiftPlot implements GaussianConstants {
 				Point p = new Point();
 				p.setX(obsShift);
 				p.setY(calcShift);
+				if (pointColour != null) {
+					p.setColour(pointColour);
+				}
 				
 				sb.append(obsShift+","+calcShift+"\n");
 				
@@ -121,7 +131,7 @@ public class ShiftPlot implements GaussianConstants {
 		String outFolderPath = HTML_DIR+File.separator+protocolName+File.separator+folderName;
 		String svgPath = outFolderPath+"/index.svg";
 		IOUtils.writePrettyXML(doc, svgPath);
-		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile, false);
+		String htmlContent = PlotUtils.getHtmlContent(htmlTitle, protocolName, startFile, PlotType.OBS_VS_CALC, "");
 		String htmlPath = outFolderPath+"/index.html";
 		IOUtils.writeText(htmlContent, htmlPath);
 	}

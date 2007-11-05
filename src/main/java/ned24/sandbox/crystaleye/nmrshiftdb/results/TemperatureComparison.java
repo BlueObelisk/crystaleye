@@ -72,7 +72,7 @@ public class TemperatureComparison implements GaussianConstants, CrystalEyeConst
 			System.out.println(out);
 		}
 
-		String html = PlotUtils.getHtmlContent("Comparison of temperatures", protocolName, null, false);
+		String html = PlotUtils.getHtmlContent("Comparison of temperatures", protocolName, null, null, "");
 		String root = path+File.separator+"temperatures";
 		IOUtils.writeText(html, root+File.separator+"index.html");
 		IOUtils.writePrettyXML(mainDoc, root+File.separator+"index.svg");

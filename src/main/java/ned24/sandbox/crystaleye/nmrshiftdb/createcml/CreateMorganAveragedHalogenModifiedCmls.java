@@ -1,7 +1,6 @@
 package ned24.sandbox.crystaleye.nmrshiftdb.createcml;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,7 +9,6 @@ import java.util.Map;
 
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
-import ned24.sandbox.crystaleye.nmrshiftdb.etc.SyncRemovedFiles;
 
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLAtomSet;
@@ -18,7 +16,6 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLPeak;
 import org.xmlcml.cml.tools.Morgan;
 
-import uk.ac.cam.ch.crystaleye.FileListing;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
 public class CreateMorganAveragedHalogenModifiedCmls implements GaussianConstants {
@@ -26,22 +23,16 @@ public class CreateMorganAveragedHalogenModifiedCmls implements GaussianConstant
 	public static void main(String[] args) {
 		String protocolName = HSR0_NAME;
 		//String protocolName = HSR1_NAME;
-		
+
 		String inCmlDir = CML_DIR+protocolName;
-		String inRemovedCmlDir = REMOVED_CML_DIR+protocolName;
 
 		String outCmlDir = inCmlDir+"_hal_morgan/";
 
 		List<File> fileList = new ArrayList<File>();
-		try {
-			fileList = FileListing.byMime(new File(inRemovedCmlDir), ".cml.xml");
-			for (File file : new File(inCmlDir).listFiles()) {
-				if (file.getAbsolutePath().endsWith(".cml.xml")) {
-					fileList.add(file);
-				}
+		for (File file : new File(inCmlDir).listFiles()) {
+			if (file.getAbsolutePath().endsWith(".cml.xml")) {
+				fileList.add(file);
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		}
 
 		for (File file : fileList) {
@@ -99,7 +90,6 @@ public class CreateMorganAveragedHalogenModifiedCmls implements GaussianConstant
 			String outPath = outCmlDir+name;
 			IOUtils.writePrettyXML(molecule.getDocument(), outPath);
 		}
-		new SyncRemovedFiles().run();
 	}
 
 	public static CMLAtomSet getEquivalentAtoms(List<CMLAtomSet> atomSetList, String atomId) {
