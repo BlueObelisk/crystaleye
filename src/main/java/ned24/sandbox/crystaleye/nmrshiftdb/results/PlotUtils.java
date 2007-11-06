@@ -50,7 +50,7 @@ public class PlotUtils implements GaussianConstants {
 
 	public static String getHtmlContent(String htmlTitle, String protocolName, String startFile, PlotType type, String extraHtml) {
 		String startStruct = "";
-		String button = null;
+		String button = "";
 		String setCurrentStructure = "";
 		if (startFile != null) {
 			startStruct = "load ../../../cml/"+protocolName+"/"+startFile;
@@ -65,7 +65,7 @@ public class PlotUtils implements GaussianConstants {
 				+"<button onclick=\"showMisassignmentPlot(currentStructure);\">Show misassignment plot</button>";
 		}
 
-		if (type != null) {
+		if (type != null && startFile != null) {
 			if (type.equals(PlotType.DIFFERENCE)) {
 				button = "<button onclick=\"showObsVsCalcPlot(currentStructure);\">Show obs vs calc plot</button>"
 					+"<button onclick=\"showMisassignmentPlot(currentStructure);\">Show misassignment plot</button>";

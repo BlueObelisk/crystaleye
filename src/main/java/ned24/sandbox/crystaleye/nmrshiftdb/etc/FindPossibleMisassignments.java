@@ -10,25 +10,28 @@ import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
 
+import org.graph.Point;
 import org.xmlcml.cml.base.CMLElements;
 import org.xmlcml.cml.element.CMLPeak;
 
 public class FindPossibleMisassignments implements GaussianConstants {
 
 	static int PPM_EPS = 2;
-
-	public static void main(String[] args) {		
-		//String protocolName = HSR0_NAME;
-		//String protocolName = HSR1_NAME;
-		String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
+	
+	String protocolName;
+	
+	public FindPossibleMisassignments(String protocolName) {
+		this.protocolName = protocolName;
+	}
+	
+	public Set<File> getFileList() {
 		String path = CML_DIR+protocolName;
-
 		Set<File> fileList = new HashSet<File>();
 		for (File file : new File(path).listFiles()) {
 			if (!file.getAbsolutePath().endsWith(".cml.xml")) {
 				continue;
 			}
-			List<Double> xList = new ArrayList<Double>();
+			List<Point> pointList = new ArrayList<Point>();
 			GaussianCmlTool c = new GaussianCmlTool(file);
 			String solvent = c.getCalculatedSolvent();
 			boolean b = c.testSpectraConcordant(solvent);
@@ -51,14 +54,23 @@ public class FindPossibleMisassignments implements GaussianConstants {
 
 				double y = getYValue(obsShift, calcShift);
 				double x = getXValue(obsShift, calcShift);
-				xList.add(x);
+				Point p = new Point();
+				p.setX(x);
+				p.setY(y);
+				pointList.add(p);
 			}
 
-			for (Double d : xList) {
-				for (Double o : xList) {
-					if (!d.equals(o)) {
-						if (Math.abs(d-o) < PPM_EPS) {
-							fileList.add(file);
+			for (Point p1 : pointList) {
+				for (Point p2 : pointList) {
+					Double x1 = p1.getX();
+					Double x2 = p2.getX();
+					if (!x1.equals(x2)) {
+						if (Math.abs(x1-x2) < PPM_EPS) {
+							double y1 = p1.getY();
+							double y2 = p2.getY();
+							if (Math.abs(y1-y2) > PPM_EPS) {
+								fileList.add(file);
+							}
 						}
 					}
 				}
@@ -66,9 +78,17 @@ public class FindPossibleMisassignments implements GaussianConstants {
 		}
 
 		for (File file : fileList) {
-			System.out.println(file.getAbsolutePath());
+			//System.out.println(file.getAbsolutePath());
 		}
-		System.out.println(fileList.size());	
+		//System.out.println(fileList.size());
+		return fileList;
+	}
+
+	public static void main(String[] args) {		
+		//String protocolName = HSR0_NAME;
+		//String protocolName = HSR1_NAME;
+		String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
+	
 	}
 
 	public static double getXValue(double calc, double obs) {
