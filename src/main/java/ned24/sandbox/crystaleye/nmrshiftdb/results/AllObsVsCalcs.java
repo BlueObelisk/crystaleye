@@ -8,22 +8,21 @@ import ned24.sandbox.crystaleye.nmrshiftdb.FileListTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
-import ned24.sandbox.crystaleye.nmrshiftdb.plottools.DifferencePlot;
+import ned24.sandbox.crystaleye.nmrshiftdb.plottools.ShiftPlot;
 
-public class AllDifference implements GaussianConstants {
+public class AllObsVsCalcs implements GaussianConstants {
 
 	public static void main(String[] args) {
-		//String protocolName = HSR0_NAME;
+//		String protocolName = HSR0_NAME;
 		//String protocolName = HSR1_NAME;
 		//String protocolName = HSR0_HALOGEN_NAME;
 		//String protocolName = HSR1_HALOGEN_NAME;
 		//String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
 		String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
 		
-		System.out.println(protocolName);
-		String cmlDir = CML_DIR+protocolName;	
+		String cmlDir = CML_DIR+protocolName;
+		String folderName = "all-obsvscalc";
 		
-		String folderName = "all-difference";
 		FileListTool ft = new FileListTool(cmlDir);
 		//ft.setIncludeNotRemoved(false);folderName+="_nr";
 		ft.setIncludeHumanEdited(true);folderName+="_he";
@@ -33,10 +32,10 @@ public class AllDifference implements GaussianConstants {
 		ft.setIncludeTautomers(true);folderName+="_ta";
 		ft.setIncludeTooLargeRing(true);folderName+="_lr";
 		List<File> fileList = ft.getFileList();
-		
+
 		String htmlTitle = "Selection of structures from NMRShiftDB with MW < 300";
-		
-		DifferencePlot c = new DifferencePlot(fileList, protocolName, folderName, htmlTitle);
+
+		ShiftPlot c = new ShiftPlot(fileList, protocolName, folderName, htmlTitle);
 		c.run();
 
 		String urlPrefix = "http://nmrshiftdb.ice.mpg.de/portal/js_pane/P-Results;jsessionid=FA2A776224CDA757D4B710F5FC12A899.tomcat2?nmrshiftdbaction=showDetailsFromHome&molNumber=";
@@ -54,13 +53,13 @@ public class AllDifference implements GaussianConstants {
 			String filename = file.getName();
 			String nameAndSolventNum = filename.substring(0,filename.indexOf("."));
 			String name = nameAndSolventNum.substring(0,nameAndSolventNum.indexOf("-"));
-			String title = nameAndSolventNum+"-difference";
+			String title = nameAndSolventNum+"-obsvscalc";
 
 			String number = nameAndSolventNum.substring(10);
 			number = number.substring(0,number.indexOf("-"));
 
 			String htmlTitle2 = "<a href='"+urlPrefix+number+"'>"+name+" (solvent: "+solvent+")</a>";
-			DifferencePlot c2 = new DifferencePlot(fileList2, protocolName, title, htmlTitle2);
+			ShiftPlot c2 = new ShiftPlot(fileList2, protocolName, title, htmlTitle2);
 			c2.setPointColour(colour);
 			c2.run();
 		}

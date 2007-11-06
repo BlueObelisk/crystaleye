@@ -21,8 +21,8 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class CreateMorganAveragedHalogenModifiedCmls implements GaussianConstants {
 
 	public static void main(String[] args) {
-		String protocolName = HSR0_NAME;
-		//String protocolName = HSR1_NAME;
+		//String protocolName = HSR0_NAME;
+		String protocolName = HSR1_NAME;
 
 		String inCmlDir = CML_DIR+protocolName;
 
@@ -39,7 +39,6 @@ public class CreateMorganAveragedHalogenModifiedCmls implements GaussianConstant
 			if (!file.getAbsolutePath().endsWith(".cml.xml")) {
 				continue;
 			}
-			System.out.println(file.getAbsolutePath());
 			GaussianCmlTool g = new GaussianCmlTool(file);
 			CMLMolecule molecule = g.getMolecule();
 			List<CMLPeak> calcPeaks = g.getListOfCalculatedPeaks();
@@ -72,6 +71,7 @@ public class CreateMorganAveragedHalogenModifiedCmls implements GaussianConstant
 				String id = peak.getAtomRefs()[0];
 				CMLAtomSet atomSet = getEquivalentAtoms(atomSetList, id);
 				if (atomSet.size() > 1) {
+					System.out.println(file.getAbsolutePath());
 					double totalShift = 0;
 					for (CMLAtom atom : atomSet.getAtoms()) {
 						totalShift += getShift(calcPeaks, atom.getId());
@@ -88,7 +88,7 @@ public class CreateMorganAveragedHalogenModifiedCmls implements GaussianConstant
 
 			String name = file.getName();
 			String outPath = outCmlDir+name;
-			IOUtils.writePrettyXML(molecule.getDocument(), outPath);
+			//IOUtils.writePrettyXML(molecule.getDocument(), outPath);
 		}
 	}
 

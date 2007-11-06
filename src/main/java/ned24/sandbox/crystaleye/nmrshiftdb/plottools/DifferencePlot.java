@@ -120,16 +120,7 @@ public class DifferencePlot implements GaussianConstants {
 		return doc;
 	}
 
-	private boolean isAtomSuitable(CMLMolecule molecule, String id) {
-		/*
-		CMLAtom atom = molecule.getAtomById(id);
-		for (CMLAtom ligand : atom.getLigandAtoms()) {
-			if ("O".equals(ligand.getElementType()) && ligand.getLigandAtoms().size() == 1) {
-				return true;
-			}
-		}
-		return false;
-		 */
+	protected boolean isAtomSuitable(CMLMolecule molecule, String id) {
 		return true;
 	}
 
