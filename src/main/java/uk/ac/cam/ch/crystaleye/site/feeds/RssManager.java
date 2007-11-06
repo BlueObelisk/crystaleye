@@ -175,7 +175,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 		} catch (Exception e) {
 			throw new CrystalEyeRuntimeException("Problem archiving CMLRSS feed.", e);
 		}
-		*/
+		 */
 
 		String feedTitle = "CrystalEye CMLRSS: "+this.publisherTitle+", "+this.journalTitle;
 		String feedDescription = "CrystalEye CMLRSS: "+this.publisherTitle+", "+this.journalTitle+", "+year+", "+issueNum;
@@ -200,7 +200,14 @@ public class RssManager extends AbstractManager implements CMLConstants {
 		for (File cmlFile : cmlFileList) {
 			// set feed entries 
 			System.out.println("Reading "+cmlFile.getAbsolutePath()+" whilst creating a new Journal RSS feed.");
-			Document doc = IOUtils.parseCmlFile(cmlFile);
+
+			Document doc = null;
+			try {
+				IOUtils.parseCmlFile(cmlFile);
+			} catch (Exception e) {
+				System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
+				continue;
+			}
 			CMLCml cml = (CMLCml)doc.getRootElement();
 			Nodes nodes = cml.query("//cml:scalar[@dictRef=\"idf:doi\"]", X_CML);
 			String doi = "";
@@ -456,7 +463,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			Utils.copyFile(cmlRssUrl, archiveUrl+File.separator+fileName);
 		}
 	}
-	*/
+	 */
 
 	private Element getCMLRSSDescriptionElement(String cmlRssUrl) {
 		InputStream in = null;
