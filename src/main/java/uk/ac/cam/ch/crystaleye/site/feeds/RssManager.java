@@ -53,7 +53,6 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.molutil.ChemicalElement;
 
 import uk.ac.cam.ch.crystaleye.AbstractManager;
-import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.CrystalEyeUtils;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
@@ -169,11 +168,14 @@ public class RssManager extends AbstractManager implements CMLConstants {
 	}
 
 	private void createNewJournalCmlrssFeed(List<File> cmlFileList, String cmlRssUrl, String cmlRssWritePath, String archiveUrl, String feedType) {
+		/*
+		 *  don't do this any more, just write over the old journal feeds
 		try {
 			archiveCmlRssFeed(cmlRssWritePath, archiveUrl);
 		} catch (Exception e) {
 			throw new CrystalEyeRuntimeException("Problem archiving CMLRSS feed.", e);
 		}
+		*/
 
 		String feedTitle = "CrystalEye CMLRSS: "+this.publisherTitle+", "+this.journalTitle;
 		String feedDescription = "CrystalEye CMLRSS: "+this.publisherTitle+", "+this.journalTitle+", "+year+", "+issueNum;
@@ -432,6 +434,8 @@ public class RssManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	/*
+	 * not in use any more
 	private void archiveCmlRssFeed(String cmlRssUrl, String archiveUrl) {
 		if (new File(cmlRssUrl).exists()) {
 			Element descriptionElement = getCMLRSSDescriptionElement(cmlRssUrl);
@@ -452,6 +456,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			Utils.copyFile(cmlRssUrl, archiveUrl+File.separator+fileName);
 		}
 	}
+	*/
 
 	private Element getCMLRSSDescriptionElement(String cmlRssUrl) {
 		InputStream in = null;

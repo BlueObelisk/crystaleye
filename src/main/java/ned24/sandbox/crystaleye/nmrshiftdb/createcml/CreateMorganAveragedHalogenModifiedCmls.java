@@ -16,8 +16,6 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLPeak;
 import org.xmlcml.cml.tools.Morgan;
 
-import uk.ac.cam.ch.crystaleye.IOUtils;
-
 public class CreateMorganAveragedHalogenModifiedCmls implements GaussianConstants {
 
 	public static void main(String[] args) {
