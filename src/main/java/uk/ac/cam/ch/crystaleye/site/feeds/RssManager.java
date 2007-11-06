@@ -203,7 +203,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 
 			Document doc = null;
 			try {
-				IOUtils.parseCmlFile(cmlFile);
+				doc = IOUtils.parseCmlFile(cmlFile);
 			} catch (Exception e) {
 				System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 				continue;
@@ -246,8 +246,14 @@ public class RssManager extends AbstractManager implements CMLConstants {
 
 		for (File cmlFile : fileList) {
 			System.out.println("Updating RSS feeds from CML file "+cmlFile.getAbsolutePath());
-
-			CMLCml cml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+			
+			CMLCml cml = null;
+			try {
+				cml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+			} catch (Exception e) {
+				System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
+				continue;
+			}
 			CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
 
 			// process atoms RSS and CMLRSS
@@ -355,7 +361,13 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			List<File> cmlFileList = (List<File>)mapEntry.getValue();
 
 			for (File cmlFile : cmlFileList) {
-				CMLCml cml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+				CMLCml cml = null;
+				try {
+					cml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+				} catch (Exception e) {
+					System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
+					continue;
+				}
 				String cifId = cmlFile.getParentFile().getName();
 				String blockId = cifId.substring(cifId.lastIndexOf("_")+1);
 				String cifName = cifId.substring(0, cifId.lastIndexOf("_"));
