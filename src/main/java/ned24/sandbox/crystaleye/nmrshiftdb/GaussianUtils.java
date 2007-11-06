@@ -30,7 +30,7 @@ public class GaussianUtils implements GaussianConstants {
 		} else if (s.equals("Methanol")) {
 			return "AntiqueWhite";
 		} else if (s.equals("CCl4")) {
-			return "Aqua";
+			return "MediumOrchid";
 		} else if (s.equals("Benzene")) {
 			return "DarkCyan";
 		} else if (s.equals("Acetone")) {

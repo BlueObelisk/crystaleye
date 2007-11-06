@@ -8,7 +8,6 @@ import ned24.sandbox.crystaleye.nmrshiftdb.GaussianCmlTool;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianConstants;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianScatter;
 import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils;
-import ned24.sandbox.crystaleye.nmrshiftdb.GaussianUtils.Solvent;
 import ned24.sandbox.crystaleye.nmrshiftdb.results.PlotUtils;
 import ned24.sandbox.crystaleye.nmrshiftdb.results.PlotUtils.PlotType;
 import nu.xom.Document;
@@ -53,7 +52,7 @@ public class DifferencePerSolventPlot implements GaussianConstants {
 			CMLMolecule molecule = c.getMolecule();
 			String solvent = c.getCalculatedSolvent();
 
-			String colour = getSolventColour(solvent);
+			String colour = GaussianUtils.getSolventPointColour(solvent);
 			
 			boolean b = c.testSpectraConcordant(solvent);
 			if (!b) {
@@ -114,23 +113,6 @@ public class DifferencePerSolventPlot implements GaussianConstants {
 		gs.setYLab("difference (calc- obs)");
 		Document doc = gs.getPlot();	
 		return doc;
-	}
-	
-	private String getSolventColour(String solvent) {	
-		List<String> solvents = new ArrayList<String>();
-		for (Solvent s : GaussianUtils.Solvent.values()) {
-			solvents.add(GaussianUtils.getSolventString(s));
-		}
-		int i = 0;
-		solvent = GaussianUtils.nmrShiftDbSolvent2GaussianSolvent(solvent);
-		for (String s : solvents) {
-			if (s.equals(solvent)) {
-				System.out.println(i+" "+colours[i]);
-				return colours[i];
-			}
-			i++;
-		}
-		throw new RuntimeException("Could not find solvent: "+solvent);
 	}
 
 	private boolean isAtomSuitable(CMLMolecule molecule, String id) {
