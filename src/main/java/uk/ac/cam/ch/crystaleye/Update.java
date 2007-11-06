@@ -70,12 +70,12 @@ public class Update implements CMLConstants {
 			bond.execute();
 			SmilesListManager smi = new SmilesListManager(propsPath);
 			smi.execute();
+			AtomPubManager ap = new AtomPubManager(propsPath);
+			ap.execute();
 			// before updating the RSS feeds, go through them all and delete any entries over x days old
 			// new RSSArchiver().deleteOldFeedEntries("xml", properties.getRssWriteDir(), 14);
 			RssManager rss = new RssManager(propsPath);
 			rss.execute();
-			AtomPubManager ap = new AtomPubManager(propsPath);
-			ap.execute();
 		} else {
 			printUsage();
 		}
