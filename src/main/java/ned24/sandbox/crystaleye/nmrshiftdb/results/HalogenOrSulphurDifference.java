@@ -33,21 +33,21 @@ public class HalogenOrSulphurDifference extends DifferencePlot {
 		//String protocolName = HSR0_NAME;
 		//String protocolName = HSR1_NAME;
 		//String protocolName = HSR0_HALOGEN_NAME;
-		String protocolName = HSR1_HALOGEN_NAME;
+		//String protocolName = HSR1_HALOGEN_NAME;
 		//String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
-		//String protocolName = HSR1_MANUAL_AND_MORGAN_NAME;
+		String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
 		
 		String cmlDir = CML_DIR+protocolName;
 		String folderName = "halogensAndS-difference";
 		
 		FileListTool ft = new FileListTool(cmlDir);
 		//ft.setIncludeNotRemoved(false);folderName+="_nr";
-		ft.setIncludeHumanEdited(true);folderName+="_he";
-		ft.setIncludeMisassigned(true);folderName+="_m";
-		ft.setIncludePoorStructures(true);folderName+="_ps";
-		ft.setIncludePossMisassigned(true);folderName+="_pm";
-		ft.setIncludeTautomers(true);folderName+="_ta";
-		ft.setIncludeTooLargeRing(true);folderName+="_lr";
+		//ft.setIncludeHumanEdited(true);folderName+="_he";
+		//ft.setIncludeMisassigned(true);folderName+="_m";
+		//ft.setIncludePoorStructures(true);folderName+="_ps";
+		//ft.setIncludePossMisassigned(true);folderName+="_pm";
+		//ft.setIncludeTautomers(true);folderName+="_ta";
+		//ft.setIncludeTooLargeRing(true);folderName+="_lr";
 		List<File> fileList = ft.getFileList();
 		
 		String htmlTitle = "Carbons bonded to Halogens";
