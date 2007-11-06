@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>cml</groupId>
 			<artifactId>jumbo</artifactId>
-			<version>5.5.1-SNAPSHOT</version>
+			<version>5.5-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
