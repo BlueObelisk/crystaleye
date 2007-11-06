@@ -18,9 +18,9 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class SolventDiffComparison implements GaussianConstants, CrystalEyeConstants {
 
 	public static void main(String[] args) {
-		String protocolName = HSR0_NAME;
+		//String protocolName = HSR0_NAME;
 		//String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
-		//String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
+		String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
 
 		String rootFolder = HTML_DIR+protocolName;
 
@@ -38,7 +38,13 @@ public class SolventDiffComparison implements GaussianConstants, CrystalEyeConst
 			if (!solvents.contains(folder.getName())) {
 				continue;
 			}
-			String solvent = folder.getName().substring(0,folder.getName().length()-11);
+			
+			String fname = folder.getName();
+			int idx = fname.indexOf("_");
+			if (idx != -1) {
+				fname = fname.substring(0,idx);
+			}
+			String solvent = folder.getName().substring(0,fname.length()-11);
 			File svgFile = new File(folder+File.separator+"index.svg");
 			if (!svgFile.exists()) {
 				throw new RuntimeException("Can't find svg file: "+svgFile.getAbsolutePath());
