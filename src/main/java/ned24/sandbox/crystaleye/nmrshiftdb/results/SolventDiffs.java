@@ -14,21 +14,20 @@ import ned24.sandbox.crystaleye.nmrshiftdb.plottools.DifferencePlot;
 public class SolventDiffs implements GaussianConstants {
 
 	public static void main(String[] args) {
-		//String protocolName = SECOND_PROTOCOL_NAME;
-		//|String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+		String protocolName = HSR0_NAME;
 		//String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
-		String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
+		//String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
 		
 		System.out.println(protocolName);
 		String cmlDir = CML_DIR+protocolName;			
 		FileListTool ft = new FileListTool(cmlDir);
 		//ft.setIncludeNotRemoved(false);
-		//ft.setIncludeHumanEdited(true);
-		//ft.setIncludeMisassigned(true);
-		//ft.setIncludePoorStructures(true);
-		//ft.setIncludePossMisassigned(true);
-		//ft.setIncludeTautomers(true);
-		//ft.setIncludeTooLargeRing(true);
+		ft.setIncludeHumanEdited(true);
+		ft.setIncludeMisassigned(true);
+		ft.setIncludePoorStructures(true);
+		ft.setIncludePossMisassigned(true);
+		ft.setIncludeTautomers(true);
+		ft.setIncludeTooLargeRing(true);
 		List<File> fileList = ft.getFileList();
 
 		for (Solvent s : GaussianUtils.Solvent.values()) {

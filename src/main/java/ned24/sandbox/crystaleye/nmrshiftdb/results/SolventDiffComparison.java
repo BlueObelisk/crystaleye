@@ -18,10 +18,9 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class SolventDiffComparison implements GaussianConstants, CrystalEyeConstants {
 
 	public static void main(String[] args) {
-		//String protocolName = SECOND_PROTOCOL_NAME;
-		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+		String protocolName = HSR0_NAME;
 		//String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
-		String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
+		//String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
 
 		String rootFolder = HTML_DIR+protocolName;
 
@@ -73,7 +72,7 @@ public class SolventDiffComparison implements GaussianConstants, CrystalEyeConst
 				"<span style='border: 1px solid; background-color: GoldenRod; margin-bottom: 2px;'>...</span><span> = DMSO</span><br />" +
 				"<span style='border: 1px solid; background-color: Blue; margin-bottom: 2px;'>...</span><span> = Water</span><br />" +
 				"<span style='border: 1px solid; background-color: AntiqueWhite; margin-bottom: 2px;'>...</span><span> = Methanol</span><br />" +
-				"<span style='border: 1px solid; background-color: Aqua; margin-bottom: 2px;'>...</span><span> = Carbon Tetrachloride</span><br />" +
+				"<span style='border: 1px solid; background-color: MediumOrchid; margin-bottom: 2px;'>...</span><span> = Carbon Tetrachloride</span><br />" +
 				"<span style='border: 1px solid; background-color: DarkCyan; margin-bottom: 2px;'>...</span><span> = Benzene</span><br />" +
 				"<span style='border: 1px solid; background-color: YellowGreen; margin-bottom: 2px;'>...</span><span> = Acetone</span><br />" +
 				"</div>";

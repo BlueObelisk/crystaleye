@@ -18,10 +18,9 @@ import uk.ac.cam.ch.crystaleye.IOUtils;
 public class SolventScatterComparison implements GaussianConstants, CrystalEyeConstants {
 
 	public static void main(String[] args) {
-		//String protocolName = SECOND_PROTOCOL_NAME;
-		//String protocolName = SECOND_PROTOCOL_MOD1_NAME;
+		String protocolName = HSR0_NAME;
 		//String protocolName = HSR0_HALOGEN_AND_MORGAN_NAME;
-		String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
+		//String protocolName = HSR1_HALOGEN_AND_MORGAN_NAME;
 
 		String rootFolder = HTML_DIR+protocolName;
 
