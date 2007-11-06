@@ -60,9 +60,11 @@ public class TemperatureComparison implements GaussianConstants, CrystalEyeConst
 					link.detach();
 					mainDoc.getRootElement().insertChild(link, 0);
 
+					/*
 					String colour = colours[count-1];
 					outSet.add(colour+" "+folder.getName());
 					link.getChildElements().get(0).getAttribute("fill").setValue(colour);
+					*/
 				}
 			}
 			count++;

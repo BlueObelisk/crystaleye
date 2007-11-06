@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
@@ -588,9 +590,9 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 				ChemicalElement element = atom.getChemicalElement();
 				if (element.isChemicalElementType(Type.METAL)) {
 					atomCount++;
-					List<CMLAtom> singleAtomList = new ArrayList<CMLAtom>();
-					singleAtomList.add(atom);
-					CMLAtomSet singleAtomSet = new CMLAtomSet(singleAtomList);
+					Set<CMLAtom> atomSet = new HashSet<CMLAtom>();
+					atomSet.add(atom);
+					CMLAtomSet singleAtomSet = new CMLAtomSet(atomSet);
 					CMLMolecule atomR = addAndMarkFragmentRAtoms(subMolCopy, singleAtomSet);
 					CMLMolecule atomMol = new CMLMolecule();
 					atomMol.addAtom((CMLAtom)atom.copy());
