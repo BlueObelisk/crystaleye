@@ -17,13 +17,14 @@ public class GetFileListByType implements GaussianConstants {
 		String cmlDir = CML_DIR+protocolName;
 		String folderName = "RMSD-vs-C";
 		
+		System.out.println(cmlDir);
 		FileListTool ft = new FileListTool(cmlDir);
-		//ft.setIncludeNotRemoved(false);folderName+="_nr";
+		ft.setIncludeNotRemoved(false);folderName+="_nr";
 		//ft.setIncludeHumanEdited(true);folderName+="_he";
 		//ft.setIncludeMisassigned(true);folderName+="_m";
 		//ft.setIncludePoorStructures(true);folderName+="_ps";
 		//ft.setIncludePossMisassigned(true);folderName+="_pm";
-		//ft.setIncludeTautomers(true);folderName+="_ta";
+		ft.setIncludeTautomers(true);folderName+="_ta";
 		//ft.setIncludeTooLargeRing(true);folderName+="_lr";
 		List<File> fileList = ft.getFileList();
 		for (File file : fileList) {

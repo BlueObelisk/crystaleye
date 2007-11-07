@@ -113,19 +113,19 @@ public class MisassignmentPlot implements GaussianConstants {
 		gs.setXTickMarks(10);
 		gs.setYTickMarks(10);
 		gs.setXLab("Average shift (observed and calculated)");
-		gs.setYLab("observed - calculated");
+		gs.setYLab("calculated - observed");
 		Document doc = gs.getPlot();	
 		return doc;
 	}
 
-	public double getXValue(double calc, double obs) {
+	public double getXValue(double obs, double calc) {
 		double ret = (obs+calc)/2;
 		
 		return ret;
 	}
 
-	public double getYValue(double calc, double obs) {
-		double ret = (obs-calc);
+	public double getYValue(double obs, double calc) {
+		double ret = (calc-obs);
 		
 		return ret;
 	}
