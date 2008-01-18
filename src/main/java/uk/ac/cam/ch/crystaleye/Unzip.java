@@ -25,35 +25,18 @@ public class Unzip {
 		out.close();
 	}
 
-	public static final void main(String[] args) {
-		Enumeration entries;
+	public void unzip(String filename) {
 		ZipFile zipFile;
 
-		if(args.length != 1 && args.length != 2) {
-			System.err.println("Usage: Unzip zipfile");
-			return;
-		}
-
 		try {
-			zipFile = new ZipFile(args[0]);
-			File file = new File(args[0]);
-			
-			String name = "";
-			if (args.length == 2) {
-				name = args[1];
-			}
+			zipFile = new ZipFile(filename);
+			File file = new File(filename);
 			
 			String folder = file.getParentFile().getAbsolutePath();
-			entries = zipFile.entries();
+			Enumeration entries = zipFile.entries();
 
 			while(entries.hasMoreElements()) {
 				ZipEntry entry = (ZipEntry)entries.nextElement();
-
-				if (args.length == 2) {
-					if (!entry.getName().equals(name)) {
-						continue;
-					}
-				}
 				
 				if(entry.isDirectory()) {
 					// Assume directories are stored parents first then children.

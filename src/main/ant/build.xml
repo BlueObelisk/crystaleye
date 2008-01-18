@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     18 Jan 2008 13:55:27                                                        
+
+	Build file to create and update a CrystalEye.                   
+     ojd20                                                                
+     ====================================================================== -->
+<project name="crystaleye" default="build-all">
+	<description>
+    	CrystalEye is a system for processing and displaying X-Ray crystallographic data. 
+    </description>
+	<taskdef name="crawler" classname="uk.ac.cam.ch.crystaleye.ant.CrawlerTask">
+		<classpath>
+			<pathelement location="${user.dir}/target/crystaleye-0.1-jar-with-dependencies.jar"/>
+		</classpath>
+	</taskdef>
+	<property name="crystaleye.properties" value="${user.dir}/crystaleye.properties"/>
+    <property file="${crystaleye.properties}"/>
+	<property name="crystaleye.input" value="${crystaleye.base}/input"/>
+	<target name="build-all" depends="run-crawlers, create-artefacts" description="Create all artefacts">
+
+	</target>
+
+	<target name="run-crawlers" depends="create-directories">
+		<crawler fetcherClass="uk.ac.cam.ch.crystaleye.fetch.ActaCurrent"
+			properties="${crystaleye.properties}"
+			propertyPrefix="actae"
+			outputDir="${crystaleye.input}/actae"/>
+		
+	</target>
+
+	<target name="create-artefacts">
+	</target>
+
+	<target name="create-directories">
+		<mkdir dir="${crystaleye.input}"/>
+	</target>
+</project>

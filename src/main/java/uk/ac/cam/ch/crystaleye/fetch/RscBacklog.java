@@ -3,6 +3,8 @@ package uk.ac.cam.ch.crystaleye.fetch;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
 
 import nu.xom.Document;
 import nu.xom.Element;
@@ -10,7 +12,7 @@ import nu.xom.Nodes;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
 
-public class RscBacklog extends Fetcher {
+public class RscBacklog extends JournalFetcher {
 
 	private static final String HOMEPAGE_PREFIX = "http://www.rsc.org";
 	private static final String PUBLISHER_ABBREVIATION = "rsc";
@@ -20,8 +22,8 @@ public class RscBacklog extends Fetcher {
 	String issue;
 	String volume = "0";
 
-	public RscBacklog(String propertiesFile, String journalAbbreviation, String year, String issue) {
-		super(PUBLISHER_ABBREVIATION, propertiesFile);
+	public RscBacklog(String journalAbbreviation, String year, String issue) {
+		publisherAbbr = PUBLISHER_ABBREVIATION;
 		setYear(year);
 		setJournalAbbreviation(journalAbbreviation);
 		setIssue(issue);
@@ -58,8 +60,7 @@ public class RscBacklog extends Fetcher {
 		this.issue = issue;
 	}
 
-	public void fetch() {
-		String writeDir = properties.getWriteDir();
+	public void fetchAll() {
 		String url = "http://rsc.org/Publishing/Journals/"+journalAbbreviation.toLowerCase()+"/article.asp?Journal="+journalAbbreviation+"81&VolumeYear="+year+volume+"&Volume="+volume+"&JournalCode="+journalAbbreviation+"&MasterJournalCode="+journalAbbreviation+"&SubYear="+year+"&type=Issue&Issue="+issue+"&x=11&y=5";
 		System.out.println("fetching url: "+url);
 		Document doc = IOUtils.parseWebPageMinusComments(url);
@@ -89,7 +90,7 @@ public class RscBacklog extends Fetcher {
 					String cifLink = parent+"/"+cifFileName;
 
 					String cif = IOUtils.fetchWebPage(cifLink);
-					String path = writeDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+cifId+File.separator+cifId+"sup"+cifLinkNum+".cif";
+					String path = downloadDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+cifId+File.separator+cifId+"sup"+cifLinkNum+".cif";
 					IOUtils.writeText(cif, path);
 				}
 			}
@@ -97,45 +98,15 @@ public class RscBacklog extends Fetcher {
 	}
 
 	public static void main(String[] args) {
-		RscBacklog ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "gc", "2007", "11");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "jm", "2007", "40");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "jm", "2007", "41");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "jm", "2007", "42");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "jm", "2007", "43");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "nj", "2007", "11");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "ob", "2007", "21");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "ob", "2007", "22");
-		ore.fetch();
-		
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "33");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "34");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "35");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "36");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "37");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "38");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "39");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "40");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "41");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "42");
-		ore.fetch();
-		ore = new RscBacklog("E:\\data-test\\docs\\cif-flow-props.txt", "cp", "2007", "43");
-		ore.fetch();
-		
+		Properties props;
+		try {
+			props = IOUtils.loadProperties("E:\\data-test\\docs\\cif-flow-props.txt");
+			RscBacklog ore = new RscBacklog( "gc", "2007", "11");
+			ore.setDownloadDir(new File(props.getProperty("write.dir")));
+			ore.fetchAll();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
