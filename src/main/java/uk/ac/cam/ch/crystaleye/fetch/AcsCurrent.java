@@ -3,6 +3,8 @@ package uk.ac.cam.ch.crystaleye.fetch;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,20 +17,16 @@ import uk.ac.cam.ch.crystaleye.IssueDate;
 
 public class AcsCurrent extends CurrentIssueFetcher {
 	
-	private static final String publisherAbbreviation = "acs";
-	
-	public AcsCurrent(File propertiesFile) {
-		super(publisherAbbreviation, propertiesFile);
-	}
-	
-	public AcsCurrent(String propertiesFile) {
-		this(new File(propertiesFile));
+	private static final String PUBLISHER_ABBR = "acs";
+
+	public AcsCurrent() {
+		publisherAbbr = PUBLISHER_ABBR;
 	}
 
-	protected IssueDate getCurrentIssueId(String journalAbbreviation) {
+	protected IssueDate getCurrentIssueId() {
 		// old url
 		//String url = "http://pubs.acs.org/journals/"+this.journalAbbreviation+"/index.html";
-		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="+journalAbbreviation;
+		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="+journalAbbr;
 		// get current issue page as a DOM
 		Document doc = IOUtils.parseWebPage(url);
 		// query that went with first and second patterns
@@ -55,8 +53,8 @@ public class AcsCurrent extends CurrentIssueFetcher {
 		}
 	}
 
-	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issueNum) {
-		String url = "http://pubs.acs.org/journals/"+journalAbbreviation+"/index.html";
+	protected void fetch(File issueWriteDir, String year,  String issueNum) throws IOException {
+		String url = "http://pubs.acs.org/journals/"+journalAbbr+"/index.html";
 		Document doc = IOUtils.parseWebPage(url);
 		Nodes suppLinks = doc.query("//x:a[contains(text(),'Supporting')]", X_XHTML);
 		sleep();
@@ -64,7 +62,6 @@ public class AcsCurrent extends CurrentIssueFetcher {
 		if (suppLinks.size() > 0) {
 			for (int j = 0; j < suppLinks.size(); j++) {
 				String suppUrl = ((Element)suppLinks.get(j)).getAttributeValue("href");
-				System.out.println("fetching: "+suppUrl);
 				doc = IOUtils.parseWebPage(suppUrl);
 				sleep();
 
@@ -78,24 +75,18 @@ public class AcsCurrent extends CurrentIssueFetcher {
 						cifId = cifId.substring(idx+1);
 						int suppNum = k+1;
 						cifUrl = cifUrl.replaceAll("pubs\\.acs\\.org/", "pubs\\.acs\\.org//");
-						String cif = getWebPage(cifUrl);
 						Nodes doiAnchors = doc.query("//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
 						String doi = null;
 						if (doiAnchors.size() > 0) {
 							doi = ((Element)doiAnchors.get(0)).getValue();
 						}
-						writeFiles(issueWriteDir, cifId, suppNum, cif, doi);
+						URL cifURL = new URL(cifUrl);
+						writeFiles(issueWriteDir, cifId, suppNum, cifURL, doi);
 						sleep();
 					}
 				}
 			}
 		}
 		System.out.println("FINISHED FETCHING CIFS FROM "+url);
-	}
-
-	public static void main(String[] args) {
-		AcsCurrent acs = new AcsCurrent("E:\\data-test\\docs\\cif-flow-props.txt");
-		acs.execute();
-
 	}
 }

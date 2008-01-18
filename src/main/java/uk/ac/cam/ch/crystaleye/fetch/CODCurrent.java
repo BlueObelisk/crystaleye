@@ -450,17 +450,26 @@ public class CODCurrent implements CMLConstants {
 		return set;
 	}
 
+	/**
+	 * @todo REIMPLEMENT!
+	 * @param filename
+	 */
 	private void unzipAllFiles(String filename) {
 		String[] args = new String[1];
 		args[0] = filename;
-		Unzip.main(args);
+//		Unzip.main(args);
 	}
+
+	/**
+	 * @todo REIMPLEMENT!
+	 * @param filename
+	 */
 
 	private void unzipFile(String filename, String zipName) {
 		String[] args = new String[2];
 		args[0] = filename;
 		args[1] = zipName;
-		Unzip.main(args);
+//		Unzip.main(args);
 	}
 
 	private void runCIFConverter(String infile, String outfile) {

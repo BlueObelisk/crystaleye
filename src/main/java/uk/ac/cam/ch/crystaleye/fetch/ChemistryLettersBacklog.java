@@ -4,6 +4,9 @@ import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CHEMSOCJAPAN_DOI_PREFI
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 import nu.xom.Document;
 import nu.xom.Element;
@@ -11,7 +14,7 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class ChemistryLettersBacklog extends Fetcher {
+public class ChemistryLettersBacklog extends JournalFetcher {
 
 	private static final String SITE_PREFIX = "http://www.jstage.jst.go.jp";	
 	private static final String PUBLISHER_ABBREVIATION = "chemSocJapan";
@@ -20,8 +23,8 @@ public class ChemistryLettersBacklog extends Fetcher {
 	String year;
 	String issue;
 
-	public ChemistryLettersBacklog(String propertiesFile, String journalAbbreviation, String year, String issue) {
-		super(PUBLISHER_ABBREVIATION, propertiesFile);
+	public ChemistryLettersBacklog(String journalAbbreviation, String year, String issue) {
+		this.publisherAbbr = PUBLISHER_ABBREVIATION;
 		setYear(year);
 		setIssue(issue);
 	}
@@ -34,8 +37,7 @@ public class ChemistryLettersBacklog extends Fetcher {
 		this.issue = issue;
 	}
 
-	public void fetch() {
-		String writeDir = properties.getWriteDir();
+	public void fetchAll() throws IOException {
 		String url = "http://www.chemistry.or.jp/journals/chem-lett/cl-cont/cl"+this.year+"-"+this.issue+".html";
 		System.out.println("Fetching CIFs from "+url);
 		Document doc = IOUtils.parseWebPage(url);
@@ -63,7 +65,7 @@ public class ChemistryLettersBacklog extends Fetcher {
 								String cifLink = SITE_PREFIX+((Element)cifLinks.get(0)).getAttributeValue("href");
 								String cif = IOUtils.fetchWebPage(cifLink);
 								String cifId = new File(suppPageUrl).getParentFile().getName().replaceAll("_", "-");
-								String cifWriteDir = writeDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+this.year+File.separator+this.issue+File.separator+cifId;
+								String cifWriteDir = downloadDir.getCanonicalPath()+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+this.year+File.separator+this.issue+File.separator+cifId;
 								Nodes doiElements = abstractPage.query("//*[contains(text(),'doi:"+CHEMSOCJAPAN_DOI_PREFIX+"')]", X_XHTML);
 								int suppNum = j+1;
 								if (doiElements.size() > 0) {
@@ -82,8 +84,19 @@ public class ChemistryLettersBacklog extends Fetcher {
 	}
 
 	public static void main(String[] args) {
-		ChemistryLettersBacklog cl = new ChemistryLettersBacklog("e:/data-test/docs/cif-flow-props.txt", 
-				"chem-lett", "2006", "12");
-		cl.fetch();
+		try {
+			// this line just to initialise
+			ChemistryLettersBacklog ab = new ChemistryLettersBacklog("chem-lett", "2006", "12");
+			Properties props = new Properties();
+			props.load(new FileInputStream(
+					"e:/data-test2/docs/cif-flow-props.txt"));
+			for (int i = 12; i < 13; i++) {
+				ab = new ChemistryLettersBacklog("orlef7", "2007", String.valueOf(i));
+				ab.setDownloadDir(new File(props.getProperty("write.dir")));
+				ab.fetchAll();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
