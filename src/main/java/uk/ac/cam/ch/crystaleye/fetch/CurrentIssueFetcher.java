@@ -1,179 +1,104 @@
 package uk.ac.cam.ch.crystaleye.fetch;
 
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.ATOMPUB;
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.BONDLENGTHS;
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CELLPARAMS;
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CIF2CML;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CIF_MIME;
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CML2FOO;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.DATE_MIME;
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.DOILIST;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.DOI_MIME;
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.RSS;
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.SMILESLIST;
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.WEBPAGE;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
-import nu.xom.Attribute;
-import nu.xom.Document;
-import nu.xom.Element;
-import nu.xom.Nodes;
-import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.CrystalEyeUtils;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
 
-public abstract class CurrentIssueFetcher extends Fetcher {
+public abstract class CurrentIssueFetcher extends JournalFetcher {
 
-	protected CurrentIssueFetcher(String publisherAbbreviation, File propertiesFile) {
-		super(publisherAbbreviation, propertiesFile);
+	File logfile;
+
+	private final static Logger LOG = Logger
+			.getLogger(CurrentIssueFetcher.class);
+
+	protected abstract IssueDate getCurrentIssueId();
+
+	protected abstract void fetch(File issueWriteDir, String year,
+			String issueNum) throws IOException;
+
+	public void fetchAll() throws IOException {
+		LOG.info("Getting TOC of latest issue of " + publisherAbbr
+				+ " journal " + journalAbbr);
+		IssueDate issueDate = getCurrentIssueId();
+		String year = issueDate.getYear();
+		String issue = issueDate.getIssue();
+		String issueCode = createIssueCode(year, issue);
+		boolean alreadyGot = checkDownloads(issueCode);
+		if (alreadyGot) {
+			LOG.info("Already got this issue <" + issueCode
+					+ ">");
+		} else {
+			File issueWriteDir = new File(downloadDir + File.separator
+					+ publisherAbbr + File.separator + journalAbbr
+					+ File.separator + year + File.separator + issue);
+
+			this.fetch(issueWriteDir, year, issue);
+			updateLog(issueCode);
+		}
 	}
 
-	protected CurrentIssueFetcher(String publisherAbbreviation, String propertiesFile) {
-		super(publisherAbbreviation, propertiesFile);
+	private String createIssueCode(String year, String issue) {
+		return publisherAbbr + "_" + journalAbbr + "_" + year + "_" + issue;
 	}
 
-	protected abstract IssueDate getCurrentIssueId(String journalAbbreviation);
+	protected boolean checkDownloads(String issueCode) throws IOException {
+		for (LineIterator li = FileUtils.lineIterator(logfile); li.hasNext();) {
+			if (issueCode.equals(li.nextLine())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-	protected abstract void fetch(String issueWriteDir, String journalAbbreviation, String year, String issueNum);
+	protected void updateLog(String issueCode) {
+		IOUtils.appendToFile(logfile, issueCode);
+		LOG.info("Updated " + logfile + " with " + issueCode);
+	}
 
-	public void execute() {
-		String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(PUBLISHER_ABBREVIATION);
-		for (String journalAbbreviation : journalAbbreviations) {
-			System.out.println("Getting TOC of latest issue of "+PUBLISHER_ABBREVIATION.toUpperCase()+" journal "+journalAbbreviation.toUpperCase());
-			IssueDate issueDate = getCurrentIssueId(journalAbbreviation);
-			String year = issueDate.getYear();
-			String issue = issueDate.getIssue();
-			boolean alreadyGot = checkDownloads(journalAbbreviation, year, issue);
-			String issueCode = PUBLISHER_ABBREVIATION+"_"+journalAbbreviation+"_"+year+"_"+issue;
-			if (alreadyGot) {
-				System.out.println("No new journals to process at this time ("+issueCode+")");
-			} else {
-				String issueWriteDir = properties.getWriteDir()+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue;
-				this.fetch(issueWriteDir, journalAbbreviation, year, issue);
-				updateLog(journalAbbreviation, year, issue);
+	protected void writeFiles(File issueWriteDir, String cifId, int suppNum,
+			URL cif, String doi) throws IOException {
+		File cifDir = new File(issueWriteDir + File.separator + cifId);
+		String pathPrefix = cifId + "sup" + suppNum;
+		File cifFile = new File(cifDir, pathPrefix + CIF_MIME);
+		File tmpcif = null;
+		File doiFile = new File(cifDir, pathPrefix + DOI_MIME);
+		try {
+			tmpcif = File.createTempFile("crystaleye", ".cif");
+			LOG.debug("Downloading cif to: " + tmpcif);
+			FileUtils.copyURLToFile(cif, tmpcif);
+			LOG.debug("Moving cif to " + cifFile);
+			if (!tmpcif.renameTo(cifFile)) {
+				FileUtils.copyFile(tmpcif, cifFile);
+				tmpcif.delete();
+			}
+			if (doi != null) {
+				IOUtils.writeText(doi, doiFile.getCanonicalPath());
+			}
+			CrystalEyeUtils.writeDateStamp(pathPrefix + DATE_MIME);
+		} finally {
+			if (tmpcif != null && tmpcif.exists()) {
+				tmpcif.delete();
 			}
 		}
 	}
 
-	protected boolean checkDownloads(String journalAbbreviation, String year, String issueNum) {
-		String downloadLogPath = properties.getDownloadLogPath();
-		boolean alreadyGot = false;
-		Document doc = IOUtils.parseXmlFile(downloadLogPath);
-		Nodes nodes = doc.query(".//journal[@abbreviation='"+journalAbbreviation+"']/year[@id='"+year+"']/issue[@id='"+issueNum+"']");
-		if (nodes.size() > 0) {
-			alreadyGot = true;
-		}
-		return alreadyGot;
+	public File getLogfile() {
+		return logfile;
 	}
 
-	protected void updateLog(String journalAbbreviation, String year, String issueNum) {
-		String downloadLogPath = properties.getDownloadLogPath();
-		Document doc = IOUtils.parseXmlFile(downloadLogPath);
-		Element logEl = doc.getRootElement();
-		Nodes publishers = logEl.query("./publisher[@abbreviation='"+PUBLISHER_ABBREVIATION+"']");
-		if (publishers.size() == 1) {
-			Element publisherEl = (Element)publishers.get(0);
-			Nodes journals = publisherEl.query("./journal[@abbreviation='"+journalAbbreviation+"']");
-			if (journals.size() == 1) {
-				Element journalEl = (Element)journals.get(0);
-				Nodes years = journalEl.query("./year[@id='"+year+"']");
-				if (years.size() == 1) {
-					Element yearEl = (Element)years.get(0);
-					yearEl.appendChild(getNewIssueElement(issueNum));
-				} else if (years.size() > 1) {
-					throw new CrystalEyeRuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+".  Cannot continue.");
-				} else if (years.size() == 0) {
-					Element yearEl = getNewYearElement(year);
-					journalEl.appendChild(yearEl);
-					yearEl.appendChild(getNewIssueElement(issueNum));
-				}
-			} else if (journals.size() > 1) {
-				throw new CrystalEyeRuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+".  Cannot continue.");
-			} else if (journals.size() == 0) {
-				Element journalEl = getNewJournalElement(journalAbbreviation);
-				publisherEl.appendChild(journalEl);
-				Element yearEl = getNewYearElement(year);
-				journalEl.appendChild(yearEl);
-				yearEl.appendChild(getNewIssueElement(issueNum));
-			}
-		} else if (publishers.size() > 1) {
-			throw new CrystalEyeRuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+".  Cannot continue.");
-		} else if (publishers.size() == 0) {
-			Element publisherEl = getNewPublisherElement(PUBLISHER_ABBREVIATION);
-			logEl.appendChild(publisherEl);
-			Element journalEl = getNewJournalElement(journalAbbreviation);
-			publisherEl.appendChild(journalEl);
-			Element yearEl = getNewYearElement(year);
-			journalEl.appendChild(yearEl);
-			yearEl.appendChild(getNewIssueElement(issueNum));
-		}
-
-		IOUtils.writeXML(doc, downloadLogPath);
-		System.out.println("Updated "+downloadLogPath+" by adding "+year+"-"+issueNum);
-	}
-
-	private Element getNewIssueElement(String issueNum) {
-		Element issue = new Element("issue");
-		Attribute issueId = new Attribute("id", issueNum);
-		issue.addAttribute(issueId);
-		Element cif2Cml = new Element(CIF2CML);
-		issue.appendChild(cif2Cml);
-		cif2Cml.addAttribute(new Attribute("value", "false"));			
-		Element cml2Foo = new Element(CML2FOO);
-		cml2Foo.addAttribute(new Attribute("value", "false"));
-		issue.appendChild(cml2Foo);			
-		Element webpage = new Element(WEBPAGE);
-		webpage.addAttribute(new Attribute("value", "false"));
-		issue.appendChild(webpage);
-		Element doilist = new Element(DOILIST);
-		doilist.addAttribute(new Attribute("value", "false"));
-		issue.appendChild(doilist);
-		Element bondLengths = new Element(BONDLENGTHS);
-		bondLengths.addAttribute(new Attribute("value", "false"));
-		issue.appendChild(bondLengths);
-		Element cellParams = new Element(CELLPARAMS);
-		cellParams.addAttribute(new Attribute("value", "false"));
-		issue.appendChild(cellParams);
-		Element smiles = new Element(SMILESLIST);
-		smiles.addAttribute(new Attribute("value", "false"));
-		issue.appendChild(smiles);
-		Element rss = new Element(RSS);
-		rss.addAttribute(new Attribute("value", "false"));
-		issue.appendChild(rss);
-		Element atompub = new Element(ATOMPUB);
-		atompub.addAttribute(new Attribute("value", "false"));
-		issue.appendChild(atompub);
-
-		return issue;
-	}
-
-	private Element getNewYearElement(String year) {
-		Element yearEl = new Element("year");
-		yearEl.addAttribute(new Attribute("id", year));	
-		return yearEl;
-	}
-
-	private Element getNewJournalElement(String journalAbbreviation) {
-		Element journalEl = new Element("journal");
-		journalEl.addAttribute(new Attribute("abbreviation", journalAbbreviation));
-		return journalEl;
-	}
-
-	private Element getNewPublisherElement(String publisherAbbreviation) {
-		Element publisherEl = new Element("publisher");
-		publisherEl.addAttribute(new Attribute("abbreviation", publisherAbbreviation));
-		return publisherEl;
-	}
-
-	protected void writeFiles(String issueWriteDir, String cifId, int suppNum, String cif, String doi) {
-		String pathPrefix = issueWriteDir+File.separator+cifId+File.separator+cifId;
-		System.out.println("Writing cif to: "+pathPrefix+"sup"+suppNum+CIF_MIME);
-		IOUtils.writeText(cif, pathPrefix+"sup"+suppNum+CIF_MIME);
-		if (doi != null) {
-			IOUtils.writeText(doi, pathPrefix+DOI_MIME);
-		}
-		CrystalEyeUtils.writeDateStamp(pathPrefix+DATE_MIME);
+	public void setLogfile(File logfile) {
+		this.logfile = logfile;
 	}
 }

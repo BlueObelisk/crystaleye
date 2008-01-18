@@ -11,7 +11,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.xmlcml.cml.base.CMLConstants;
 
-import uk.ac.cam.ch.crystaleye.fetch.FetchManager;
+//import uk.ac.cam.ch.crystaleye.fetch.FetchManager;
 import uk.ac.cam.ch.crystaleye.process.CML2FooManager;
 import uk.ac.cam.ch.crystaleye.process.Cif2CmlManager;
 import uk.ac.cam.ch.crystaleye.properties.SiteProperties;
@@ -54,8 +54,8 @@ public class Update implements CMLConstants {
 		properties = new SiteProperties(new File(propsPath));
 
 		if (propsPath != null) {
-			FetchManager fetch = new FetchManager(propsPath);
-			fetch.run();
+//			FetchManager fetch = new FetchManager(propsPath);
+//			fetch.run();
 			Cif2CmlManager cif2Cml = new Cif2CmlManager(propsPath);
 			cif2Cml.execute();
 			CML2FooManager cml2Foo = new CML2FooManager(propsPath);

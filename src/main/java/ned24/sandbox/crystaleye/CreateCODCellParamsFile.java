@@ -47,7 +47,7 @@ public class CreateCODCellParamsFile implements CMLConstants {
 					CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
 					CMLCrystal crystal = (CMLCrystal)molecule.getFirstCMLChild(CMLCrystal.TAG);
 
-					Nodes lengthANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_a']", X_CML);
+					Nodes lengthANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_a']", CML_XPATH);
 					String lengthA = "";
 					if (lengthANodes.size() == 1) {
 						lengthA  = lengthANodes.get(0).getValue();
@@ -56,7 +56,7 @@ public class CreateCODCellParamsFile implements CMLConstants {
 						continue;
 					}
 
-					Nodes lengthBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_b']", X_CML);
+					Nodes lengthBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_b']", CML_XPATH);
 					String lengthB = "";
 					if (lengthBNodes.size() == 1) {
 						lengthB  = lengthBNodes.get(0).getValue();
@@ -65,7 +65,7 @@ public class CreateCODCellParamsFile implements CMLConstants {
 						continue;
 					}
 
-					Nodes lengthCNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_c']", X_CML);
+					Nodes lengthCNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_c']", CML_XPATH);
 					String lengthC = "";
 					if (lengthCNodes.size() == 1) {
 						lengthC  = lengthCNodes.get(0).getValue();
@@ -74,7 +74,7 @@ public class CreateCODCellParamsFile implements CMLConstants {
 						continue;
 					}
 
-					Nodes angleANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_alpha']", X_CML);
+					Nodes angleANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_alpha']", CML_XPATH);
 					String angleA = "";
 					if (angleANodes.size() == 1) {
 						angleA  = angleANodes.get(0).getValue();
@@ -83,7 +83,7 @@ public class CreateCODCellParamsFile implements CMLConstants {
 						continue;
 					}
 
-					Nodes angleBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_beta']", X_CML);
+					Nodes angleBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_beta']", CML_XPATH);
 					String angleB = "";
 					if (angleBNodes.size() == 1) {
 						angleB  = angleBNodes.get(0).getValue();
@@ -92,7 +92,7 @@ public class CreateCODCellParamsFile implements CMLConstants {
 						continue;
 					}
 
-					Nodes angleGNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_gamma']", X_CML);
+					Nodes angleGNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_gamma']", CML_XPATH);
 					String angleG = "";
 					if (angleGNodes.size() == 1) {
 						angleG  = angleGNodes.get(0).getValue();
