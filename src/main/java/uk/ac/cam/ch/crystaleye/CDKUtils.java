@@ -156,10 +156,7 @@ public class CDKUtils implements CMLConstants {
 		for (int i = 0; i < mol.getAtomCount(); i++) {
 			IAtom atom = mol.getAtom(i);
 			Point2d p = atom.getPoint2d();
-			if (p.x == Double.NaN || p.y == Double.NaN) {
-				System.out.println("!!!!!!!!!!!!!!!  "+p.toString());
-			}
-			if (p.x != Double.NaN && p.y != Double.NaN) {
+			if (!new Double(p.x).equals(Double.NaN) && !new Double(p.y).equals(Double.NaN)) {
 				CMLAtom cmlAtom = molecule.getAtomById(atom.getID());
 				cmlAtom.setX2(p.x);
 				cmlAtom.setY2(p.y);
