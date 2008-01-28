@@ -62,7 +62,7 @@ public class Cml2Png implements CMLConstants {
 	
 	public Cml2Png(CMLMolecule molecule) {
 		this.cmlMol = new CMLMolecule(molecule);
-		MoleculeTool mt = new MoleculeTool(this.cmlMol);
+		MoleculeTool mt = MoleculeTool.getOrCreateTool(this.cmlMol);
 		mt.contractExplicitHydrogens(CMLMolecule.HydrogenControl.REPLACE_HYDROGEN_COUNT, false);
 		if (molecule.getDescendantsOrMolecule().size() > 1) {
 			throw new CMLRuntimeException("CMLMolecule must not have any child molecules");

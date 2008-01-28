@@ -100,7 +100,7 @@ public class CDKUtils implements CMLConstants {
 			}
 
 			for (CMLBond bond : cmlMol.getBonds())	 {
-				List<Node> bondStereoNodes = CMLUtil.getQueryNodes(bond, ".//cml:bondStereo", X_CML);
+				List<Node> bondStereoNodes = CMLUtil.getQueryNodes(bond, ".//cml:bondStereo", CML_XPATH);
 				if (bondStereoNodes.size() == 1) {
 					CMLBondStereo bs = ((CMLBondStereo)bondStereoNodes.get(0));
 					String stereo = bs.getValue();

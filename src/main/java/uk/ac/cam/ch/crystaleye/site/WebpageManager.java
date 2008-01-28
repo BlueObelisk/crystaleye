@@ -354,19 +354,19 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
 		String id = fileName.substring(0,fileName.indexOf("."));
 
-		Nodes nodes = mol.query("//cml:identifier[@convention=\"iupac:inchi\"]", X_CML);
+		Nodes nodes = mol.query("//cml:identifier[@convention=\"iupac:inchi\"]", CML_XPATH);
 		String inchi = "";
 		if (nodes.size() != 0) {
 			inchi = nodes.get(0).getValue();
 			inchi = inchi.replaceAll("-", "-<wbr>");
 		}
 		String smiles = "";
-		nodes = mol.query("./cml:identifier[@convention=\"daylight:smiles\"]", X_CML);
+		nodes = mol.query("./cml:identifier[@convention=\"daylight:smiles\"]", CML_XPATH);
 		if (nodes.size() != 0) {
 			smiles = nodes.get(0).getValue();
 			smiles = smiles.replaceAll("\\)", ")<wbr>");
 		}
-		nodes = mol.query("//cml:scalar[@dictRef=\"idf:doi\"]", X_CML);
+		nodes = mol.query("//cml:scalar[@dictRef=\"idf:doi\"]", CML_XPATH);
 		String doi = "";
 		if (nodes.size() != 0) {
 			doi = nodes.get(0).getValue();
@@ -378,8 +378,8 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}	
 		String prefix = newFile.getName()+".cif.summary.html";
 
-		Nodes unprocNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", X_CML);
-		Nodes procNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", X_CML);
+		Nodes unprocNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
+		Nodes procNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
 		DisorderType disordered = null;
 		if (unprocNodes.size() > 0) {
 			disordered = DisorderType.UNPROCESSED;
@@ -433,32 +433,32 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			}
 		}
 
-		Nodes doiNodes = cml.query("//cml:scalar[@dictRef=\"idf:doi\"]", X_CML);
+		Nodes doiNodes = cml.query("//cml:scalar[@dictRef=\"idf:doi\"]", CML_XPATH);
 		String doi = "";
 		if (doiNodes.size() != 0) {
 			doi = doiNodes.get(0).getValue();
 		}
 		String inchi = "";
-		Nodes molNodes = cml.query("./cml:molecule", X_CML);
+		Nodes molNodes = cml.query("./cml:molecule", CML_XPATH);
 		if (molNodes.size() > 0) {
 			CMLMolecule mol = (CMLMolecule)molNodes.get(0);
-			molNodes = mol.query("./cml:identifier[@convention=\"iupac:inchi\"]", X_CML);
+			molNodes = mol.query("./cml:identifier[@convention=\"iupac:inchi\"]", CML_XPATH);
 			if (molNodes.size() != 0) {
 				inchi = molNodes.get(0).getValue();
 				inchi = inchi.replaceAll("-", "-<wbr>");
 			}
 		}
 		String smiles = "";
-		Nodes molNodes2 = cml.query("./cml:molecule", X_CML);
+		Nodes molNodes2 = cml.query("./cml:molecule", CML_XPATH);
 		if (molNodes2.size() > 0) {
 			CMLMolecule mol = (CMLMolecule)molNodes2.get(0);
-			molNodes2 = mol.query("./cml:identifier[@convention=\"daylight:smiles\"]", X_CML);
+			molNodes2 = mol.query("./cml:identifier[@convention=\"daylight:smiles\"]", CML_XPATH);
 			if (molNodes2.size() != 0) {
 				smiles = molNodes2.get(0).getValue();
 				smiles = smiles.replaceAll("\\)", ")<wbr>");
 			}
 		}
-		Nodes titleNodes = cml.query(".//cml:scalar[@dictRef=\"iucr:_publ_section_title\"]", X_CML);
+		Nodes titleNodes = cml.query(".//cml:scalar[@dictRef=\"iucr:_publ_section_title\"]", CML_XPATH);
 		String title = "";
 		try {
 			if (titleNodes.size() != 0) {
@@ -484,28 +484,28 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 
 		String contactAuthor = "";
-		Nodes authorNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_publ_contact_author_name')]", X_CML);
+		Nodes authorNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_publ_contact_author_name')]", CML_XPATH);
 		if (authorNodes.size() != 0) {
 			contactAuthor = authorNodes.get(0).getValue();
 		}
 		String authorEmail = "";
-		Nodes emailNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_publ_contact_author_email')]", X_CML);
+		Nodes emailNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_publ_contact_author_email')]", CML_XPATH);
 		if (emailNodes.size() != 0) {
 			authorEmail = emailNodes.get(0).getValue();
 		}
 
 		String compoundClass = "";
-		Nodes classNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:compoundClass')]", X_CML);
+		Nodes classNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:compoundClass')]", CML_XPATH);
 		if (classNodes.size() != 0) {
 			compoundClass = classNodes.get(0).getValue();
 		}
 
 		String cellSetting = "";
-		Nodes cellNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_symmetry_cell_setting')]", X_CML);
+		Nodes cellNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_symmetry_cell_setting')]", CML_XPATH);
 		if (cellNodes.size() != 0) {
 			cellSetting = cellNodes.get(0).getValue();
 		}
-		Nodes crystalNodes = cml.query(".//cml:crystal", X_CML);
+		Nodes crystalNodes = cml.query(".//cml:crystal", CML_XPATH);
 		String groupHM = "";
 		if (crystalNodes.size() == 1) {
 			CMLCrystal crystal = (CMLCrystal)crystalNodes.get(0);
@@ -513,44 +513,44 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			groupHM = symmetry.getSpaceGroup();
 		}
 		String groupHall = "";
-		Nodes hallNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_symmetry_space_group_name_hall')]", X_CML);
+		Nodes hallNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_symmetry_space_group_name_hall')]", CML_XPATH);
 		if (hallNodes.size() != 0) {
 			groupHall = hallNodes.get(0).getValue();
 		}
 		String temp = "";
-		Nodes tempNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_cell_measurement_temperature')]", X_CML);
+		Nodes tempNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_cell_measurement_temperature')]", CML_XPATH);
 		if (tempNodes.size() != 0) {
 			temp = tempNodes.get(0).getValue();
 		}
 		String dateRecorded = "";
-		Nodes dateNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_journal_date_recd_electronic')]", X_CML);
+		Nodes dateNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_journal_date_recd_electronic')]", CML_XPATH);
 		if (dateNodes.size() != 0) {
 			dateRecorded = dateNodes.get(0).getValue();
 		}
 		String rObs = "";
-		Nodes rFGTNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_r_factor_gt')]", X_CML);
+		Nodes rFGTNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_r_factor_gt')]", CML_XPATH);
 		if (rFGTNodes.size() != 0) {
 			rObs = rFGTNodes.get(0).getValue();
 		}
 		String rAll = "";
-		Nodes rFAllNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_r_factor_all')]", X_CML);
+		Nodes rFAllNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_r_factor_all')]", CML_XPATH);
 		if (rFAllNodes.size() != 0) {
 			rAll = rFAllNodes.get(0).getValue();
 		}
 		String wRObs = "";
-		Nodes WRGTNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_wr_factor_gt')]", X_CML);
+		Nodes WRGTNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_wr_factor_gt')]", CML_XPATH);
 		if (WRGTNodes.size() != 0) {
 			wRObs = WRGTNodes.get(0).getValue();
 		}
 		String wRAll = "";
-		Nodes wRAllNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'iucr:_refine_ls_wr_factor_ref')]", X_CML);
+		Nodes wRAllNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'iucr:_refine_ls_wr_factor_ref')]", CML_XPATH);
 		if (wRAllNodes.size() != 0) {
 			wRAll = wRAllNodes.get(0).getValue();
 		}	
 		String crystComp = createCrystalComponentsSection(cmlFile, id);
 
-		Nodes unprocNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", X_CML);
-		Nodes procNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", X_CML);
+		Nodes unprocNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
+		Nodes procNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
 		DisorderType disordered = null;
 		if (unprocNodes.size() > 0) {
 			disordered = DisorderType.UNPROCESSED;
@@ -562,7 +562,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 
 		boolean isPolymeric = false;
 		Nodes polymericNodes = cml.query(".//"+CMLMetadata.NS+"[@dictRef='"+
-				POLYMERIC_FLAG_DICTREF+"']", X_CML);
+				POLYMERIC_FLAG_DICTREF+"']", CML_XPATH);
 		if (polymericNodes.size() > 0) {
 			isPolymeric = true;
 		}
@@ -742,7 +742,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 					for (File file : files) {
 						if (file.getAbsolutePath().matches("[^\\.]*"+COMPLETE_CML_MIME_REGEX)) {
 							CMLMolecule molecule = (CMLMolecule) IOUtils.parseCmlFile(file).getRootElement();
-							Nodes inchis = molecule.query("//cml:identifier[@convention='iupac:inchi']", X_CML);
+							Nodes inchis = molecule.query("//cml:identifier[@convention='iupac:inchi']", CML_XPATH);
 							if (inchis.size() > 0) {
 								String inchi = ((Element)inchis.get(0)).getValue();
 								if (!inchiSet.contains(inchi)) {
@@ -916,8 +916,8 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 
 		// check for disorder in the structure, if so then need to indicate this on the page
-		Nodes unprocNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", X_CML);
-		Nodes procNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", X_CML);
+		Nodes unprocNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
+		Nodes procNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
 		if (unprocNodes.size() > 0) {
 			formula += " <span style=\"color: red; font-size: 12px;\">((DU))</span>";
 		} else if (procNodes.size() > 0) {
@@ -1095,8 +1095,8 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		moietyS = (moietyS == ".") ? sumS : moietyS;
 
 		// check for disorder in the structure, if so then need to indicate this on the page
-		Nodes unprocNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", X_CML);
-		Nodes procNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", X_CML);
+		Nodes unprocNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
+		Nodes procNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
 		if (unprocNodes.size() > 0) {
 			moietyS += " <span style=\"color: red; font-size: 12px;\">((DU))</span>";
 		} else if (procNodes.size() > 0) {
@@ -1104,13 +1104,13 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 
 		String compoundClass = "";
-		Nodes classNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:compoundClass')]", X_CML);
+		Nodes classNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:compoundClass')]", CML_XPATH);
 		if (classNodes.size() != 0) {
 			compoundClass = classNodes.get(0).getValue();
 		}
 		boolean isPolymeric = false;
 		Nodes polymericNodes = cml.query(".//"+CMLMetadata.NS+"[@dictRef='"+
-				POLYMERIC_FLAG_DICTREF+"']", X_CML);
+				POLYMERIC_FLAG_DICTREF+"']", CML_XPATH);
 		if (polymericNodes.size() > 0) {
 			isPolymeric = true;
 		}
@@ -1145,7 +1145,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 					// in case errors due to atoms with zero occupancy
 					// don't do anything - assume isn't boring
 				}
-				Nodes nonUnitOccNodes = mo.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", X_CML);
+				Nodes nonUnitOccNodes = mo.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 				if (DisorderTool.isDisordered(mo) || mo.hasCloseContacts() || nonUnitOccNodes.size() != 0 || !Cif2CmlManager.hasBondOrdersAndCharges(mo)) {
 					continue;
 				}
