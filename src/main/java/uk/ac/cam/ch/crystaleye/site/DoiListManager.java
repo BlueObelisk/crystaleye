@@ -79,7 +79,7 @@ public class DoiListManager extends AbstractManager implements CMLConstants {
 				for (File cmlFile : fileList) {
 					try {
 						CMLElement cml = (CMLElement)new CMLBuilder().build(new BufferedReader(new FileReader(cmlFile))).getRootElement();
-						Nodes doiNodes = cml.query(".//"+CMLScalar.NS+"[@dictRef='idf:doi']", X_CML);
+						Nodes doiNodes = cml.query(".//"+CMLScalar.NS+"[@dictRef='idf:doi']", CML_XPATH);
 						if (doiNodes.size() > 0) {
 							String doi = doiNodes.get(0).getValue();
 							String path = cmlFile.getAbsolutePath();

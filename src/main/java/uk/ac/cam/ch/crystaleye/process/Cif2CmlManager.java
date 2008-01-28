@@ -276,7 +276,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 	}
 
 	private void repositionCMLCrystalElement(CMLCml cml) {
-		Nodes crystalNodes = cml.query(".//"+CMLCrystal.NS, X_CML);
+		Nodes crystalNodes = cml.query(".//"+CMLCrystal.NS, CML_XPATH);
 		if (crystalNodes.size() > 0) {
 			CMLCrystal crystal = (CMLCrystal)crystalNodes.get(0);
 			CMLCrystal crystalC = (CMLCrystal)crystal.copy();
@@ -320,7 +320,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 
 	public static boolean hasBondOrdersAndCharges(CMLMolecule molecule) {
 		boolean hasBOAC = true;
-		Nodes flagNodes = molecule.query(".//"+CMLMetadata.NS+"[@dictRef='"+NO_BONDS_OR_CHARGES_FLAG_DICTREF+"']", X_CML);
+		Nodes flagNodes = molecule.query(".//"+CMLMetadata.NS+"[@dictRef='"+NO_BONDS_OR_CHARGES_FLAG_DICTREF+"']", CML_XPATH);
 		if (flagNodes.size() > 0) {
 			hasBOAC = false;
 		}
@@ -334,7 +334,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 
 		List<CMLMolecule> molList = molecule.getDescendantsOrMolecule();
 		if (molList.size() > 1) {
-			Nodes nonUnitOccNodes = molecule.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", X_CML);
+			Nodes nonUnitOccNodes = molecule.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 			if (!DisorderTool.isDisordered(molecule) && !molecule.hasCloseContacts() && nonUnitOccNodes.size() == 0
 					&& hasBondOrdersAndCharges(molecule)) {
 				// if mol contains submols (all of which are not disordered!)
@@ -371,7 +371,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 			}
 			/*-----end section to be removed-----*/
 
-			Nodes nonUnitOccNodes = cmlMol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", X_CML);
+			Nodes nonUnitOccNodes = cmlMol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 			if (!DisorderTool.isDisordered(cmlMol) && !cmlMol.hasCloseContacts() && nonUnitOccNodes.size() == 0
 					&& hasBondOrdersAndCharges(cmlMol)) {
 				try {
@@ -393,7 +393,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 			//------------------------------
 			/*-----end section to be removed------*/
 
-			Nodes bonds = cmlMol.query(".//"+CMLBondArray.NS+"/cml:bond", X_CML);
+			Nodes bonds = cmlMol.query(".//"+CMLBondArray.NS+"/cml:bond", CML_XPATH);
 			for (int l = 0; l < bonds.size(); l++) {
 				this.addBondLength((CMLBond)bonds.get(l), cmlMol);	
 			}	
@@ -414,7 +414,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 	private void calculateBondsAnd3DStereo(CMLCml cml, CMLMolecule mergedMolecule) {
 		for (CMLMolecule subMol : mergedMolecule.getDescendantsOrMolecule()) {
 			boolean success = true;
-			Nodes nonUnitOccNodes = subMol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", X_CML);
+			Nodes nonUnitOccNodes = subMol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 			if (!DisorderTool.isDisordered(subMol) && !subMol.hasCloseContacts() && nonUnitOccNodes.size() == 0) {
 				ValencyTool subMolTool = new ValencyTool(subMol);
 				int molCharge = ValencyTool.UNKNOWN_CHARGE;
@@ -450,7 +450,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 
 	private int getMoietyChargeFromFormula(CMLCml cml, CMLMolecule molecule) {
 		int molCharge = ValencyTool.UNKNOWN_CHARGE;
-		Nodes moiFormNodes = cml.query(".//"+CMLFormula.NS+"[@dictRef='iucr:_chemical_formula_moiety']", X_CML);
+		Nodes moiFormNodes = cml.query(".//"+CMLFormula.NS+"[@dictRef='iucr:_chemical_formula_moiety']", CML_XPATH);
 		CMLFormula moietyFormula = null;
 		if (moiFormNodes.size() > 0) {
 			moietyFormula = (CMLFormula)moiFormNodes.get(0);
@@ -508,9 +508,9 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 	private void processDisorder(CMLMolecule molecule, CompoundClass compoundClass) {
 		// sort disorder out per molecule rather than per crystal.  This way if the disorder is
 		// invalid for one molecule, we may be able to resolve others within the crystal.
-		MoleculeTool moleculeTool = new MoleculeTool(molecule);
+		MoleculeTool moleculeTool = MoleculeTool.getOrCreateTool(molecule);
 		moleculeTool.createCartesiansFromFractionals();
-		new MoleculeTool(molecule).calculateBondedAtoms();
+		moleculeTool.calculateBondedAtoms();
 		ConnectionTableTool ct = new ConnectionTableTool(molecule);
 		// don't want to partition inorganics before resolving disorder as
 		// chance is that atoms related by disorder won't be connected so partitioning
@@ -755,7 +755,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 	}
 
 	private CMLMolecule getMolecule(CMLElement cml) {
-		Nodes moleculeNodes = cml.query(CMLMolecule.NS, X_CML);
+		Nodes moleculeNodes = cml.query(CMLMolecule.NS, CML_XPATH);
 		if (moleculeNodes.size() != 1) {
 			throw new CMLRuntimeException("NO MOLECULE FOUND");
 		}

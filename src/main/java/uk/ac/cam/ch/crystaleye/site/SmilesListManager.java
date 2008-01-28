@@ -93,7 +93,7 @@ public class SmilesListManager extends AbstractManager implements CMLConstants {
 						CMLCml cml = (CMLCml)new CMLBuilder().build(new BufferedReader(new FileReader(cmlFile))).getRootElement();
 						CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
 						String cmlId = cml.getId();
-						Nodes smilesNodes = molecule.query("./"+CMLIdentifier.NS+"[@convention='daylight:smiles']", X_CML);
+						Nodes smilesNodes = molecule.query("./"+CMLIdentifier.NS+"[@convention='daylight:smiles']", CML_XPATH);
 						if (smilesNodes.size() > 0) {
 							String smiles = smilesNodes.get(0).getValue();
 							smiles = smiles.replaceAll("/", "");
