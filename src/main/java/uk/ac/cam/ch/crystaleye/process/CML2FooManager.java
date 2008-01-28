@@ -52,6 +52,7 @@ import org.xmlcml.cml.tools.ConnectionTableTool;
 import org.xmlcml.cml.tools.DisorderTool;
 import org.xmlcml.cml.tools.GeometryTool;
 import org.xmlcml.cml.tools.MoleculeTool;
+import org.xmlcml.cml.tools.ValencyTool;
 import org.xmlcml.molutil.ChemicalElement;
 import org.xmlcml.molutil.ChemicalElement.Type;
 
@@ -205,6 +206,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			if (!parent.exists()) {
 				parent.mkdirs();
 			}
+			System.out.println(filename);
 			molecule.serialize(new FileOutputStream(file), 1);
 		} catch (IOException e) {
 			throw new CMLRuntimeException("ERROR "+e);
@@ -431,7 +433,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 				//System.out.println("chain");
 				molecule = new CMLMolecule(molecule);
 				subMolecule = new CMLMolecule(subMolecule);
-				MoleculeTool.removeMetalAtomsAndBonds(subMolecule, false);
+				ValencyTool.removeMetalAtomsAndBonds(subMolecule);
 				new ConnectionTableTool(subMolecule).partitionIntoMolecules();
 				for (CMLMolecule subSubMol : subMolecule.getDescendantsOrMolecule()) {
 					fragmentList.addAll(new MoleculeTool(subSubMol).getChainMolecules());
@@ -440,7 +442,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 				//System.out.println("ring");
 				molecule = new CMLMolecule(molecule);
 				subMolecule = new CMLMolecule(subMolecule);
-				MoleculeTool.removeMetalAtomsAndBonds(subMolecule, false);
+				ValencyTool.removeMetalAtomsAndBonds(subMolecule);
 				new ConnectionTableTool(subMolecule).partitionIntoMolecules();
 				for (CMLMolecule subSubMol : subMolecule.getDescendantsOrMolecule()) {
 					fragmentList.addAll(new MoleculeTool(subSubMol).getRingNucleiMolecules());
@@ -905,8 +907,8 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 	}
 	
 	public static void main(String[] args) {
-		//CML2FooManager acta = new CML2FooManager("e:/crystaleye-test/docs/cif-flow-props.txt");
-		CML2FooManager acta = new CML2FooManager("e:/data-test/docs/cif-flow-props.txt");
+		CML2FooManager acta = new CML2FooManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
+		//CML2FooManager acta = new CML2FooManager("e:/data-test/docs/cif-flow-props.txt");
 		acta.execute();
 	}
 }
