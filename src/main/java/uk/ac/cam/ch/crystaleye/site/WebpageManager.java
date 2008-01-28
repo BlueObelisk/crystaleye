@@ -1281,8 +1281,8 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 	}
 
 	public static void main(String[] args) {
-		//WebpageManager web = new WebpageManager("e:/crystaleye-test/docs/cif-flow-props.txt");
-		WebpageManager web = new WebpageManager("e:/data-test/docs/cif-flow-props.txt");
+		WebpageManager web = new WebpageManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
+		//WebpageManager web = new WebpageManager("e:/data-test/docs/cif-flow-props.txt");
 		web.execute();
 	}
 }

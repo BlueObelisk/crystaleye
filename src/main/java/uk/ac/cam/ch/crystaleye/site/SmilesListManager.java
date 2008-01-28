@@ -121,8 +121,8 @@ public class SmilesListManager extends AbstractManager implements CMLConstants {
 	}
 	
 	public static void main(String[] args) {
-		//SmilesListManager d = new SmilesListManager("e:/crystaleye-test/docs/cif-flow-props.txt");
-		SmilesListManager d = new SmilesListManager("e:/data-test/docs/cif-flow-props.txt");
+		SmilesListManager d = new SmilesListManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
+		//SmilesListManager d = new SmilesListManager("e:/data-test/docs/cif-flow-props.txt");
 		d.execute();
 	}
 }
