@@ -125,6 +125,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 	}
 
 	public void execute() {
+		/*
 		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
 		for (String publisherAbbreviation : publisherAbbreviations) {
 			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
@@ -147,8 +148,12 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				}
 			}
 		}
+		*/
 		
-		generateProtocolBondLengthFiles(changedBonds);
+		changedBonds = new HashSet<String>();
+		changedBonds.add("C-C");
+		
+		//generateProtocolBondLengthFiles(changedBonds);
 		generateHistograms(changedBonds);
 		generateHtmlLinkPages();
 	}
@@ -324,7 +329,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		BufferedReader input = null;
 		double min = 0.0;
 		double max = 0.0;
-		List<Point> points0 = new ArrayList<Point> ();
+		List<Double> doubles = new ArrayList<Double> ();
 		try {
 			input = new BufferedReader(new FileReader(bondsPath));
 			String line = null;
@@ -350,9 +355,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 						}
 					}
 
-					Point p = new Point();
-					p.setX(d);
-					points0.add(p);	
+					doubles.add(d);	
 					i++;
 				}
 			}
@@ -399,7 +402,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		try {
 			//hist1.setPlotfrequency(false);
 			hist1.setNBins(numBins);
-			hist1.addDataToPlot(points0);
+			hist1.addDataToPlot(doubles);
 			hist1.setXlab("Bond Length (angstroms)");
 			hist1.setYlab("No. occurences");
 			hist1.setGraphTitle(bondType+" Bond Lengths in CrystalEye (Last updated "+dNow+")");
@@ -1002,8 +1005,8 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 	}
 
 	public static void main(String[] args) {
-		//BondLengthsManager d = new BondLengthsManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
-		BondLengthsManager d = new BondLengthsManager("e:/data-test/docs/cif-flow-props.txt");
+		BondLengthsManager d = new BondLengthsManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
+		//BondLengthsManager d = new BondLengthsManager("e:/data-test/docs/cif-flow-props.txt");
 		d.execute();
 	}
 }

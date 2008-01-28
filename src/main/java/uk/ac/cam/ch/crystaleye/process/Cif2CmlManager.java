@@ -101,10 +101,6 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 
 	private ProcessProperties properties;
 
-	private Cif2CmlManager() {
-		;
-	}
-
 	public Cif2CmlManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
 	}
@@ -382,7 +378,6 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 					CDKUtils.add2DCoords(cmlMol);
 					new StereochemistryTool(cmlMol).addWedgeHatchBonds();
 				} catch (Exception e) {
-					e.printStackTrace();
 					System.err.println("Exception adding wedge/hatch bonds to molecule "+cmlMol.getId());;
 				}
 				if (!compoundClass.equals(CompoundClass.INORGANIC) && 
@@ -441,14 +436,14 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 			if (success) {
 				// remove metals before adding stereochemistry - otherwise
 				// bonds to metal confuse the tool
-				Map<List<CMLAtom>, List<CMLBond>> metalMap = MoleculeTool.removeMetalAtomsAndBonds(subMol, false);
+				Map<List<CMLAtom>, List<CMLBond>> metalMap = ValencyTool.removeMetalAtomsAndBonds(subMol);
 				StereochemistryTool st = new StereochemistryTool(subMol);
 				try {
 					st.add3DStereo();
 				} catch (CMLRuntimeException e) {
 					System.err.println("Error adding 3D stereochemistry.");
 				}
-				MoleculeTool.addMetalAtomsAndBonds(subMol, metalMap);
+				ValencyTool.addMetalAtomsAndBonds(subMol, metalMap);
 			}
 		}
 	}
@@ -1003,8 +998,8 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 	}		
 
 	public static void main(String[] args) {
-		//Cif2CmlManager acta = new Cif2CmlManager("e:/crystaleye-test/docs/cif-flow-props.txt");
-		Cif2CmlManager acta = new Cif2CmlManager("e:/data-test/docs/cif-flow-props.txt");
+		Cif2CmlManager acta = new Cif2CmlManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
+		//Cif2CmlManager acta = new Cif2CmlManager("e:/data-test/docs/cif-flow-props.txt");
 		acta.execute();
 	}
 }

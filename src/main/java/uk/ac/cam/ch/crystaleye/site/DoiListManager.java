@@ -116,8 +116,8 @@ public class DoiListManager extends AbstractManager implements CMLConstants {
 	}
 
 	public static void main(String[] args) {
-		//DoiListManager d = new DoiListManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
-		DoiListManager d = new DoiListManager("e:/data-test/docs/cif-flow-props.txt");
+		DoiListManager d = new DoiListManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
+		//DoiListManager d = new DoiListManager("e:/data-test/docs/cif-flow-props.txt");
 		d.execute();
 	}
 }
