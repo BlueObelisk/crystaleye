@@ -156,7 +156,7 @@ public class CrystalEyeUtils implements CMLConstants {
 		if (molecule.isMoleculeContainer()) {
 			List<String> inchiList = new ArrayList<String>();
 			for (CMLMolecule subMol : molecule.getDescendantsOrMolecule()) {
-				List<Node> inchiNodes = CMLUtil.getQueryNodes(subMol, ".//cml:identifier[@convention='iupac:inchi']", X_CML);
+				List<Node> inchiNodes = CMLUtil.getQueryNodes(subMol, ".//cml:identifier[@convention='iupac:inchi']", CML_XPATH);
 				if (inchiNodes.size() > 0) {
 					String inchi = inchiNodes.get(0).getValue();
 					boolean got = false;
@@ -169,7 +169,7 @@ public class CrystalEyeUtils implements CMLConstants {
 				}
 			}
 			for (String inchi : inchiList) {
-				List<Node> molNodes = CMLUtil.getQueryNodes(molecule, ".//cml:molecule[cml:identifier[text()='"+inchi+"']]", X_CML);
+				List<Node> molNodes = CMLUtil.getQueryNodes(molecule, ".//cml:molecule[cml:identifier[text()='"+inchi+"']]", CML_XPATH);
 				if (molNodes.size() > 0) {
 					outputList.add((CMLMolecule)molNodes.get(0));
 				}

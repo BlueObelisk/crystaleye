@@ -209,12 +209,12 @@ public class RssManager extends AbstractManager implements CMLConstants {
 				continue;
 			}
 			CMLCml cml = (CMLCml)doc.getRootElement();
-			Nodes nodes = cml.query("//cml:scalar[@dictRef=\"idf:doi\"]", X_CML);
+			Nodes nodes = cml.query("//cml:scalar[@dictRef=\"idf:doi\"]", CML_XPATH);
 			String doi = "";
 			if (nodes.size() != 0) {
 				doi = nodes.get(0).getValue();
 			}
-			nodes = cml.query("//cml:scalar[@dictRef=\"iucr:_publ_section_title\"]", X_CML);
+			nodes = cml.query("//cml:scalar[@dictRef=\"iucr:_publ_section_title\"]", CML_XPATH);
 			String title = "";
 			if (nodes.size() != 0) {
 				title = nodes.get(0).getValue();
@@ -306,7 +306,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			}
 
 			// process classes
-			Nodes classNodes = cml.query(".//cml:scalar[@dictRef='iucr:compoundClass']", X_CML);
+			Nodes classNodes = cml.query(".//cml:scalar[@dictRef='iucr:compoundClass']", CML_XPATH);
 			String className = null;
 			if (classNodes.size() == 1) {
 				className = classNodes.get(0).getValue();
@@ -374,12 +374,12 @@ public class RssManager extends AbstractManager implements CMLConstants {
 				cifName = cifName.replaceAll("sup[\\d*]", "");	
 				String articleId = cmlFile.getParentFile().getParentFile().getName();
 
-				Nodes nodes = cml.query(".//cml:scalar[@dictRef=\"idf:doi\"]", X_CML);
+				Nodes nodes = cml.query(".//cml:scalar[@dictRef=\"idf:doi\"]", CML_XPATH);
 				String doi = "";
 				if (nodes.size() != 0) {
 					doi = nodes.get(0).getValue();
 				}						
-				Nodes titleNodes = cml.query(".//cml:scalar[@dictRef='iucr:_publ_section_title']", X_CML);
+				Nodes titleNodes = cml.query(".//cml:scalar[@dictRef='iucr:_publ_section_title']", CML_XPATH);
 				String title = "";
 				if (titleNodes.size() != 0) {
 					title = titleNodes.get(0).getValue();
