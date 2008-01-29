@@ -402,7 +402,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		try {
 			//hist1.setPlotfrequency(false);
 			hist1.setNBins(numBins);
-			hist1.addDataToPlot(doubles);
+			hist1.addDataToPlot(doublesToPoints(doubles));
 			hist1.setXlab("Bond Length (angstroms)");
 			hist1.setYlab("No. occurences");
 			hist1.setGraphTitle(bondType+" Bond Lengths in CrystalEye (Last updated "+dNow+")");
@@ -419,6 +419,16 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		improveSVGAndCreateHTMLSummaries(doc, minR, binWidth, bondsPath, bondType, isAfterProtocol);
 
 		return doc;
+	}
+	
+	private List<Point> doublesToPoints(List<Double> doubles) {
+		List<Point> points = new ArrayList<Point>(doubles.size());
+		for (double d : doubles) {
+			Point p = new Point();
+			p.setX(d);
+			points.add(p);
+		}
+		return points;
 	}
 
 	private void addSubtitle(Document doc, boolean isAfterProtocol) {
