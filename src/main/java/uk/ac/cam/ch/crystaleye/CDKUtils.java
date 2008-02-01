@@ -32,7 +32,7 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.euclid.Real2;
 
 public class CDKUtils implements CMLConstants {
-	
+
 	public static IMolecule getCdkMol(CMLMolecule cmlMol) {
 		ByteArrayInputStream bais = null;
 		IMolecule cdkMol = null;
@@ -156,7 +156,7 @@ public class CDKUtils implements CMLConstants {
 		for (int i = 0; i < mol.getAtomCount(); i++) {
 			IAtom atom = mol.getAtom(i);
 			Point2d p = atom.getPoint2d();
-			if (!new Double(p.x).equals(Double.NaN) && !new Double(p.y).equals(Double.NaN)) {
+			if (!Double.isNaN(new Double(p.x)) && !Double.isNaN(new Double(p.y))) {
 				CMLAtom cmlAtom = molecule.getAtomById(atom.getID());
 				cmlAtom.setX2(p.x);
 				cmlAtom.setY2(p.y);
