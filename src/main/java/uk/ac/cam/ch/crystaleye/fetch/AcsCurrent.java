@@ -24,13 +24,10 @@ public class AcsCurrent extends CurrentIssueFetcher {
 	}
 
 	protected IssueDate getCurrentIssueId() {
-		// old url
-		//String url = "http://pubs.acs.org/journals/"+this.journalAbbreviation+"/index.html";
 		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="+journalAbbr;
 		// get current issue page as a DOM
 		Document doc = IOUtils.parseWebPage(url);
 		// query that went with first and second patterns
-		//Nodes journalInfo = doc.query("//x:p/x:img[contains(@src,'current_issue.gif')]/parent::x:*/text()[3]", XHTML);
 		Nodes journalInfo = doc.query(".//x:div[@id='issueinfo']", X_XHTML);
 		if (journalInfo.size() != 0) {
 			String info = journalInfo.get(0).getValue().trim();
@@ -75,13 +72,22 @@ public class AcsCurrent extends CurrentIssueFetcher {
 						cifId = cifId.substring(idx+1);
 						int suppNum = k+1;
 						cifUrl = cifUrl.replaceAll("pubs\\.acs\\.org/", "pubs\\.acs\\.org//");
-						Nodes doiAnchors = doc.query("//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
+						
 						String doi = null;
+						String title = null;
+						Nodes doiAnchors = doc.query("//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
 						if (doiAnchors.size() > 0) {
-							doi = ((Element)doiAnchors.get(0)).getValue();
+							Element doiAnchor = (Element)doiAnchors.get(0);
+							doi = doiAnchor.getValue();
+							Element parent = (Element)doiAnchor.getParent();
+							Nodes titleNodes = parent.query("./x:span[1]", X_XHTML);
+							if (titleNodes.size() > 0) {
+								title = ((Element)titleNodes.get(0)).getValue();
+							}
 						}
+						
 						URL cifURL = new URL(cifUrl);
-						writeFiles(issueWriteDir, cifId, suppNum, cifURL, doi);
+						writeFiles(issueWriteDir, cifId, suppNum, cifURL, doi, title);
 						sleep();
 					}
 				}

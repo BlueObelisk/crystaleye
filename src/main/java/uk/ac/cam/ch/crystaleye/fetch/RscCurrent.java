@@ -5,7 +5,6 @@ import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -75,6 +74,13 @@ public class RscCurrent extends CurrentIssueFetcher {
 						+ ((Element) articleLinks.get(i))
 								.getAttributeValue("href");
 				doc = IOUtils.parseWebPageMinusComments(articleUrl);
+				
+				String title = null;
+				Nodes titleNodes = doc.query(".//x:span[@style='font-size:150%;']", X_XHTML);
+				if (titleNodes.size() > 0) {
+					title = titleNodes.get(0).getValue();
+				}
+				
 				sleep();
 				Nodes suppLinks = doc
 						.query(
@@ -106,7 +112,7 @@ public class RscCurrent extends CurrentIssueFetcher {
 								int suppNum = k + 1;
 								writeFiles(downloadDir, cifId, suppNum,
 										new URL(cifUrl), RSC_DOI_PREFIX + "/"
-												+ cifId);
+												+ cifId, title);
 								sleep();
 							}
 						}
