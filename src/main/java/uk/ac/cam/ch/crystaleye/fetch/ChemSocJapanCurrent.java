@@ -74,14 +74,21 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 								BufferedReader reader = null;
 								try {
 									String cifId = new File(suppPageUrl).getParentFile().getName().replaceAll("_", "-");
-									Nodes doiElements = abstractPage.query("//*[contains(text(),'doi:10.1246')]", X_XHTML);
 									int suppNum = j+1;
+									
+									Nodes doiElements = abstractPage.query("//*[contains(text(),'doi:10.1246')]", X_XHTML);
 									String doi = null;
 									if (doiElements.size() > 0) {
 										doi = ((Element)doiElements.get(0)).getValue().substring(4).trim();
 									}
+									Nodes titleNodes = abstractPage.query(".//x:font[@size='+1']", X_XHTML);
+									String title = null;
+									if (titleNodes.size() > 0) {
+										title = titleNodes.get(0).getValue();
+									}
+									
 									URL cifURL = new URL(cifUrl);
-									writeFiles(issueWriteDir, cifId, suppNum, cifURL, doi);
+									writeFiles(issueWriteDir, cifId, suppNum, cifURL, doi, title);
 									sleep();
 								} finally {
 									try {

@@ -3,6 +3,7 @@ package uk.ac.cam.ch.crystaleye.fetch;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CIF_MIME;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.DATE_MIME;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.DOI_MIME;
+import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.TITLE_MIME;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +69,7 @@ public abstract class CurrentIssueFetcher extends JournalFetcher {
 	}
 
 	protected void writeFiles(File issueWriteDir, String cifId, int suppNum,
-			URL cif, String doi) throws IOException {
+			URL cif, String doi, String title) throws IOException {
 		File cifDir = new File(issueWriteDir + File.separator + cifId);
 		String pathPrefix = cifId + "sup" + suppNum;
 		File cifFile = new File(cifDir, pathPrefix + CIF_MIME);
@@ -85,6 +86,9 @@ public abstract class CurrentIssueFetcher extends JournalFetcher {
 			}
 			if (doi != null) {
 				IOUtils.writeText(doi, doiFile.getCanonicalPath());
+			}
+			if (title != null) {
+				IOUtils.writeText(title, pathPrefix+TITLE_MIME);
 			}
 			CrystalEyeUtils.writeDateStamp(pathPrefix + DATE_MIME);
 		} finally {

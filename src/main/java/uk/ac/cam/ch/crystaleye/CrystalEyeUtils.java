@@ -1,6 +1,7 @@
 package uk.ac.cam.ch.crystaleye;
 
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CRYSTALEYE_DATE_FORMAT;
+import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.TITLE_MIME;
 
 import java.io.File;
 import java.text.ParseException;
@@ -8,12 +9,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nu.xom.Node;
+import nu.xom.Nodes;
 
+import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.base.CMLUtil;
 import org.xmlcml.cml.element.CMLAtom;
+import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLFormula;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.molutil.ChemicalElement.Type;
@@ -203,5 +209,44 @@ public class CrystalEyeUtils implements CMLConstants {
 	public static void writeDateStamp(String path) {
 		String dNow = getDate();
 		IOUtils.writeText(dNow, path);
+	}
+	
+	public static String getStructureTitleFromCml(CMLCml cml) {
+		Nodes titleNodes = cml.query(".//cml:scalar[@dictRef=\"iucr:_publ_section_title\"]", CML_XPATH);
+		String title = "";
+		try {
+			if (titleNodes.size() != 0) {
+				title = titleNodes.get(0).getValue();
+				title = CIFUtil.translateCIF2ISO(title);
+				title = title.replaceAll("\\\\", "");
+
+				String patternStr = "\\^(\\d+)\\^";
+				String replaceStr = "<sup>$1</sup>";
+				Pattern pattern = Pattern.compile(patternStr);
+				Matcher matcher = pattern.matcher(title);
+				title = matcher.replaceAll(replaceStr);
+
+				patternStr = "~(\\d+)~";
+				replaceStr = "<sub>$1</sub>";
+				pattern = Pattern.compile(patternStr);
+				matcher = pattern.matcher(title);
+				title = matcher.replaceAll(replaceStr);
+			}
+		} catch (Exception e) {
+			System.err.println("Could not translate CIF string to ISO: "+title);
+			title = "";
+		}
+		return title;
+	}
+	
+	public static String getStructureTitleFromTOC(File cmlFile) {
+		File titleParent = cmlFile.getParentFile().getParentFile();
+		String name = titleParent.getName();
+		File titleFile = new File(titleParent, name+TITLE_MIME);
+		String title = "";
+		if (titleFile.exists()) {
+			title = Utils.file2String(titleFile).trim();
+		}
+		return title;
 	}
 }

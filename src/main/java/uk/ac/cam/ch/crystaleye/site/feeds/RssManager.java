@@ -214,11 +214,10 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			if (nodes.size() != 0) {
 				doi = nodes.get(0).getValue();
 			}
-			nodes = cml.query("//cml:scalar[@dictRef=\"iucr:_publ_section_title\"]", CML_XPATH);
-			String title = "";
-			if (nodes.size() != 0) {
-				title = nodes.get(0).getValue();
-				title = cifTitle2String(title);
+
+			String title = CrystalEyeUtils.getStructureTitleFromTOC(cmlFile);
+			if (title.equals("")) {
+				title = CrystalEyeUtils.getStructureTitleFromCml(cml);
 			}
 
 			String filePath = cmlFile.getAbsolutePath();
@@ -379,11 +378,10 @@ public class RssManager extends AbstractManager implements CMLConstants {
 				if (nodes.size() != 0) {
 					doi = nodes.get(0).getValue();
 				}						
-				Nodes titleNodes = cml.query(".//cml:scalar[@dictRef='iucr:_publ_section_title']", CML_XPATH);
-				String title = "";
-				if (titleNodes.size() != 0) {
-					title = titleNodes.get(0).getValue();
-					title = cifTitle2String(title);
+
+				String title = CrystalEyeUtils.getStructureTitleFromTOC(cmlFile);
+				if (title.equals("")) {
+					title = CrystalEyeUtils.getStructureTitleFromCml(cml);
 				}
 
 				String rssDescValue = RSS_DESC_VALUE_PREFIX+"DataBlock "+blockId+" in CIF "+cifName.toUpperCase()+" (DOI:"+doi+") from issue "+issueNum+"/"+year+" of "+publisherTitle+", "+journalTitle+".";
@@ -451,99 +449,6 @@ public class RssManager extends AbstractManager implements CMLConstants {
 		} else {
 			throw new CMLRuntimeException("RSS type "+feedType+" not supported.");
 		}
-	}
-
-	/*
-	 * not in use any more
-	private void archiveCmlRssFeed(String cmlRssUrl, String archiveUrl) {
-		if (new File(cmlRssUrl).exists()) {
-			Element descriptionElement = getCMLRSSDescriptionElement(cmlRssUrl);
-			String description = descriptionElement.getValue();
-
-			Pattern pattern = Pattern.compile("CrystalEye[^,]*,[^,]*,\\s+(\\d+),\\s+([\\d-]*)");
-			Matcher matcher = pattern.matcher(description);
-			String year = "";
-			String issue = "";
-			if (matcher.find()) {
-				year = matcher.group(1);
-				issue = matcher.group(2);
-			} else {
-				throw new RuntimeException("Should have found some matches here.");
-			}
-			String mimeSet = Utils.getMimeSet(cmlRssUrl);
-			String fileName = year.trim()+"_"+issue.trim()+mimeSet;
-			Utils.copyFile(cmlRssUrl, archiveUrl+File.separator+fileName);
-		}
-	}
-	 */
-
-	private Element getCMLRSSDescriptionElement(String cmlRssUrl) {
-		InputStream in = null;
-		XMLStreamReader reader = null;
-		try {
-			in = new FileInputStream(cmlRssUrl);
-			reader = StaxUtil.createXMLStreamReader(in, null);
-			reader.nextTag();
-			while (reader.nextTag() == XMLStreamConstants.START_ELEMENT) {
-				if (reader.getLocalName().equals("channel")) {
-					reader.nextTag();
-					Document fragment = new StaxParser(reader, new NodeFactory()).buildFragment();
-					reader.nextTag();
-					fragment = new StaxParser(reader, new NodeFactory()).buildFragment();
-					reader.nextTag();
-					fragment = new StaxParser(reader, new NodeFactory()).buildFragment();
-					return fragment.getRootElement();
-				} else if (reader.getLocalName().equals("title")) {
-					Document fragment = new StaxParser(reader, new NodeFactory()).buildFragment();
-					reader.nextTag();
-					fragment = new StaxParser(reader, new NodeFactory()).buildFragment();
-					reader.nextTag();
-					fragment = new StaxParser(reader, new NodeFactory()).buildFragment();
-					return fragment.getRootElement();
-				} else {
-					throw new RuntimeException("Should never reach here.");	
-				}
-			}
-			in.close();
-			reader.close();
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Could not find file: "+cmlRssUrl);
-		} catch (XMLStreamException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Error reading XML in file: "+cmlRssUrl);
-		} catch (IOException e) {
-			throw new RuntimeException("Error reading XML in file: "+cmlRssUrl);
-		} catch (ParsingException e) {
-			throw new RuntimeException("Error reading XML in file: "+cmlRssUrl);
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					throw new RuntimeException("Could not close inputstream: "+in);
-				}
-			}
-			if (reader != null) {
-				try {
-					reader.close();
-				}catch (XMLStreamException e) {
-					throw new RuntimeException("Could not close XML reader: "+reader);
-				}
-			}
-		}
-		return null;
-	}
-
-	private String cifTitle2String(String title) {
-		title = CIFUtil.translateCIF2ISO(title);
-		title = title.replaceAll("\\\\", "");
-
-		String patternStr = "\\^(\\d+)\\^";
-		String replaceStr = "<sup>$1</sup>";
-		Pattern pattern = Pattern.compile(patternStr);
-		Matcher matcher = pattern.matcher(title);
-		title = matcher.replaceAll(replaceStr);
-		return title;
 	}
 
 	public static void main(String[] args) {

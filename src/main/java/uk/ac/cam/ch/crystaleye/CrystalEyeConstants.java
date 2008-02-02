@@ -96,6 +96,7 @@ public interface CrystalEyeConstants {
 	public static final String CIF_MIME = ".cif";
 	public static final String DOI_MIME = ".doi";
 	public static final String DATE_MIME = ".date";
+	public static final String TITLE_MIME = ".title";
 	public static final String PNG_MIME = ".png";
 	public static final String SMALL_PNG_MIME = ".small.png";
 	public static final String PLATON_MIME = ".platon.jpeg";

@@ -233,13 +233,9 @@ public class Utils {
 		}
 	}
 
-	/**
-	 * Get the content of a file and put it in a byte array
-	 */
-	public static String file2String(String fileName) {
+	public static String file2String(File file) {
 		String content = "";
 		try {
-			File file = new File(fileName);
 			FileInputStream insr = new FileInputStream(file);
 
 			byte[] fileBuffer = new byte[(int) file.length()];
@@ -253,6 +249,14 @@ public class Utils {
 
 		return content;
 	}
+
+	/**
+	 * Get the content of a file and put it in a byte array
+	 */
+	public static String file2String(String fileName) {
+		return file2String(new File(fileName));
+	}
+
 
 	/**
 	 * Put a byte array in to a file

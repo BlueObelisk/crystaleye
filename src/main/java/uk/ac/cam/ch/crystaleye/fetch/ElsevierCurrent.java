@@ -16,6 +16,7 @@ import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
 import uk.ac.cam.ch.crystaleye.Unzip;
+import uk.ac.cam.ch.crystaleye.Utils;
 
 public class ElsevierCurrent extends CurrentIssueFetcher {
 
@@ -68,6 +69,13 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 			File doiFile = new File(doi);
 			String doiName = doiFile.getName().replaceAll("\\.", "-");
 			Nodes nodes = articleDoc.query(".//x:p[following-sibling::x:p[contains(.,'Crystal structure.�Crystallographic data.')]]//x:a[contains(@href,'.zip') and contains(.,'.zip')]", X_XHTML);
+			
+			String title = null;
+			Nodes titleNodes = articleDoc.query(".//x:div[@class='articleTitle']/x:p", X_XHTML);
+			if (titleNodes.size() > 0) {
+				title = titleNodes.get(0).getValue();
+			}
+			
 			if (nodes.size() > 0) {
 				for (int i = 0; i < nodes.size(); i++) {
 					String zipUrl = ((Element)nodes.get(i)).getAttributeValue("href");
@@ -84,10 +92,21 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 					unzip.unzip(filename);
 					File parent = new File(filename).getParentFile();
 					int cifCount = 0;
-					for (File file : parent.listFiles()) {
+					File[] originalFiles = parent.listFiles();
+					for (File file : originalFiles) {
 						if (file.getAbsolutePath().endsWith(".cif") || file.getAbsolutePath().endsWith(".CIF")) {
 							cifCount++;
-							writeFiles(issueWriteDir, parent.getName(), cifCount, file.toURI().toURL(), doi);							
+							writeFiles(issueWriteDir, parent.getName(), cifCount, file.toURI().toURL(), doi, title);							
+						}
+					}
+					if (cifCount == 0) {
+						Utils.delDir(parent.getAbsolutePath());
+						continue;
+					}
+					for (File file : originalFiles) {
+						if (file.getAbsolutePath().endsWith(".cif") || file.getAbsolutePath().endsWith(".CIF") ||
+								file.getAbsolutePath().endsWith(".zip") || file.getAbsolutePath().endsWith(".ZIP")) {
+							file.delete();							
 						}
 					}
 				}
