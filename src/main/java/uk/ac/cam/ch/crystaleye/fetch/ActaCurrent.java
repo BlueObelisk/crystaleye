@@ -94,7 +94,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 									"Could not find the CIF ID.");
 						}
 						String doi = null;
-
+						String title = null;
 						if (j == 0) {
 							Nodes doiNodes = tocEntry.query(
 									".//x:p/x:font[@size='2']", X_XHTML);
@@ -132,9 +132,15 @@ public class ActaCurrent extends CurrentIssueFetcher {
 									sleep();
 								}
 							}
+							Nodes titleNodes = tocEntry.query("./x:h3[1]", X_XHTML);
+							if (titleNodes.size() > 0) {
+								title = ((Element)titleNodes.get(0)).getValue().trim();
+							} else {
+								System.err.println("Could not find the TITLE for this toc entry.");
+							}
 						}
 						URL cifURL = new URL(cifUrl);
-						writeFiles(issueWriteDir, cifId, j + 1, cifURL, doi);
+						writeFiles(issueWriteDir, cifId, j + 1, cifURL, doi, title);
 						sleep();
 					}
 				}

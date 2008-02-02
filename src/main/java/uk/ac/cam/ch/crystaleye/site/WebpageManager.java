@@ -458,29 +458,10 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 				smiles = smiles.replaceAll("\\)", ")<wbr>");
 			}
 		}
-		Nodes titleNodes = cml.query(".//cml:scalar[@dictRef=\"iucr:_publ_section_title\"]", CML_XPATH);
-		String title = "";
-		try {
-			if (titleNodes.size() != 0) {
-				title = titleNodes.get(0).getValue();
-				title = CIFUtil.translateCIF2ISO(title);
-				title = title.replaceAll("\\\\", "");
 
-				String patternStr = "\\^(\\d+)\\^";
-				String replaceStr = "<sup>$1</sup>";
-				Pattern pattern = Pattern.compile(patternStr);
-				Matcher matcher = pattern.matcher(title);
-				title = matcher.replaceAll(replaceStr);
-
-				patternStr = "~(\\d+)~";
-				replaceStr = "<sub>$1</sub>";
-				pattern = Pattern.compile(patternStr);
-				matcher = pattern.matcher(title);
-				title = matcher.replaceAll(replaceStr);
-			}
-		} catch (Exception e) {
-			System.err.println("Could not translate CIF string to ISO: "+title);
-			title = "";
+		String title = CrystalEyeUtils.getStructureTitleFromTOC(cmlFile);
+		if (title.equals("")) {
+			title = CrystalEyeUtils.getStructureTitleFromCml(cml);
 		}
 
 		String contactAuthor = "";
