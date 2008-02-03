@@ -1056,19 +1056,21 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		Elements formulaElements = cml.getChildCMLElements(CMLFormula.TAG);
 		String moietyS = ".";
 		String sumS = ".";
-		StringWriter sw = new StringWriter();
 		for (int i = 0; i < formulaElements.size(); i++) {
 			try {
 				CMLFormula formula = (CMLFormula) formulaElements.get(i);
 				if ("iucr:_chemical_formula_moiety".equalsIgnoreCase(formula.getDictRef())) {
+					StringWriter sw = new StringWriter();
 					formula.writeHTML(sw);
 					moietyS = sw.toString();
+					sw.close();
 				}
 				if ("iucr:_chemical_formula_sum".equalsIgnoreCase(formula.getDictRef())) {
+					StringWriter sw = new StringWriter();
 					formula.writeHTML(sw);
 					sumS = sw.toString();
+					sw.close();
 				}
-				sw.close();
 			} catch (IOException e) {
 				throw new CrystalEyeRuntimeException("Problem writing HTML of formula.", e);
 			}
