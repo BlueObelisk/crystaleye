@@ -358,13 +358,13 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		String inchi = "";
 		if (nodes.size() != 0) {
 			inchi = nodes.get(0).getValue();
-			inchi = inchi.replaceAll("-", "-<wbr>");
+			inchi = inchi.replaceAll("-", "-<wbr />");
 		}
 		String smiles = "";
 		nodes = mol.query("./cml:identifier[@convention=\"daylight:smiles\"]", CML_XPATH);
 		if (nodes.size() != 0) {
 			smiles = nodes.get(0).getValue();
-			smiles = smiles.replaceAll("\\)", ")<wbr>");
+			smiles = smiles.replaceAll("\\)", ")<wbr />");
 		}
 		nodes = mol.query("//cml:scalar[@dictRef=\"idf:doi\"]", CML_XPATH);
 		String doi = "";
@@ -445,7 +445,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			molNodes = mol.query("./cml:identifier[@convention=\"iupac:inchi\"]", CML_XPATH);
 			if (molNodes.size() != 0) {
 				inchi = molNodes.get(0).getValue();
-				inchi = inchi.replaceAll("-", "-<wbr>");
+				inchi = inchi.replaceAll("-", "-<wbr />");
 			}
 		}
 		String smiles = "";
@@ -455,7 +455,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			molNodes2 = mol.query("./cml:identifier[@convention=\"daylight:smiles\"]", CML_XPATH);
 			if (molNodes2.size() != 0) {
 				smiles = molNodes2.get(0).getValue();
-				smiles = smiles.replaceAll("\\)", ")<wbr>");
+				smiles = smiles.replaceAll("\\)", ")<wbr />");
 			}
 		}
 
