@@ -121,8 +121,8 @@ public class SingleStructureSummary {
 													  	"<img alt=\"This material is Open Knowlege\" border=\"0\" src=\"http://m.okfn.org/images/ok_buttons/od_80x15_red_green.png\" /></a>"+
 													  	"<br /><br />"+
 												  	"<!-- /Open Knowledge Link -->"+
-													"<a href=\""+indexBackTrack+"index.html\"><< Table of Contents</a><br />"+
-													"<a href=\""+crystalBackTrack+prefix+"\"><< Crystal summary</a><br />"+
+													"<a href=\""+indexBackTrack+"index.html\">&lt;&lt; Table of Contents</a><br />"+
+													"<a href=\""+crystalBackTrack+prefix+"\">&lt;&lt; Crystal summary</a><br />"+
 													"<br />"+
 													"<strong>Publisher: </strong>"+
 													publisherTitle+
