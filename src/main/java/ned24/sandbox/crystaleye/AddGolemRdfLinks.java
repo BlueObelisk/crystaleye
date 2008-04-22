@@ -1,11 +1,9 @@
 package ned24.sandbox.crystaleye;
 
-import static crystaleye.CrystalEyeConstants.XHTML_NS;
-import static crystaleye.CrystalEyeConstants.X_XHTML;
+import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.XHTML_NS;
+import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,8 +11,8 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import crystaleye.IOUtils;
-import crystaleye.Utils;
+import uk.ac.cam.ch.crystaleye.IOUtils;
+import uk.ac.cam.ch.crystaleye.Utils;
 
 public class AddGolemRdfLinks {
 
