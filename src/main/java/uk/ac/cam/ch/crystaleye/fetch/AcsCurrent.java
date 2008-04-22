@@ -62,7 +62,8 @@ public class AcsCurrent extends CurrentIssueFetcher {
 				doc = IOUtils.parseWebPage(suppUrl);
 				sleep();
 
-				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif')]", X_XHTML);
+				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif') or contains(@href,'.CIF')]",
+						X_XHTML);
 				if (cifLinks.size() > 0) {
 					for (int k = 0; k < cifLinks.size(); k++) {
 						String cifUrl = ((Element)cifLinks.get(k)).getAttributeValue("href");
