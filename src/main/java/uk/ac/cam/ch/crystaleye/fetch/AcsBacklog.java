@@ -86,7 +86,7 @@ public class AcsBacklog extends JournalFetcher {
 				doc = IOUtils.parseWebPage(suppUrl);
 				System.out.println("fetching: " + suppUrl);
 				sleep();
-				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif')]",
+				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif') or contains(@href,'.CIF')]",
 						X_XHTML);
 				System.out.println("cifs: " + cifLinks.size());
 				if (cifLinks.size() > 0) {
@@ -127,8 +127,11 @@ public class AcsBacklog extends JournalFetcher {
 			Properties props = new Properties();
 			props.load(new FileInputStream(
 					"e:/data-test2/docs/cif-flow-props.txt"));
-			for (int i = 12; i < 13; i++) {
-				ab = new AcsBacklog("orlef7", "2007", String.valueOf(i));
+			for (int i = 1; i < 13; i++) {
+				ab = new AcsBacklog("cgdefu", "2006", String.valueOf(i));
+				ab.setDownloadDir(new File(props.getProperty("write.dir")));
+				ab.fetchAll();
+				ab = new AcsBacklog("cgdefu", "2007", String.valueOf(i));
 				ab.setDownloadDir(new File(props.getProperty("write.dir")));
 				ab.fetchAll();
 			}
