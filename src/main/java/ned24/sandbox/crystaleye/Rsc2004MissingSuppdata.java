@@ -97,8 +97,8 @@ public class Rsc2004MissingSuppdata {
 				String cifLink = parent+"/"+cifFileName;
 
 				String cif = IOUtils.fetchWebPage(cifLink);
-				String pathMinusMime = downloadDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+cifId+File.separator+cifId+"sup"+cifLinkNum;
-				String cifPath = pathMinusMime+".cif";
+				String pathMinusMime = downloadDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+cifId+File.separator+cifId;
+				String cifPath = pathMinusMime+"sup"+cifLinkNum+".cif";
 				String doiPath = pathMinusMime+".doi";
 				String doi = RSC_DOI_PREFIX+"/"+articleId;
 				IOUtils.writeText(cif, cifPath);
