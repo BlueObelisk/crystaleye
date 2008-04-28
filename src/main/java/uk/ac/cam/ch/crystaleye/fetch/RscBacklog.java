@@ -1,5 +1,6 @@
 package uk.ac.cam.ch.crystaleye.fetch;
 
+import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.RSC_DOI_PREFIX;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
@@ -90,8 +91,12 @@ public class RscBacklog extends JournalFetcher {
 					String cifLink = parent+"/"+cifFileName;
 
 					String cif = IOUtils.fetchWebPage(cifLink);
-					String path = downloadDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+cifId+File.separator+cifId+"sup"+cifLinkNum+".cif";
-					IOUtils.writeText(cif, path);
+					String pathMinusMime = downloadDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+cifId+File.separator+cifId+"sup"+cifLinkNum;
+					String cifPath = pathMinusMime+".cif";
+					String doiPath = pathMinusMime+".doi";
+					String doi = RSC_DOI_PREFIX+"/"+cifId;
+					IOUtils.writeText(cif, cifPath);
+					IOUtils.writeText(doi, doiPath);
 				}
 			}
 		}
