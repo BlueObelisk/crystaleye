@@ -72,6 +72,10 @@ public class RscBacklog extends JournalFetcher {
 		}
 		for (int i = 0; i < articleLinks.size(); i++) {
 			String articleUrl = HOMEPAGE_PREFIX+((Element)articleLinks.get(i)).getAttributeValue("href");
+			String ss = "?doi=";
+			int ssidx = articleUrl.lastIndexOf(ss);
+			String articleId = articleUrl.substring(ssidx+ss.length());
+			
 			Document articleDoc = IOUtils.parseWebPageMinusComments(articleUrl);
 			Nodes suppdataLinks = articleDoc.query("//x:a[contains(text(),'Electronic supplementary information')]", X_XHTML);
 			for (int j = 0; j < suppdataLinks.size(); j++) {
@@ -87,14 +91,13 @@ public class RscBacklog extends JournalFetcher {
 					int idx = suppdataUrl.lastIndexOf("/");
 					String parent = suppdataUrl.substring(0, idx);
 					int idx1 = cifFileName.indexOf(".");
-					String cifId = cifFileName.substring(0, idx1);
 					String cifLink = parent+"/"+cifFileName;
 
 					String cif = IOUtils.fetchWebPage(cifLink);
-					String pathMinusMime = downloadDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+cifId+File.separator+cifId;
+					String pathMinusMime = downloadDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+articleId+File.separator+articleId;
 					String cifPath = pathMinusMime+"sup"+cifLinkNum+".cif";
 					String doiPath = pathMinusMime+".doi";
-					String doi = RSC_DOI_PREFIX+"/"+cifId;
+					String doi = RSC_DOI_PREFIX+"/"+articleId;
 					IOUtils.writeText(cif, cifPath);
 					IOUtils.writeText(doi, doiPath);
 				}

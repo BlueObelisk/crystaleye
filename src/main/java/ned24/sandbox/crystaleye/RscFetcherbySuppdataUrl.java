@@ -4,27 +4,35 @@ import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.RSC_DOI_PREFIX;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class Rsc2004MissingSuppdata {
+public class RscFetcherbySuppdataUrl {
 
-	String year = "2004";
+	String year = null;
 	String volume = "0";
 
 	String HOMEPAGE_PREFIX = "http://www.rsc.org";
 	String PUBLISHER_ABBREVIATION = "rsc";
 
-	String downloadDir = "e:/data-test/data";
+	String downloadDir = "e:/rsc-test/data";
 
-	public Rsc2004MissingSuppdata() {
+	public RscFetcherbySuppdataUrl() {
 		;
 	}
 
 	public void run() {
+		year = "2007";
+		for (int i = 1; i <= 48; i++) {
+			getIssue("dt", year, i);
+		}
+
+		/*
 		for (int i = 14; i <= 23; i++) {
 			getIssue("cc", year, i);
 			getIssue("dt", year, i);
@@ -46,6 +54,7 @@ public class Rsc2004MissingSuppdata {
 		getIssue("ob", year, 20);
 		getIssue("ob", year, 22);
 		getIssue("ob", year, 23);
+		 */
 	}
 
 	public void setVolume(String journalAbbreviation) {
@@ -67,6 +76,8 @@ public class Rsc2004MissingSuppdata {
 			volume = String.valueOf((Integer.parseInt(year)-1999)+1);
 		} else if ("np".equalsIgnoreCase(journalAbbreviation)) {
 			volume = String.valueOf((Integer.parseInt(year)-1984)+1);
+		} else {
+			volume = "0";
 		}
 	}
 
@@ -82,11 +93,15 @@ public class Rsc2004MissingSuppdata {
 		for (int i = 0; i < articleLinks.size(); i++) {
 			String urlPostfix = ((Element)articleLinks.get(i)).getAttributeValue("href");
 			String articleId = urlPostfix.substring(urlPostfix.length()-8);
-			String suppdataUrl = "http://pubs.rsc.org/suppdata/"+journalAbbreviation.toUpperCase()+"/b4/"+articleId+"/index.sht";
+			System.out.println(articleId);
+			String suppdataYear = articleId.substring(0,2);
+			String suppdataUrl = "http://pubs.rsc.org/suppdata/"+journalAbbreviation.toUpperCase()+"/"+suppdataYear+"/"+articleId+"/index.sht";
+			System.out.println(suppdataUrl);
 			Document suppdataDoc = IOUtils.parseWebPageMinusComments(suppdataUrl);
 			Nodes cifLinks = suppdataDoc.query("//x:a[text()='Crystal structure data'] | //x:a[text()='Crystal Structure Data'] | //x:a[text()='Crystal Structure data'] | //x:a[text()='Crystal data'] | //x:a[text()='Crystal Data'] | //x:a[text()='Crystallographic Data'] | //x:a[text()='Crystallographic data']", X_XHTML);
 			int cifLinkNum = 0;
 			for (int k = 0; k < cifLinks.size(); k++) {
+				System.out.println("yeah!");
 				cifLinkNum++;
 				sleep();
 				String cifFileName = ((Element)cifLinks.get(k)).getAttributeValue("href");
@@ -97,7 +112,7 @@ public class Rsc2004MissingSuppdata {
 				String cifLink = parent+"/"+cifFileName;
 
 				String cif = IOUtils.fetchWebPage(cifLink);
-				String pathMinusMime = downloadDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+cifId+File.separator+cifId;
+				String pathMinusMime = downloadDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+cifId+File.separator+articleId;
 				String cifPath = pathMinusMime+"sup"+cifLinkNum+".cif";
 				String doiPath = pathMinusMime+".doi";
 				String doi = RSC_DOI_PREFIX+"/"+articleId;
@@ -117,7 +132,7 @@ public class Rsc2004MissingSuppdata {
 	}
 
 	public static void main(String[] args) {
-		Rsc2004MissingSuppdata rsc = new Rsc2004MissingSuppdata();
+		RscFetcherbySuppdataUrl rsc = new RscFetcherbySuppdataUrl();
 		rsc.run();
 	}
 }
