@@ -73,6 +73,9 @@ public class RscCurrent extends CurrentIssueFetcher {
 				String articleUrl = SITE_PREFIX
 						+ ((Element) articleLinks.get(i))
 								.getAttributeValue("href");
+				String ss = "?doi=";
+				int ssidx = articleUrl.lastIndexOf(ss);
+				String articleId = articleUrl.substring(ssidx+ss.length());
 				doc = IOUtils.parseWebPageMinusComments(articleUrl);
 				
 				String title = null;
@@ -107,12 +110,10 @@ public class RscCurrent extends CurrentIssueFetcher {
 										.lastIndexOf("/"));
 								String cifUrl = SITE_PREFIX + urlMiddle + "/"
 										+ cifFileName;
-								String cifId = cifFileName.substring(0,
-										cifFileName.lastIndexOf("."));
 								int suppNum = k + 1;
-								writeFiles(downloadDir, cifId, suppNum,
+								writeFiles(downloadDir, articleId, suppNum,
 										new URL(cifUrl), RSC_DOI_PREFIX + "/"
-												+ cifId, title);
+												+ articleId, title);
 								sleep();
 							}
 						}
