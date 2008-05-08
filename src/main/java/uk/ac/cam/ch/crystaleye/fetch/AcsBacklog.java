@@ -28,7 +28,7 @@ public class AcsBacklog extends JournalFetcher {
 		setYear(year);
 		if (year.length() != 4) {
 			throw new CrystalEyeRuntimeException(
-					"Year supplied must be of form YYYY (e.g. 2007)");
+			"Year supplied must be of form YYYY (e.g. 2007)");
 		}
 		setJournalAbbreviation(journalAbbreviation);
 		setIssue(issue);
@@ -63,16 +63,52 @@ public class AcsBacklog extends JournalFetcher {
 			volume = String.valueOf((Integer.parseInt(year) - 1998));
 		} else if ("orgnd7".equalsIgnoreCase(journalAbbreviation)) {
 			volume = String.valueOf((Integer.parseInt(year) - 1981));
+		} else if ("achre4".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1967));
+		} else if ("ancham".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1928));
+		} else if ("bichaw".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1961));
+		} else if ("chreay".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1900));
+		} else if ("cmatex".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1988));
+		} else if ("bcches".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1989));
+		} else if ("bomaf6".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1999));
+		} else if ("enfuem".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1986));
+		} else if ("iecred".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1961));
+		} else if ("jafcau".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1952));
+		} else if ("jceaax".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1955));
+		} else if ("jcisd8".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1960));
+		} else if ("jcchff".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1998));
+		} else if ("jmcmar".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1957));
+		} else if ("langd5".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1984));
+		} else if ("mamobx".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1967));
+		} else if ("mpohbp".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 2003));
+		} else if ("oprdfk".equalsIgnoreCase(journalAbbreviation)) {
+			volume = String.valueOf((Integer.parseInt(year) - 1996));
 		}
 	}
 
 	public void fetchAll() throws IOException {
 		String issueWriteDir = downloadDir.getCanonicalPath() + File.separator
-				+ PUBLISHER_ABBREVIATION + File.separator + journalAbbreviation
-				+ File.separator + year + File.separator + issue;
+		+ PUBLISHER_ABBREVIATION + File.separator + journalAbbreviation
+		+ File.separator + year + File.separator + issue;
 		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="
-				+ journalAbbreviation.toLowerCase() + "&indecade=" + decade
-				+ "&involume=" + volume + "&inissue=" + issue;
+			+ journalAbbreviation.toLowerCase() + "&indecade=" + decade
+			+ "&involume=" + volume + "&inissue=" + issue;
 		System.out.println("fetching url: " + url);
 		Document doc = IOUtils.parseWebPage(url);
 		Nodes suppLinks = doc.query("//x:a[contains(text(),'Supporting')]",
@@ -82,7 +118,7 @@ public class AcsBacklog extends JournalFetcher {
 		if (suppLinks.size() > 0) {
 			for (int j = 0; j < suppLinks.size(); j++) {
 				String suppUrl = ((Element) suppLinks.get(j))
-						.getAttributeValue("href");
+				.getAttributeValue("href");
 				doc = IOUtils.parseWebPage(suppUrl);
 				System.out.println("fetching: " + suppUrl);
 				sleep();
@@ -93,18 +129,22 @@ public class AcsBacklog extends JournalFetcher {
 					String cifId = "";
 					for (int k = 0; k < cifLinks.size(); k++) {
 						String cifUrl = ((Element) cifLinks.get(k))
-								.getAttributeValue("href");
+						.getAttributeValue("href");
 						int idx = cifUrl.lastIndexOf("/");
 						cifId = cifUrl.substring(0, idx);
 						idx = cifId.lastIndexOf("/");
 						cifId = cifId.substring(idx + 1);
 						int suppNum = k + 1;
 						cifUrl = cifUrl.replaceAll("pubs\\.acs\\.org/",
-								"pubs\\.acs\\.org//");
-						String response = IOUtils.fetchWebPage(cifUrl);
-						IOUtils.writeText(response, issueWriteDir
-								+ File.separator + cifId + File.separator
-								+ cifId + "sup" + suppNum + ".cif");
+						"pubs\\.acs\\.org//");
+						try { 
+							String response = IOUtils.fetchWebPage(cifUrl);
+							IOUtils.writeText(response, issueWriteDir
+									+ File.separator + cifId + File.separator
+									+ cifId + "sup" + suppNum + ".cif");
+						} catch (Exception e) {
+							System.err.println("Error whilst fetching CIF at "+cifUrl);
+						}
 						sleep();
 					}
 					Nodes doiAnchors = doc.query(
@@ -121,20 +161,16 @@ public class AcsBacklog extends JournalFetcher {
 	}
 
 	public static void main(String[] args) {
-		try {
-			// this line just to initialise
-			AcsBacklog ab = new AcsBacklog("cgdefu", "2006", "12");
-			Properties props = new Properties();
-			props.load(new FileInputStream(
-					"e:/data-test2/docs/cif-flow-props.txt"));
-			for (int i = 1; i < 13; i++) {
-				ab = new AcsBacklog("cgdefu", "2006", String.valueOf(i));
-				ab.setDownloadDir(new File(props.getProperty("write.dir")));
-				ab.fetchAll();
-				ab = new AcsBacklog("cgdefu", "2007", String.valueOf(i));
-				ab.setDownloadDir(new File(props.getProperty("write.dir")));
-				ab.fetchAll();
-			}
+		try {		
+			for (int i = 2000; i <= 2007; i++) {
+				for (int j = 1; j <= 26; j++) {
+					AcsBacklog ab = new AcsBacklog("jmcmar", String.valueOf(i), String.valueOf(j));
+					Properties props = new Properties();
+					props.load(new FileInputStream("e:/data-test2/docs/cif-flow-props.txt"));
+					ab.setDownloadDir(new File(props.getProperty("write.dir")));
+					ab.fetchAll();
+				}
+			}			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
