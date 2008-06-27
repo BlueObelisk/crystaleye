@@ -1,7 +1,5 @@
 package uk.ac.cam.ch.crystaleye;
 
-import java.io.File;
-
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -11,10 +9,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.xmlcml.cml.base.CMLConstants;
 
-//import uk.ac.cam.ch.crystaleye.fetch.FetchManager;
 import uk.ac.cam.ch.crystaleye.process.CML2FooManager;
 import uk.ac.cam.ch.crystaleye.process.Cif2CmlManager;
-import uk.ac.cam.ch.crystaleye.properties.SiteProperties;
 import uk.ac.cam.ch.crystaleye.site.BondLengthsManager;
 import uk.ac.cam.ch.crystaleye.site.CellParamsManager;
 import uk.ac.cam.ch.crystaleye.site.DoiListManager;
@@ -25,7 +21,8 @@ import uk.ac.cam.ch.crystaleye.site.feeds.RssManager;
 
 public class Update implements CMLConstants {
 
-	private SiteProperties properties;
+	// SiteProperties is currently not being used 
+	//private SiteProperties properties;
 
 	public static void main(String[] args) {
 		Update launcher = new Update();
@@ -36,7 +33,10 @@ public class Update implements CMLConstants {
 		Options options = new Options();
 		Option option = null;
 
-		option = OptionBuilder.withArgName("PROPERTIES PATH").hasArg().withDescription("Path to properties file").create("p");
+		OptionBuilder.withArgName("PROPERTIES PATH");
+		OptionBuilder.hasArg();
+		OptionBuilder.withDescription("Path to properties file");
+		option = OptionBuilder.create("p");
 		options.addOption(option);
 
 		CommandLineParser parser = new BasicParser();
@@ -51,7 +51,7 @@ public class Update implements CMLConstants {
 		}
 
 		String propsPath = commandLine.getOptionValue("p");
-		properties = new SiteProperties(new File(propsPath));
+		//properties = new SiteProperties(new File(propsPath));
 
 		if (propsPath != null) {
 //			FetchManager fetch = new FetchManager(propsPath);
@@ -82,6 +82,9 @@ public class Update implements CMLConstants {
 	}
 
 	private void printUsage() {
+		
+		//TODO: Change this to the correct class or jar name 
+		//The following assumes that Update.class is run from cifmanager.jar
 		System.out.println("Usage: cifmanager -p [PATH]");
 		System.out.println("Execute CIF manager");
 		System.out.println();

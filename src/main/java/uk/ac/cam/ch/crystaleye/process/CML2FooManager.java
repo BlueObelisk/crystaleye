@@ -89,6 +89,9 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 		properties = new ProcessProperties(propertiesFile);
 	}
 
+	/**
+	 * 
+	 */
 	public void execute() {
 		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
 		for (String publisherAbbreviation : publisherAbbreviations) {
@@ -114,6 +117,9 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void process(String issueWriteDir, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum) {
 		// go through to the article directories in the issue dir and process all found raw CML files
 		if (new File(issueWriteDir).exists()) {
@@ -906,9 +912,9 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 		writeGeometryHtml(torsionList, pathMinusMime+".torsions.html", molecule, depth);
 	}
 	
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		CML2FooManager acta = new CML2FooManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
 		//CML2FooManager acta = new CML2FooManager("e:/data-test/docs/cif-flow-props.txt");
 		acta.execute();
-	}
+	}*/
 }

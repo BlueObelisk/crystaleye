@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+//import java.util.regex.Matcher;
+//import java.util.regex.Pattern;
 
 import nu.xom.Attribute;
 import nu.xom.Document;
@@ -30,7 +30,7 @@ import nu.xom.Nodes;
 import nu.xom.Text;
 import nu.xom.XPathContext;
 
-import org.xmlcml.cif.CIFUtil;
+//import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.element.CMLArray;
 import org.xmlcml.cml.element.CMLAtom;

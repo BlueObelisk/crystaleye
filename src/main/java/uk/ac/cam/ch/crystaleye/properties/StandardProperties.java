@@ -20,6 +20,7 @@ public abstract class StandardProperties {
 	// write directories
 	private String writeDir;	
 
+	// ensure that class is not instantiated without all initial parameters
 	private StandardProperties() {
 		;
 	}
@@ -31,7 +32,8 @@ public abstract class StandardProperties {
 				properties.load(new FileInputStream(propFile));
 				setProperties();
 			} catch (IOException e) {
-				throw new CrystalEyeRuntimeException("Could not read properties file: "+propFile.getAbsolutePath(), e);
+				throw new CrystalEyeRuntimeException("Could not read properties file: "+
+														propFile.getAbsolutePath(), e);
 			}
 		} else {
 			throw new CrystalEyeRuntimeException("Could not find file "+propFile.getAbsolutePath());
@@ -42,13 +44,15 @@ public abstract class StandardProperties {
 		// path to the file which keeps track of the issues that have been downloaded
 		this.downloadLogPath = properties.getProperty(DOWNLOAD_LOG_PATH);
 		if (downloadLogPath == null) {
-			throw new CrystalEyeRuntimeException("Could not find entry for "+DOWNLOAD_LOG_PATH+" in properties file.");
+			throw new CrystalEyeRuntimeException("Could not find entry for "+DOWNLOAD_LOG_PATH+
+													" in properties file.");
 		}
 
 		// root of the directory to which all files are written
 		this.writeDir = properties.getProperty(WRITE_DIR);
 		if (writeDir == null) {
-			throw new CrystalEyeRuntimeException("Could not find entry for "+WRITE_DIR+" in properties file.");
+			throw new CrystalEyeRuntimeException("Could not find entry for "+WRITE_DIR+
+													" in properties file.");
 		}
 	}
 
@@ -63,7 +67,8 @@ public abstract class StandardProperties {
 	public String getPublisherTitle(String publisherAbbreviation) {
 		String publisherTitle = properties.getProperty(publisherAbbreviation+".full.title");
 		if (publisherTitle == null) {
-			throw new CrystalEyeRuntimeException("No entry for "+publisherAbbreviation+".full.title in properties file.");
+			throw new CrystalEyeRuntimeException("No entry for "+publisherAbbreviation+
+													".full.title in properties file.");
 		}
 		return publisherTitle;
 	}
@@ -80,17 +85,21 @@ public abstract class StandardProperties {
 	}
 
 	public String[] getPublisherJournalTitles(String publisherAbbreviation) {
-		String[] journals = properties.getProperty(publisherAbbreviation+".journal.full.titles").split(",");
+		String[] journals = properties.getProperty(publisherAbbreviation+
+													".journal.full.titles").split(",");
 		if (journals == null) {
-			throw new CrystalEyeRuntimeException("No entry for "+publisherAbbreviation+".journal.full.titles in properties file.");
+			throw new CrystalEyeRuntimeException("No entry for "+publisherAbbreviation+
+													".journal.full.titles in properties file.");
 		}
 		return journals;
 	}
 
 	public String[] getPublisherJournalAbbreviations(String publisherAbbreviation) {
-		String[] journalTitles = properties.getProperty(publisherAbbreviation+".journal.abbreviations").split(",");
+		String[] journalTitles = properties.getProperty(publisherAbbreviation+
+														".journal.abbreviations").split(",");
 		if (journalTitles == null) {
-			throw new CrystalEyeRuntimeException("No entry for "+publisherAbbreviation+".journal.abbreviations in properties file.");
+			throw new CrystalEyeRuntimeException("No entry for "+publisherAbbreviation+
+													".journal.abbreviations in properties file.");
 		}
 		return journalTitles;
 	}
