@@ -113,6 +113,10 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		properties = new ProcessProperties(propertiesFile);
 	}
 
+	/**
+	 * Iterates over all publishers, journals, years and issues in the download log
+	 * Looks for a value of false in the cif2cml tag and runs the process on each
+	 */
 	public void execute() {
 		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
 		for (String publisherAbbreviation : publisherAbbreviations) {
@@ -137,7 +141,16 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 			}
 		}
 	}
-
+	
+	/**
+	 * Finds all cif files in the folder and converts each to cml 
+	 * 
+	 * @param issueWriteDir
+	 * @param publisherAbbreviation
+	 * @param journalAbbreviation
+	 * @param year
+	 * @param issueNum
+	 */
 	public void process(String issueWriteDir, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum) {
 		// go through to the article directories in the issue dir and process all found CIFs
 		if (new File(issueWriteDir).exists()) {
@@ -249,6 +262,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	/**
+	 * Special ase of SiO4 requires iterating twice
+	 * @param molecule
+	 * @return
+	 */
 	private boolean isSiO4(CMLMolecule molecule) {
 		boolean is = false;
 		int overall = 0;
@@ -267,6 +285,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		return is;
 	}
 
+	/**
+	 * Appends to CML
+	 * @param cml
+	 * @param compoundClass
+	 */
 	private void addCompoundClass(CMLCml cml, CompoundClass compoundClass) {
 		Element compClass = new Element("scalar", CML_NS);
 		compClass.addAttribute(new Attribute("dataType", "xsd:string"));
@@ -275,6 +298,10 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		cml.appendChild(compClass);
 	}
 
+	/**
+	 * Repositions the crystal element to be the first child of the molecule
+	 * @param cml
+	 */
 	private void repositionCMLCrystalElement(CMLCml cml) {
 		Nodes crystalNodes = cml.query(".//"+CMLCrystal.NS, CML_XPATH);
 		if (crystalNodes.size() > 0) {
@@ -288,6 +315,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	/**
+	 * To ensure that the library that processes cif files doesn't complain. A hack!
+	 * @param file
+	 * @return
+	 */
 	private boolean fileTooLarge(File file) {
 		boolean tooLarge = false;
 		int total = Utils.getFileSizeInBytes(file);
@@ -298,6 +330,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		return tooLarge;
 	}
 
+	/**
+	 * Converts CIF to RawCML
+	 * @param infile
+	 * @param outfile
+	 */
 	private void runCIFConverter(String infile, String outfile) {
 		String cifDict = properties.getCifDict();
 		String spaceGroupXml = properties.getSpaceGroupXml();
@@ -318,6 +355,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	/**
+	 * Looks for flag that says if processing for bond orders and charges has been successful
+	 * @param molecule
+	 * @return
+	 */
 	public static boolean hasBondOrdersAndCharges(CMLMolecule molecule) {
 		boolean hasBOAC = true;
 		Nodes flagNodes = molecule.query(".//"+CMLMetadata.NS+"[@dictRef='"+NO_BONDS_OR_CHARGES_FLAG_DICTREF+"']", CML_XPATH);
@@ -327,6 +369,26 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		return hasBOAC;
 	}
 
+	/**
+	 * Add flag says if processing for bond orders and charges has been successful
+	 * @param molecule
+	 */
+	private void addNoBondsOrChargesSetFlag(CMLMolecule molecule) {
+		CMLMetadataList ml = (CMLMetadataList)molecule.getFirstCMLChild(CMLMetadataList.TAG);
+		if (ml == null) {
+			ml = new CMLMetadataList();
+			molecule.appendChild(ml);
+		}
+		CMLMetadata met = new CMLMetadata();
+		ml.appendChild(met);
+		met.setAttribute("dictRef", NO_BONDS_OR_CHARGES_FLAG_DICTREF);
+	}
+	
+	/**
+	 * Calculate identifiers for molecule and add then in
+	 * @param molecule
+	 * @param compoundClass
+	 */
 	private void add2DStereoSMILESAndInChI(CMLMolecule molecule, CompoundClass compoundClass) {
 		if (containsUnknownBondOrder(molecule)) {
 			return;
@@ -400,6 +462,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}	
 	}
 
+	/**
+	 * Does the molecule contain a bond order that hasn't been found
+	 * @param molecule
+	 * @return
+	 */
 	private boolean containsUnknownBondOrder(CMLMolecule molecule) {
 		boolean b = false;
 		for (CMLBond bond : molecule.getBonds()) {
@@ -410,7 +477,12 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 		return b;
 	}
-
+	
+	/**
+	 * Runs methods that bond orders and charges to molecules. Also adds stereo chemistry.
+	 * @param cml
+	 * @param mergedMolecule
+	 */
 	private void calculateBondsAnd3DStereo(CMLCml cml, CMLMolecule mergedMolecule) {
 		for (CMLMolecule subMol : mergedMolecule.getDescendantsOrMolecule()) {
 			boolean success = true;
@@ -448,6 +520,12 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	/**
+	 * Compares a molecule against a formula to find what the charge is for the molecule
+	 * @param cml
+	 * @param molecule
+	 * @return
+	 */
 	private int getMoietyChargeFromFormula(CMLCml cml, CMLMolecule molecule) {
 		int molCharge = ValencyTool.UNKNOWN_CHARGE;
 		Nodes moiFormNodes = cml.query(".//"+CMLFormula.NS+"[@dictRef='iucr:_chemical_formula_moiety']", CML_XPATH);
@@ -472,6 +550,13 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		return molCharge;
 	}
 
+	/**
+	 * Calculates the molecular skeleton from the RawCML data
+	 * @param molecule
+	 * @param compoundClass
+	 * @return
+	 * @throws Exception
+	 */
 	private CMLMolecule createFinalStructure(CMLMolecule molecule, CompoundClass compoundClass) throws Exception {
 		CrystalTool crystalTool = new CrystalTool(molecule);
 		CMLMolecule mergedMolecule = null;
@@ -483,6 +568,10 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		return mergedMolecule;
 	}
 
+	/**
+	 * Add flag to say whether the structure is polymeric or not
+	 * @param molecule
+	 */
 	private void addPolymericFlag(CMLMolecule molecule) {
 		CMLMetadataList ml = (CMLMetadataList)molecule.getFirstCMLChild(CMLMetadataList.TAG);
 		if (ml == null) {
@@ -494,17 +583,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		met.setAttribute("dictRef", POLYMERIC_FLAG_DICTREF);
 	}
 
-	private void addNoBondsOrChargesSetFlag(CMLMolecule molecule) {
-		CMLMetadataList ml = (CMLMetadataList)molecule.getFirstCMLChild(CMLMetadataList.TAG);
-		if (ml == null) {
-			ml = new CMLMetadataList();
-			molecule.appendChild(ml);
-		}
-		CMLMetadata met = new CMLMetadata();
-		ml.appendChild(met);
-		met.setAttribute("dictRef", NO_BONDS_OR_CHARGES_FLAG_DICTREF);
-	}
-
+	/**
+	 * Tries to remove disorder from the structure
+	 * @param molecule
+	 * @param compoundClass
+	 */
 	private void processDisorder(CMLMolecule molecule, CompoundClass compoundClass) {
 		// sort disorder out per molecule rather than per crystal.  This way if the disorder is
 		// invalid for one molecule, we may be able to resolve others within the crystal.
@@ -530,12 +613,24 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		ct.flattenMolecules();
 	}
 
+	/**
+	 * Set all bond orders in the molecule to the order provided
+	 * @param molecule
+	 * @param order
+	 */
 	private void setAllBondOrders(CMLMolecule molecule, String order) {
 		for (CMLBond bond : molecule.getBonds()) {
 			bond.setOrder(order);
 		}
 	}
 
+	/**
+	 * Calculate the checkCif for this CML and converts the result of the checkCif
+	 * into XML and appends this to the in process CML. Also downloads the ellipsoid plot which
+	 * is linked to from the checkCif html 
+	 * @param cml
+	 * @param pathMinusMime
+	 */
 	private void handleCheckcifs(CMLCml cml, String pathMinusMime) {
 		String depositedCheckcifPath = pathMinusMime.substring(0,pathMinusMime.lastIndexOf(File.separator));
 		String depCCParent = new File(depositedCheckcifPath).getParent();
@@ -556,6 +651,109 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	/**
+	 * Calculate checkCif and writes it out to file
+	 * @param cifPath
+	 * @param pathMinusMime
+	 */
+	private void getCalculatedCheckCif(String cifPath, String pathMinusMime) {
+		String calculatedCheckCif = calculateCheckcif(cifPath);
+		String ccPath = pathMinusMime+".calculated.checkcif.html";
+		IOUtils.writeText(calculatedCheckCif, ccPath);
+	}
+
+	/**
+	 * Extracts the URL of the ellipsoid plot from the checkCif and downloads it
+	 * @param doc
+	 * @param pathMinusMime
+	 */
+	private void getPlatonImage(Document doc, String pathMinusMime) {
+		// get platon from parsed checkcif/store
+		Nodes platonLinks = doc.query("//x:checkCif/x:calculated/x:dataBlock/x:platon/x:link", new XPathContext("x", "http://journals.iucr.org/services/cif"));
+		if (platonLinks.size() > 0) {
+			URL url = null;
+			try {
+				String imageLink = platonLinks.get(0).getValue();
+				String prefix = imageLink.substring(0, imageLink.lastIndexOf("/")+1);
+				String file = imageLink.substring(imageLink.lastIndexOf("/")+1);
+				url = new URL(prefix+URLEncoder.encode(file,"UTF-8")); 
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			BufferedImage image = null;
+			try {
+				image = ImageIO.read(url);
+				image = image.getSubimage(14, 15, 590, 443);
+				ImageIO.write(image, "jpeg", new File(pathMinusMime+".platon.jpeg"));
+			} catch (IOException e) {
+				System.err.println("ERROR: could not read PLATON image");
+			}
+		}	
+	}
+
+	/**
+	 * Post CIF off to the checkCif service and grabs the returned HTML
+	 * @param cifPath
+	 * @return
+	 */
+	private String calculateCheckcif(String cifPath) {
+		PostMethod filePost = null;
+		InputStream in = null;
+		String checkcif = "";
+
+		int maxTries = 5;
+		int count = 0;
+		boolean finished = false;
+		try {
+			while(count < maxTries && !finished) {
+				count++;
+				File f = new File(cifPath);
+				filePost = new PostMethod(
+				"http://dynhost1.iucr.org/cgi-bin/checkcif.pl");
+				Part[] parts = { new FilePart("file", f),
+						new StringPart("runtype", "fullpublication"),
+						new StringPart("UPLOAD", "Send CIF for checking") };
+				filePost.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
+						new DefaultHttpMethodRetryHandler(5, false));
+				filePost.setRequestEntity(new MultipartRequestEntity(parts,
+						filePost.getParams()));
+				HttpClient client = new HttpClient();
+				int statusCode = client.executeMethod(filePost);
+				if (statusCode != HttpStatus.SC_OK) {
+					System.err.println("Could not connect to the IUCr Checkcif service.");
+					continue;
+				}
+				in = filePost.getResponseBodyAsStream();
+				checkcif = IOUtils.stream2String(in);
+				in.close();
+				if (checkcif.length() > 0) {
+					finished = true;
+				}
+			}
+		} catch (IOException e) {
+			System.err.println("Error calculating checkcif.");
+		} finally {
+			if (filePost != null) {
+				filePost.releaseConnection();
+			}
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					System.err.println("Error closing InputStream: "+in);
+				}
+			}
+		}
+		return checkcif;
+	}
+
+	/**
+	 * Splits the original cif in the one data block per cif format
+	 * @param file
+	 * @return
+	 */
 	private List<File> createSplitCifs(File file) {
 		String fileName = file.getAbsolutePath();
 		List<File> splitCifList = new ArrayList<File>();
@@ -656,7 +854,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		return splitCifList;
 	}
 
-
+	/**
+	 * Adds an element containing the article DOI
+	 * @param cml
+	 * @param pathMinusMime
+	 */
 	private void addDoi(CMLCml cml, String pathMinusMime) {
 		String parent = pathMinusMime.substring(0,pathMinusMime.lastIndexOf(File.separator));
 		parent = new File(parent).getParent();
@@ -671,89 +873,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
-	private void getCalculatedCheckCif(String cifPath, String pathMinusMime) {
-		String calculatedCheckCif = calculateCheckcif(cifPath);
-		String ccPath = pathMinusMime+".calculated.checkcif.html";
-		IOUtils.writeText(calculatedCheckCif, ccPath);
-	}
-
-	private void getPlatonImage(Document doc, String pathMinusMime) {
-		// get platon from parsed checkcif/store
-		Nodes platonLinks = doc.query("//x:checkCif/x:calculated/x:dataBlock/x:platon/x:link", new XPathContext("x", "http://journals.iucr.org/services/cif"));
-		if (platonLinks.size() > 0) {
-			URL url = null;
-			try {
-				String imageLink = platonLinks.get(0).getValue();
-				String prefix = imageLink.substring(0, imageLink.lastIndexOf("/")+1);
-				String file = imageLink.substring(imageLink.lastIndexOf("/")+1);
-				url = new URL(prefix+URLEncoder.encode(file,"UTF-8")); 
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			BufferedImage image = null;
-			try {
-				image = ImageIO.read(url);
-				image = image.getSubimage(14, 15, 590, 443);
-				ImageIO.write(image, "jpeg", new File(pathMinusMime+".platon.jpeg"));
-			} catch (IOException e) {
-				System.err.println("ERROR: could not read PLATON image");
-			}
-		}	
-	}
-
-	private String calculateCheckcif(String cifPath) {
-		PostMethod filePost = null;
-		InputStream in = null;
-		String checkcif = "";
-
-		int maxTries = 5;
-		int count = 0;
-		boolean finished = false;
-		try {
-			while(count < maxTries && !finished) {
-				count++;
-				File f = new File(cifPath);
-				filePost = new PostMethod(
-				"http://dynhost1.iucr.org/cgi-bin/checkcif.pl");
-				Part[] parts = { new FilePart("file", f),
-						new StringPart("runtype", "fullpublication"),
-						new StringPart("UPLOAD", "Send CIF for checking") };
-				filePost.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
-						new DefaultHttpMethodRetryHandler(5, false));
-				filePost.setRequestEntity(new MultipartRequestEntity(parts,
-						filePost.getParams()));
-				HttpClient client = new HttpClient();
-				int statusCode = client.executeMethod(filePost);
-				if (statusCode != HttpStatus.SC_OK) {
-					System.err.println("Could not connect to the IUCr Checkcif service.");
-					continue;
-				}
-				in = filePost.getResponseBodyAsStream();
-				checkcif = IOUtils.stream2String(in);
-				in.close();
-				if (checkcif.length() > 0) {
-					finished = true;
-				}
-			}
-		} catch (IOException e) {
-			System.err.println("Error calculating checkcif.");
-		} finally {
-			if (filePost != null) {
-				filePost.releaseConnection();
-			}
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					System.err.println("Error closing InputStream: "+in);
-				}
-			}
-		}
-		return checkcif;
-	}
-
+	/**
+	 * Getter for the molecule
+	 * @param cml
+	 * @return
+	 */
 	private CMLMolecule getMolecule(CMLElement cml) {
 		Nodes moleculeNodes = cml.query(CMLMolecule.NS, CML_XPATH);
 		if (moleculeNodes.size() != 1) {
@@ -762,6 +886,10 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		return (CMLMolecule) moleculeNodes.get(0);
 	}
 
+	/**
+	 * Calculates the Inchi for the supplied molecule and appends it
+	 * @param molecule
+	 */
 	private void addInchiToMolecule(CMLMolecule molecule) {
 		InChIGeneratorFactory factory;
 		try {
@@ -774,6 +902,10 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	/**
+	 * Calculates the smiles for the supplied molecule and appends it
+	 * @param mol
+	 */
 	private void calculateAndAddSmiles(CMLMolecule mol) {
 		String smiles = calculateSmiles(mol);
 		if (smiles != null) {
@@ -784,6 +916,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	/**
+	 * If you want to generate the smiles for the unit cell you generate the individual
+	 * ones and append them together
+	 * @param mol
+	 */
 	private void calculateAndAddSmilesToMoleculeContainer(CMLMolecule mol) {
 		List<CMLMolecule> subMolList = mol.getDescendantsOrMolecule();
 		int molCount = subMolList.size();
@@ -805,6 +942,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		mol.appendChild(scalar);
 	}
 
+	/**
+	 * Use CDK to calculate the smiles from the molecule
+	 * @param mol
+	 * @return
+	 */
 	private String calculateSmiles(CMLMolecule mol) {
 		if (mol.getAtoms().size() > 0) {
 			SmilesGenerator generator = new SmilesGenerator();
@@ -850,6 +992,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	/**
+	 * Append an element to the CML bond to give the bond length
+	 * @param bond
+	 * @param cmlMol
+	 */
 	private void addBondLength(CMLBond bond, CMLMolecule cmlMol) {
 		String[] atomRefs = bond.getAtomRefs2();
 		CMLLength length = new CMLLength();
@@ -886,6 +1033,13 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		bond.appendChild(length);
 	}
 
+	/**
+	 * Calculate whether organometallic structure is polymeric
+	 * @param originalMolecule
+	 * @param mergedMolecule
+	 * @param compoundClass
+	 * @return
+	 */
 	private boolean isPolymericOrganometal(CMLMolecule originalMolecule, CMLMolecule mergedMolecule,
 			CompoundClass compoundClass) {
 		boolean isPolymeric = false;
@@ -928,7 +1082,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 					if (ligandAtoms.size() > origSet.size()) {
 						List<String> idList = new ArrayList<String>();
 						for (CMLAtom ligand : ligandAtoms) {
-							String idStart = getIdStart(ligand.getId());
+							String idStart = getPreUnderscoreStringInAtomId(ligand.getId());
 							if (idStart == null) {
 								idList.add(ligand.getId());
 							} else {
@@ -937,12 +1091,12 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 						}
 						Collections.sort(idList);
 						for (CMLAtom a : mergedMolecule.getAtoms()) {
-							String aStart = getIdStart(a.getId());
+							String aStart = getPreUnderscoreStringInAtomId(a.getId());
 							if (aStart != null) {
 								if (aStart.equals(atomId)) {
 									List<String> ligandIdList = new ArrayList<String>();
 									for (CMLAtom l : a.getLigandAtoms()) {
-										String lStart = getIdStart(l.getId());
+										String lStart = getPreUnderscoreStringInAtomId(l.getId());
 										if (lStart == null) {
 											ligandIdList.add(l.getId());
 										} else {
@@ -964,7 +1118,12 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		return isPolymeric;
 	}
 
-	private String getIdStart(String id) {
+	/**
+	 * get Pre Underscore String In Atom Id
+	 * @param id
+	 * @return
+	 */
+	private String getPreUnderscoreStringInAtomId(String id) {
 		if (id.contains(S_UNDER)) {
 			return id.substring(0,id.indexOf(S_UNDER));		
 		} else {
@@ -972,6 +1131,10 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	/**
+	 * Puts chioral atom as the first atom in the bond
+	 * @param molecule
+	 */
 	public void rearrangeChiralAtomsInBonds(CMLMolecule molecule) {
 		for (CMLMolecule subMol : molecule.getDescendantsOrMolecule()) {
 			StereochemistryTool st = new StereochemistryTool(subMol);
@@ -997,9 +1160,10 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		}
 	}		
 
-	public static void main(String[] args) {
+	//TODO: Remove test-only code
+/*	public static void main(String[] args) {
 		Cif2CmlManager acta = new Cif2CmlManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
 		//Cif2CmlManager acta = new Cif2CmlManager("e:/data-test/docs/cif-flow-props.txt");
 		acta.execute();
-	}
+	}*/
 }
