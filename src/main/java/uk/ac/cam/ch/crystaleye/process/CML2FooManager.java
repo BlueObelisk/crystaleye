@@ -111,7 +111,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CML2FOO);
 					}
 				} else {
-					System.out.println("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+					System.out.println("["+CML2FOO+"] No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 				}
 			}
 		}
@@ -119,8 +119,17 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 
 	/**
 	 * 
+	 * @param issueWriteDir
+	 * @param publisherAbbreviation
+	 * @param journalAbbreviation
+	 * @param year
+	 * @param issueNum
 	 */
-	public void process(String issueWriteDir, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum) {
+	public void process(String issueWriteDir,
+						String publisherAbbreviation,
+						String journalAbbreviation,
+						String year,
+						String issueNum) {
 		// go through to the article directories in the issue dir and process all found raw CML files
 		if (new File(issueWriteDir).exists()) {
 			File[] parentList = new File(issueWriteDir).listFiles();
@@ -424,7 +433,6 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 		}
 		return newMol;
 	}
-
 
 	private void outputFragments(File dir, String id, CMLMolecule molecule, String compoundClass,
 			String fragType, int depth) {
@@ -912,9 +920,4 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 		writeGeometryHtml(torsionList, pathMinusMime+".torsions.html", molecule, depth);
 	}
 	
-/*	public static void main(String[] args) {
-		CML2FooManager acta = new CML2FooManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
-		//CML2FooManager acta = new CML2FooManager("e:/data-test/docs/cif-flow-props.txt");
-		acta.execute();
-	}*/
 }

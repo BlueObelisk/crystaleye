@@ -56,26 +56,41 @@ public class Update implements CMLConstants {
 		if (propsPath != null) {
 //			FetchManager fetch = new FetchManager(propsPath);
 //			fetch.run();
+			
 			Cif2CmlManager cif2Cml = new Cif2CmlManager(propsPath);
 			cif2Cml.execute();
-			CML2FooManager cml2Foo = new CML2FooManager(propsPath);
-			cml2Foo.execute();
-			WebpageManager webpage = new WebpageManager(propsPath);
-			webpage.execute();
-			DoiListManager dois = new DoiListManager(propsPath);
-			dois.execute();
-			CellParamsManager cell = new CellParamsManager(propsPath);
-			cell.execute();
-			BondLengthsManager bond = new BondLengthsManager(propsPath);
-			bond.execute();
-			SmilesListManager smi = new SmilesListManager(propsPath);
-			smi.execute();
-			AtomPubManager ap = new AtomPubManager(propsPath);
-			ap.execute();
+			
+//			CML2FooManager cml2Foo = new CML2FooManager(propsPath);			
+//			cml2Foo.execute();
+			
+//			WebpageManager webpage = new WebpageManager(propsPath);
+//			webpage.execute();
+
+			// Possibly not needed.
+//			DoiListManager dois = new DoiListManager(propsPath);
+//			dois.execute();
+			
+			// Needed for unit cell dimension search. (later)
+//			CellParamsManager cell = new CellParamsManager(propsPath);
+//			cell.execute();
+			
+			// Not needed
+//			BondLengthsManager bond = new BondLengthsManager(propsPath);
+//			bond.execute();
+			
+			// Needed for substructure search (later)
+//			SmilesListManager smi = new SmilesListManager(propsPath);
+//			smi.execute();
+			
+			// Needed to create atom archived feeds.
+//			AtomPubManager ap = new AtomPubManager(propsPath);
+//			ap.execute();
+			
 			// before updating the RSS feeds, go through them all and delete any entries over x days old
 			// new RSSArchiver().deleteOldFeedEntries("xml", properties.getRssWriteDir(), 14);
-			RssManager rss = new RssManager(propsPath);
-			rss.execute();
+			// Legacy, don't bother with this. Not needed			
+//			RssManager rss = new RssManager(propsPath);
+//			rss.execute();
 		} else {
 			printUsage();
 		}
