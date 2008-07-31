@@ -148,7 +148,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, WEBPAGE);
 					}
 				} else {
-					System.out.println("No dates to process at this time for "+publisherTitle+", "+journalTitle);
+					System.out.println("["+WEBPAGE+"] No dates to process at this time for "+publisherTitle+", "+journalTitle);
 				}
 				count++;
 			}
@@ -170,7 +170,11 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 					this.createCifSummaries(cmlFile);
 				}
 				String summaryWriteDir = properties.getSummaryWriteDir();
-				String issueSummaryDir = summaryWriteDir+File.separator+publisherAbbreviation+File.separator+journalAbbreviation+File.separator+year+File.separator+issueNum+File.separator;
+				String issueSummaryDir = summaryWriteDir+File.separator+
+										publisherAbbreviation+File.separator+
+										journalAbbreviation+File.separator+
+										year+File.separator+
+										issueNum+File.separator ;
 				createTableOfContents(fileList, issueSummaryDir);
 				updateSummaryLinkPage(summaryWriteDir);
 			}
@@ -1209,9 +1213,12 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
-	// Copies all files under srcDir to dstDir.
-	// If dstDir does not exist, it will be created.
-	// If dstDir does exist, then it will be deleted and replaced
+	/** Copies all files under srcDir to dstDir.
+	 * If dstDir does not exist, it will be created.
+	 * If dstDir does exist, then it will be deleted and replaced
+	 * @param srcDir
+	 * @param dstDir
+	 */
 	public void copyDirectory(File srcDir, File dstDir) throws IOException {
 		if (srcDir.isDirectory()) {
 			if (!dstDir.exists()) {
@@ -1263,9 +1270,4 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
-	public static void main(String[] args) {
-		WebpageManager web = new WebpageManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
-		//WebpageManager web = new WebpageManager("e:/data-test/docs/cif-flow-props.txt");
-		web.execute();
-	}
 }

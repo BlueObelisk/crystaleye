@@ -1,13 +1,11 @@
 package uk.ac.cam.ch.crystaleye.site;
 
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.BONDLENGTHS;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CSV_MIME;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.HTML_MIME;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.POLYMERIC_FLAG_DICTREF;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.SVG_MIME;
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.WEBPAGE;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_SVG;
 
 import java.io.BufferedReader;
@@ -306,8 +304,12 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		}
 	}
 
+	/**
+	 * For those bond type lists that have been updated, regenerate the histogram
+	 * @param changedBonds
+	 */
 	private void generateHistograms(Set<String> changedBonds) {
-		// for those bond type lists that have been updated, regenerate the histogram
+		 
 		if (changedBonds == null) return;
 		for (String bondType : changedBonds) {	
 			String bondLengthsDir = properties.getBondLengthsDir();
@@ -330,6 +332,8 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		double min = 0.0;
 		double max = 0.0;
 		List<Double> doubles = new ArrayList<Double> ();
+		
+		// TODO: Test the exception handling code hear for different paths		
 		try {
 			input = new BufferedReader(new FileReader(bondsPath));
 			String line = null;
