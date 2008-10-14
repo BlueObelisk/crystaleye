@@ -1,12 +1,12 @@
 package ned24.sandbox.crystaleye;
 
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
+import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
 
 import nu.xom.Document;
 import nu.xom.Nodes;
-import uk.ac.cam.ch.crystaleye.IOUtils;
+import wwmm.crystaleye.IOUtils;
 
 public class PublisherArticles {
 

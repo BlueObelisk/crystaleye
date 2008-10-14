@@ -1,7 +1,7 @@
 package ned24.sandbox.crystaleye;
 
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.RSC_DOI_PREFIX;
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
+import static wwmm.crystaleye.CrystalEyeConstants.RSC_DOI_PREFIX;
+import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import uk.ac.cam.ch.crystaleye.IOUtils;
+import wwmm.crystaleye.IOUtils;
 
 public class RscFetcherbySuppdataUrl {
 

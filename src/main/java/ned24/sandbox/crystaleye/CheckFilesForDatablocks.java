@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import uk.ac.cam.ch.crystaleye.FileListing;
-import uk.ac.cam.ch.crystaleye.Utils;
+import wwmm.crystaleye.FileListing;
+import wwmm.crystaleye.Utils;
 
 public class CheckFilesForDatablocks {
 

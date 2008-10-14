@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import uk.ac.cam.ch.crystaleye.Utils;
+import wwmm.crystaleye.Utils;
 
 public class RemoveFilesForSiO {
 	

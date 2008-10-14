@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
-import uk.ac.cam.ch.crystaleye.IOUtils;
+import wwmm.crystaleye.CrystalEyeRuntimeException;
+import wwmm.crystaleye.IOUtils;
 
 public class CopyWantedCODFilesToDataDir {
 

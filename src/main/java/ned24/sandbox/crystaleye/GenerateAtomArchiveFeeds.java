@@ -1,7 +1,7 @@
 package ned24.sandbox.crystaleye;
 
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CIF_HTML_SUMMARY_MIME;
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.SMALL_PNG_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants.CIF_HTML_SUMMARY_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants.SMALL_PNG_MIME;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,13 +19,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nu.xom.Element;
-import uk.ac.cam.ch.crystaleye.IOUtils;
-import uk.ac.cam.ch.crystaleye.properties.SiteProperties;
-import uk.ac.cam.ch.crystaleye.site.feeds.AtomEnclosure;
-import uk.ac.cam.ch.crystaleye.site.feeds.AtomEntry;
-import uk.ac.cam.ch.crystaleye.site.feeds.AtomHtmlContent;
-import uk.ac.cam.ch.crystaleye.site.feeds.AtomPubFeed;
-import uk.ac.cam.ch.crystaleye.templates.feeds.AtomPubTemplate;
+import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.site.feeds.AtomEnclosure;
+import wwmm.crystaleye.site.feeds.AtomEntry;
+import wwmm.crystaleye.site.feeds.AtomHtmlContent;
+import wwmm.crystaleye.site.feeds.AtomPubFeed;
+import wwmm.crystaleye.templates.feeds.AtomPubTemplate;
 
 public class GenerateAtomArchiveFeeds {
 
