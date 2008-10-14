@@ -3,7 +3,7 @@ package ned24.sandbox.crystaleye;
 import java.io.File;
 
 import nu.xom.Document;
-import uk.ac.cam.ch.crystaleye.IOUtils;
+import wwmm.crystaleye.IOUtils;
 
 public class PrettyPrint {
 	public static void main(String[] args) {

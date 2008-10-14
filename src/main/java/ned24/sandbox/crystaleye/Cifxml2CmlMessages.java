@@ -2,8 +2,8 @@ package ned24.sandbox.crystaleye;
 
 import java.io.File;
 
-import uk.ac.cam.ch.crystaleye.IOUtils;
-import uk.ac.cam.ch.crystaleye.Utils;
+import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.Utils;
 
 public class Cifxml2CmlMessages {
 

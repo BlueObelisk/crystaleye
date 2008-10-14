@@ -17,8 +17,8 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import uk.ac.cam.ch.crystaleye.FileListing;
-import uk.ac.cam.ch.crystaleye.IOUtils;
+import wwmm.crystaleye.FileListing;
+import wwmm.crystaleye.IOUtils;
 
 public class ExtractDistances {
 	

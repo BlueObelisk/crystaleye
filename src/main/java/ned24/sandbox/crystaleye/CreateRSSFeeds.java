@@ -1,6 +1,6 @@
 package ned24.sandbox.crystaleye;
 
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CRYSTALEYE_DATE_FORMAT;
+import static wwmm.crystaleye.CrystalEyeConstants.CRYSTALEYE_DATE_FORMAT;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,13 +16,13 @@ import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.base.CMLRuntimeException;
 import org.xmlcml.molutil.ChemicalElement;
 
-import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
-import uk.ac.cam.ch.crystaleye.IOUtils;
-import uk.ac.cam.ch.crystaleye.properties.SiteProperties;
-import uk.ac.cam.ch.crystaleye.site.feeds.CMLRSSEntry.FeedType;
-import uk.ac.cam.ch.crystaleye.templates.feeds.Atom1;
-import uk.ac.cam.ch.crystaleye.templates.feeds.Rss1;
-import uk.ac.cam.ch.crystaleye.templates.feeds.Rss2;
+import wwmm.crystaleye.CrystalEyeRuntimeException;
+import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.site.feeds.CMLRSSEntry.FeedType;
+import wwmm.crystaleye.templates.feeds.Atom1;
+import wwmm.crystaleye.templates.feeds.Rss1;
+import wwmm.crystaleye.templates.feeds.Rss2;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;

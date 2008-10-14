@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.xmlcml.cml.legacy2cml.cif.CIFConverter;
 
-import uk.ac.cam.ch.crystaleye.FileListing;
-import uk.ac.cam.ch.crystaleye.IOUtils;
+import wwmm.crystaleye.FileListing;
+import wwmm.crystaleye.IOUtils;
 
 public class CIFXML2CML {
 

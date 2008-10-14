@@ -2,7 +2,7 @@ package ned24.sandbox.crystaleye;
 
 import org.xmlcml.molutil.ChemicalElement;
 
-import uk.ac.cam.ch.crystaleye.IOUtils;
+import wwmm.crystaleye.IOUtils;
 
 public class GenerateBondsFeedIndexes {
 	public static void main(String[] args) {

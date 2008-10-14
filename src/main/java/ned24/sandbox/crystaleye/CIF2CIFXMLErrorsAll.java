@@ -9,8 +9,8 @@ import java.util.List;
 import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFParser;
 
-import uk.ac.cam.ch.crystaleye.FileListing;
-import uk.ac.cam.ch.crystaleye.IOUtils;
+import wwmm.crystaleye.FileListing;
+import wwmm.crystaleye.IOUtils;
 
 public class CIF2CIFXMLErrorsAll {
 
