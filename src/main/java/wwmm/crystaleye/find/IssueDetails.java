@@ -1,4 +1,4 @@
-package wwmm.crystaleye.fetch;
+package wwmm.crystaleye.find;
 
 public class IssueDetails {
 

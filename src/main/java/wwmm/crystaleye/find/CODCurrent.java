@@ -1,4 +1,4 @@
-package wwmm.crystaleye.fetch;
+package wwmm.crystaleye.find;
 
 import static wwmm.crystaleye.CrystalEyeConstants.MAX_CIF_SIZE_IN_BYTES;
 

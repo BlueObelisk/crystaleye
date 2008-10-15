@@ -1,4 +1,4 @@
-package wwmm.crystaleye.fetch;
+package wwmm.crystaleye.find;
 
 import static wwmm.crystaleye.CrystalEyeConstants.CHEMSOCJAPAN_DOI_PREFIX;
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;

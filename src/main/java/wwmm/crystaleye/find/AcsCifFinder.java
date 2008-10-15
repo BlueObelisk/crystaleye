@@ -1,25 +1,25 @@
-package wwmm.crystaleye.fetch;
+package wwmm.crystaleye.find;
 
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 
-import java.io.IOException;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nu.xom.Document;
 import nu.xom.Element;
+import nu.xom.Node;
 import nu.xom.Nodes;
 
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
+import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.util.HttpUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class AcsCifFinder extends JournalCifFinder {
-		
+
 	public enum AcsJournal {
 		ACCOUNTS_OF_CHEMICAL_RESEARCH("achre4", "Accounts of Chemical Research", 1967),
 		ANALYTICAL_CHEMISTRY("ancham", "Analytical Chemistry", 1928),
@@ -46,121 +46,114 @@ public class AcsCifFinder extends JournalCifFinder {
 		ORGANIC_LETTERS("orlef7", "Organic Letters", 1998),
 		ORGANIC_PROCESS_RESEARCH_AND_DEVELOPMENT("oprdfk", "Organic Process and Research and Development", 1996),
 		ORGANOMETALLICS("orgnd7", "Organometallics", 1981);
-		
+
 		private final String abbreviation;
 		private final String fullTitle;
 		private final int volumeOffset;
-		
+
 		AcsJournal(String abbreviation, String fullTitle, int volumeOffset) {
 			this.abbreviation = abbreviation;
 			this.fullTitle = fullTitle;
 			this.volumeOffset = volumeOffset;
 		}
-		
+
 		public String getFullTitle() {
 			return this.fullTitle;
 		}
-		
+
 		public String getAbbreviation() {
 			return this.abbreviation;
 		}
-		
+
 		public int getVolumeOffset() {
 			return this.volumeOffset;
 		}
 	}
-	
+
 	public AcsJournal journal;
-		
+	private static final Logger LOG = Logger.getLogger(AcsJournal.class);
+
 	public AcsCifFinder(AcsJournal journal) {
 		this.journal = journal;
 	}
 
-	public IssueDetails getCurrentIssueDetails() {
+	public IssueDetails getCurrentIssueDetails() throws Exception {
 		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="+journal.getAbbreviation();
 		URI uri = new URI(url, false);
 		Document doc = HttpUtils.getWebpageAsXML(uri);
-		Nodes journalInfo = doc.query(".//x:div[@id='issueinfo']", X_XHTML);
-		if (journalInfo.size() != 0) {
-			String info = journalInfo.get(0).getValue().trim();
-			Pattern pattern = Pattern.compile("\\s*Vol\\.\\s+\\d+,\\s+No\\.\\s+(\\d+):.*(\\d\\d\\d\\d)");
-			Matcher matcher = pattern.matcher(info);
-			if (!matcher.find()) {
-				throw new CrystalEyeRuntimeException("Could not extract the year/issue information from the 'current-issue' page "+url);
-			} else {
-				String year = matcher.group(2);
-				String issueNum = matcher.group(1);
-				return new IssueDetails(year, issueNum);
-			}
-		} else {
-			throw new CrystalEyeRuntimeException("Could not find the year/issue information from the 'current-issue' page "+url);
+		List<Node> journalInfo = Utils.queryHTML(doc, ".//x:div[@id='issueinfo']");
+		int size = journalInfo.size();
+		if (size != 1) {
+			throw new Exception("Expected to find 1 element containing" +
+					"the year/issue information but found "+size+" at: "+uri.toString());
 		}
+		String info = journalInfo.get(0).getValue().trim();
+		Pattern pattern = Pattern.compile("\\s*Vol\\.\\s+\\d+,\\s+No\\.\\s+(\\d+):.*(\\d\\d\\d\\d)");
+		Matcher matcher = pattern.matcher(info);
+		if (!matcher.find() || matcher.groupCount() != 2) {
+			throw new Exception("Could not extract the year/issue information " +
+					"from :"+uri.toString());
+		}
+		String year = matcher.group(2);
+		String issueNum = matcher.group(1);
+		return new IssueDetails(year, issueNum);
 	}
-	
-	public void fetch(IssueDetails issueDetails) {
-		findCifs(issueDetails.getYear(), issueDetails.getIssueId());
+
+	public List<PublisherCifDetails> findCifs(IssueDetails issueDetails) throws Exception {
+		return findCifs(issueDetails.getYear(), issueDetails.getIssueId());
 	}
-	
-	public void findCifs(String year, String issueId) {
+
+	public List<PublisherCifDetails> findCifs(String year, String issueId) throws Exception {
+		List<PublisherCifDetails> cifDetailList = new ArrayList<PublisherCifDetails>();
 		String decade = year.substring(2, 3);
 		int volume = Integer.valueOf(year)-journal.getVolumeOffset();
 		String issueUrl = "http://pubs3.acs.org/acs/journals/toc.page?incoden="
 			+journal.getAbbreviation()+"&indecade="+decade+"&involume="+String.valueOf(volume)+
 			"&inissue="+issueId;
 		URI issueUri = new URI(issueUrl, false);
-		Document doc = HttpUtils.getWebpageAsXML(issueUri);
-		Nodes suppLinks = doc.query("//x:a[contains(text(),'Supporting')]", X_XHTML);
+		LOG.debug("Starting to find CIFs from: "+issueUri.toString());
+		Document issueDoc = HttpUtils.getWebpageAsXML(issueUri);
+		List<Node> suppLinks = Utils.queryHTML(issueDoc, "//x:a[contains(text(),'Supporting')]");
 		sleep();
+		for (Node suppLink : suppLinks) {
+			String suppUrl = ((Element)suppLink).getAttributeValue("href");
+			URI suppUri = new URI(suppUrl, false);
+			Document suppDoc = HttpUtils.getWebpageAsXML(suppUri);
+			sleep();
 
-		if (suppLinks.size() > 0) {
-			for (int j = 0; j < suppLinks.size(); j++) {
-				String suppUrl = ((Element)suppLinks.get(j)).getAttributeValue("href");
-				URI suppUri = new URI(suppUrl, false);
-				doc = HttpUtils.getWebpageAsXML(suppUri);
-				sleep();
-
-				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif') or contains(@href,'.CIF')]",
-						X_XHTML);
-				if (cifLinks.size() > 0) {
-					for (int k = 0; k < cifLinks.size(); k++) {
-						String cifUrl = ((Element)cifLinks.get(k)).getAttributeValue("href");
-						int idx = cifUrl.lastIndexOf("/");
-						String cifId = cifUrl.substring(0,idx);
-						idx = cifId.lastIndexOf("/");
-						cifId = cifId.substring(idx+1);
-						int suppNum = k+1;
-						cifUrl = cifUrl.replaceAll("pubs\\.acs\\.org/", "pubs\\.acs\\.org//");
-						
-						String doi = null;
-						String title = null;
-						Nodes doiAnchors = doc.query("//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
-						if (doiAnchors.size() > 0) {
-							Element doiAnchor = (Element)doiAnchors.get(0);
-							doi = doiAnchor.getValue();
-							Element parent = (Element)doiAnchor.getParent();
-							Nodes titleNodes = parent.query("./x:span[1]", X_XHTML);
-							if (titleNodes.size() > 0) {
-								title = ((Element)titleNodes.get(0)).getValue();
-							}
-						}
-						
-						URL cifURL = new URL(cifUrl);
-						writeFiles(issueWriteDir, cifId, suppNum, cifURL, doi, title);
-						sleep();
+			List<Node> cifLinks = Utils.queryHTML(suppDoc, ".//x:a[contains(@href,'.cif') or contains(@href,'.CIF')]");
+			for (Node cifLink : cifLinks) {
+				String cifUrl = ((Element)cifLink).getAttributeValue("href");
+				cifUrl = cifUrl.replaceAll("pubs\\.acs\\.org/", "pubs\\.acs\\.org//");
+				URI cifUri = new URI(cifUrl, false);
+				String doi = null;
+				String title = null;
+				Nodes doiAnchors = suppDoc.query("//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
+				if (doiAnchors.size() > 0) {
+					Element doiAnchor = (Element)doiAnchors.get(0);
+					doi = doiAnchor.getValue();
+					Element parent = (Element)doiAnchor.getParent();
+					Nodes titleNodes = parent.query("./x:span[1]", X_XHTML);
+					if (titleNodes.size() > 0) {
+						title = ((Element)titleNodes.get(0)).getValue();
 					}
 				}
+				LOG.debug("Found CIF at "+cifUri.toString());
+				PublisherCifDetails pcd = new PublisherCifDetails(cifUri, doi, title);
+				cifDetailList.add(pcd);
+				sleep();
 			}
 		}
-		System.out.println("FINISHED FETCHING CIFS FROM "+issueUrl);
+		LOG.debug("Finished finding CIFs from: "+issueUri.toString());
+		return cifDetailList;
 	}
 
-	public static void main(String[] args) throws URIException, CrystalEyeRuntimeException, NullPointerException {
-		
+	public static void main(String[] args) throws Exception  {
 		for (AcsJournal journal : AcsJournal.values()) {
-			IssueDetails details = new AcsCifFinder(journal).getCurrentIssueDetails();
-			System.out.println(details.getYear()+"/"+details.getIssueId());
+			AcsCifFinder acf = new AcsCifFinder(journal);
+			IssueDetails details = acf.getCurrentIssueDetails();
+			System.out.println(journal.getAbbreviation()+"::"+details.getYear()+"/"+details.getIssueId());
 		}
-		
 	}
-	
+
 }
