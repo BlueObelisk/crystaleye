@@ -15,7 +15,7 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.util.HttpUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 /**
  * Not working according to new abstraction of crawlers - still gets config from
@@ -109,7 +109,7 @@ public class ActaBacklog extends JournalFetcher {
 							String cifPath = cifWriteDir + File.separator
 									+ cifId + ".cif";
 							System.out.println("Writing CIF to " + cifPath);
-							XmlIOUtils.writeText(result, cifPath);
+							Utils.writeText(result, cifPath);
 							sleep();
 						}
 						Nodes doiNodes = tocEntry.query(
@@ -117,7 +117,7 @@ public class ActaBacklog extends JournalFetcher {
 						if (doiNodes.size() > 0) {
 							String doi = ((Element) doiNodes.get(0)).getValue()
 									.substring(4);
-							XmlIOUtils.writeText(doi, cifWriteDir + File.separator
+							Utils.writeText(doi, cifWriteDir + File.separator
 									+ cifId.substring(0, cifId.length() - 4)
 									+ ".doi");
 						} else {
@@ -137,7 +137,7 @@ public class ActaBacklog extends JournalFetcher {
 										.getAttributeValue("href");
 								String result = HttpUtils
 										.fetchWebPage(SITE_PREFIX + checkCifUrl);
-								XmlIOUtils.writeText(result.toString(),
+								Utils.writeText(result.toString(),
 										cifWriteDir + File.separator + cifId
 												+ ".deposited.checkcif.html");
 								sleep();

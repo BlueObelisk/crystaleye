@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public abstract class CurrentIssueFetcher extends JournalFetcher {
 
@@ -64,7 +64,7 @@ public abstract class CurrentIssueFetcher extends JournalFetcher {
 	}
 
 	protected void updateLog(String issueCode) {
-		XmlIOUtils.appendToFile(logfile, issueCode);
+		Utils.appendToFile(logfile, issueCode);
 		LOG.info("Updated " + logfile + " with " + issueCode);
 	}
 
@@ -85,10 +85,10 @@ public abstract class CurrentIssueFetcher extends JournalFetcher {
 				tmpcif.delete();
 			}
 			if (doi != null) {
-				XmlIOUtils.writeText(doi, doiFile.getCanonicalPath());
+				Utils.writeText(doi, doiFile.getCanonicalPath());
 			}
 			if (title != null) {
-				XmlIOUtils.writeText(title, pathPrefix+TITLE_MIME);
+				Utils.writeText(title, pathPrefix+TITLE_MIME);
 			}
 			CrystalEyeUtils.writeDateStamp(pathPrefix + DATE_MIME);
 		} finally {

@@ -8,7 +8,7 @@ import java.util.Date;
 
 import nu.xom.Document;
 import wwmm.crystaleye.site.feeds.AtomPubFeed;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class AtomPubTemplate {
 
@@ -39,7 +39,7 @@ public class AtomPubTemplate {
 		sb.append("<author><name>"+author+"</name></author>");
 		sb.append("<id>"+link+"</id>");
 		sb.append("</feed>");
-		Document feed = XmlIOUtils.parseXmlFile(new StringReader(sb.toString()));
+		Document feed = Utils.parseXmlFile(new StringReader(sb.toString()));
 		return new AtomPubFeed(feed);
 	}
 }

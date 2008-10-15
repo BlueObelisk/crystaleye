@@ -34,7 +34,7 @@ import org.xmlcml.cml.legacy2cml.cif.CIFConverter;
 
 import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.properties.CODProperties;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.XmlUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class CODCurrent implements CMLConstants {
@@ -144,7 +144,7 @@ public class CODCurrent implements CMLConstants {
 					}
 					CMLCml cml = null;
 					try { 
-						cml = (CMLCml)XmlIOUtils.parseCmlFile(rawCmlFile).getRootElement();
+						cml = (CMLCml)Utils.parseCmlFile(rawCmlFile).getRootElement();
 					} catch (Exception e) {
 						System.err.println("Error reading CML in "+rawCmlFile);
 						continue;
@@ -493,7 +493,7 @@ public class CODCurrent implements CMLConstants {
 	
 	protected void updateLog(String journalAbbreviation, String year, String issueNum) {
 		String downloadLogPath = properties.getDownloadLogPath();
-		Document doc = XmlIOUtils.parseXmlFile(downloadLogPath);
+		Document doc = XmlUtils.parseXmlFile(downloadLogPath);
 		Element logEl = doc.getRootElement();
 		Nodes publishers = logEl.query("./publisher[@abbreviation='"+PUBLISHER_ABBREVIATION+"']");
 		if (publishers.size() == 1) {
@@ -533,7 +533,7 @@ public class CODCurrent implements CMLConstants {
 			yearEl.appendChild(getNewIssueElement(issueNum));
 		}
 		
-		XmlIOUtils.writeXML(doc, downloadLogPath);
+		Utils.writeXML(doc, downloadLogPath);
 		System.out.println("Updated "+downloadLogPath+" by adding "+year+"-"+issueNum);
 	}
 

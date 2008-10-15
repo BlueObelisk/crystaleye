@@ -1,32 +1,31 @@
 package wwmm.crystaleye.util;
 
-import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import nu.xom.Builder;
+import nu.xom.Document;
+import nu.xom.ParsingException;
+import nu.xom.Serializer;
+import nu.xom.ValidityException;
 
-/**
- * The class is used to define many usual routines
- *
- * @author Nick Day <ned24@cam.ac.uk>
- */
+import org.apache.commons.io.IOUtils;
+import org.xmlcml.cml.base.CMLBuilder;
+
+import wwmm.crystaleye.CrystalEyeRuntimeException;
+
 public class Utils {
-
-	public static final int EOF = -1;
-
-	private static String separator = "/";
-
-	public Utils() {
-		separator = System.getProperty("file.separator");
-	}
 	
 	public static double round(double val, int places) {
 		long factor = (long)Math.pow(10,places);
@@ -42,50 +41,6 @@ public class Utils {
 		// back to the left.
 		return (double)tmp / factor;
 	}
-	
-	public static int getFileSizeInBytes(File file) {
-		InputStream in;
-		int total = 0;
-		try {
-			in = new FileInputStream(file);
-			total = 0;
-			while (in.read() != -1)
-				total++;
-		} catch (FileNotFoundException e1) {
-			throw new RuntimeException("Could not find file "+file.getAbsolutePath());
-		} catch (IOException e) {
-			throw new RuntimeException("Exception while reading file "+file.getAbsolutePath());
-		}
-		return total;
-	}
-
-	public static String getFileNameWithMimes(String filePath) {
-		String fileSep = "/";
-		if (filePath.contains("\\")) {
-			fileSep = "\\";
-		}
-		int idx = filePath.lastIndexOf(fileSep);
-		String nameWithMime = filePath.substring(idx+1, filePath.length());
-		return nameWithMime;
-	}
-
-	public static String getMimeSet(String filePath) {
-		filePath = Utils.getFileNameWithMimes(filePath);
-		int idx = filePath.indexOf(".");
-		return filePath.substring(idx);
-	}
-
-	public static String getPathMinusMimeSet(File file) {
-		String path = file.getAbsolutePath();
-		String parent = file.getParent();
-		String fileName = path.substring(path.lastIndexOf(File.separator)+1);
-		String fileId = fileName.substring(0,fileName.indexOf("."));
-		return parent+File.separator+fileId;
-	}
-
-	public static String getPathMinusMimeSet(String path) {		
-		return getPathMinusMimeSet(new File(path));
-	}
 
 	public static String convertFileSeparators(String filePath) {
 		if ("/".equalsIgnoreCase(File.separator)) {
@@ -94,92 +49,6 @@ public class Utils {
 			filePath = filePath.replaceAll("/", "\\\\");
 		}
 		return filePath;
-	}
-
-	public static void getFileFromURL(String u, String outputFile) throws IOException {
-		File file = new File(outputFile);
-		File parent = file.getParentFile();
-		if (!parent.exists()) {
-			parent.mkdirs();
-		}
-		URL url  = new URL(u);
-		// Copy resource to local file, use remote file
-		// if no local file name specified
-		InputStream is = url.openStream();
-		FileOutputStream fos=null;
-
-		fos = new FileOutputStream(outputFile);
-		int oneChar, count=0;
-		while ((oneChar=is.read()) != -1) {
-			fos.write(oneChar);
-			count++;
-		}
-		is.close();
-		fos.close();
-	}
-
-	/**
-	 * Delete a directory
-	 */
-	public static boolean delDir(String dirName) {
-		File d = new File(dirName);
-
-		// Make sure the file of dir exists and isn't write protected
-		if (!d.exists())
-			System.err.println("Delete: No such directory: " + dirName);
-		if (!d.canWrite())
-			System.err.println("Delete: write protected: " + dirName);
-
-		String[] files = d.list();
-		for (int i = 0; i < files.length; i++) {
-			String filePath = dirName + separator + files[i];
-			System.out.println(filePath);
-			File f = new File(filePath);
-			if (f.isDirectory()) {
-				delDir(filePath);
-			} else {
-				f.delete();
-			}
-		}
-
-		return d.delete();
-	}
-
-	/**
-	 * Copy one file to another directory
-	 */
-	public static void copyFile(String inputFileName, String outputFileName) {
-		File inputFile = new File(inputFileName);
-		File outputFile = new File(outputFileName);
-		FileInputStream in = null;
-		FileOutputStream out = null;
-		try {
-			in = new FileInputStream(inputFile);
-			out = new FileOutputStream(outputFile);
-			int c;
-			while ((c = in.read()) != -1)
-				out.write(c);
-
-			in.close();
-			out.close();
-		} catch (IOException e) {
-			System.err.println("IOException:" + e.toString());
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					throw new RuntimeException("Could not close file input stream: "+in);
-				}
-			}
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					throw new RuntimeException("Could not close file output stream: "+out);
-				}
-			}
-		}
 	}
 
 	/**
@@ -219,80 +88,129 @@ public class Utils {
 		}
 	}
 
-	/**
-	 * Put a string in to a file
-	 */
-	public static void string2File(String content, String fileName) {
+	public static void appendToFile(File file, String content) throws IOException {
+		FileWriter fw = null;
 		try {
-			File file = new File(fileName);
-			FileWriter out = new FileWriter(file);
-			out.write(content);
-			out.close();
+			fw = new FileWriter(file, true);
+			fw.write(content);
+		} finally {
+			org.apache.commons.io.IOUtils.closeQuietly(fw);
+		}
+	}
+
+	public static void writeText(String content, String fileName) {
+		if (content == null) {
+			throw new IllegalStateException("Content to be written is null.");
+		} else if (fileName == null) {
+			throw new IllegalStateException("File name is null.");
+		} else {
+			File parentDir = new File(fileName).getParentFile();
+			if (!parentDir.exists()) {
+				parentDir.mkdirs();
+			}
+			BufferedWriter out = null;
+			try {
+				out = new BufferedWriter(new FileWriter(fileName));
+				out.write(content);
+				out.close();
+			} catch (IOException e) {
+				throw new CrystalEyeRuntimeException("Error writing text to "
+						+ fileName, e);
+			} finally {
+				try {
+					if (out != null)
+						out.close();
+				} catch (IOException e) {
+					throw new CrystalEyeRuntimeException(
+							"Cannot close writer: " + out, e);
+				}
+			}
+		}
+	}
+
+	public static void writeXML(Document doc, String fileName) {
+		File writeFile = new File(fileName).getParentFile();
+		if (!writeFile.exists()) {
+			writeFile.mkdirs();
+		}
+		try {
+			Serializer serializer = null;
+			serializer = new Serializer(new FileOutputStream(fileName));
+			serializer.write(doc);
 		} catch (IOException e) {
-			System.err.println("Unhandled exception:" + e.toString());
+			throw new RuntimeException("Could not write XML file to "
+					+ fileName);
 		}
 	}
 
-	public static String file2String(File file) {
-		String content = "";
+	public static void writePrettyXML(Document doc, String fileName) {
+		File writeFile = new File(fileName).getParentFile();
+		if (!writeFile.exists()) {
+			writeFile.mkdirs();
+		}
+		Serializer serializer;
 		try {
-			FileInputStream insr = new FileInputStream(file);
-
-			byte[] fileBuffer = new byte[(int) file.length()];
-			insr.read(fileBuffer);
-			insr.close();
-			content = new String(fileBuffer);
-		} catch (Exception e) {
-			System.err.println("Unhandled exception:");
-			e.printStackTrace();
+			serializer = new Serializer(new FileOutputStream(fileName));
+			serializer.setIndent(2);
+			serializer.write(doc);
+		} catch (IOException e) {
+			throw new RuntimeException("Could not write XML file to "
+					+ fileName);
 		}
-
-		return content;
 	}
 
-	/**
-	 * Get the content of a file and put it in a byte array
-	 */
-	public static String file2String(String fileName) {
-		return file2String(new File(fileName));
-	}
-
-
-	/**
-	 * Put a byte array in to a file
-	 */
-	public static void byteArray2File(byte[] content, String fileName) {
+	public static Document parseXmlFile(File file) {
 		try {
-			FileOutputStream ostr = new FileOutputStream(new File(fileName));
-
-			BufferedOutputStream bstr = new BufferedOutputStream( ostr );
-
-			bstr.write( content, 0, content.length);
-			bstr.close();
-		} catch (FileNotFoundException fnfe) {
-			System.err.println("Fatal: " + fnfe);
-		} catch (IOException ioe) {
-			System.err.println("Fatal: " + ioe);
+			return Utils.parseXmlFile(new FileReader(file));
+		} catch (FileNotFoundException e) {
+			throw new CrystalEyeRuntimeException("Could not find file "
+					+ file.getAbsolutePath(), e);
 		}
 	}
 
-	/**
-	 * Get the content of a file and put it in a string
-	 */
-	public static byte[] file2ByteArray(String fileName) {
-		byte[] content = null;
+	public static Document parseXmlFile(Reader reader) {
+		return Utils.parseXmlFile(new Builder(), reader);
+	}
+
+	public static Document parseXmlFile(Builder builder, Reader reader) {
+		Document doc;
 		try {
-			File file = new File(fileName);
-			FileInputStream insr = new FileInputStream(file);
-
-			content = new byte[(int) file.length()];
-			insr.read(content);
-			insr.close();
-		} catch (Exception e) {
-			System.err.println("Unhandled exception:");
-			e.printStackTrace();
+			doc = builder.build(new BufferedReader(reader));
+		} catch (ValidityException e) {
+			throw new CrystalEyeRuntimeException("Invalid XML", e);
+		} catch (ParsingException e) {
+			throw new CrystalEyeRuntimeException("Could not parse XML", e);
+		} catch (UnsupportedEncodingException e) {
+			throw new CrystalEyeRuntimeException("Unsupported encoding", e);
+		} catch (IOException e) {
+			throw new CrystalEyeRuntimeException("Input exception", e);
 		}
-
-		return content;
+		return doc;
 	}
+
+	public static Document parseCmlFile(File file) {
+		Document doc;
+		try {
+			doc = new CMLBuilder().build(new BufferedReader(
+					new FileReader(file)));
+		} catch (ValidityException e) {
+			throw new CrystalEyeRuntimeException("File at "
+					+ file.getAbsolutePath() + " is not valid XML", e);
+		} catch (ParsingException e) {
+			throw new CrystalEyeRuntimeException("Could not parse file at "
+					+ file.getAbsolutePath(), e);
+		} catch (UnsupportedEncodingException e) {
+			throw new CrystalEyeRuntimeException(
+					"File at " + file.getAbsolutePath()
+							+ " is in an unsupported encoding", e);
+		} catch (FileNotFoundException e) {
+			throw new CrystalEyeRuntimeException("File at "
+					+ file.getAbsolutePath() + " could not be found", e);
+		} catch (IOException e) {
+			throw new CrystalEyeRuntimeException("Could read file at "
+					+ file.getAbsolutePath(), e);
+		}
+		return doc;
+	}
+
 }

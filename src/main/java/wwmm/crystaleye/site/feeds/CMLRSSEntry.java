@@ -12,7 +12,7 @@ import nu.xom.Text;
 import org.xmlcml.cml.base.CMLConstants;
 
 import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.XmlUtils;
 
 
 public class CMLRSSEntry implements CMLConstants {
@@ -79,7 +79,7 @@ public class CMLRSSEntry implements CMLConstants {
 		summaryEl.addAttribute(new Attribute("type", "text"));
 		summaryEl.appendChild(new Text(summary));
 
-		Node node = XmlIOUtils.parseXmlFile(cmlFilePath).getRootElement();
+		Node node = XmlUtils.parseXmlFile(cmlFilePath).getRootElement();
 		entry.appendChild(node.copy());
 
 		Element creator = createDCElement("creator");
@@ -118,7 +118,7 @@ public class CMLRSSEntry implements CMLConstants {
 		dateEl.setNamespacePrefix("dc");
 		dateEl.appendChild(new Text(CrystalEyeUtils.getDate()));
 
-		Node node = XmlIOUtils.parseXmlFile(cmlFilePath).getRootElement();
+		Node node = XmlUtils.parseXmlFile(cmlFilePath).getRootElement();
 		item.appendChild(node.copy());
 
 		return item;
@@ -149,7 +149,7 @@ public class CMLRSSEntry implements CMLConstants {
 		dateEl.setNamespacePrefix("dc");
 		dateEl.appendChild(new Text(CrystalEyeUtils.getDate()));
 
-		Element element = XmlIOUtils.parseXmlFile(cmlFilePath).getRootElement();
+		Element element = XmlUtils.parseXmlFile(cmlFilePath).getRootElement();
 		item.appendChild(element.copy());
 
 		return item;

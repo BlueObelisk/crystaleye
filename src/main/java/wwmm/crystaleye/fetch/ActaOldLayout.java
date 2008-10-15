@@ -15,7 +15,7 @@ import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
 import wwmm.crystaleye.util.HttpUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.PropertiesUtils;
 
 public class ActaOldLayout extends JournalFetcher {
@@ -98,8 +98,8 @@ public class ActaOldLayout extends JournalFetcher {
 						+ File.separator + issueNum + "-" + issuePart
 						+ File.separator + cifId + File.separator + cifId;
 				System.out.println(pathMinusMime);
-				XmlIOUtils.writeText(cif, pathMinusMime + ".cif");
-				XmlIOUtils.writeText(doi, pathMinusMime + ".doi");
+				Utils.writeText(cif, pathMinusMime + ".cif");
+				Utils.writeText(doi, pathMinusMime + ".doi");
 			}
 		}
 		System.out.println("FINISHED FETCHING CIFS FROM " + url);

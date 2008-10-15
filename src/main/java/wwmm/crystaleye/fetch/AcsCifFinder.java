@@ -76,7 +76,7 @@ public class AcsCifFinder extends JournalCifFinder {
 		this.journal = journal;
 	}
 
-	public IssueDetails getCurrentIssueDetails() throws NullPointerException, HttpException, IOException {
+	public IssueDetails getCurrentIssueDetails() {
 		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="+journal.getAbbreviation();
 		URI uri = new URI(url, false);
 		Document doc = HttpUtils.getWebpageAsXML(uri);
@@ -98,10 +98,10 @@ public class AcsCifFinder extends JournalCifFinder {
 	}
 	
 	public void fetch(IssueDetails issueDetails) {
-		fetch(issueDetails.getYear(), issueDetails.getIssueId());
+		findCifs(issueDetails.getYear(), issueDetails.getIssueId());
 	}
 	
-	public void fetch(String year, String issueId) {
+	public void findCifs(String year, String issueId) {
 		String decade = year.substring(2, 3);
 		int volume = Integer.valueOf(year)-journal.getVolumeOffset();
 		String issueUrl = "http://pubs3.acs.org/acs/journals/toc.page?incoden="

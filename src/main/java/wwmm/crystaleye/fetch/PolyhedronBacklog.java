@@ -13,7 +13,8 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 import wwmm.crystaleye.util.HttpUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.XmlUtils;
 
 public class PolyhedronBacklog {
 
@@ -31,7 +32,7 @@ public class PolyhedronBacklog {
 	public PolyhedronBacklog(String writeDir, String logPath) {
 		this.writeDir = writeDir;
 		this.logPath = logPath;
-		this.logDoc = XmlIOUtils.parseXmlFile(logPath);
+		this.logDoc = XmlUtils.parseXmlFile(logPath);
 	}
 
 	public void fetch() {
@@ -93,7 +94,7 @@ public class PolyhedronBacklog {
 		} else {
 			throw new RuntimeException("Should have found 1 issueNode, found "+issueNodes.size());
 		}
-		XmlIOUtils.writePrettyXML(logDoc, logPath);
+		Utils.writePrettyXML(logDoc, logPath);
 	}
 
 	public boolean alreadyFinishedIssue(YearAndIssue yi) {

@@ -18,7 +18,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import wwmm.crystaleye.FileListing;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class ExtractDistances {
 	
@@ -143,6 +143,6 @@ public class ExtractDistances {
 		String outPath = file.getAbsolutePath();
 		int idx = outPath.indexOf(FILE_MIME);
 		outPath = outPath.substring(0,idx)+".summary"+FILE_MIME;
-		XmlIOUtils.writeText(sb.toString(), outPath);
+		Utils.writeText(sb.toString(), outPath);
 	}
 }

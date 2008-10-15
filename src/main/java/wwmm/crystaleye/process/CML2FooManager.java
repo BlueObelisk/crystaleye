@@ -62,7 +62,6 @@ import wwmm.crystaleye.properties.ProcessProperties;
 import wwmm.crystaleye.site.Cml2Png;
 import wwmm.crystaleye.util.CDKUtils;
 import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
 import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.CrystalEyeUtils.CompoundClass;
 
@@ -147,7 +146,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 									String articleId = suppId.substring(0,suppId.indexOf("_"));
 									articleId = articleId.replaceAll("sup[\\d]*", "");
 
-									CMLCml cml = (CMLCml)(XmlIOUtils.parseCmlFile(structureFile)).getRootElement();
+									CMLCml cml = (CMLCml)(Utils.parseCmlFile(structureFile)).getRootElement();
 
 									Nodes classNodes = cml.query(".//cml:scalar[@dictRef='iucr:compoundClass']", CML_XPATH);
 									String compClass = "";
@@ -360,7 +359,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 		"</body>"+
 		"</html>";
 
-		XmlIOUtils.writeText(page, filename);					
+		Utils.writeText(page, filename);					
 	}
 
 	private String getOutfile(File writeDir, String id, 

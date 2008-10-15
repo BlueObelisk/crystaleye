@@ -209,7 +209,7 @@ public class CrystalEyeUtils implements CMLConstants {
 
 	public static void writeDateStamp(String path) {
 		String dNow = getDate();
-		XmlIOUtils.writeText(dNow, path);
+		Utils.writeText(dNow, path);
 	}
 	
 	public static String getStructureTitleFromCml(CMLCml cml) {

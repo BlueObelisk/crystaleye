@@ -13,7 +13,7 @@ import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
 import wwmm.crystaleye.util.HttpUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class ChemistryLettersBacklog extends JournalFetcher {
 
@@ -71,9 +71,9 @@ public class ChemistryLettersBacklog extends JournalFetcher {
 								int suppNum = j+1;
 								if (doiElements.size() > 0) {
 									String doi = ((Element)doiElements.get(0)).getValue().substring(4).trim();
-									XmlIOUtils.writeText(doi, cifWriteDir+File.separator+cifId+"sup"+suppNum+".doi");
+									Utils.writeText(doi, cifWriteDir+File.separator+cifId+"sup"+suppNum+".doi");
 								}
-								XmlIOUtils.writeText(cif, cifWriteDir+File.separator+cifId+"sup"+suppNum+".cif");
+								Utils.writeText(cif, cifWriteDir+File.separator+cifId+"sup"+suppNum+".cif");
 								sleep();
 							}
 						}

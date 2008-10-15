@@ -44,7 +44,6 @@ import wwmm.crystaleye.templates.feeds.Atom1;
 import wwmm.crystaleye.templates.feeds.Rss1;
 import wwmm.crystaleye.templates.feeds.Rss2;
 import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
 import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.CrystalEyeUtils.CompoundClass;
 
@@ -178,7 +177,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			e.printStackTrace();
 			throw new CMLRuntimeException("Problem parsing feed.");
 		}
-		XmlIOUtils.writeXML(feedDoc, cmlRssWritePath);
+		Utils.writeXML(feedDoc, cmlRssWritePath);
 
 		List<CMLRSSEntryDetails> credList = new LinkedList<CMLRSSEntryDetails>();
 		for (File cmlFile : cmlFileList) {
@@ -187,7 +186,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 
 			Document doc = null;
 			try {
-				doc = XmlIOUtils.parseCmlFile(cmlFile);
+				doc = Utils.parseCmlFile(cmlFile);
 			} catch (Exception e) {
 				System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 				continue;
@@ -232,7 +231,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			
 			CMLCml cml = null;
 			try {
-				cml = (CMLCml)XmlIOUtils.parseCmlFile(cmlFile).getRootElement();
+				cml = (CMLCml)Utils.parseCmlFile(cmlFile).getRootElement();
 			} catch (Exception e) {
 				System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 				continue;
@@ -346,7 +345,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			for (File cmlFile : cmlFileList) {
 				CMLCml cml = null;
 				try {
-					cml = (CMLCml)XmlIOUtils.parseCmlFile(cmlFile).getRootElement();
+					cml = (CMLCml)Utils.parseCmlFile(cmlFile).getRootElement();
 				} catch (Exception e) {
 					System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 					continue;

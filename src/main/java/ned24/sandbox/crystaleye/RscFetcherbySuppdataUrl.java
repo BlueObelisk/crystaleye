@@ -9,7 +9,7 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 import wwmm.crystaleye.util.HttpUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class RscFetcherbySuppdataUrl {
 
@@ -115,8 +115,8 @@ public class RscFetcherbySuppdataUrl {
 				String cifPath = pathMinusMime+"sup"+cifLinkNum+".cif";
 				String doiPath = pathMinusMime+".doi";
 				String doi = RSC_DOI_PREFIX+"/"+articleId;
-				XmlIOUtils.writeText(cif, cifPath);
-				XmlIOUtils.writeText(doi, doiPath);
+				Utils.writeText(cif, cifPath);
+				Utils.writeText(doi, doiPath);
 			}
 		}
 	}

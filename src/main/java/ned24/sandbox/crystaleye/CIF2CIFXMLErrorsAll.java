@@ -10,7 +10,7 @@ import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFParser;
 
 import wwmm.crystaleye.FileListing;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class CIF2CIFXMLErrorsAll {
 
@@ -39,7 +39,7 @@ public class CIF2CIFXMLErrorsAll {
 					File parent = cifFile.getParentFile();
 					String cifname = cifFile.getName();
 					String cifxmlname = cifname+".xml";
-					XmlIOUtils.writePrettyXML(cif.getDocument(), cifFile.getAbsolutePath()+".xml");
+					Utils.writePrettyXML(cif.getDocument(), cifFile.getAbsolutePath()+".xml");
 				} catch (Exception e) {
 					sb.append(e.getMessage()+"\n");
 					System.out.println(e.getMessage());

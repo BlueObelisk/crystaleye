@@ -25,7 +25,7 @@ import wwmm.crystaleye.site.feeds.AtomEntry;
 import wwmm.crystaleye.site.feeds.AtomHtmlContent;
 import wwmm.crystaleye.site.feeds.AtomPubFeed;
 import wwmm.crystaleye.templates.feeds.AtomPubTemplate;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class GenerateAtomArchiveFeeds {
 
@@ -210,7 +210,7 @@ public class GenerateAtomArchiveFeeds {
 		}
 
 		addUUIDsToTable(uuidMap);
-		XmlIOUtils.writePrettyXML(currentFeed.getFeed(), writePath);
+		Utils.writePrettyXML(currentFeed.getFeed(), writePath);
 		if (numFilesLeft > 0) {
 			updateFeeds(null, fileList, position);
 		}
@@ -227,9 +227,9 @@ public class GenerateAtomArchiveFeeds {
 			sb.append(uuid+" = "+path+"\n");
 		}
 		if (!file.exists()) {
-			XmlIOUtils.writeText(sb.toString(), file.getAbsolutePath());
+			Utils.writeText(sb.toString(), file.getAbsolutePath());
 		} else {
-			XmlIOUtils.appendToFile(file, sb.toString());
+			Utils.appendToFile(file, sb.toString());
 		}
 	}
 
@@ -247,7 +247,7 @@ public class GenerateAtomArchiveFeeds {
 		String lastArchivePath = getArchiveFeedPath(num);
 		AtomPubFeed a = new AtomPubFeed(new File(lastArchivePath));
 		a.setLinkElement(AtomPubFeed.NEXT_ARCHIVE_REL, getArchiveFeedUrl(num+1));
-		XmlIOUtils.writePrettyXML(a.getFeed(), lastArchivePath);
+		Utils.writePrettyXML(a.getFeed(), lastArchivePath);
 	}
 
 	public int getPenultimateFeedNum() {
@@ -293,7 +293,7 @@ public class GenerateAtomArchiveFeeds {
 		for (File file : fileList) {
 			sb.append(file.getAbsolutePath()+"\n");
 		}
-		XmlIOUtils.writeText(sb.toString(), fileListPath);
+		Utils.writeText(sb.toString(), fileListPath);
 	}
 
 	public static void main(String[] args) {

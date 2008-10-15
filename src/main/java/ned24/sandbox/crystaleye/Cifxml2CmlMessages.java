@@ -1,6 +1,5 @@
 package ned24.sandbox.crystaleye;
 
-import wwmm.crystaleye.util.XmlIOUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class Cifxml2CmlMessages {
@@ -62,6 +61,6 @@ public class Cifxml2CmlMessages {
 				sb.append("missing atom data: "+missingAtomData+"\n");
 			}
 		}
-		XmlIOUtils.writeText(sb.toString(), "e:/cifxml2cml-errorsbyyear.txt");
+		Utils.writeText(sb.toString(), "e:/cifxml2cml-errorsbyyear.txt");
 	}
 }

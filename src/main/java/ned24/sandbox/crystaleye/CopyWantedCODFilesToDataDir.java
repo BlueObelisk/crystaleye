@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class CopyWantedCODFilesToDataDir {
 
@@ -49,7 +49,7 @@ public class CopyWantedCODFilesToDataDir {
 				}
 				if (counter == 6) {
 					alreadyGot = true;
-					XmlIOUtils.appendToFile(new File("e:/data-test/already-got-from-cod.txt"), da[6]+","+dc[6]+"\n");
+					Utils.appendToFile(new File("e:/data-test/already-got-from-cod.txt"), da[6]+","+dc[6]+"\n");
 					break;
 				}
 			}

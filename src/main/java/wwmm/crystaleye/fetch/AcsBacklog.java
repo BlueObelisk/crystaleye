@@ -15,7 +15,7 @@ import org.apache.commons.httpclient.URI;
 
 import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.util.HttpUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class AcsBacklog extends JournalFetcher {
 
@@ -144,7 +144,7 @@ public class AcsBacklog extends JournalFetcher {
 						try {
 							URI cifUri = new URI(cifUrl, false);
 							String response = HttpUtils.getWebpageAsString(cifUri);
-							XmlIOUtils.writeText(response, issueWriteDir
+							Utils.writeText(response, issueWriteDir
 									+ File.separator + cifId + File.separator
 									+ cifId + "sup" + suppNum + ".cif");
 						} catch (Exception e) {
@@ -156,7 +156,7 @@ public class AcsBacklog extends JournalFetcher {
 							"//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
 					if (doiAnchors.size() > 0) {
 						String doi = ((Element) doiAnchors.get(0)).getValue();
-						XmlIOUtils.writeText(doi, issueWriteDir + File.separator
+						Utils.writeText(doi, issueWriteDir + File.separator
 								+ cifId + File.separator + cifId + ".doi");
 					}
 				}

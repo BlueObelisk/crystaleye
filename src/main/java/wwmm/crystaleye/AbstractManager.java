@@ -11,7 +11,7 @@ import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.Nodes;
 import wwmm.crystaleye.properties.StandardProperties;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public abstract class AbstractManager {
 
@@ -24,7 +24,7 @@ public abstract class AbstractManager {
 		
 		String issueCode = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum;
 		File propsPath = new File(downloadLogPath);
-		Document doc = XmlIOUtils.parseXmlFile(propsPath);
+		Document doc = Utils.parseXmlFile(propsPath);
 		Nodes procNodes = doc.query("//publisher[@abbreviation='"+publisherAbbreviation+
 							"']/journal[@abbreviation='"+journalAbbreviation+"']/year[@id='"+year+
 							"']/issue[@id='"+issueNum+"']/"+managerTag);
@@ -32,7 +32,7 @@ public abstract class AbstractManager {
 		if (procNodes.size() != 0){
 			Element proc = (Element) procNodes.get(0);
 			proc.getAttribute("value").setValue("true");
-			XmlIOUtils.writePrettyXML(doc, propsPath.getAbsolutePath());
+			Utils.writePrettyXML(doc, propsPath.getAbsolutePath());
 			System.out.println("Updated "+downloadLogPath+" - "+managerTag+"=true ("+issueCode+")");
 		} else {
 			throw new CrystalEyeRuntimeException("Attempted to update "+downloadLogPath+
@@ -58,7 +58,7 @@ public abstract class AbstractManager {
 		List<IssueDate> outputList = new ArrayList<IssueDate>();
 
 		File logFile = new File(downloadLogPath);
-		Document doc = XmlIOUtils.parseXmlFile(logFile);
+		Document doc = Utils.parseXmlFile(logFile);
 		Nodes issues = doc.query("//publisher[@abbreviation='"+publisherAbbreviation+
 									"']/journal[@abbreviation='"+journalAbbreviation+
 									"']/descendant::issue");

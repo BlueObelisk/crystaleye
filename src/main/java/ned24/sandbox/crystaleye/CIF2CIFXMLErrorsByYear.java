@@ -10,7 +10,7 @@ import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFParser;
 
 import wwmm.crystaleye.FileListing;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class CIF2CIFXMLErrorsByYear {
 
@@ -47,7 +47,7 @@ public class CIF2CIFXMLErrorsByYear {
 								File parent = cifFile.getParentFile();
 								String cifname = cifFile.getName();
 								String cifxmlname = cifname+".xml";
-								XmlIOUtils.writePrettyXML(cif.getDocument(), "e:/cif2cifxml-test/"+cifxmlname);
+								Utils.writePrettyXML(cif.getDocument(), "e:/cif2cifxml-test/"+cifxmlname);
 								syntactic++;
 								numErrors++;
 							} catch (Exception e) { 
@@ -85,7 +85,7 @@ public class CIF2CIFXMLErrorsByYear {
 			}
 			sb.append("================================================================\n");
 		}
-		XmlIOUtils.writeText(sb.toString(), "e:/cif2cifxml-errors-byyear.txt");
+		Utils.writeText(sb.toString(), "e:/cif2cifxml-errors-byyear.txt");
 	}
 	
 }
