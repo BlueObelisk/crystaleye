@@ -1,4 +1,4 @@
-package wwmm.crystaleye.fetch;
+package wwmm.crystaleye.find;
 
 import static wwmm.crystaleye.CrystalEyeConstants.XHTML_NS;
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;

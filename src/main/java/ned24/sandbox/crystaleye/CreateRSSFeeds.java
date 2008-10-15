@@ -485,7 +485,7 @@ public class CreateRSSFeeds implements CMLConstants {
 	}
 
 	public static void main(String[] args) {
-		CreateRSSFeeds c = new CreateRSSFeeds("e:/crystaleye-test2/docs/cif-flow-props.txt");
+		CreateRSSFeeds c = new CreateRSSFeeds("e:/crystaleye-data/docs/cif-flow-props.txt");
 		c.createAllRssFeeds();
 
 		c.createJournalRssFeeds();

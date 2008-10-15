@@ -1,5 +1,7 @@
 package wwmm.crystaleye.util;
 
+import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,11 +13,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import nu.xom.Builder;
 import nu.xom.Document;
+import nu.xom.Node;
+import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.Serializer;
 import nu.xom.ValidityException;
@@ -23,22 +29,25 @@ import nu.xom.ValidityException;
 import org.apache.commons.io.IOUtils;
 import org.xmlcml.cml.base.CMLBuilder;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-
 public class Utils {
+	
+	public static List<Node> queryHTML(Document doc, String xpath) {
+		Nodes nodes = doc.query(xpath, X_XHTML);
+		return getNodeListFromNodes(nodes);
+	}
+	
+	public static List<Node> getNodeListFromNodes(Nodes nodes) {
+		List<Node> nodeList = new ArrayList<Node>(nodes.size());
+		for (int i = 0; i < nodes.size(); i++) {
+			nodeList.add(nodes.get(i));
+		}
+		return nodeList;
+	}
 	
 	public static double round(double val, int places) {
 		long factor = (long)Math.pow(10,places);
-
-		// Shift the decimal the correct number of places
-		// to the right.
 		val = val * factor;
-
-		// Round to the nearest integer.
 		long tmp = Math.round(val);
-
-		// Shift the decimal the correct number of places
-		// back to the left.
 		return (double)tmp / factor;
 	}
 
@@ -53,38 +62,31 @@ public class Utils {
 
 	/**
 	 * Create a zip file for many files
+	 * @throws Exception 
 	 */
-	public static void zipFiles(String[] fileNames, String outFileName) {
-		// Create a buffer for reading the files
+	public static void zipFiles(String[] fileNames, String outFileName) throws Exception {
 		byte[] buf = new byte[1024];
-
+		FileInputStream in = null;
+		ZipOutputStream out = null;
 		try {
-			// Create the ZIP file
-			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
+			out = new ZipOutputStream(new FileOutputStream(
 					outFileName));
-
-			// Compress the files
 			for (int i = 0; i < fileNames.length; i++) {
-				FileInputStream in = new FileInputStream(fileNames[i]);
-
-				// Add ZIP entry to output stream.
+				in = new FileInputStream(fileNames[i]);
 				out.putNextEntry(new ZipEntry(fileNames[i]));
-
-				// Transfer bytes from the file to the ZIP file
 				int len;
 				while ((len = in.read(buf)) > 0) {
 					out.write(buf, 0, len);
 				}
-
-				// Complete the entry
 				out.closeEntry();
 				in.close();
 			}
-
-			// Complete the ZIP file
 			out.close();
 		} catch (IOException e) {
-			System.err.println("IOException:" + e.toString());
+			throw new Exception("Exception whilst creating ZIP file.");
+		} finally {
+			IOUtils.closeQuietly(in);
+			IOUtils.closeQuietly(out);
 		}
 	}
 
@@ -94,11 +96,11 @@ public class Utils {
 			fw = new FileWriter(file, true);
 			fw.write(content);
 		} finally {
-			org.apache.commons.io.IOUtils.closeQuietly(fw);
+			IOUtils.closeQuietly(fw);
 		}
 	}
 
-	public static void writeText(String content, String fileName) {
+	public static void writeText(String content, String fileName) throws Exception {
 		if (content == null) {
 			throw new IllegalStateException("Content to be written is null.");
 		} else if (fileName == null) {
@@ -114,100 +116,99 @@ public class Utils {
 				out.write(content);
 				out.close();
 			} catch (IOException e) {
-				throw new CrystalEyeRuntimeException("Error writing text to "
+				throw new Exception("Error writing text to "
 						+ fileName, e);
 			} finally {
-				try {
-					if (out != null)
-						out.close();
-				} catch (IOException e) {
-					throw new CrystalEyeRuntimeException(
-							"Cannot close writer: " + out, e);
-				}
+				IOUtils.closeQuietly(out);
 			}
 		}
 	}
 
-	public static void writeXML(Document doc, String fileName) {
+	public static void writeXML(Document doc, String fileName) throws Exception {
 		File writeFile = new File(fileName).getParentFile();
 		if (!writeFile.exists()) {
 			writeFile.mkdirs();
 		}
+		FileOutputStream fos = null;
 		try {
+			fos = new FileOutputStream(fileName);
 			Serializer serializer = null;
-			serializer = new Serializer(new FileOutputStream(fileName));
+			serializer = new Serializer(fos);
 			serializer.write(doc);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not write XML file to "
-					+ fileName);
+			throw new Exception("Could not write XML file to "+fileName);
+		} finally {
+			IOUtils.closeQuietly(fos);
 		}
 	}
 
-	public static void writePrettyXML(Document doc, String fileName) {
+	public static void writePrettyXML(Document doc, String fileName) throws Exception {
 		File writeFile = new File(fileName).getParentFile();
 		if (!writeFile.exists()) {
 			writeFile.mkdirs();
 		}
 		Serializer serializer;
+		FileOutputStream fos = null;
 		try {
-			serializer = new Serializer(new FileOutputStream(fileName));
+			fos = new FileOutputStream(fileName);
+			serializer = new Serializer(fos);
 			serializer.setIndent(2);
 			serializer.write(doc);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not write XML file to "
-					+ fileName);
+			throw new Exception("Could not write XML file to "+fileName);
+		} finally {
+			IOUtils.closeQuietly(fos);
 		}
 	}
 
-	public static Document parseXmlFile(File file) {
+	public static Document parseXmlFile(File file) throws Exception {
 		try {
 			return Utils.parseXmlFile(new FileReader(file));
 		} catch (FileNotFoundException e) {
-			throw new CrystalEyeRuntimeException("Could not find file "
-					+ file.getAbsolutePath(), e);
+			throw new Exception("Could not find file "+file.getAbsolutePath(), e);
 		}
 	}
 
-	public static Document parseXmlFile(Reader reader) {
+	public static Document parseXmlFile(Reader reader) throws Exception {
 		return Utils.parseXmlFile(new Builder(), reader);
 	}
 
-	public static Document parseXmlFile(Builder builder, Reader reader) {
+	public static Document parseXmlFile(Builder builder, Reader reader) throws Exception {
 		Document doc;
 		try {
-			doc = builder.build(new BufferedReader(reader));
+			doc = builder.build(reader);
 		} catch (ValidityException e) {
-			throw new CrystalEyeRuntimeException("Invalid XML", e);
+			throw new Exception("Invalid XML", e);
 		} catch (ParsingException e) {
-			throw new CrystalEyeRuntimeException("Could not parse XML", e);
+			throw new Exception("Could not parse XML", e);
 		} catch (UnsupportedEncodingException e) {
-			throw new CrystalEyeRuntimeException("Unsupported encoding", e);
+			throw new Exception("Unsupported encoding", e);
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Input exception", e);
+			throw new Exception("Input exception", e);
 		}
 		return doc;
 	}
 
-	public static Document parseCmlFile(File file) {
+	public static Document parseCmlFile(File file) throws Exception {
 		Document doc;
 		try {
 			doc = new CMLBuilder().build(new BufferedReader(
 					new FileReader(file)));
 		} catch (ValidityException e) {
-			throw new CrystalEyeRuntimeException("File at "
+			throw new Exception("File at "
 					+ file.getAbsolutePath() + " is not valid XML", e);
 		} catch (ParsingException e) {
-			throw new CrystalEyeRuntimeException("Could not parse file at "
+			throw new Exception("Could not parse file at "
 					+ file.getAbsolutePath(), e);
 		} catch (UnsupportedEncodingException e) {
-			throw new CrystalEyeRuntimeException(
+			throw new Exception(
 					"File at " + file.getAbsolutePath()
 							+ " is in an unsupported encoding", e);
 		} catch (FileNotFoundException e) {
-			throw new CrystalEyeRuntimeException("File at "
+			throw new Exception("File at "
 					+ file.getAbsolutePath() + " could not be found", e);
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Could read file at "
+			throw new Exception("Could read file at "
 					+ file.getAbsolutePath(), e);
 		}
 		return doc;
