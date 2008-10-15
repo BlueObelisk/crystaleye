@@ -4,7 +4,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,8 +13,9 @@ import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.util.HttpUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class ActaCurrent extends CurrentIssueFetcher {
 
@@ -30,7 +30,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 		String url = "http://journals.iucr.org/" + journalAbbr
 				+ "/contents/backissuesbdy.html";
 		// get current issue page as a DOM
-		Document doc = IOUtils.parseWebPage(url);
+		Document doc = HttpUtils.getWebpageAsXML(url);
 		Nodes currentIssueLink = doc.query(
 				"//x:a[contains(@target,'_parent')]", X_XHTML);
 		if (currentIssueLink.size() != 0) {
@@ -70,7 +70,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 		String url = "http://journals.iucr.org/" + journalAbbr + "/issues/"
 				+ year + "/" + issueNum.replaceAll("-", "/")
 				+ "/isscontsbdy.html";
-		Document doc = IOUtils.parseWebPage(url);
+		Document doc = HttpUtils.getWebpageAsXML(url);
 		Nodes tocEntries = doc.query("//x:div[@class='toc entry']", X_XHTML);
 		sleep();
 		if (tocEntries.size() > 0) {
@@ -118,7 +118,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 											.getAttributeValue("href");
 									String checkcif = getWebPage(SITE_PREFIX
 											+ checkCifUrl);
-									IOUtils
+									XmlIOUtils
 											.writeText(
 													checkcif,
 													issueWriteDir

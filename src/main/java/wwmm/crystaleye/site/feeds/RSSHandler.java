@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
@@ -67,7 +67,7 @@ public class RSSHandler {
 		SyndFeedOutput output = new SyndFeedOutput();
 		try {
 			String feedStr = output.outputString(feed);
-			IOUtils.writeText(feedStr, feedUrl);
+			XmlIOUtils.writeText(feedStr, feedUrl);
 		} catch (FeedException e) {
 			throw new CrystalEyeRuntimeException("Error outputting the RSS feed to "+feedUrl, e);
 		} 	

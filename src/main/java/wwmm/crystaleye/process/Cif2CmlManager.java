@@ -89,14 +89,14 @@ import org.xmlcml.euclid.RealRange;
 import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CDKUtils;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.properties.ProcessProperties;
+import wwmm.crystaleye.util.CDKUtils;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.CrystalEyeUtils.CompoundClass;
 
 public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 
@@ -362,7 +362,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		// read raw CML back in and convert to 'complete' CML
 		CMLCml cml = null;
 		try { 
-			cml = (CMLCml)IOUtils.parseCmlFile(rawCmlFile).getRootElement();
+			cml = (CMLCml)XmlIOUtils.parseCmlFile(rawCmlFile).getRootElement();
 		} catch (Exception e) {
 			System.err.println("Error reading CML.");
 			return;
@@ -418,7 +418,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 			repositionCMLCrystalElement(cml);
 			
 			CrystalEyeUtils.writeDateStamp(pathMinusMime+DATE_MIME);
-			IOUtils.writePrettyXML(cml.getDocument(), pathMinusMime+COMPLETE_CML_MIME);
+			XmlIOUtils.writePrettyXML(cml.getDocument(), pathMinusMime+COMPLETE_CML_MIME);
 		} catch (CMLRuntimeException e) {
 			System.err.println("Error creating complete CML: "+e.getMessage());
 		}
@@ -459,7 +459,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 	private void getCalculatedCheckCif(String cifPath, String pathMinusMime) {
 		String calculatedCheckCif = calculateCheckcif(cifPath);
 		String ccPath = pathMinusMime+".calculated.checkcif.html";
-		IOUtils.writeText(calculatedCheckCif, ccPath);
+		XmlIOUtils.writeText(calculatedCheckCif, ccPath);
 	}
 
 	/**
@@ -495,7 +495,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 					continue;
 				}
 				in = filePost.getResponseBodyAsStream();
-				checkcif = IOUtils.stream2String(in);
+				checkcif = XmlIOUtils.stream2String(in);
 				in.close();
 				if (checkcif.length() > 0) {
 					finished = true;

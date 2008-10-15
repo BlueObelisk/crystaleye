@@ -6,7 +6,7 @@ import java.util.List;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class FindNonBondLengthedIssues {
 
@@ -14,7 +14,7 @@ public class FindNonBondLengthedIssues {
 		String allPath = "e:/download-log-lengths.xml";
 		String latestPath = "e:/download-log.xml";
 		
-		Document allDoc = IOUtils.parseXmlFile(allPath);
+		Document allDoc = XmlIOUtils.parseXmlFile(allPath);
 		Nodes issueNodes = allDoc.query(".//issue");
 		List<String> allIds = new ArrayList<String>();
 		for (int i = 0; i < issueNodes.size(); i++) {
@@ -26,7 +26,7 @@ public class FindNonBondLengthedIssues {
 			allIds.add(issueId);
 		}
 		
-		Document latestDoc = IOUtils.parseXmlFile(latestPath);
+		Document latestDoc = XmlIOUtils.parseXmlFile(latestPath);
 		issueNodes = latestDoc.query(".//issue");
 		List<String> latestIds = new ArrayList<String>();
 		for (int i = 0; i < issueNodes.size(); i++) {

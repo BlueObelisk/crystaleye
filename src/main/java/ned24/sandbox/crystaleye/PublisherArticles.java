@@ -6,7 +6,8 @@ import java.io.File;
 
 import nu.xom.Document;
 import nu.xom.Nodes;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.HttpUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class PublisherArticles {
 
@@ -25,7 +26,7 @@ public class PublisherArticles {
 	}
 	
 	public void getRscArticleDetails() {
-		IOUtils.writeText("", rscStatsFilePath);
+		XmlIOUtils.writeText("", rscStatsFilePath);
 		String[] journalAbbs = {"cc","ce","cp","dt","gc","jm","nj","ob"};
 		for (String journalAbbreviation : journalAbbs) {
 			int journalTotal = 0;
@@ -41,7 +42,7 @@ public class PublisherArticles {
 					"&MasterJournalCode="+journalAbbreviation+"&SubYear="+year+
 					"&type=Issue&Issue="+issue+"&x=11&y=5";
 					System.out.println(url);
-					Document doc = IOUtils.parseWebPage(url);
+					Document doc = HttpUtils.getWebpageAsXML(url);
 					Nodes articleNodes = doc.query(".//x:strong/x:a[contains(@href,'article.asp')]", X_XHTML);
 					int articles = articleNodes.size();
 					System.out.println(articles);
@@ -56,13 +57,13 @@ public class PublisherArticles {
 				sb.append("=============================================\n");
 				sb.append("TOTAL FOR "+year+" : "+yearTotal+"\n");
 				sb.append("=============================================\n");
-				IOUtils.appendToFile(new File(rscStatsFilePath), sb.toString());
+				XmlIOUtils.appendToFile(new File(rscStatsFilePath), sb.toString());
 			}
 		}
 	}
 
 	public void getAcsArticleDetails() {
-		IOUtils.writeText("", acsStatsFilePath);
+		XmlIOUtils.writeText("", acsStatsFilePath);
 		String[] journalAbbs = {"cgdefu", "inocaj", "jacsat", "jnprdf", "joceah", "orgnd7", "orlef7"};
 		for (String journalAbbreviation : journalAbbs) {
 			int journalTotal = 0;
@@ -77,7 +78,7 @@ public class PublisherArticles {
 						+ journalAbbreviation.toLowerCase() + "&indecade=" + decade
 						+ "&involume=" + volume + "&inissue=" + issue;
 					System.out.println(url);
-					Document doc = IOUtils.parseWebPage(url);
+					Document doc = HttpUtils.getWebpageAsXML(url);
 					Nodes articleNodes = doc.query(".//x:table[@border='1' and @width='100%' and @bordercolor='#CCCCCC' and @cellspacing='0' and @cellpadding='5']", X_XHTML);
 					int articles = articleNodes.size();
 					if (articles > 0) {
@@ -91,7 +92,7 @@ public class PublisherArticles {
 				sb.append("=============================================\n");
 				sb.append("TOTAL FOR "+year+" : "+yearTotal+"\n");
 				sb.append("=============================================\n");
-				IOUtils.appendToFile(new File(acsStatsFilePath), sb.toString());
+				XmlIOUtils.appendToFile(new File(acsStatsFilePath), sb.toString());
 			}
 		}
 	}

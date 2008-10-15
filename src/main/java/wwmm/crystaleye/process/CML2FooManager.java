@@ -57,14 +57,14 @@ import org.xmlcml.molutil.ChemicalElement;
 import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CDKUtils;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.properties.ProcessProperties;
 import wwmm.crystaleye.site.Cml2Png;
+import wwmm.crystaleye.util.CDKUtils;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.CrystalEyeUtils.CompoundClass;
 
 public class CML2FooManager extends AbstractManager implements CMLConstants {
 
@@ -147,7 +147,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 									String articleId = suppId.substring(0,suppId.indexOf("_"));
 									articleId = articleId.replaceAll("sup[\\d]*", "");
 
-									CMLCml cml = (CMLCml)(IOUtils.parseCmlFile(structureFile)).getRootElement();
+									CMLCml cml = (CMLCml)(XmlIOUtils.parseCmlFile(structureFile)).getRootElement();
 
 									Nodes classNodes = cml.query(".//cml:scalar[@dictRef='iucr:compoundClass']", CML_XPATH);
 									String compClass = "";
@@ -360,7 +360,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 		"</body>"+
 		"</html>";
 
-		IOUtils.writeText(page, filename);					
+		XmlIOUtils.writeText(page, filename);					
 	}
 
 	private String getOutfile(File writeDir, String id, 

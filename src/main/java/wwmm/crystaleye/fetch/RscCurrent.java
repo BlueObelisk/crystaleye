@@ -14,8 +14,9 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.util.HttpUtils;
+import wwmm.crystaleye.util.PropertiesUtils;
 
 public class RscCurrent extends CurrentIssueFetcher {
 
@@ -29,7 +30,7 @@ public class RscCurrent extends CurrentIssueFetcher {
 	protected IssueDate getCurrentIssueId() {
 		String url = "http://rsc.org/Publishing/Journals/"
 				+ journalAbbr.toUpperCase() + "/Article.asp?Type=CurrentIssue";
-		Document doc = IOUtils.parseWebPageMinusComments(url);
+		Document doc = HttpUtils.getWebpageMinusCommentsAsXML(url);
 		// old version of current version xpath
 		// Nodes journalInfo =
 		// doc.query("//x:img[contains(@src,'current_issue.gif')]/parent::x:p/text()[3]",
@@ -60,7 +61,7 @@ public class RscCurrent extends CurrentIssueFetcher {
 			throws IOException {
 		String url = "http://rsc.org/Publishing/Journals/" + journalAbbr
 				+ "/Article.asp?Type=CurrentIssue";
-		Document doc = IOUtils.parseWebPageMinusComments(url);
+		Document doc = HttpUtils.getWebpageMinusCommentsAsXML(url);
 		Nodes articleLinks = doc
 				.query(
 						"//x:a[contains(@href,'/Publishing/Journals/"
@@ -76,7 +77,7 @@ public class RscCurrent extends CurrentIssueFetcher {
 				String ss = "?doi=";
 				int ssidx = articleUrl.lastIndexOf(ss);
 				String articleId = articleUrl.substring(ssidx+ss.length());
-				doc = IOUtils.parseWebPageMinusComments(articleUrl);
+				doc = HttpUtils.getWebpageMinusCommentsAsXML(articleUrl);
 				
 				String title = null;
 				Nodes titleNodes = doc.query(".//x:span[@style='font-size:150%;']", X_XHTML);
@@ -96,7 +97,7 @@ public class RscCurrent extends CurrentIssueFetcher {
 						String link = ((Element) suppLinks.get(j))
 								.getAttributeValue("href");
 						String suppUrl = SITE_PREFIX + link;
-						doc = IOUtils.parseWebPageMinusComments(suppUrl);
+						doc = HttpUtils.getWebpageMinusCommentsAsXML(suppUrl);
 						sleep();
 						Nodes cifLinks = doc
 								.query(
@@ -127,7 +128,7 @@ public class RscCurrent extends CurrentIssueFetcher {
 	public static void main(String[] args) {
 		try {
 			RscCurrent rsc = new RscCurrent();
-			Properties props = IOUtils
+			Properties props = PropertiesUtils
 					.loadProperties("E:\\data-test\\docs\\cif-flow-props.txt");
 			rsc.setDownloadDir(new File(props.getProperty("write.dir")));
 			rsc.fetchAll();

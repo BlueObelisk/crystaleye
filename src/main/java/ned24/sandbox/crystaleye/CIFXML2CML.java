@@ -7,7 +7,7 @@ import java.util.List;
 import org.xmlcml.cml.legacy2cml.cif.CIFConverter;
 
 import wwmm.crystaleye.FileListing;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class CIFXML2CML {
 
@@ -46,7 +46,7 @@ public class CIFXML2CML {
 					System.err.println("CIFConverter EXCEPTION... "+e);
 				}
 			}
-			IOUtils.writeText(sb.toString(), "e:/cifxml2cml-errormessages.txt");
+			XmlIOUtils.writeText(sb.toString(), "e:/cifxml2cml-errormessages.txt");
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}

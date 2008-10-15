@@ -11,8 +11,8 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.Utils;
+import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class AddGolemRdfLinks {
 
@@ -45,10 +45,10 @@ public class AddGolemRdfLinks {
 														Matcher m2 = p2.matcher(html);
 														html = m2.replaceAll("<wbr />");
 														
-														IOUtils.writeText(html, summaryPath);
+														XmlIOUtils.writeText(html, summaryPath);
 
 														System.out.println(summaryFile.getAbsolutePath());
-														Document doc = IOUtils.parseXmlFile(summaryPath);
+														Document doc = XmlIOUtils.parseXmlFile(summaryPath);
 
 														Nodes headProfiles = doc.query("./x:head/@profile", X_XHTML);
 														if (headProfiles.size() > 0) {
@@ -80,7 +80,7 @@ public class AddGolemRdfLinks {
 														System.out
 														.println(golemUrl);
 														link.addAttribute(new Attribute("href", golemUrl));
-														IOUtils.writePrettyXML(doc, summaryPath);	
+														XmlIOUtils.writePrettyXML(doc, summaryPath);	
 														
 													} catch (Exception e) {
 														System.out

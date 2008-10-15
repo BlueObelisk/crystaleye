@@ -1,4 +1,4 @@
-package wwmm.crystaleye;
+package wwmm.crystaleye.commandline;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -30,8 +30,8 @@ import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.tools.MoleculeTool;
 
-import wwmm.crystaleye.CDKUtils;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.CDKUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 /** Produces png images for CML molecules using CDK.
  * 
@@ -151,7 +151,7 @@ public class Cml2Png implements CMLConstants {
 	
 	public static void main(String[] args) {
 		File cmlFile = new File("Z:\\docs\\cifdat\\AH\\test\\completecml\\ah0001.cml");
-		CMLCml cmlCml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+		CMLCml cmlCml = (CMLCml)XmlIOUtils.parseCmlFile(cmlFile).getRootElement();
 		CMLMolecule mol = (CMLMolecule) cmlCml.getFirstCMLChild(CMLMolecule.TAG);
 		mol = CDKUtils.add2DCoords(mol);
 		int count = 1;

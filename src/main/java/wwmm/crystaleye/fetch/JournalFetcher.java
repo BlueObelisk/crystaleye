@@ -2,7 +2,7 @@ package wwmm.crystaleye.fetch;
 
 import java.io.File;
 
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.HttpUtils;
 
 public abstract class JournalFetcher implements Fetcher {
 
@@ -29,7 +29,7 @@ public abstract class JournalFetcher implements Fetcher {
 	}
 
 	protected String getWebPage(String url) {
-		return IOUtils.fetchWebPage(url);
+		return HttpUtils.fetchWebPage(url);
 	}
 
 	public int getMaxSleep() {

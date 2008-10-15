@@ -7,7 +7,7 @@ import java.util.List;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Text;
-import wwmm.crystaleye.CrystalEyeUtils;
+import wwmm.crystaleye.util.CrystalEyeUtils;
 
 public class AtomEntry {
 

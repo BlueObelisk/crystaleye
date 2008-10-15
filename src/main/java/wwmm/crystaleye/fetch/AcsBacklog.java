@@ -10,8 +10,12 @@ import java.util.Properties;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
+
+import org.apache.commons.httpclient.URI;
+
 import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.HttpUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class AcsBacklog extends JournalFetcher {
 
@@ -110,7 +114,7 @@ public class AcsBacklog extends JournalFetcher {
 			+ journalAbbreviation.toLowerCase() + "&indecade=" + decade
 			+ "&involume=" + volume + "&inissue=" + issue;
 		System.out.println("fetching url: " + url);
-		Document doc = IOUtils.parseWebPage(url);
+		Document doc = HttpUtils.getWebpageAsXML(url);
 		Nodes suppLinks = doc.query("//x:a[contains(text(),'Supporting')]",
 				X_XHTML);
 		sleep();
@@ -119,7 +123,7 @@ public class AcsBacklog extends JournalFetcher {
 			for (int j = 0; j < suppLinks.size(); j++) {
 				String suppUrl = ((Element) suppLinks.get(j))
 				.getAttributeValue("href");
-				doc = IOUtils.parseWebPage(suppUrl);
+				doc = HttpUtils.getWebpageAsXML(suppUrl);
 				System.out.println("fetching: " + suppUrl);
 				sleep();
 				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif') or contains(@href,'.CIF')]",
@@ -137,9 +141,10 @@ public class AcsBacklog extends JournalFetcher {
 						int suppNum = k + 1;
 						cifUrl = cifUrl.replaceAll("pubs\\.acs\\.org/",
 						"pubs\\.acs\\.org//");
-						try { 
-							String response = IOUtils.fetchWebPage(cifUrl);
-							IOUtils.writeText(response, issueWriteDir
+						try {
+							URI cifUri = new URI(cifUrl, false);
+							String response = HttpUtils.getWebpageAsString(cifUri);
+							XmlIOUtils.writeText(response, issueWriteDir
 									+ File.separator + cifId + File.separator
 									+ cifId + "sup" + suppNum + ".cif");
 						} catch (Exception e) {
@@ -151,7 +156,7 @@ public class AcsBacklog extends JournalFetcher {
 							"//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
 					if (doiAnchors.size() > 0) {
 						String doi = ((Element) doiAnchors.get(0)).getValue();
-						IOUtils.writeText(doi, issueWriteDir + File.separator
+						XmlIOUtils.writeText(doi, issueWriteDir + File.separator
 								+ cifId + File.separator + cifId + ".doi");
 					}
 				}
