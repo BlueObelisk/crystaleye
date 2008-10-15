@@ -15,7 +15,7 @@ import nu.xom.Nodes;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.util.HttpUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class ActaCurrent extends CurrentIssueFetcher {
 
@@ -118,7 +118,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 											.getAttributeValue("href");
 									String checkcif = getWebPage(SITE_PREFIX
 											+ checkCifUrl);
-									XmlIOUtils
+									Utils
 											.writeText(
 													checkcif,
 													issueWriteDir

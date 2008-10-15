@@ -2,7 +2,7 @@ package ned24.sandbox.crystaleye;
 
 import org.xmlcml.molutil.ChemicalElement;
 
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class GenerateBondsFeedIndexes {
 	public static void main(String[] args) {
@@ -28,7 +28,7 @@ public class GenerateBondsFeedIndexes {
 					"</ul>\n";
 				}
 				String page = getPage(content, iStr);
-				XmlIOUtils.writeText(page, "e:\\test\\feed\\bonds\\"+iStr+"-index.html");
+				Utils.writeText(page, "e:\\test\\feed\\bonds\\"+iStr+"-index.html");
 			}
 		}		
 	}

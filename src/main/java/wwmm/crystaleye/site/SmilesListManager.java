@@ -23,7 +23,6 @@ import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.commandline.Execute;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class SmilesListManager extends AbstractManager implements CMLConstants {
@@ -114,9 +113,9 @@ public class SmilesListManager extends AbstractManager implements CMLConstants {
 		}
 
 		if (!outFile.exists()) {
-			XmlIOUtils.writeText(sb.toString(), smilesListPath);
+			Utils.writeText(sb.toString(), smilesListPath);
 		} else {
-			XmlIOUtils.appendToFile(outFile, sb.toString());
+			Utils.appendToFile(outFile, sb.toString());
 		}
 	}
 	

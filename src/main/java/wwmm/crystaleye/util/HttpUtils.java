@@ -9,8 +9,6 @@ import java.util.regex.Pattern;
 
 import nu.xom.Builder;
 import nu.xom.Document;
-import nu.xom.ParsingException;
-import nu.xom.ValidityException;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
@@ -25,7 +23,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
+import wwmm.crystaleye.RetrieveWebpageException;
 
 public class HttpUtils {
 
@@ -40,14 +38,15 @@ public class HttpUtils {
 		getMethod.getParams().setSoTimeout(60000);
 	}
 
-	public static Document getWebpageAsXML(URI uri) throws HttpException, IOException, SAXException {
-		String response = HttpUtils.getWebpageAsString(uri);
+	public static Document getWebpageAsXML(URI uri) throws RetrieveWebpageException  {
+		String response = null;
+		response = HttpUtils.getWebpageAsString(uri);
 		return parseHtmlWithTagsoup(response);
 	}
 
-	public static Document getWebpageMinusCommentsAsXML(URI uri) throws HttpException, IOException, SAXException {
-		String response = HttpUtils.getWebpageAsString(uri);
-
+	public static Document getWebpageMinusCommentsAsXML(URI uri) throws RetrieveWebpageException {
+		String response;
+		response = HttpUtils.getWebpageAsString(uri);
 		String patternStr = "<!--(.*)?-->";
 		String replacementStr = "";
 		Pattern pattern = Pattern.compile(patternStr);
@@ -65,29 +64,42 @@ public class HttpUtils {
 		return doc;
 	}
 
-	public static Document parseHtmlWithTagsoup(String htmlString) throws SAXException {
-		XMLReader tagsoup = XMLReaderFactory.createXMLReader("org.ccil.cowan.tagsoup.Parser");
+	public static Document parseHtmlWithTagsoup(String htmlString) throws RetrieveWebpageException {
+		XMLReader tagsoup = null;
+		try {
+			tagsoup = XMLReaderFactory.createXMLReader("org.ccil.cowan.tagsoup.Parser");
+		} catch (SAXException e) {
+			throw new RetrieveWebpageException("Error creating XMLReader from org.ccil.cowan.tagsoup.Parser", e);
+		}
 		Builder builder = new Builder(tagsoup);
 		StringReader sr = new StringReader(htmlString);
 		BufferedReader br = new BufferedReader(sr);
-		Document doc = XmlIOUtils.parseXmlFile(builder, br);
+		Document doc = Utils.parseXmlFile(builder, br);
 		IOUtils.closeQuietly(sr);
 		IOUtils.closeQuietly(br);
 		return doc;
 	}
 
-	public static String getWebpageAsString(URI uri) throws HttpException, IOException {
+	public static String getWebpageAsString(URI uri) throws RetrieveWebpageException {
 		InputStream in = null;
-		getMethod.setURI(uri);
+		try {
+			getMethod.setURI(uri);
+		} catch (URIException e) {
+			throw new RetrieveWebpageException("Exception setting URI ("+uri.toString()+") for GET method.", e);
+		}
 		int statusCode;
 		String html = "";
 		try {
 			statusCode = client.executeMethod(getMethod);
 			if (statusCode != HttpStatus.SC_OK) {
-				** pass an error further up the chain **
+				throw new RetrieveWebpageException("Could not get webpage from "+uri.toString()+". Returned status code = "+statusCode);
 			}
 			in = getMethod.getResponseBodyAsStream();
-			html = XmlIOUtils.stream2String(in);
+			html = IOUtils.toString(in);
+		} catch (HttpException e) {
+			throw new RetrieveWebpageException("HttpException getting webpage from: "+uri.toString()+", e");
+		} catch (IOException e) {
+			throw new RetrieveWebpageException("IOException getting webpage from: "+uri.toString()+", e");
 		} finally {
 			if (getMethod != null) {
 				getMethod.releaseConnection();

@@ -22,7 +22,7 @@ import wwmm.crystaleye.site.feeds.CMLRSSEntry.FeedType;
 import wwmm.crystaleye.templates.feeds.Atom1;
 import wwmm.crystaleye.templates.feeds.Rss1;
 import wwmm.crystaleye.templates.feeds.Rss2;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
@@ -153,7 +153,7 @@ public class CreateRSSFeeds implements CMLConstants {
 					}
 					String outStr = feedWriteDir+"/journal/"+publisherAbbreviation+"/"+journalAbbreviation+"/rss/"+feedType.replaceAll("\\.", "")+"/feed.xml";
 
-					XmlIOUtils.writeText(feedStr, outStr);
+					Utils.writeText(feedStr, outStr);
 				}
 			}
 		}
@@ -194,7 +194,7 @@ public class CreateRSSFeeds implements CMLConstants {
 			}
 			String outStr = feedWriteDir+"/all/rss/"+feedType.replaceAll("\\.", "")+"/feed.xml";
 
-			XmlIOUtils.writeText(feedStr, outStr);
+			Utils.writeText(feedStr, outStr);
 		}
 	}
 
@@ -236,7 +236,7 @@ public class CreateRSSFeeds implements CMLConstants {
 				}
 				String outStr = feedWriteDir+"/atoms/"+symbol+"/rss/"+feedType.replaceAll("\\.", "")+"/feed.xml";
 
-				XmlIOUtils.writeText(feedStr, outStr);
+				Utils.writeText(feedStr, outStr);
 			}
 		}
 	}
@@ -283,7 +283,7 @@ public class CreateRSSFeeds implements CMLConstants {
 					}
 					String outStr = feedWriteDir+"/bonds/"+symbol1+"-"+symbol2+"/rss/"+feedType.replaceAll("\\.", "")+"/feed.xml";
 
-					XmlIOUtils.writeText(feedStr, outStr);
+					Utils.writeText(feedStr, outStr);
 				}
 			}
 		}
@@ -326,7 +326,7 @@ public class CreateRSSFeeds implements CMLConstants {
 				}
 				String outStr = feedWriteDir+"/class/"+clas+"/rss/"+feedType.replaceAll("\\.", "")+"/feed.xml";
 
-				XmlIOUtils.writeText(feedStr, outStr);
+				Utils.writeText(feedStr, outStr);
 			}
 		}
 	}
@@ -363,7 +363,7 @@ public class CreateRSSFeeds implements CMLConstants {
 					}
 
 					String outStr = feedWriteDir+"/journal/"+publisherAbbreviation+"/"+journalAbbreviation+"/cmlrss/"+feedType.replaceAll("\\.", "")+"/feed.xml";	
-					XmlIOUtils.writeXML(feedDoc, outStr);
+					Utils.writeXML(feedDoc, outStr);
 				}
 			}
 		}
@@ -397,7 +397,7 @@ public class CreateRSSFeeds implements CMLConstants {
 				}
 
 				String outStr = feedWriteDir+"/atoms/"+symbol+"/cmlrss/"+feedType.replaceAll("\\.", "")+"/feed.xml";
-				XmlIOUtils.writeXML(feedDoc, outStr);
+				Utils.writeXML(feedDoc, outStr);
 			}
 		}
 	}
@@ -434,7 +434,7 @@ public class CreateRSSFeeds implements CMLConstants {
 					}
 
 					String outStr = feedWriteDir+"/bonds/"+symbol1+"-"+symbol2+"/cmlrss/"+feedType.replaceAll("\\.", "")+"/feed.xml";
-					XmlIOUtils.writeXML(feedDoc, outStr);
+					Utils.writeXML(feedDoc, outStr);
 				}
 			}
 		}
@@ -467,7 +467,7 @@ public class CreateRSSFeeds implements CMLConstants {
 				}
 
 				String outStr = feedWriteDir+"/class/"+clas+"/cmlrss/"+feedType.replaceAll("\\.", "")+"/feed.xml";
-				XmlIOUtils.writeXML(feedDoc, outStr);
+				Utils.writeXML(feedDoc, outStr);
 			}
 		}
 	}

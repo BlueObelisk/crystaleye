@@ -64,7 +64,6 @@ import wwmm.crystaleye.templates.webpages.BondLengthElementIndex;
 import wwmm.crystaleye.templates.webpages.BondLengthIndex;
 import wwmm.crystaleye.templates.webpages.CifSummaryToc;
 import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
 import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.CrystalEyeUtils.CompoundClass;
 
@@ -214,7 +213,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		BondLengthIndex bli = new BondLengthIndex(elements);
 		String page = bli.getWebpage();
 		String indexPath = bondFolderPath+File.separator+"index.html";
-		XmlIOUtils.writeText(page, indexPath);
+		Utils.writeText(page, indexPath);
 
 		for (Iterator it = bondElementsMap.entrySet().iterator(); it.hasNext(); ) {
 			Map.Entry entry = (Map.Entry)it.next();
@@ -223,7 +222,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			BondLengthElementIndex bei = new BondLengthElementIndex(bondFolderPath, element, set);
 			String webpage = bei.getWebpage();
 			String elementIndexPath = bondFolderPath+File.separator+element+"-index.html";
-			XmlIOUtils.writeText(webpage, elementIndexPath);
+			Utils.writeText(webpage, elementIndexPath);
 		}
 	}
 
@@ -266,9 +265,9 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 						}
 						if (i == 25000) {
 							if (protocolBondsFile.exists()) {
-								XmlIOUtils.appendToFile(protocolBondsFile, sb.toString());
+								Utils.appendToFile(protocolBondsFile, sb.toString());
 							} else {
-								XmlIOUtils.writeText(sb.toString(), protocolBondsPath);
+								Utils.writeText(sb.toString(), protocolBondsPath);
 							}
 							sb = new StringBuilder();
 							i = 0;
@@ -277,9 +276,9 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				}
 				if (i > 0) {
 					if (protocolBondsFile.exists()) {
-						XmlIOUtils.appendToFile(protocolBondsFile, sb.toString());
+						Utils.appendToFile(protocolBondsFile, sb.toString());
 					} else {
-						XmlIOUtils.writeText(sb.toString(), protocolBondsPath);
+						Utils.writeText(sb.toString(), protocolBondsPath);
 					}
 				}
 				input.close();
@@ -315,13 +314,13 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			String allBondsPath = bondLengthsDir+File.separator+bondType+CSV_MIME;
 			Document allHist = getHistogram(allBondsPath, bondType, false);
 			String allHistOutPath = bondLengthsDir+File.separator+bondType+SVG_MIME;
-			XmlIOUtils.writeXML(allHist, allHistOutPath);
+			Utils.writeXML(allHist, allHistOutPath);
 
 			String protocolBondsPath = bondLengthsDir+File.separator+bondType+AFTER_PROTOCOL+CSV_MIME;
 			if (new File(protocolBondsPath).exists()) {
 				Document protocolHist = getHistogram(protocolBondsPath, bondType, true);
 				String protocolHistOutPath = bondLengthsDir+File.separator+bondType+AFTER_PROTOCOL+SVG_MIME;
-				XmlIOUtils.writeXML(protocolHist, protocolHistOutPath);
+				Utils.writeXML(protocolHist, protocolHistOutPath);
 			}
 		}	
 	}
@@ -519,7 +518,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			String title = "CrystalEye: Structures containing "+bondType+" bonds<br />between "+id+" &Aring;";
 			String header = "Structures containing "+bondType+" bonds<br />between "+id+" &Aring;";
 			CifSummaryToc ocs = new CifSummaryToc(title, header, table, String.valueOf(structureCount), jmolLoadForSummary, imageLoadForSummary, String.valueOf(maxImageForSummary), 2);
-			XmlIOUtils.writeText(ocs.getWebpage(), htmlPath);
+			Utils.writeText(ocs.getWebpage(), htmlPath);
 
 			Element rect = (Element)rectNodes.get(i);
 			rect.addAttribute(new Attribute("onclick", "move('"+href+"')"));
@@ -692,7 +691,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 
 	private void addLengthsFromCmlFile(File cmlFile) {
 		System.out.println("Processing: "+cmlFile.getAbsolutePath());
-		CMLCml c = (CMLCml)XmlIOUtils.parseCmlFile(cmlFile).getRootElement();
+		CMLCml c = (CMLCml)Utils.parseCmlFile(cmlFile).getRootElement();
 		CMLCml cml = (CMLCml)c.copy();
 
 		setCmlValues(cml);
@@ -1011,9 +1010,9 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 
 		changedBonds.add(bondTypeId);
 		if (lengthsFile.exists()) {
-			XmlIOUtils.appendToFile(lengthsFile, newContent);
+			Utils.appendToFile(lengthsFile, newContent);
 		} else {
-			XmlIOUtils.writeText(newContent, lengthsFile.getAbsolutePath());
+			Utils.writeText(newContent, lengthsFile.getAbsolutePath());
 		}
 	}
 

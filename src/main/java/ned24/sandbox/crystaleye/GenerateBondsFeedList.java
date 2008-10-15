@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.xmlcml.molutil.ChemicalElement;
 
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class GenerateBondsFeedList {
 	public static void main(String[] args) {
@@ -16,7 +16,7 @@ public class GenerateBondsFeedList {
 			ChemicalElement ce = ChemicalElement.getElement(i);
 			String symbol1 = ce.getSymbol();
 			for (int j = 0; j < 105; j++) {
-				XmlIOUtils.writeText("", "C:\\Documents and Settings\\Nick Day\\Desktop\\homepage\\feed\\bonds\\"+symbol1+"-index.html");
+				Utils.writeText("", "C:\\Documents and Settings\\Nick Day\\Desktop\\homepage\\feed\\bonds\\"+symbol1+"-index.html");
 			}
 		}
 		

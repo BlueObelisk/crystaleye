@@ -29,7 +29,6 @@ import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.templates.feeds.AtomPubTemplate;
 import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class AtomPubManager extends AbstractManager implements CMLConstants {
@@ -231,7 +230,7 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 		}
 
 		addUUIDsToTable(uuidMap);
-		XmlIOUtils.writePrettyXML(currentFeed.getFeed(), writePath);
+		Utils.writePrettyXML(currentFeed.getFeed(), writePath);
 		if (numFilesLeft > 0) {
 			updateFeeds(null, fileList, position);
 		}
@@ -250,9 +249,9 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 		
 		String url = dataPathToUrl(file.getAbsolutePath());
 		if (!file.exists()) {
-			XmlIOUtils.writeText(sb.toString(), url);
+			Utils.writeText(sb.toString(), url);
 		} else {
-			XmlIOUtils.appendToFile(new File(url), sb.toString());
+			Utils.appendToFile(new File(url), sb.toString());
 		}
 	}
 	
@@ -270,7 +269,7 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 		String lastArchivePath = getArchiveFeedPath(num);
 		AtomPubFeed a = new AtomPubFeed(new File(lastArchivePath));
 		a.setLinkElement(AtomPubFeed.NEXT_ARCHIVE_REL, getArchiveFeedUrl(num+1));
-		XmlIOUtils.writePrettyXML(a.getFeed(), lastArchivePath);
+		Utils.writePrettyXML(a.getFeed(), lastArchivePath);
 	}
 
 	public int getPenultimateFeedNum() {

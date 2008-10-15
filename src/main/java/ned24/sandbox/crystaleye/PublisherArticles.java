@@ -7,7 +7,7 @@ import java.io.File;
 import nu.xom.Document;
 import nu.xom.Nodes;
 import wwmm.crystaleye.util.HttpUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class PublisherArticles {
 
@@ -26,7 +26,7 @@ public class PublisherArticles {
 	}
 	
 	public void getRscArticleDetails() {
-		XmlIOUtils.writeText("", rscStatsFilePath);
+		Utils.writeText("", rscStatsFilePath);
 		String[] journalAbbs = {"cc","ce","cp","dt","gc","jm","nj","ob"};
 		for (String journalAbbreviation : journalAbbs) {
 			int journalTotal = 0;
@@ -57,13 +57,13 @@ public class PublisherArticles {
 				sb.append("=============================================\n");
 				sb.append("TOTAL FOR "+year+" : "+yearTotal+"\n");
 				sb.append("=============================================\n");
-				XmlIOUtils.appendToFile(new File(rscStatsFilePath), sb.toString());
+				Utils.appendToFile(new File(rscStatsFilePath), sb.toString());
 			}
 		}
 	}
 
 	public void getAcsArticleDetails() {
-		XmlIOUtils.writeText("", acsStatsFilePath);
+		Utils.writeText("", acsStatsFilePath);
 		String[] journalAbbs = {"cgdefu", "inocaj", "jacsat", "jnprdf", "joceah", "orgnd7", "orlef7"};
 		for (String journalAbbreviation : journalAbbs) {
 			int journalTotal = 0;
@@ -92,7 +92,7 @@ public class PublisherArticles {
 				sb.append("=============================================\n");
 				sb.append("TOTAL FOR "+year+" : "+yearTotal+"\n");
 				sb.append("=============================================\n");
-				XmlIOUtils.appendToFile(new File(acsStatsFilePath), sb.toString());
+				Utils.appendToFile(new File(acsStatsFilePath), sb.toString());
 			}
 		}
 	}

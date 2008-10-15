@@ -22,7 +22,6 @@ import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.XmlIOUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class DoiListManager extends AbstractManager implements CMLConstants {
@@ -109,9 +108,9 @@ public class DoiListManager extends AbstractManager implements CMLConstants {
 		}
 
 		if (!outFile.exists()) {
-			XmlIOUtils.writeText(sb.toString(), doiListPath);
+			Utils.writeText(sb.toString(), doiListPath);
 		} else {
-			XmlIOUtils.appendToFile(outFile, sb.toString());
+			Utils.appendToFile(outFile, sb.toString());
 		}
 	}
 
