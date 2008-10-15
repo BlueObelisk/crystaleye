@@ -1,4 +1,4 @@
-package wwmm.crystaleye;
+package wwmm.crystaleye.util;
 
 import static wwmm.crystaleye.CrystalEyeConstants.CRYSTALEYE_DATE_FORMAT;
 import static wwmm.crystaleye.CrystalEyeConstants.TITLE_MIME;
@@ -23,6 +23,7 @@ import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLFormula;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.molutil.ChemicalElement.Type;
+
 
 public class CrystalEyeUtils implements CMLConstants {
 
@@ -208,7 +209,7 @@ public class CrystalEyeUtils implements CMLConstants {
 
 	public static void writeDateStamp(String path) {
 		String dNow = getDate();
-		IOUtils.writeText(dNow, path);
+		XmlIOUtils.writeText(dNow, path);
 	}
 	
 	public static String getStructureTitleFromCml(CMLCml cml) {

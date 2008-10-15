@@ -1,4 +1,5 @@
-package wwmm.crystaleye;
+package wwmm.crystaleye.commandline;
+
 
 public class Execute {
 

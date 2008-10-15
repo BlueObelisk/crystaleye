@@ -9,7 +9,7 @@ import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLMolecule;
 
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class CreateCODCellParamsFile implements CMLConstants {
 
@@ -39,7 +39,7 @@ public class CreateCODCellParamsFile implements CMLConstants {
 					System.out.println(f.getAbsolutePath());
 					CMLCml cml = null;
 					try {
-						cml = (CMLCml)IOUtils.parseCmlFile(f).getRootElement();
+						cml = (CMLCml)XmlIOUtils.parseCmlFile(f).getRootElement();
 					} catch (Exception e) {
 						System.err.println("Error reading CML: "+f.getAbsolutePath());
 						continue;
@@ -109,7 +109,7 @@ public class CreateCODCellParamsFile implements CMLConstants {
 				}
 			}
 		}
-		IOUtils.writeText(sb.toString(), outPath);
+		XmlIOUtils.writeText(sb.toString(), outPath);
 	}
 
 	public static void main(String[] args) {

@@ -9,15 +9,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.xmlcml.cml.base.CMLConstants;
 
-import wwmm.crystaleye.process.CML2FooManager;
 import wwmm.crystaleye.process.Cif2CmlManager;
-import wwmm.crystaleye.site.BondLengthsManager;
-import wwmm.crystaleye.site.CellParamsManager;
-import wwmm.crystaleye.site.DoiListManager;
-import wwmm.crystaleye.site.SmilesListManager;
-import wwmm.crystaleye.site.WebpageManager;
-import wwmm.crystaleye.site.feeds.AtomPubManager;
-import wwmm.crystaleye.site.feeds.RssManager;
 
 public class Update implements CMLConstants {
 

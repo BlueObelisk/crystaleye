@@ -13,7 +13,7 @@ import nu.xom.XPathContext;
 
 import org.xmlcml.cml.base.CMLConstants;
 
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class UpdateDownloadLogRecords implements CMLConstants {
 
@@ -66,7 +66,7 @@ public class UpdateDownloadLogRecords implements CMLConstants {
 					}
 				}
 			}
-			IOUtils.writePrettyXML(doc, logPath);
+			XmlIOUtils.writePrettyXML(doc, logPath);
 		} else {
 			System.err.println("ERROR: could not find rsc node in download log.");
 		}

@@ -33,7 +33,7 @@ import nux.xom.io.StreamingSerializer;
 import nux.xom.io.StreamingSerializerFactory;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.FileListing;
-import wwmm.crystaleye.Utils;
+import wwmm.crystaleye.util.Utils;
 
 public class RSSArchiver {
 

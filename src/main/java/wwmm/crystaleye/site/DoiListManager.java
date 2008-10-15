@@ -19,11 +19,11 @@ import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.element.CMLScalar;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class DoiListManager extends AbstractManager implements CMLConstants {
 
@@ -109,9 +109,9 @@ public class DoiListManager extends AbstractManager implements CMLConstants {
 		}
 
 		if (!outFile.exists()) {
-			IOUtils.writeText(sb.toString(), doiListPath);
+			XmlIOUtils.writeText(sb.toString(), doiListPath);
 		} else {
-			IOUtils.appendToFile(outFile, sb.toString());
+			XmlIOUtils.appendToFile(outFile, sb.toString());
 		}
 	}
 

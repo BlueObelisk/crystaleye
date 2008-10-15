@@ -13,7 +13,7 @@ import nu.xom.Element;
 import nu.xom.Nodes;
 import nu.xom.Text;
 import nu.xom.XPathContext;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class AtomPubFeed {
 
@@ -29,7 +29,7 @@ public class AtomPubFeed {
 	public static final String SELF_REL = "self";
 
 	public AtomPubFeed(File file) {
-		feed = IOUtils.parseXmlFile(file);
+		feed = XmlIOUtils.parseXmlFile(file);
 		root = feed.getRootElement();
 	}
 
@@ -145,7 +145,7 @@ public class AtomPubFeed {
 
 	public static void main(String[] args) {
 		String path = "e:/feed.xml";
-		AtomPubFeed a = new AtomPubFeed(IOUtils.parseXmlFile(path));
+		AtomPubFeed a = new AtomPubFeed(XmlIOUtils.parseXmlFile(path));
 		a.addEntries(new ArrayList<AtomEntry>());
 	}
 }

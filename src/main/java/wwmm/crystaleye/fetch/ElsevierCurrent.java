@@ -13,10 +13,10 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Unzip;
-import wwmm.crystaleye.Utils;
+import wwmm.crystaleye.util.HttpUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class ElsevierCurrent extends CurrentIssueFetcher {
 
@@ -36,7 +36,7 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 		} else {
 			throw new CrystalEyeRuntimeException("Unrecognised "+publisherAbbr+" journal: "+journalAbbr);
 		}
-		Document currentIssueDoc = IOUtils.parseWebPageMinusComments(currentIssueUrl);
+		Document currentIssueDoc = HttpUtils.getWebpageMinusCommentsAsXML(currentIssueUrl);
 		Nodes titleNodes = currentIssueDoc.query(".//x:title", X_XHTML);
 		if (titleNodes.size() == 1) {
 			String title = titleNodes.get(0).getValue();
@@ -60,10 +60,10 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 	}
 
 	protected void fetch(File issueWriteDir, String year, String issue) throws IOException {
-		Document currentIssueDoc = IOUtils.parseWebPageMinusComments(currentIssueUrl);
+		Document currentIssueDoc = HttpUtils.getWebpageMinusCommentsAsXML(currentIssueUrl);
 		List<String> fullTextUrls = getFullTextUrls(currentIssueDoc);
 		for (String fullTextUrl : fullTextUrls) {
-			Document articleDoc = IOUtils.parseWebPage(fullTextUrl);					
+			Document articleDoc = HttpUtils.getWebpageAsXML(fullTextUrl);					
 			sleep();
 			String doi = getDoi(articleDoc);				
 			File doiFile = new File(doi);
@@ -86,7 +86,7 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 					}
 					String filename = outFolder+File.separator+doiName+"-"+String.valueOf(i+1)+".zip";
 					System.out.println("Writing zip file with DOI: "+doi);
-					IOUtils.saveFileFromUrl(zipUrl, filename);
+					HttpUtils.saveFileFromUrl(zipUrl, filename);
 					
 					Unzip unzip = new Unzip();
 					unzip.unzip(filename);

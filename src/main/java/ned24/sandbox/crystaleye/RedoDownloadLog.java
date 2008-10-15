@@ -5,7 +5,7 @@ import java.io.File;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class RedoDownloadLog {
 	public static void main(String[] args) {
@@ -84,6 +84,6 @@ public class RedoDownloadLog {
 				}
 			}
 		}
-		IOUtils.writePrettyXML(doc, "/usr/local/crystaleye/regenerate/download-log-all.xml");
+		XmlIOUtils.writePrettyXML(doc, "/usr/local/crystaleye/regenerate/download-log-all.xml");
 	}
 }

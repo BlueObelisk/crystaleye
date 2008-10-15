@@ -14,7 +14,9 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.HttpUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.PropertiesUtils;
 
 public class ActaOldLayout extends JournalFetcher {
 
@@ -60,7 +62,7 @@ public class ActaOldLayout extends JournalFetcher {
 				+ "/issues/" + year + "/" + issueNum + "/" + issuePart
 				+ "/isscontsbdy.html";
 		System.out.println("Fetching CIFs from " + url);
-		Document doc = IOUtils.parseWebPage(url);
+		Document doc = HttpUtils.getWebpageAsXML(url);
 		List<Element> entries = getTocEntryList(doc);
 		for (Element el : entries) {
 			String cifLink = null;
@@ -89,15 +91,15 @@ public class ActaOldLayout extends JournalFetcher {
 				doi = ((Element) doiLinks.get(0)).getValue().trim();
 			}
 			if (link) {
-				String cif = IOUtils.fetchWebPage(cifLink);
+				String cif = HttpUtils.fetchWebPage(cifLink);
 				String pathMinusMime = downloadDir + File.separator
 						+ PUBLISHER_ABBREVIATION + File.separator
 						+ journalAbbreviation + File.separator + year
 						+ File.separator + issueNum + "-" + issuePart
 						+ File.separator + cifId + File.separator + cifId;
 				System.out.println(pathMinusMime);
-				IOUtils.writeText(cif, pathMinusMime + ".cif");
-				IOUtils.writeText(doi, pathMinusMime + ".doi");
+				XmlIOUtils.writeText(cif, pathMinusMime + ".cif");
+				XmlIOUtils.writeText(doi, pathMinusMime + ".doi");
 			}
 		}
 		System.out.println("FINISHED FETCHING CIFS FROM " + url);
@@ -139,7 +141,7 @@ public class ActaOldLayout extends JournalFetcher {
 			String[] parts = { "12" };
 			for (int i = 0; i < years.length; i++) {
 				for (int j = 0; j < parts.length; j++) {
-					Properties props = IOUtils
+					Properties props = PropertiesUtils
 							.loadProperties("e:/data-test/docs/cif-flow-props.txt");
 					ActaOldLayout oae = new ActaOldLayout("c", years[i],
 							parts[j], "00");

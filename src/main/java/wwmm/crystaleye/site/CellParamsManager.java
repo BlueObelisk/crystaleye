@@ -16,11 +16,11 @@ import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class CellParamsManager extends AbstractManager implements CMLConstants {
 
@@ -70,7 +70,7 @@ public class CellParamsManager extends AbstractManager implements CMLConstants {
 			fileList = CrystalEyeUtils.getSummaryDirFileList(issueWriteDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
 			if (fileList.size() > 0) {
 				for (File cmlFile : fileList ) {
-					CMLCml cml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+					CMLCml cml = (CMLCml)XmlIOUtils.parseCmlFile(cmlFile).getRootElement();
 					CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
 					CMLCrystal crystal = (CMLCrystal)molecule.getFirstCMLChild(CMLCrystal.TAG);
 					
@@ -125,7 +125,7 @@ public class CellParamsManager extends AbstractManager implements CMLConstants {
 				}
 			}
 		}
-		IOUtils.appendToFile(new File(properties.getCellParamsFilePath()), sb.toString());
+		XmlIOUtils.appendToFile(new File(properties.getCellParamsFilePath()), sb.toString());
 	}
 
 	public static void main(String[] args) {

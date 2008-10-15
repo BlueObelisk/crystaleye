@@ -2,7 +2,7 @@ package ned24.sandbox.crystaleye;
 
 import java.io.File;
 
-import wwmm.crystaleye.Utils;
+import wwmm.crystaleye.util.Utils;
 
 public class ClearUnwantedFiles {
 	public static void main(String[] args) {

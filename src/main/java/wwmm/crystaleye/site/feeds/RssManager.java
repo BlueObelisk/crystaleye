@@ -16,10 +16,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.RSS_JOURNAL_DIR_NAME;
 import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,22 +24,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import nu.xom.Document;
-import nu.xom.Element;
-import nu.xom.NodeFactory;
 import nu.xom.Nodes;
-import nu.xom.ParsingException;
-import nux.xom.io.StaxParser;
-import nux.xom.io.StaxUtil;
 
-import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.base.CMLRuntimeException;
 import org.xmlcml.cml.element.CMLAtom;
@@ -53,16 +37,16 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.molutil.ChemicalElement;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.site.feeds.CMLRSSEntry.FeedType;
 import wwmm.crystaleye.templates.feeds.Atom1;
 import wwmm.crystaleye.templates.feeds.Rss1;
 import wwmm.crystaleye.templates.feeds.Rss2;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.CrystalEyeUtils.CompoundClass;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndLinkImpl;
@@ -194,7 +178,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			e.printStackTrace();
 			throw new CMLRuntimeException("Problem parsing feed.");
 		}
-		IOUtils.writeXML(feedDoc, cmlRssWritePath);
+		XmlIOUtils.writeXML(feedDoc, cmlRssWritePath);
 
 		List<CMLRSSEntryDetails> credList = new LinkedList<CMLRSSEntryDetails>();
 		for (File cmlFile : cmlFileList) {
@@ -203,7 +187,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 
 			Document doc = null;
 			try {
-				doc = IOUtils.parseCmlFile(cmlFile);
+				doc = XmlIOUtils.parseCmlFile(cmlFile);
 			} catch (Exception e) {
 				System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 				continue;
@@ -248,7 +232,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			
 			CMLCml cml = null;
 			try {
-				cml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+				cml = (CMLCml)XmlIOUtils.parseCmlFile(cmlFile).getRootElement();
 			} catch (Exception e) {
 				System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 				continue;
@@ -362,7 +346,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			for (File cmlFile : cmlFileList) {
 				CMLCml cml = null;
 				try {
-					cml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+					cml = (CMLCml)XmlIOUtils.parseCmlFile(cmlFile).getRootElement();
 				} catch (Exception e) {
 					System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 					continue;

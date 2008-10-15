@@ -10,7 +10,9 @@ import java.util.Properties;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.HttpUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.PropertiesUtils;
 
 
 public class RscBacklog extends JournalFetcher {
@@ -64,7 +66,7 @@ public class RscBacklog extends JournalFetcher {
 	public void fetchAll() {
 		String url = "http://rsc.org/Publishing/Journals/"+journalAbbreviation.toLowerCase()+"/article.asp?Journal="+journalAbbreviation+"81&VolumeYear="+year+volume+"&Volume="+volume+"&JournalCode="+journalAbbreviation+"&MasterJournalCode="+journalAbbreviation+"&SubYear="+year+"&type=Issue&Issue="+issue+"&x=11&y=5";
 		System.out.println("fetching url: "+url);
-		Document doc = IOUtils.parseWebPageMinusComments(url);
+		Document doc = HttpUtils.getWebpageMinusCommentsAsXML(url);
 		Nodes articleLinks = doc.query("//x:a[contains(@href,'/Publishing/Journals/"+journalAbbreviation.toUpperCase()+"/article.asp?doi=') and preceding-sibling::x:strong[contains(text(),'DOI:')]]", X_XHTML);
 		System.out.println(articleLinks.size());
 		if (articleLinks.size() > 0) {
@@ -76,12 +78,12 @@ public class RscBacklog extends JournalFetcher {
 			int ssidx = articleUrl.lastIndexOf(ss);
 			String articleId = articleUrl.substring(ssidx+ss.length());
 			
-			Document articleDoc = IOUtils.parseWebPageMinusComments(articleUrl);
+			Document articleDoc = HttpUtils.getWebpageMinusCommentsAsXML(articleUrl);
 			Nodes suppdataLinks = articleDoc.query("//x:a[contains(text(),'Electronic supplementary information')]", X_XHTML);
 			for (int j = 0; j < suppdataLinks.size(); j++) {
 				sleep();
 				String suppdataUrl = HOMEPAGE_PREFIX+((Element)suppdataLinks.get(j)).getAttributeValue("href");
-				Document suppdataDoc = IOUtils.parseWebPageMinusComments(suppdataUrl);
+				Document suppdataDoc = HttpUtils.getWebpageMinusCommentsAsXML(suppdataUrl);
 				Nodes cifLinks = suppdataDoc.query("//x:a[text()='Crystal structure data'] | //x:a[text()='Crystal Structure Data'] | //x:a[text()='Crystal Structure data'] | //x:a[text()='Crystal data'] | //x:a[text()='Crystal Data'] | //x:a[text()='Crystallographic Data'] | //x:a[text()='Crystallographic data']", X_XHTML);
 				int cifLinkNum = 0;
 				for (int k = 0; k < cifLinks.size(); k++) {
@@ -93,13 +95,13 @@ public class RscBacklog extends JournalFetcher {
 					int idx1 = cifFileName.indexOf(".");
 					String cifLink = parent+"/"+cifFileName;
 
-					String cif = IOUtils.fetchWebPage(cifLink);
+					String cif = HttpUtils.fetchWebPage(cifLink);
 					String pathMinusMime = downloadDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+articleId+File.separator+articleId;
 					String cifPath = pathMinusMime+"sup"+cifLinkNum+".cif";
 					String doiPath = pathMinusMime+".doi";
 					String doi = RSC_DOI_PREFIX+"/"+articleId;
-					IOUtils.writeText(cif, cifPath);
-					IOUtils.writeText(doi, doiPath);
+					XmlIOUtils.writeText(cif, cifPath);
+					XmlIOUtils.writeText(doi, doiPath);
 				}
 			}
 		}
@@ -108,7 +110,7 @@ public class RscBacklog extends JournalFetcher {
 	public static void main(String[] args) {
 		Properties props;
 		try {
-			props = IOUtils.loadProperties("E:\\data-test\\docs\\cif-flow-props.txt");
+			props = PropertiesUtils.loadProperties("E:\\data-test\\docs\\cif-flow-props.txt");
 			RscBacklog ore = new RscBacklog( "gc", "2007", "11");
 			ore.setDownloadDir(new File(props.getProperty("write.dir")));
 			ore.fetchAll();

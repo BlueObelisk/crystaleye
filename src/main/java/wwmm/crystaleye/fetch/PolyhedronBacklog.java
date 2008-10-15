@@ -12,7 +12,8 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.HttpUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class PolyhedronBacklog {
 
@@ -30,22 +31,22 @@ public class PolyhedronBacklog {
 	public PolyhedronBacklog(String writeDir, String logPath) {
 		this.writeDir = writeDir;
 		this.logPath = logPath;
-		this.logDoc = IOUtils.parseXmlFile(logPath);
+		this.logDoc = XmlIOUtils.parseXmlFile(logPath);
 	}
 
 	public void fetch() {
-		Document currentIssueDoc = IOUtils.parseWebPageMinusComments(currentIssueUrl);
+		Document currentIssueDoc = HttpUtils.getWebpageMinusCommentsAsXML(currentIssueUrl);
 		sleep();
 		Element volumesTable = getVolumesTable(currentIssueDoc);
 		List<String> volumeUrls = getVolumeUrls(volumesTable);
 		volumeUrls.add(0,currentIssueUrl);
 		for (String volumeUrl : volumeUrls) {
-			Document volumeToc = IOUtils.parseWebPageMinusComments(volumeUrl);
+			Document volumeToc = HttpUtils.getWebpageMinusCommentsAsXML(volumeUrl);
 			sleep();
 			List<String> issueUrls = getIssueUrls(volumeToc);
 			issueUrls.add(0,volumeUrl);
 			for (String issueUrl : issueUrls) {
-				Document issueDoc = IOUtils.parseWebPageMinusComments(issueUrl);
+				Document issueDoc = HttpUtils.getWebpageMinusCommentsAsXML(issueUrl);
 				sleep();
 				YearAndIssue yi = getYearAndIssue(issueDoc);
 				if (alreadyFinishedIssue(yi)) {
@@ -55,7 +56,7 @@ public class PolyhedronBacklog {
 				System.out.println("Downloading from year "+yi.getYear()+", issue "+yi.getIssue());
 				List<String> fullTextUrls = getFullTextUrls(issueDoc);
 				for (String fullTextUrl : fullTextUrls) {
-					Document articleDoc = IOUtils.parseWebPage(fullTextUrl);					
+					Document articleDoc = HttpUtils.getWebpageAsXML(fullTextUrl);					
 					sleep();
 					String doi = getDoi(articleDoc);				
 					File doiFile = new File(doi);
@@ -73,7 +74,7 @@ public class PolyhedronBacklog {
 								outFile.mkdirs();
 							}
 							String filename = outFolder+File.separator+doiName+"-"+String.valueOf(i+1)+".zip";
-							IOUtils.saveFileFromUrl(zipUrl, filename);
+							HttpUtils.saveFileFromUrl(zipUrl, filename);
 							System.out.println("Writing zip file with DOI: "+doi);
 						}
 					}
@@ -92,7 +93,7 @@ public class PolyhedronBacklog {
 		} else {
 			throw new RuntimeException("Should have found 1 issueNode, found "+issueNodes.size());
 		}
-		IOUtils.writePrettyXML(logDoc, logPath);
+		XmlIOUtils.writePrettyXML(logDoc, logPath);
 	}
 
 	public boolean alreadyFinishedIssue(YearAndIssue yi) {

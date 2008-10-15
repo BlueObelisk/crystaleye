@@ -1,7 +1,6 @@
 package ned24.sandbox.crystaleye;
 
 import java.io.File;
-import java.util.List;
 
 import org.xmlcml.cml.legacy2cml.cif.CIFConverter;
 

@@ -8,7 +8,7 @@ import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class AddElementToDownloadLog {
 
@@ -35,6 +35,6 @@ public class AddElementToDownloadLog {
 			e.printStackTrace();
 		}
 
-		IOUtils.writeXML(doc, path);
+		XmlIOUtils.writeXML(doc, path);
 	}
 }

@@ -1,7 +1,7 @@
 package wwmm.crystaleye.templates.webpages;
 
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
-import wwmm.crystaleye.CrystalEyeUtils.DisorderType;
+import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
 
 public class SingleStructureSummary {
 	

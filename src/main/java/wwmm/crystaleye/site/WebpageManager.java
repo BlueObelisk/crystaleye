@@ -19,8 +19,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-//import java.util.regex.Matcher;
-//import java.util.regex.Pattern;
 
 import nu.xom.Attribute;
 import nu.xom.Document;
@@ -30,7 +28,6 @@ import nu.xom.Nodes;
 import nu.xom.Text;
 import nu.xom.XPathContext;
 
-//import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.element.CMLArray;
 import org.xmlcml.cml.element.CMLAtom;
@@ -48,13 +45,7 @@ import org.xmlcml.cml.tools.DisorderTool;
 
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
-import wwmm.crystaleye.CrystalEyeUtils.DisorderType;
-import wwmm.crystaleye.CrystalEyeUtils.FragmentType;
 import wwmm.crystaleye.process.Cif2CmlManager;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.templates.webpages.CifSummaryToc;
@@ -62,6 +53,12 @@ import wwmm.crystaleye.templates.webpages.FragmentSummaryToc;
 import wwmm.crystaleye.templates.webpages.MoietySummaryToc;
 import wwmm.crystaleye.templates.webpages.SingleCifSummary;
 import wwmm.crystaleye.templates.webpages.SingleStructureSummary;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.CrystalEyeUtils.CompoundClass;
+import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
+import wwmm.crystaleye.util.CrystalEyeUtils.FragmentType;
 
 public class WebpageManager extends AbstractManager implements CMLConstants {
 
@@ -198,7 +195,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 
 	private void updateSummaryLinkPage(String summaryWriteDir) {
 		String path = summaryWriteDir+File.separator+publisherAbbreviation+"-"+journalAbbreviation+".html";
-		Document doc = IOUtils.parseXmlFile(new File(path));
+		Document doc = XmlIOUtils.parseXmlFile(new File(path));
 
 		Element allContainer = (Element)doc.query(".//x:div[@id='content']/x:ul[@class='normal']", X_XHTML).get(0);
 
@@ -297,14 +294,14 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			}
 		}
 
-		IOUtils.writePrettyXML(doc, path);
+		XmlIOUtils.writePrettyXML(doc, path);
 
 	}
 
 	private void createTableOfContents(List<File> cmlFileList, String issueSummaryDir) {
 		String entryLink = issueSummaryDir+"index.html";
 		String page = this.createOverallCifSummaryPage(cmlFileList);
-		IOUtils.writeText(page, entryLink);
+		XmlIOUtils.writeText(page, entryLink);
 		this.getFilesForSummaryDisplay(cmlFileList, issueSummaryDir);
 	}
 
@@ -314,14 +311,14 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
 		String id = fileName.substring(0,fileName.indexOf("."));
 		String summaryPage = this.createSingleCifSummaryPage(cmlFile);
-		IOUtils.writeText(summaryPage, cifParentPath+File.separator+id+".cif.summary.html");
+		XmlIOUtils.writeText(summaryPage, cifParentPath+File.separator+id+".cif.summary.html");
 	}
 
 	private void createMoietyAndFragmentTocs(File cmlFile) {
 		String moiPagePath = Utils.getPathMinusMimeSet(cmlFile)+".moieties.toc.html";
 		String moiPage = this.createOverallMoietySummaryPages(cmlFile);
 		if (moiPage != null) {
-			IOUtils.writeText(moiPage, moiPagePath);
+			XmlIOUtils.writeText(moiPage, moiPagePath);
 		}
 	}
 
@@ -338,7 +335,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 							String fileName = path.substring(path.lastIndexOf(File.separator)+1);
 							String id = fileName.substring(0,fileName.indexOf("."));
 							String summaryPage = this.createSingleStructureSummary(moiFile, "Moiety Summary", 5);
-							IOUtils.writeText(summaryPage, moiFolder+File.separator+id+".moiety.summary.html");
+							XmlIOUtils.writeText(summaryPage, moiFolder+File.separator+id+".moiety.summary.html");
 						}
 					}
 				}
@@ -353,7 +350,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 
 		String cmlPath = structCmlFile.getAbsolutePath();
-		CMLMolecule mol = (CMLMolecule)IOUtils.parseCmlFile(cmlPath).getRootElement();
+		CMLMolecule mol = (CMLMolecule)XmlIOUtils.parseCmlFile(cmlPath).getRootElement();
 
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
 		String id = fileName.substring(0,fileName.indexOf("."));
@@ -405,7 +402,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		String cmlPath = cmlFile.getAbsolutePath();
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
 		String id = fileName.substring(0,fileName.indexOf("."));
-		CMLCml cml = (CMLCml)IOUtils.parseCmlFile(cmlPath).getRootElement();
+		CMLCml cml = (CMLCml)XmlIOUtils.parseCmlFile(cmlPath).getRootElement();
 		Elements formulaElements = cml.getChildCMLElements(CMLFormula.TAG);
 		String formulaMoi = "";
 		String formulaSum = "";
@@ -667,7 +664,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			String fragPagePath = Utils.getPathMinusMimeSet(moiCmlFile)+".fragments.toc.html";
 			String fragPage = this.createOverallFragmentSummaryPages(moiCmlFile);
 			if (fragPage != null) {
-				IOUtils.writeText(fragPage, fragPagePath);
+				XmlIOUtils.writeText(fragPage, fragPagePath);
 			}
 			for (FragmentType fragType : FragmentType.values()) {
 				String name = fragType.toString();
@@ -681,7 +678,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 							String fileName = path.substring(path.lastIndexOf(File.separator)+1);
 							String id = fileName.substring(0,fileName.indexOf("."));
 							String summaryPage = this.createSingleStructureSummary(file, "Fragment Summary", 7);
-							IOUtils.writeText(summaryPage, fragFolder+File.separator+id+".fragment.summary.html");
+							XmlIOUtils.writeText(summaryPage, fragFolder+File.separator+id+".fragment.summary.html");
 						}
 					}
 				}
@@ -726,7 +723,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 					File[] files = fragFolder.listFiles();
 					for (File file : files) {
 						if (file.getAbsolutePath().matches("[^\\.]*"+COMPLETE_CML_MIME_REGEX)) {
-							CMLMolecule molecule = (CMLMolecule) IOUtils.parseCmlFile(file).getRootElement();
+							CMLMolecule molecule = (CMLMolecule) XmlIOUtils.parseCmlFile(file).getRootElement();
 							Nodes inchis = molecule.query("//cml:identifier[@convention='iupac:inchi']", CML_XPATH);
 							if (inchis.size() > 0) {
 								String inchi = ((Element)inchis.get(0)).getValue();
@@ -886,7 +883,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 	}
 
 	private void addOverallMoietyRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {	
-		Document doc = IOUtils.parseCmlFile(cmlFile);
+		Document doc = XmlIOUtils.parseCmlFile(cmlFile);
 		CMLMolecule mol = (CMLMolecule) doc.getRootElement();
 		String moietyId = cmlFile.getParentFile().getName();
 
@@ -922,7 +919,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 	}
 
 	private void addOverallFragmentRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {	
-		Document doc = IOUtils.parseCmlFile(cmlFile);
+		Document doc = XmlIOUtils.parseCmlFile(cmlFile);
 		CMLMolecule mol = (CMLMolecule) doc.getRootElement();
 		String cmlPath = cmlFile.getAbsolutePath();
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
@@ -956,7 +953,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		List<File> organometallicList = new ArrayList<File>();
 		List<File> inorganicList = new ArrayList<File>();
 		for (File file : cmlFileList) {
-			Document doc = IOUtils.parseCmlFile(file);
+			Document doc = XmlIOUtils.parseCmlFile(file);
 			XPathContext x = new XPathContext("x", CML_NS);
 			Nodes nodes = doc.query("//x:scalar[@dictRef='iucr:compoundClass']", x);
 			if (nodes.size() > 0) {
@@ -1034,7 +1031,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 	}
 
 	private void addOverallCifRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray doiArray, CMLArray summaryArray) {		
-		Document doc = IOUtils.parseCmlFile(cmlFile);
+		Document doc = XmlIOUtils.parseCmlFile(cmlFile);
 		CMLCml cml = (CMLCml) doc.getRootElement();
 		String cmlPath = cmlFile.getAbsolutePath();
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);

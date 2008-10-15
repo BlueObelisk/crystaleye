@@ -14,7 +14,8 @@ import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.HttpUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 /**
  * Not working according to new abstraction of crawlers - still gets config from
@@ -75,7 +76,7 @@ public class ActaBacklog extends JournalFetcher {
 					+ "/issues/" + year + "/" + issueNum + "/" + issuePart
 					+ "/isscontsbdy.html";
 			System.out.println("Fetching CIFs from: " + url);
-			Document doc = IOUtils.parseWebPage(url);
+			Document doc = HttpUtils.getWebpageAsXML(url);
 			Nodes tocEntries = doc
 					.query("//x:div[@class='toc entry']", X_XHTML);
 			sleep();
@@ -104,11 +105,11 @@ public class ActaBacklog extends JournalFetcher {
 							}
 							cifWriteDir = issueWriteDir + File.separator
 									+ cifId.substring(0, cifId.length() - 4);
-							String result = IOUtils.fetchWebPage(cifUrl);
+							String result = HttpUtils.fetchWebPage(cifUrl);
 							String cifPath = cifWriteDir + File.separator
 									+ cifId + ".cif";
 							System.out.println("Writing CIF to " + cifPath);
-							IOUtils.writeText(result, cifPath);
+							XmlIOUtils.writeText(result, cifPath);
 							sleep();
 						}
 						Nodes doiNodes = tocEntry.query(
@@ -116,7 +117,7 @@ public class ActaBacklog extends JournalFetcher {
 						if (doiNodes.size() > 0) {
 							String doi = ((Element) doiNodes.get(0)).getValue()
 									.substring(4);
-							IOUtils.writeText(doi, cifWriteDir + File.separator
+							XmlIOUtils.writeText(doi, cifWriteDir + File.separator
 									+ cifId.substring(0, cifId.length() - 4)
 									+ ".doi");
 						} else {
@@ -134,9 +135,9 @@ public class ActaBacklog extends JournalFetcher {
 								Node checkCifLink = checkCifNodes.get(j);
 								String checkCifUrl = ((Element) checkCifLink)
 										.getAttributeValue("href");
-								String result = IOUtils
+								String result = HttpUtils
 										.fetchWebPage(SITE_PREFIX + checkCifUrl);
-								IOUtils.writeText(result.toString(),
+								XmlIOUtils.writeText(result.toString(),
 										cifWriteDir + File.separator + cifId
 												+ ".deposited.checkcif.html");
 								sleep();

@@ -12,8 +12,8 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.util.HttpUtils;
 
 public class AcsCurrent extends CurrentIssueFetcher {
 	
@@ -26,7 +26,7 @@ public class AcsCurrent extends CurrentIssueFetcher {
 	protected IssueDate getCurrentIssueId() {
 		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="+journalAbbr;
 		// get current issue page as a DOM
-		Document doc = IOUtils.parseWebPage(url);
+		Document doc = HttpUtils.getWebpageAsXML(url);
 		// query that went with first and second patterns
 		Nodes journalInfo = doc.query(".//x:div[@id='issueinfo']", X_XHTML);
 		if (journalInfo.size() != 0) {
@@ -52,14 +52,14 @@ public class AcsCurrent extends CurrentIssueFetcher {
 
 	protected void fetch(File issueWriteDir, String year,  String issueNum) throws IOException {
 		String url = "http://pubs.acs.org/journals/"+journalAbbr+"/index.html";
-		Document doc = IOUtils.parseWebPage(url);
+		Document doc = HttpUtils.getWebpageAsXML(url);
 		Nodes suppLinks = doc.query("//x:a[contains(text(),'Supporting')]", X_XHTML);
 		sleep();
 
 		if (suppLinks.size() > 0) {
 			for (int j = 0; j < suppLinks.size(); j++) {
 				String suppUrl = ((Element)suppLinks.get(j)).getAttributeValue("href");
-				doc = IOUtils.parseWebPage(suppUrl);
+				doc = HttpUtils.getWebpageAsXML(suppUrl);
 				sleep();
 
 				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif') or contains(@href,'.CIF')]",

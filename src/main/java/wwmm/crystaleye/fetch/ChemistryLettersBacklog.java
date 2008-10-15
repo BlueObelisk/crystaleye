@@ -12,7 +12,8 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.HttpUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
 
 public class ChemistryLettersBacklog extends JournalFetcher {
 
@@ -40,7 +41,7 @@ public class ChemistryLettersBacklog extends JournalFetcher {
 	public void fetchAll() throws IOException {
 		String url = "http://www.chemistry.or.jp/journals/chem-lett/cl-cont/cl"+this.year+"-"+this.issue+".html";
 		System.out.println("Fetching CIFs from "+url);
-		Document doc = IOUtils.parseWebPage(url);
+		Document doc = HttpUtils.getWebpageAsXML(url);
 
 		//System.out.println(doc.toXML());
 		Nodes abstractPageLinks = doc.query("//x:a[contains(@href ,'n=li_s')]", X_XHTML);
@@ -48,13 +49,13 @@ public class ChemistryLettersBacklog extends JournalFetcher {
 		if (abstractPageLinks.size() > 0) {
 			for (int i = 0; i < abstractPageLinks.size(); i++) {
 				String abstractPageLink = ((Element)abstractPageLinks.get(i)).getAttributeValue("href");
-				Document abstractPage = IOUtils.parseWebPage(abstractPageLink);
+				Document abstractPage = HttpUtils.getWebpageAsXML(abstractPageLink);
 				Nodes suppPageLinks = abstractPage.query("//x:a[contains(text(),'Supplementary Materials')]", X_XHTML);
 				sleep();
 				if (suppPageLinks.size() > 0) {
 					String suppPageUrl = SITE_PREFIX+((Element)suppPageLinks.get(0)).getAttributeValue("href");
 					System.out.println("supp page url: "+suppPageUrl);
-					Document suppPage = IOUtils.parseWebPage(suppPageUrl);
+					Document suppPage = HttpUtils.getWebpageAsXML(suppPageUrl);
 					Nodes crystRows = suppPage.query("//x:tr[x:td[contains(text(),'cif')]] | //x:tr[x:td[contains(text(),'CIF')]]", X_XHTML);
 					sleep();
 					if (crystRows.size() > 0) {
@@ -63,16 +64,16 @@ public class ChemistryLettersBacklog extends JournalFetcher {
 							Nodes cifLinks = crystRow.query(".//x:a[contains(@href,'appendix')]", X_XHTML);
 							if (cifLinks.size() > 0) {
 								String cifLink = SITE_PREFIX+((Element)cifLinks.get(0)).getAttributeValue("href");
-								String cif = IOUtils.fetchWebPage(cifLink);
+								String cif = HttpUtils.fetchWebPage(cifLink);
 								String cifId = new File(suppPageUrl).getParentFile().getName().replaceAll("_", "-");
 								String cifWriteDir = downloadDir.getCanonicalPath()+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+this.year+File.separator+this.issue+File.separator+cifId;
 								Nodes doiElements = abstractPage.query("//*[contains(text(),'doi:"+CHEMSOCJAPAN_DOI_PREFIX+"')]", X_XHTML);
 								int suppNum = j+1;
 								if (doiElements.size() > 0) {
 									String doi = ((Element)doiElements.get(0)).getValue().substring(4).trim();
-									IOUtils.writeText(doi, cifWriteDir+File.separator+cifId+"sup"+suppNum+".doi");
+									XmlIOUtils.writeText(doi, cifWriteDir+File.separator+cifId+"sup"+suppNum+".doi");
 								}
-								IOUtils.writeText(cif, cifWriteDir+File.separator+cifId+"sup"+suppNum+".cif");
+								XmlIOUtils.writeText(cif, cifWriteDir+File.separator+cifId+"sup"+suppNum+".cif");
 								sleep();
 							}
 						}

@@ -9,7 +9,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 import wwmm.crystaleye.FileListing;
-import wwmm.crystaleye.Utils;
 
 public class CheckFilesForDatablocks {
 

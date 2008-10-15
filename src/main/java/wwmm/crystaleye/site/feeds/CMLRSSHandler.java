@@ -28,8 +28,8 @@ import nux.xom.io.StaxParser;
 import nux.xom.io.StaxUtil;
 import nux.xom.io.StreamingSerializer;
 import nux.xom.io.StreamingSerializerFactory;
-import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.site.feeds.CMLRSSEntry.FeedType;
+import wwmm.crystaleye.util.Utils;
 
 public class CMLRSSHandler {
 

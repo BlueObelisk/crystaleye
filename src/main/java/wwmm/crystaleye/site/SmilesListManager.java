@@ -19,12 +19,12 @@ import org.xmlcml.cml.element.CMLIdentifier;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.Execute;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
+import wwmm.crystaleye.commandline.Execute;
 import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.XmlIOUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class SmilesListManager extends AbstractManager implements CMLConstants {
 
@@ -114,9 +114,9 @@ public class SmilesListManager extends AbstractManager implements CMLConstants {
 		}
 
 		if (!outFile.exists()) {
-			IOUtils.writeText(sb.toString(), smilesListPath);
+			XmlIOUtils.writeText(sb.toString(), smilesListPath);
 		} else {
-			IOUtils.appendToFile(outFile, sb.toString());
+			XmlIOUtils.appendToFile(outFile, sb.toString());
 		}
 	}
 	
