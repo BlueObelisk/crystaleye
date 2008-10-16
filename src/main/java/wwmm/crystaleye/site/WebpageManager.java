@@ -44,8 +44,6 @@ import org.xmlcml.cml.element.CMLTable.TableType;
 import org.xmlcml.cml.tools.DisorderTool;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.process.Cif2CmlManager;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.templates.webpages.CifSummaryToc;

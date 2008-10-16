@@ -12,7 +12,6 @@ import nu.xom.Text;
 import org.xmlcml.cml.base.CMLConstants;
 
 import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.XmlUtils;
 
 
 public class CMLRSSEntry implements CMLConstants {

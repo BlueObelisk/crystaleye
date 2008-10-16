@@ -31,7 +31,6 @@ import nux.xom.io.StaxParser;
 import nux.xom.io.StaxUtil;
 import nux.xom.io.StreamingSerializer;
 import nux.xom.io.StreamingSerializerFactory;
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.FileListing;
 import wwmm.crystaleye.util.Utils;
 

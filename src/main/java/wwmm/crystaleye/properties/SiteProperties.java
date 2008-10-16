@@ -17,8 +17,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.WEB_SUMMARY_WRITE_DIR;
 
 import java.io.File;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-
 public class SiteProperties extends ManyPublisherProperties {
 
 	// rss

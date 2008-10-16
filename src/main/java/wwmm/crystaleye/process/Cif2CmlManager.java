@@ -89,12 +89,9 @@ import org.xmlcml.euclid.RealRange;
 import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.properties.ProcessProperties;
 import wwmm.crystaleye.util.CDKUtils;
 import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.XmlUtils;
 import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.CrystalEyeUtils.CompoundClass;
 

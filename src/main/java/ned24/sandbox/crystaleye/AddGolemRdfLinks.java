@@ -11,7 +11,6 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import wwmm.crystaleye.util.XmlUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class AddGolemRdfLinks {

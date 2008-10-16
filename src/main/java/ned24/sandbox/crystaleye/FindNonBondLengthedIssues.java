@@ -6,7 +6,6 @@ import java.util.List;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import wwmm.crystaleye.util.XmlUtils;
 
 public class FindNonBondLengthedIssues {
 

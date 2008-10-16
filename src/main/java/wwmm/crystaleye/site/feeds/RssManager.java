@@ -37,7 +37,6 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.molutil.ChemicalElement;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.site.feeds.CMLRSSEntry.FeedType;
 import wwmm.crystaleye.templates.feeds.Atom1;

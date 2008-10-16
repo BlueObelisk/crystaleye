@@ -16,7 +16,6 @@ import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.Utils;

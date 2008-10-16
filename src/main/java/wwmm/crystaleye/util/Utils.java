@@ -32,7 +32,12 @@ import org.xmlcml.cml.base.CMLBuilder;
 public class Utils {
 	
 	public static List<Node> queryHTML(Document doc, String xpath) {
-		Nodes nodes = doc.query(xpath, X_XHTML);
+		Node node = doc.getRootElement();
+		return queryHTML(node, xpath);
+	}
+	
+	public static List<Node> queryHTML(Node node, String xpath) {
+		Nodes nodes = node.query(xpath, X_XHTML);
 		return getNodeListFromNodes(nodes);
 	}
 	

@@ -8,8 +8,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-
 public abstract class StandardProperties {
 
 	Properties properties;

@@ -5,8 +5,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.COD_DOWNLOADED_FILES_LIST;
 
 import java.io.File;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-
 public class CODProperties extends ProcessProperties {
 	
 	String alreadyGotCifFilePath;

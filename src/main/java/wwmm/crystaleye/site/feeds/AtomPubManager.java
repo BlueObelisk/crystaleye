@@ -25,7 +25,6 @@ import nu.xom.Element;
 import org.xmlcml.cml.base.CMLConstants;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.templates.feeds.AtomPubTemplate;
 import wwmm.crystaleye.util.CrystalEyeUtils;

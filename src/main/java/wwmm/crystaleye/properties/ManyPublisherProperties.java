@@ -4,8 +4,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.PUBLISHER_ABBREVIATIONS;
 
 import java.io.File;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-
 public class ManyPublisherProperties extends StandardProperties {
 	
 	// publisher information

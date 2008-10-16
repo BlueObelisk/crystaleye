@@ -5,8 +5,6 @@ import java.io.IOException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
-import wwmm.crystaleye.find.Fetcher;
-
 public class CrawlerTask extends Task {
 
 	String fetcherClass;
