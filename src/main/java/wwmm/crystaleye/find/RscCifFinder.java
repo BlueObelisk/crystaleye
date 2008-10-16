@@ -2,7 +2,6 @@ package wwmm.crystaleye.find;
 
 import static wwmm.crystaleye.CrystalEyeConstants.RSC_DOI_PREFIX;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -13,7 +12,6 @@ import nu.xom.Element;
 import nu.xom.Node;
 
 import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.HttpUtils;
@@ -50,8 +48,8 @@ public class RscCifFinder extends JournalCifFinder{
 
 	public RscJournal journal;
 	private String volume = "0";
-	private final String SITE_PREFIX = "http://www.rsc.org";
-	private static final Logger LOG = Logger.getLogger(RscJournal.class);
+	private final String URL_PREFIX = "http://www.rsc.org";
+	private static final Logger LOG = Logger.getLogger(RscCifFinder.class);
 
 	public RscCifFinder(RscJournal journal) {
 		this.journal = journal;
@@ -92,14 +90,15 @@ public class RscCifFinder extends JournalCifFinder{
 		"&JournalCode="+journalAbbreviation+"&MasterJournalCode="+journalAbbreviation+"&SubYear="+year+
 		"&type=Issue&Issue="+issueId+"&x=11&y=5";
 		URI issueUri = new URI(issueUrl, false);
-		LOG.debug("Starting to find CIFs from: "+issueUri.toString());
+		LOG.debug("Started to find CIFs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
+		LOG.debug("Starting at the issue homepage: "+issueUri.toString());
 		Document issueDoc = HttpUtils.getWebpageMinusCommentsAsXML(issueUri);
 		List<Node> articleLinks = Utils.queryHTML(issueDoc, "//x:a[contains(@href,'/Publishing/Journals/"
 				+journal.getAbbreviation().toUpperCase()+
 		"/article.asp?doi=') and preceding-sibling::x:strong[contains(text(),'DOI:')]]");
 		sleep();
 		for (Node articleLink : articleLinks) {
-			String articleUrl = SITE_PREFIX
+			String articleUrl = URL_PREFIX
 			+ ((Element)articleLink).getAttributeValue("href");
 			String ss = "?doi=";
 			int ssidx = articleUrl.lastIndexOf(ss);
@@ -117,7 +116,7 @@ public class RscCifFinder extends JournalCifFinder{
 			List<Node> suppLinks = Utils.queryHTML(articleDoc, "//x:a[contains(text(),'Electronic supplementary information')]");
 			for (Node suppLink : suppLinks) {
 				String link = ((Element)suppLink).getAttributeValue("href");
-				String suppUrl = SITE_PREFIX+link;
+				String suppUrl = URL_PREFIX+link;
 				URI suppUri = new URI(suppUrl, false);
 				articleDoc = HttpUtils.getWebpageMinusCommentsAsXML(suppUri);
 				sleep();
@@ -125,7 +124,7 @@ public class RscCifFinder extends JournalCifFinder{
 				for (Node cifLink : cifLinks) {
 					String cifId = ((Element)cifLink).getAttributeValue("href");
 					String urlMiddle = link.substring(0, link.lastIndexOf("/"));
-					String cifUrl = SITE_PREFIX+urlMiddle+"/"+cifId;
+					String cifUrl = URL_PREFIX+urlMiddle+"/"+cifId;
 					URI cifUri = new URI(cifUrl, false);
 					LOG.debug("Found CIF at "+cifUri.toString());
 					PublisherCifDetails pcd = new PublisherCifDetails(cifUri, RSC_DOI_PREFIX+"/"+articleId, title);
@@ -141,8 +140,11 @@ public class RscCifFinder extends JournalCifFinder{
 	public static void main(String[] args) throws Exception  {
 		for (RscJournal journal : RscJournal.values()) {
 			RscCifFinder acf = new RscCifFinder(journal);
-			IssueDetails details = acf.getCurrentIssueDetails();
-			System.out.println(journal.getAbbreviation()+"::"+details.getYear()+"/"+details.getIssueId());
+			List<PublisherCifDetails> pcdList = acf.findCifs("2008", "39");
+			for (PublisherCifDetails pcd : pcdList) {
+				System.out.println(pcd.getDoi());
+			}
+			break;
 		}
 	}
 

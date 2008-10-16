@@ -15,8 +15,8 @@ import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
 import wwmm.crystaleye.util.HttpUtils;
-import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.PropertiesUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class ActaOldLayout extends JournalFetcher {
 

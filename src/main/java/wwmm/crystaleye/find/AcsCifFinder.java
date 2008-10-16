@@ -71,7 +71,7 @@ public class AcsCifFinder extends JournalCifFinder {
 	}
 
 	public AcsJournal journal;
-	private static final Logger LOG = Logger.getLogger(AcsJournal.class);
+	private static final Logger LOG = Logger.getLogger(AcsCifFinder.class);
 
 	public AcsCifFinder(AcsJournal journal) {
 		this.journal = journal;
@@ -79,24 +79,25 @@ public class AcsCifFinder extends JournalCifFinder {
 
 	public IssueDetails getCurrentIssueDetails() throws Exception {
 		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="+journal.getAbbreviation();
-		URI uri = new URI(url, false);
-		Document doc = HttpUtils.getWebpageAsXML(uri);
+		URI issueUri = new URI(url, false);
+		Document doc = HttpUtils.getWebpageAsXML(issueUri);
 		List<Node> journalInfo = Utils.queryHTML(doc, ".//x:div[@id='issueinfo']");
 		int size = journalInfo.size();
 		if (size != 1) {
 			throw new Exception("Expected to find 1 element containing" +
-					"the year/issue information but found "+size+" at: "+uri.toString());
+					"the year/issue information but found "+size+" at: "+issueUri.toString());
 		}
 		String info = journalInfo.get(0).getValue().trim();
 		Pattern pattern = Pattern.compile("\\s*Vol\\.\\s+\\d+,\\s+No\\.\\s+(\\d+):.*(\\d\\d\\d\\d)");
 		Matcher matcher = pattern.matcher(info);
 		if (!matcher.find() || matcher.groupCount() != 2) {
 			throw new Exception("Could not extract the year/issue information " +
-					"from :"+uri.toString());
+					"from :"+issueUri.toString());
 		}
 		String year = matcher.group(2);
-		String issueNum = matcher.group(1);
-		return new IssueDetails(year, issueNum);
+		String issueId = matcher.group(1);
+		LOG.debug("Found latest issue details for ACS journal "+journal.getFullTitle()+": year="+year+", issue="+issueId+".");
+		return new IssueDetails(year, issueId);
 	}
 
 	public List<PublisherCifDetails> findCifs(IssueDetails issueDetails) throws Exception {
@@ -111,7 +112,8 @@ public class AcsCifFinder extends JournalCifFinder {
 			+journal.getAbbreviation()+"&indecade="+decade+"&involume="+String.valueOf(volume)+
 			"&inissue="+issueId;
 		URI issueUri = new URI(issueUrl, false);
-		LOG.debug("Starting to find CIFs from: "+issueUri.toString());
+		LOG.debug("Started to find CIFs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
+		LOG.debug("Starting at the issue homepage: "+issueUri.toString());
 		Document issueDoc = HttpUtils.getWebpageAsXML(issueUri);
 		List<Node> suppLinks = Utils.queryHTML(issueDoc, "//x:a[contains(text(),'Supporting')]");
 		sleep();

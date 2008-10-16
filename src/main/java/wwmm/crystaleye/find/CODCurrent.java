@@ -32,9 +32,7 @@ import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.legacy2cml.cif.CIFConverter;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.properties.CODProperties;
-import wwmm.crystaleye.util.XmlUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class CODCurrent implements CMLConstants {
