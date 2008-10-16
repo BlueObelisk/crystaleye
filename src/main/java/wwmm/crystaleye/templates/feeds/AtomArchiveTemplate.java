@@ -2,22 +2,25 @@ package wwmm.crystaleye.templates.feeds;
 
 import static wwmm.crystaleye.CrystalEyeConstants.CRYSTALEYE_DATE_FORMAT;
 
+import java.io.BufferedReader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.io.IOUtils;
+
 import nu.xom.Document;
-import wwmm.crystaleye.site.feeds.AtomPubFeed;
+import wwmm.crystaleye.site.feeds.AtomArchiveFeed;
 import wwmm.crystaleye.util.Utils;
 
-public class AtomPubTemplate {
+public class AtomArchiveTemplate {
 
 	String title;
 	String subTitle;
 	String author;
 	String link;
 
-	public AtomPubTemplate(String title, String subTitle, String author, String link) {
+	public AtomArchiveTemplate(String title, String subTitle, String author, String link) {
 		super();
 		this.title = title;
 		this.subTitle = subTitle;
@@ -25,7 +28,7 @@ public class AtomPubTemplate {
 		this.link = link;
 	}
 
-	public AtomPubFeed getFeedSkeleton() {
+	public AtomArchiveFeed getFeedSkeleton() {
 		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat(CRYSTALEYE_DATE_FORMAT);
 		String dNow = formatter.format(date);
@@ -39,7 +42,18 @@ public class AtomPubTemplate {
 		sb.append("<author><name>"+author+"</name></author>");
 		sb.append("<id>"+link+"</id>");
 		sb.append("</feed>");
-		Document feed = Utils.parseXmlFile(new StringReader(sb.toString()));
-		return new AtomPubFeed(feed);
+
+		Document feed = null;
+		StringReader sr = null;
+		BufferedReader br = null;
+		try {
+			sr = new StringReader(sb.toString());
+			br = new BufferedReader(sr);
+			feed = Utils.parseXmlFile(br);
+		} finally {
+			IOUtils.closeQuietly(sr);
+			IOUtils.closeQuietly(br);
+		}
+		return new AtomArchiveFeed(feed);
 	}
 }
