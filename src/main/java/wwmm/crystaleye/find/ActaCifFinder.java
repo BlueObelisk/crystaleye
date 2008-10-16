@@ -23,6 +23,7 @@ public class ActaCifFinder extends JournalCifFinder {
 		SECTION_C("c", "Section C: Crystal Structure Communications"),
 		SECTION_D("d", "Section D: Biological Crystallography"),
 		SECTION_E("e", "Section E: Structure Reports"),
+		SECTION_F("f", "Section F: Structural Biology and Crystallization Communications"),
 		SECTION_J("j", "Section J: Applied Crystallography"),
 		SECTION_S("s", "Section S: Synchrotron Radiation");
 
