@@ -57,7 +57,6 @@ import org.xmlcml.molutil.ChemicalElement;
 import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.properties.ProcessProperties;
 import wwmm.crystaleye.site.Cml2Png;
 import wwmm.crystaleye.util.CDKUtils;

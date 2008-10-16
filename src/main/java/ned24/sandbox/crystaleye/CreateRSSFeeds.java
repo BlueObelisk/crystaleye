@@ -16,7 +16,6 @@ import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.base.CMLRuntimeException;
 import org.xmlcml.molutil.ChemicalElement;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.site.feeds.CMLRSSEntry.FeedType;
 import wwmm.crystaleye.templates.feeds.Atom1;

@@ -57,7 +57,6 @@ import org.xmlcml.cml.tools.MoleculeTool;
 import org.xmlcml.euclid.Point3;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.process.Cif2CmlManager;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.templates.webpages.BondLengthElementIndex;

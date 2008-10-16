@@ -20,7 +20,6 @@ import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLCrystal;
 
 import wwmm.crystaleye.util.Utils;
-import wwmm.crystaleye.util.XmlUtils;
 
 public class GetSiOProblemFiles implements CMLConstants {
 

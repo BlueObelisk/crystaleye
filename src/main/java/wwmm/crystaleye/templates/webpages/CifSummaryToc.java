@@ -1,6 +1,5 @@
 package wwmm.crystaleye.templates.webpages;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 
 /**
  * @TODO We need a templating mechanism, or else use an html toolkit here.

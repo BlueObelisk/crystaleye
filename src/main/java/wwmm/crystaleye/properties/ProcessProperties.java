@@ -6,8 +6,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.SPLITCIF_REGEX;
 
 import java.io.File;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-
 public class ProcessProperties extends ManyPublisherProperties{
 		
 	// dictionaries
