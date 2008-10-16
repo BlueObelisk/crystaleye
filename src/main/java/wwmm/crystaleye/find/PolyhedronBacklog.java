@@ -14,7 +14,6 @@ import nu.xom.Element;
 import nu.xom.Nodes;
 import wwmm.crystaleye.util.HttpUtils;
 import wwmm.crystaleye.util.Utils;
-import wwmm.crystaleye.util.XmlUtils;
 
 public class PolyhedronBacklog {
 

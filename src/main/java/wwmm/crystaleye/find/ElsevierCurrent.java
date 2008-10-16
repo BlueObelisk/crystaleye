@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Unzip;
 import wwmm.crystaleye.util.HttpUtils;
 import wwmm.crystaleye.util.Utils;
