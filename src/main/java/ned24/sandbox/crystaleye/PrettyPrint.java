@@ -10,7 +10,7 @@ public class PrettyPrint {
 		String path = "e:/nmrshiftdb";
 		for (File file : new File(path).listFiles()) {
 			System.out.println(file.getAbsolutePath());
-			Document doc = Utils.parseXmlFile(file);
+			Document doc = Utils.parseXml(file);
 			Utils.writePrettyXML(doc, file.getAbsolutePath());
 		}
 	}

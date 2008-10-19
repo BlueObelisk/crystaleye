@@ -12,20 +12,25 @@ import nu.xom.Node;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.util.HttpUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class RscCrawler extends JournalCrawler{
 
 	public enum RscJournal {
+		ANNUAL_REPORTS_SECTION_A("ic", "Annual Reports Section A"),
+		ANNUAL_REPORTS_SECTION_B("oc", "Annual Reports Section B"),
+		ANNUAL_REPORTS_SECTION_C("pc", "Annual Reports Section C"),
 		CHEMCOMM("cc", "Chemical Communications"),
+		CHEMICAL_BIOLOGY_VIRTUAL_JOURNAL("cb", "Chemical Biology Virtual Journal"),
 		CRYSTENGCOMM("ce", "CrystEngComm"),
-		PCCP("cp", "PCCP"),
 		DALTON_TRANSACTIONS("dt", "Dalton Transactions"),
 		GREEN_CHEMISTRY("gc", "Green Chemistry"),
 		JOURNAL_OF_MATERIALS_CHEMISTRY("jm", "Journal of Materials Chemistry"),
+		JOURNAL_OF_ENVIRONMENTAL_MONITORING("em", "Journal of Environmental Monitoring"),
+		NATURAL_PRODUCT_REPORTS("np", "Natural Product Reports"),
 		NEW_JOURNAL_OF_CHEMISTRY("nj", "New Journal of Chemistry"),
-		ORGANIC_AND_BIOMOLECULAR_CHEMISTRY("ob", "Organic and Biomolecular Chemistry");
+		ORGANIC_AND_BIOMOLECULAR_CHEMISTRY("ob", "Organic and Biomolecular Chemistry"),
+		PCCP("cp", "PCCP");
 
 		private final String abbreviation;
 		private final String fullTitle;
@@ -75,7 +80,7 @@ public class RscCrawler extends JournalCrawler{
 		String url = "http://rsc.org/Publishing/Journals/"
 			+journal.getAbbreviation().toUpperCase()+"/Article.asp?Type=CurrentIssue";
 		URI uri = new URI(url, false);
-		return HttpUtils.getWebpageMinusCommentsAsXML(uri);
+		return httpClient.getWebpageDocumentMinusComments(uri);
 	}
 
 	public List<URI> getCurrentIssueDOIs() throws Exception {
@@ -91,7 +96,7 @@ public class RscCrawler extends JournalCrawler{
 		+"&type=Issue&Issue="+issueId+"&x=11&y=5";
 		URI issueUri = new URI(issueUrl, false);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
-		Document issueDoc = HttpUtils.getWebpageMinusCommentsAsXML(issueUri);
+		Document issueDoc = httpClient.getWebpageDocumentMinusComments(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@title,'DOI:10.1039')]");
 		List<URI> dois = new ArrayList<URI>();
 		for (Node doiNode : doiNodes) {

@@ -77,7 +77,7 @@ public class GetSiOProblemFiles implements CMLConstants {
 			String[] a = s.split("_");
 			String p = dataPath+a[0]+File.separator+a[1]+File.separator+a[2]+File.separator
 			+a[3]+File.separator+a[4]+File.separator+a[4]+"_"+a[5]+File.separator+a[4]+"_"+a[5]+".complete.cml.xml";
-			CMLCml cml = (CMLCml)XmlUtils.parseCmlFile(p).getRootElement();
+			CMLCml cml = (CMLCml)XmlUtils.parseCml(p).getRootElement();
 			CMLCrystal crystal = (CMLCrystal)cml.query(".//cml:crystal", CML_XPATH).get(0);
 			Nodes scalars = crystal.query(".//cml:scalar", CML_XPATH);
 			StringBuilder sb = new StringBuilder();

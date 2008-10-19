@@ -13,7 +13,6 @@ import nu.xom.Node;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.util.HttpUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class ActaCrawler extends JournalCrawler {
@@ -75,7 +74,7 @@ public class ActaCrawler extends JournalCrawler {
 	public Document getCurrentIssueDocument() throws Exception {
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/contents/backissuesbdy.html";
 		URI issueUri = new URI(url, false);
-		return HttpUtils.getWebpageAsXML(issueUri);
+		return httpClient.getWebpageDocument(issueUri);
 	}
 	
 	public List<URI> getCurrentIssueDOIs() throws Exception {
@@ -90,7 +89,7 @@ public class ActaCrawler extends JournalCrawler {
 		URI issueUri = new URI(url, false);
 		LOG.debug("Started to find article DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri);
-		Document issueDoc = HttpUtils.getWebpageAsXML(issueUri);
+		Document issueDoc = httpClient.getWebpageDocument(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://dx.doi.org/10.1107/')]/@href");
 		for (Node doiNode : doiNodes) {
 			String doi = ((Attribute)doiNode).getValue();

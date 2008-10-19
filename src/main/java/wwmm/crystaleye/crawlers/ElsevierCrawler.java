@@ -1,8 +1,5 @@
 package wwmm.crystaleye.crawlers;
 
-import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -11,15 +8,11 @@ import java.util.regex.Pattern;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
-import nu.xom.Nodes;
 
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.Unzip;
-import wwmm.crystaleye.crawlers.ActaCrawler.ActaJournal;
-import wwmm.crystaleye.util.HttpUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class ElsevierCrawler extends JournalCrawler {
@@ -74,7 +67,7 @@ public class ElsevierCrawler extends JournalCrawler {
 	public Document getCurrentIssueDocument() throws Exception {
 		String issueUrl = SITE_PREFIX+"/science/journal/"+journal.getAbbreviation();
 		URI issueUri = new URI(issueUrl, false);
-		return HttpUtils.getWebpageMinusCommentsAsXML(issueUri);
+		return httpClient.getWebpageDocumentMinusComments(issueUri);
 	}
 	
 	private List<URI> getArticleLinks(Document issueDoc) throws URIException {
@@ -92,11 +85,11 @@ public class ElsevierCrawler extends JournalCrawler {
 		URI currentIssueUri = new URI(currentIssueUrl, false);
 		LOG.debug("Started to find article DOIs from current issue of "+journal.getFullTitle()+".");
 		LOG.debug(currentIssueUri);
-		Document currentIssueDoc = HttpUtils.getWebpageMinusCommentsAsXML(currentIssueUri);
+		Document currentIssueDoc = httpClient.getWebpageDocumentMinusComments(currentIssueUri);
 		List<URI> articleLinks = getArticleLinks(currentIssueDoc);
 		List<URI> dois = new ArrayList<URI>();
 		for (URI articleLink : articleLinks) {
-			Document articleDoc = HttpUtils.getWebpageAsXML(articleLink);
+			Document articleDoc = httpClient.getWebpageDocument(articleLink);
 			List<Node> doiNodes = Utils.queryHTML(articleDoc, ".//x:a[contains(@href,'http://dx.doi.org/10.1016/')]");
 			if (doiNodes.size() > 0) {
 				String doi = ((Element)doiNodes.get(0)).getAttributeValue("href");

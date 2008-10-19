@@ -7,9 +7,10 @@ import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import nu.xom.Document;
+
 import org.apache.commons.io.IOUtils;
 
-import nu.xom.Document;
 import wwmm.crystaleye.site.feeds.AtomArchiveFeed;
 import wwmm.crystaleye.util.Utils;
 
@@ -49,7 +50,7 @@ public class AtomArchiveTemplate {
 		try {
 			sr = new StringReader(sb.toString());
 			br = new BufferedReader(sr);
-			feed = Utils.parseXmlFile(br);
+			feed = Utils.parseXml(br);
 		} finally {
 			IOUtils.closeQuietly(sr);
 			IOUtils.closeQuietly(br);

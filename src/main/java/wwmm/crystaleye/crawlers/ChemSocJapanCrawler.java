@@ -12,7 +12,6 @@ import nu.xom.Node;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.util.HttpUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class ChemSocJapanCrawler extends JournalCrawler {
@@ -66,7 +65,7 @@ public class ChemSocJapanCrawler extends JournalCrawler {
 	public Document getCurrentIssueDocument() throws Exception {
 		String url = "http://www.csj.jp/journals/"+journal.getAbbreviation()+"/cl-cont/newissue.html";
 		URI issueUri = new URI(url, false);
-		return HttpUtils.getWebpageMinusCommentsAsXML(issueUri);
+		return httpClient.getWebpageDocumentMinusComments(issueUri);
 	}
 	
 	public List<URI> getCurrentIssueDOIs() throws Exception {
@@ -79,7 +78,7 @@ public class ChemSocJapanCrawler extends JournalCrawler {
 		URI issueUri = new URI(url, false);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri.toString());
-		Document issueDoc = HttpUtils.getWebpageMinusCommentsAsXML(issueUri);
+		Document issueDoc = httpClient.getWebpageDocumentMinusComments(issueUri);
 		List<Node> textLinks = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://www.is.csj.jp/cgi-bin/journals/pr/index.cgi?n=li_&id')]/@href");
 		List<URI> dois = new ArrayList<URI>();
 		for (Node textLink : textLinks) {

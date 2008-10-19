@@ -359,7 +359,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 		// read raw CML back in and convert to 'complete' CML
 		CMLCml cml = null;
 		try { 
-			cml = (CMLCml)Utils.parseCmlFile(rawCmlFile).getRootElement();
+			cml = (CMLCml)Utils.parseCml(rawCmlFile).getRootElement();
 		} catch (Exception e) {
 			System.err.println("Error reading CML.");
 			return;

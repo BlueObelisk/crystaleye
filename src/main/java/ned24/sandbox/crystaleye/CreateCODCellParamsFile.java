@@ -39,7 +39,7 @@ public class CreateCODCellParamsFile implements CMLConstants {
 					System.out.println(f.getAbsolutePath());
 					CMLCml cml = null;
 					try {
-						cml = (CMLCml)Utils.parseCmlFile(f).getRootElement();
+						cml = (CMLCml)Utils.parseCml(f).getRootElement();
 					} catch (Exception e) {
 						System.err.println("Error reading CML: "+f.getAbsolutePath());
 						continue;

@@ -13,7 +13,7 @@ public class FindNonBondLengthedIssues {
 		String allPath = "e:/download-log-lengths.xml";
 		String latestPath = "e:/download-log.xml";
 		
-		Document allDoc = XmlUtils.parseXmlFile(allPath);
+		Document allDoc = XmlUtils.parseXml(allPath);
 		Nodes issueNodes = allDoc.query(".//issue");
 		List<String> allIds = new ArrayList<String>();
 		for (int i = 0; i < issueNodes.size(); i++) {
@@ -25,7 +25,7 @@ public class FindNonBondLengthedIssues {
 			allIds.add(issueId);
 		}
 		
-		Document latestDoc = XmlUtils.parseXmlFile(latestPath);
+		Document latestDoc = XmlUtils.parseXml(latestPath);
 		issueNodes = latestDoc.query(".//issue");
 		List<String> latestIds = new ArrayList<String>();
 		for (int i = 0; i < issueNodes.size(); i++) {

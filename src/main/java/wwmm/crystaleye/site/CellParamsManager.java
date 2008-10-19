@@ -68,7 +68,7 @@ public class CellParamsManager extends AbstractManager implements CMLConstants {
 			fileList = CrystalEyeUtils.getSummaryDirFileList(issueWriteDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
 			if (fileList.size() > 0) {
 				for (File cmlFile : fileList ) {
-					CMLCml cml = (CMLCml)Utils.parseCmlFile(cmlFile).getRootElement();
+					CMLCml cml = (CMLCml)Utils.parseCml(cmlFile).getRootElement();
 					CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
 					CMLCrystal crystal = (CMLCrystal)molecule.getFirstCMLChild(CMLCrystal.TAG);
 					
