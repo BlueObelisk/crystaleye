@@ -12,7 +12,6 @@ import nu.xom.Node;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.util.HttpUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class AcsCrawler extends JournalCrawler {
@@ -97,7 +96,7 @@ public class AcsCrawler extends JournalCrawler {
 	public Document getCurrentIssueDocument() throws Exception {
 		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="+journal.getAbbreviation();
 		URI issueUri = new URI(url, false);
-		return HttpUtils.getWebpageAsXML(issueUri);
+		return httpClient.getWebpageDocument(issueUri);
 	}
 	
 	public List<URI> getCurrentIssueDOIs() throws Exception {
@@ -115,7 +114,7 @@ public class AcsCrawler extends JournalCrawler {
 		URI issueUri = new URI(issueUrl, false);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri.toString());
-		Document issueDoc = HttpUtils.getWebpageAsXML(issueUri);
+		Document issueDoc = httpClient.getWebpageDocument(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://dx.doi.org/10.1021')]");
 		for (Node doiNode : doiNodes) {
 			String doi = ((Element)doiNode).getValue();

@@ -29,7 +29,7 @@ public class AtomArchiveFeed {
 	public static final String SELF_REL = "self";
 
 	public AtomArchiveFeed(File file) {
-		feed = Utils.parseXmlFile(file);
+		feed = Utils.parseXml(file);
 		root = feed.getRootElement();
 	}
 
@@ -145,7 +145,7 @@ public class AtomArchiveFeed {
 
 	public static void main(String[] args) {
 		String path = "e:/feed.xml";
-		AtomArchiveFeed a = new AtomArchiveFeed(Utils.parseXmlFile(path));
+		AtomArchiveFeed a = new AtomArchiveFeed(Utils.parseXml(path));
 		a.addEntries(new ArrayList<AtomEntry>());
 	}
 }

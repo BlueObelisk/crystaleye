@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -67,9 +68,9 @@ public class Utils {
 
 	/**
 	 * Create a zip file for many files
-	 * @throws Exception 
+	 * @
 	 */
-	public static void zipFiles(String[] fileNames, String outFileName) throws Exception {
+	public static void zipFiles(String[] fileNames, String outFileName) {
 		byte[] buf = new byte[1024];
 		FileInputStream in = null;
 		ZipOutputStream out = null;
@@ -88,7 +89,7 @@ public class Utils {
 			}
 			out.close();
 		} catch (IOException e) {
-			throw new Exception("Exception whilst creating ZIP file.");
+			throw new RuntimeException("Exception whilst creating ZIP file.");
 		} finally {
 			IOUtils.closeQuietly(in);
 			IOUtils.closeQuietly(out);
@@ -105,7 +106,7 @@ public class Utils {
 		}
 	}
 
-	public static void writeText(String content, String fileName) throws Exception {
+	public static void writeText(String content, String fileName) {
 		if (content == null) {
 			throw new IllegalStateException("Content to be written is null.");
 		} else if (fileName == null) {
@@ -121,7 +122,7 @@ public class Utils {
 				out.write(content);
 				out.close();
 			} catch (IOException e) {
-				throw new Exception("Error writing text to "
+				throw new RuntimeException("Error writing text to "
 						+ fileName, e);
 			} finally {
 				IOUtils.closeQuietly(out);
@@ -129,7 +130,7 @@ public class Utils {
 		}
 	}
 
-	public static void writeXML(Document doc, String fileName) throws Exception {
+	public static void writeXML(Document doc, String fileName) {
 		File writeFile = new File(fileName).getParentFile();
 		if (!writeFile.exists()) {
 			writeFile.mkdirs();
@@ -141,13 +142,13 @@ public class Utils {
 			serializer = new Serializer(fos);
 			serializer.write(doc);
 		} catch (IOException e) {
-			throw new Exception("Could not write XML file to "+fileName);
+			throw new RuntimeException("Could not write XML file to "+fileName);
 		} finally {
 			IOUtils.closeQuietly(fos);
 		}
 	}
 
-	public static void writePrettyXML(Document doc, String fileName) throws Exception {
+	public static void writePrettyXML(Document doc, String fileName) {
 		File writeFile = new File(fileName).getParentFile();
 		if (!writeFile.exists()) {
 			writeFile.mkdirs();
@@ -160,60 +161,80 @@ public class Utils {
 			serializer.setIndent(2);
 			serializer.write(doc);
 		} catch (IOException e) {
-			throw new Exception("Could not write XML file to "+fileName);
+			throw new RuntimeException("Could not write XML file to "+fileName);
 		} finally {
 			IOUtils.closeQuietly(fos);
 		}
 	}
-
-	public static Document parseXmlFile(File file) throws Exception {
-		try {
-			return Utils.parseXmlFile(new FileReader(file));
-		} catch (FileNotFoundException e) {
-			throw new Exception("Could not find file "+file.getAbsolutePath(), e);
-		}
+	
+	public static Document parseXml(InputStream in) {
+		return parseXml(new Builder(), in);
 	}
-
-	public static Document parseXmlFile(Reader reader) throws Exception {
+	
+	public static Document parseXml(Builder builder, InputStream in) {
+		Document doc;
+		try {
+			doc = builder.build(in);
+		} catch (ValidityException e) {
+			throw new RuntimeException("Invalid XML", e);
+		} catch (ParsingException e) {
+			throw new RuntimeException("Could not parse XML", e);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException("Unsupported encoding", e);
+		} catch (IOException e) {
+			throw new RuntimeException("Input exception", e);
+		}
+		return doc;
+	}
+	
+	public static Document parseXml(Reader reader) {
 		return Utils.parseXmlFile(new Builder(), reader);
 	}
 
-	public static Document parseXmlFile(Builder builder, Reader reader) throws Exception {
+	public static Document parseXmlFile(Builder builder, Reader reader) {
 		Document doc;
 		try {
 			doc = builder.build(reader);
 		} catch (ValidityException e) {
-			throw new Exception("Invalid XML", e);
+			throw new RuntimeException("Invalid XML", e);
 		} catch (ParsingException e) {
-			throw new Exception("Could not parse XML", e);
+			throw new RuntimeException("Could not parse XML", e);
 		} catch (UnsupportedEncodingException e) {
-			throw new Exception("Unsupported encoding", e);
+			throw new RuntimeException("Unsupported encoding", e);
 		} catch (IOException e) {
-			throw new Exception("Input exception", e);
+			throw new RuntimeException("Input exception", e);
 		}
 		return doc;
 	}
+	
+	public static Document parseXml(File file) {
+		try {
+			return Utils.parseXml(new FileReader(file));
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException("Could not find file "+file.getAbsolutePath(), e);
+		}
+	}
 
-	public static Document parseCmlFile(File file) throws Exception {
+	public static Document parseCml(File file) {
 		Document doc;
 		try {
 			doc = new CMLBuilder().build(new BufferedReader(
 					new FileReader(file)));
 		} catch (ValidityException e) {
-			throw new Exception("File at "
+			throw new RuntimeException("File at "
 					+ file.getAbsolutePath() + " is not valid XML", e);
 		} catch (ParsingException e) {
-			throw new Exception("Could not parse file at "
+			throw new RuntimeException("Could not parse file at "
 					+ file.getAbsolutePath(), e);
 		} catch (UnsupportedEncodingException e) {
-			throw new Exception(
+			throw new RuntimeException(
 					"File at " + file.getAbsolutePath()
 							+ " is in an unsupported encoding", e);
 		} catch (FileNotFoundException e) {
-			throw new Exception("File at "
+			throw new RuntimeException("File at "
 					+ file.getAbsolutePath() + " could not be found", e);
 		} catch (IOException e) {
-			throw new Exception("Could read file at "
+			throw new RuntimeException("Could read file at "
 					+ file.getAbsolutePath(), e);
 		}
 		return doc;

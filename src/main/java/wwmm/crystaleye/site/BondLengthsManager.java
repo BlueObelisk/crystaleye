@@ -690,7 +690,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 
 	private void addLengthsFromCmlFile(File cmlFile) {
 		System.out.println("Processing: "+cmlFile.getAbsolutePath());
-		CMLCml c = (CMLCml)Utils.parseCmlFile(cmlFile).getRootElement();
+		CMLCml c = (CMLCml)Utils.parseCml(cmlFile).getRootElement();
 		CMLCml cml = (CMLCml)c.copy();
 
 		setCmlValues(cml);

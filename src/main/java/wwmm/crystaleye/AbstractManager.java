@@ -24,7 +24,7 @@ public abstract class AbstractManager {
 		
 		String issueCode = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum;
 		File propsPath = new File(downloadLogPath);
-		Document doc = Utils.parseXmlFile(propsPath);
+		Document doc = Utils.parseXml(propsPath);
 		Nodes procNodes = doc.query("//publisher[@abbreviation='"+publisherAbbreviation+
 							"']/journal[@abbreviation='"+journalAbbreviation+"']/year[@id='"+year+
 							"']/issue[@id='"+issueNum+"']/"+managerTag);
@@ -58,7 +58,7 @@ public abstract class AbstractManager {
 		List<IssueDate> outputList = new ArrayList<IssueDate>();
 
 		File logFile = new File(downloadLogPath);
-		Document doc = Utils.parseXmlFile(logFile);
+		Document doc = Utils.parseXml(logFile);
 		Nodes issues = doc.query("//publisher[@abbreviation='"+publisherAbbreviation+
 									"']/journal[@abbreviation='"+journalAbbreviation+
 									"']/descendant::issue");

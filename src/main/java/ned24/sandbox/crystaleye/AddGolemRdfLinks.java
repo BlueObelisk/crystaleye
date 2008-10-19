@@ -47,7 +47,7 @@ public class AddGolemRdfLinks {
 														Utils.writeText(html, summaryPath);
 
 														System.out.println(summaryFile.getAbsolutePath());
-														Document doc = XmlUtils.parseXmlFile(summaryPath);
+														Document doc = XmlUtils.parseXml(summaryPath);
 
 														Nodes headProfiles = doc.query("./x:head/@profile", X_XHTML);
 														if (headProfiles.size() > 0) {

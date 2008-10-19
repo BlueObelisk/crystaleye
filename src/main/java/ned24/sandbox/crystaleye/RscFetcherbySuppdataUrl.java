@@ -84,7 +84,7 @@ public class RscFetcherbySuppdataUrl {
 		setVolume(journalAbbreviation);
 		String url = "http://rsc.org/Publishing/Journals/"+journalAbbreviation.toLowerCase()+"/article.asp?Journal="+journalAbbreviation+"81&VolumeYear="+year+volume+"&Volume="+volume+"&JournalCode="+journalAbbreviation+"&MasterJournalCode="+journalAbbreviation+"&SubYear="+year+"&type=Issue&Issue="+issue+"&x=11&y=5";
 		System.out.println("fetching url: "+url);
-		Document doc = HttpUtils.getWebpageMinusCommentsAsXML(url);
+		Document doc = HttpUtils.getWebpageDocumentMinusComments(url);
 		Nodes articleLinks = doc.query("//x:a[contains(@href,'/Publishing/Journals/"+journalAbbreviation.toUpperCase()+"/article.asp?doi=') and preceding-sibling::x:strong[contains(text(),'DOI:')]]", X_XHTML);
 		if (articleLinks.size() > 0) {
 			System.out.println("Reading "+journalAbbreviation.toUpperCase()+" issue "+issue+" at "+url);
@@ -96,7 +96,7 @@ public class RscFetcherbySuppdataUrl {
 			String suppdataYear = articleId.substring(0,2);
 			String suppdataUrl = "http://pubs.rsc.org/suppdata/"+journalAbbreviation.toUpperCase()+"/"+suppdataYear+"/"+articleId+"/index.sht";
 			System.out.println(suppdataUrl);
-			Document suppdataDoc = HttpUtils.getWebpageMinusCommentsAsXML(suppdataUrl);
+			Document suppdataDoc = HttpUtils.getWebpageDocumentMinusComments(suppdataUrl);
 			Nodes cifLinks = suppdataDoc.query("//x:a[text()='Crystal structure data'] | //x:a[text()='Crystal Structure Data'] | //x:a[text()='Crystal Structure data'] | //x:a[text()='Crystal data'] | //x:a[text()='Crystal Data'] | //x:a[text()='Crystallographic Data'] | //x:a[text()='Crystallographic data']", X_XHTML);
 			int cifLinkNum = 0;
 			for (int k = 0; k < cifLinks.size(); k++) {

@@ -151,7 +151,7 @@ public class Cml2Png implements CMLConstants {
 	
 	public static void main(String[] args) {
 		File cmlFile = new File("Z:\\docs\\cifdat\\AH\\test\\completecml\\ah0001.cml");
-		CMLCml cmlCml = (CMLCml)Utils.parseCmlFile(cmlFile).getRootElement();
+		CMLCml cmlCml = (CMLCml)Utils.parseCml(cmlFile).getRootElement();
 		CMLMolecule mol = (CMLMolecule) cmlCml.getFirstCMLChild(CMLMolecule.TAG);
 		mol = CDKUtils.add2DCoords(mol);
 		int count = 1;

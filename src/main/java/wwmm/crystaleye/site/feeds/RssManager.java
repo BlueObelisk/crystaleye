@@ -185,7 +185,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 
 			Document doc = null;
 			try {
-				doc = Utils.parseCmlFile(cmlFile);
+				doc = Utils.parseCml(cmlFile);
 			} catch (Exception e) {
 				System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 				continue;
@@ -230,7 +230,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			
 			CMLCml cml = null;
 			try {
-				cml = (CMLCml)Utils.parseCmlFile(cmlFile).getRootElement();
+				cml = (CMLCml)Utils.parseCml(cmlFile).getRootElement();
 			} catch (Exception e) {
 				System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 				continue;
@@ -344,7 +344,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			for (File cmlFile : cmlFileList) {
 				CMLCml cml = null;
 				try {
-					cml = (CMLCml)Utils.parseCmlFile(cmlFile).getRootElement();
+					cml = (CMLCml)Utils.parseCml(cmlFile).getRootElement();
 				} catch (Exception e) {
 					System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 					continue;

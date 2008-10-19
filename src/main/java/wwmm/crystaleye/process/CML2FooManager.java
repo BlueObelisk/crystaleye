@@ -145,7 +145,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 									String articleId = suppId.substring(0,suppId.indexOf("_"));
 									articleId = articleId.replaceAll("sup[\\d]*", "");
 
-									CMLCml cml = (CMLCml)(Utils.parseCmlFile(structureFile)).getRootElement();
+									CMLCml cml = (CMLCml)(Utils.parseCml(structureFile)).getRootElement();
 
 									Nodes classNodes = cml.query(".//cml:scalar[@dictRef='iucr:compoundClass']", CML_XPATH);
 									String compClass = "";
