@@ -188,10 +188,10 @@ public class Utils {
 	}
 	
 	public static Document parseXml(Reader reader) {
-		return Utils.parseXmlFile(new Builder(), reader);
+		return Utils.parseXml(new Builder(), reader);
 	}
 
-	public static Document parseXmlFile(Builder builder, Reader reader) {
+	public static Document parseXml(Builder builder, Reader reader) {
 		Document doc;
 		try {
 			doc = builder.build(reader);

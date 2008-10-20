@@ -28,8 +28,8 @@ import wwmm.crystaleye.util.Utils;
 
 public class BasicHttpClient {
 
-	HttpClient client;
-	HttpMethod method;
+	private HttpClient client;
+	private HttpMethod method;
 	
 	public BasicHttpClient() {
 		client = new HttpClient();
@@ -39,15 +39,11 @@ public class BasicHttpClient {
 		this.client = client;
 	}
 	
-	public InputStream getWebpageStream(URI uri) {
-		method = new GetMethod();
+	private InputStream getWebpageStream(URI uri) {
 		InputStream in = null;
+		method = executeGET(uri);
 		try {
-			method.setURI(uri);
-			executeMethod(method);
 			in = method.getResponseBodyAsStream();
-		} catch (URIException e) {
-			throw new RuntimeException("Exception setting the URI for the HTTP GET method: "+uri, e);
 		} catch (IOException e) {
 			throw new RuntimeException("Exception getting response stream for: "+uri);
 		}
@@ -84,7 +80,7 @@ public class BasicHttpClient {
 	
 	public Document getWebpageDocumentMinusComments(URI uri) {
 		String html = getWebpageString(uri);
-		
+
 		String patternStr = "<!--(.*)?-->";
 		String replacementStr = "";
 		Pattern pattern = Pattern.compile(patternStr);
@@ -100,7 +96,8 @@ public class BasicHttpClient {
 		BufferedReader br = new BufferedReader(sr);
 		Document doc = null;
 		try {
-			doc = Utils.parseXml(br);
+			Builder builder = getTagsoupBuilder();
+			doc = Utils.parseXml(builder, br);
 		} finally {
 			IOUtils.closeQuietly(br);
 			IOUtils.closeQuietly(sr);
@@ -109,13 +106,9 @@ public class BasicHttpClient {
 	}
 	
 	public Header[] getHeaders(URI uri) {
-		method = new HeadMethod();
+		method = executeHEAD(uri);
 		try {
-			method.setURI(uri);
-			executeMethod(method);
 			return method.getResponseHeaders();
-		} catch (URIException e) {
-			throw new RuntimeException("Exception setting the URI for the HTTP HEAD method: "+uri, e);
 		} finally {
 			if (method != null) {
 				method.releaseConnection();
@@ -148,8 +141,26 @@ public class BasicHttpClient {
 		}
 	}
 	
-	public HttpMethod getMethod() {
-		return method;
+	public GetMethod executeGET(URI uri) {
+		method = new GetMethod();
+		try {
+			method.setURI(uri);
+			executeMethod(method);
+		} catch (URIException e) {
+			throw new RuntimeException("Exception setting the URI for the HTTP GET method: "+uri, e);
+		}
+		return (GetMethod)method;
+	}
+	
+	public HeadMethod executeHEAD(URI uri) {
+		HeadMethod method = new HeadMethod();
+		try {
+			method.setURI(uri);
+			executeMethod(method);
+		} catch (URIException e) {
+			throw new RuntimeException("Exception setting the URI for the HTTP GET method: "+uri, e);
+		}
+		return (HeadMethod)method;
 	}
 	
 	public static void main(String[] args) throws URIException, NullPointerException {

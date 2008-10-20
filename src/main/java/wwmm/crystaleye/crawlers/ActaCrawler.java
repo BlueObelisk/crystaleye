@@ -111,7 +111,9 @@ public class ActaCrawler extends JournalCrawler {
 			ActaCrawler acf = new ActaCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
 			List<URI> dois = acf.getIssueDOIs(details.getYear(), details.getIssueId());
-			System.out.println(dois.size());
+			for (URI doi : dois) {
+				System.out.println(doi);
+			}
 			break;
 		}
 	}
