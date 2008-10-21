@@ -11,6 +11,7 @@ import nu.xom.Element;
 import nu.xom.Node;
 
 import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
@@ -51,7 +52,7 @@ public class ActaCrawler extends JournalCrawler {
 		this.journal = journal;
 	}
 
-	public IssueDetails getCurrentIssueDetails() throws Exception {
+	public IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
 		List<Node> currentIssueLink = Utils.queryHTML(doc, "//x:a[contains(@target,'_parent')]");
 		Node current = currentIssueLink.get(0);
@@ -62,7 +63,7 @@ public class ActaCrawler extends JournalCrawler {
 		Pattern pattern = Pattern.compile("\\.\\./issues/(\\d\\d\\d\\d)/(\\d\\d/\\d\\d)/issconts.html");
 		Matcher matcher = pattern.matcher(info);
 		if (!matcher.find() || matcher.groupCount() != 2) {
-			throw new Exception("Could not extract the year/issue information " +
+			throw new RuntimeException("Could not extract the year/issue information " +
 					"from current issue for Acta journal, "+journal.getFullTitle()+".");
 		}
 		String year = matcher.group(1);
@@ -71,50 +72,88 @@ public class ActaCrawler extends JournalCrawler {
 		return new IssueDetails(year, issueId);
 	}
 
-	public Document getCurrentIssueDocument() throws Exception {
+	public Document getCurrentIssueDocument() {
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/contents/backissuesbdy.html";
-		URI issueUri = new URI(url, false);
+		URI issueUri;
+		try {
+			issueUri = new URI(url, false);
+		} catch (URIException e) {
+			throw new RuntimeException("Problem creating the issue URI.", e);
+		}
 		return httpClient.getWebpageDocument(issueUri);
 	}
-	
-	public List<URI> getCurrentIssueDOIs() throws Exception {
+
+	public List<URI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getIssueDOIs(details);
 	}
-	
-	public List<URI> getIssueDOIs(String year, String issueId) throws Exception {
+
+	public List<URI> getIssueDOIs(String year, String issueId) {
 		List<URI> dois = new ArrayList<URI>();
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/issues/"
 		+year+"/"+issueId.replaceAll("-", "/")+"/isscontsbdy.html";
-		URI issueUri = new URI(url, false);
+		URI issueUri = null;;
+		try {
+			issueUri = new URI(url, false);
+		} catch (URIException e) {
+			throw new RuntimeException("Problem creating the issue URI.", e);
+		}
 		LOG.debug("Started to find article DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri);
 		Document issueDoc = httpClient.getWebpageDocument(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://dx.doi.org/10.1107/')]/@href");
 		for (Node doiNode : doiNodes) {
 			String doi = ((Attribute)doiNode).getValue();
-			dois.add(new URI(doi, false));
+			try {
+				dois.add(new URI(doi, false));
+			} catch (URIException e) {
+				throw new RuntimeException("Problem creating the article DOI.", e);
+			}
 		}
 		LOG.debug("Finished finding issue DOIs.");
 		return dois;
 	}
-	
-	public List<URI> getIssueDOIs(IssueDetails details) throws Exception {
-		return getIssueDOIs(details.getYear(), details.getIssueId());
+
+	public List<URI> getIssueDOIs(IssueDetails id) {
+		return getIssueDOIs(id.getYear(), id.getIssueId());
 	}
 
-	public static void main(String[] args) throws Exception {
+	public List<ArticleDetails> getIssueArticleDetails(String year, String issueId) {
+		List<URI> dois = getIssueDOIs(year, issueId);
+		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
+		for (URI doi : dois) {
+			ArticleDetails ad = getArticleDetails(doi);
+			adList.add(ad);
+			// FIXME - remove this break
+			break;
+		}
+		return adList;
+	}
+	
+	public List<ArticleDetails> getIssueArticleDetails(IssueDetails id) {
+		return getIssueArticleDetails(id.getYear(), id.getIssueId());
+	}
+	
+	private ArticleDetails getArticleDetails(URI doi) {
+		ArticleDetails ad = new ArticleDetails();
+		Document abstractPageDoc = httpClient.getWebpageDocument(doi);
+		System.out.println(abstractPageDoc.toXML());
+		return ad;
+	}
+
+	public static void main(String[] args) {
 		for (ActaJournal journal : ActaJournal.values()) {
 			if (!journal.getAbbreviation().equals("c")) {
 				continue;
 			}
 			ActaCrawler acf = new ActaCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
-			List<URI> dois = acf.getIssueDOIs(details.getYear(), details.getIssueId());
-			for (URI doi : dois) {
-				System.out.println(doi);
+			List<ArticleDetails> adList = acf.getIssueArticleDetails(details);
+			for (ArticleDetails ad : adList) {
+				
 			}
 			break;
 		}
 	}
+
 }

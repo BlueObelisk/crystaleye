@@ -8,7 +8,7 @@ public class ArticleDetails {
 	
 	private URI doi;
 	private String title;
-	private String reference;
+	private ArticleReference reference;
 	private String authors;
 	private List<SupplementaryFile> suppFiles;
 	
@@ -16,7 +16,7 @@ public class ArticleDetails {
 		;
 	}
 	
-	public ArticleDetails(URI doi, String title, String ref, String authors, List<SupplementaryFile> suppFiles) {
+	public ArticleDetails(URI doi, String title, ArticleReference ref, String authors, List<SupplementaryFile> suppFiles) {
 		this.doi = doi;
 		this.title = title;
 		this.reference = ref;
@@ -44,7 +44,7 @@ public class ArticleDetails {
 		return title;
 	}
 
-	public String getReference() {
+	public ArticleReference getReference() {
 		return reference;
 	}
 
@@ -56,7 +56,7 @@ public class ArticleDetails {
 		this.title = title;
 	}
 
-	public void setReference(String reference) {
+	public void setReference(ArticleReference reference) {
 		this.reference = reference;
 	}
 
