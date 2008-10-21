@@ -1,5 +1,7 @@
 package wwmm.crystaleye.crawlers;
 
+import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -9,6 +11,7 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
+import nu.xom.Nodes;
 
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
@@ -137,7 +140,41 @@ public class ActaCrawler extends JournalCrawler {
 	private ArticleDetails getArticleDetails(URI doi) {
 		ArticleDetails ad = new ArticleDetails();
 		Document abstractPageDoc = httpClient.getWebpageDocument(doi);
-		System.out.println(abstractPageDoc.toXML());
+		
+		// get the article title
+		Nodes titleNds = abstractPageDoc.query(".//x:div[@class='bibline']/following-sibling::x:h3[1]", X_XHTML);
+		if (titleNds.size() != 1) {
+			throw new RuntimeException("Could not find article title at: "+doi);
+		}
+		String title = titleNds.get(0).toXML();
+		System.out.println(title);
+		
+		// get the bibliographic reference
+		Nodes bibNds = abstractPageDoc.query(".//x:div[@class='bibline']", X_XHTML);
+		if (bibNds.size() != 1) {
+			throw new RuntimeException("Could not find bibdata at: "+doi);
+		}
+		String bibline = bibNds.get(0).getValue();
+		Pattern pattern = Pattern.compile("([^\\.]+)\\.\\s+\\((\\d+\\))\\.\\s*(\\w+),\\s*(\\w+\\-\\w+).*");
+		Matcher matcher = pattern.matcher(bibline);
+		if (!matcher.find() || matcher.groupCount() != 4) {
+			throw new RuntimeException("Could not find bibdata at: "+doi);
+		}
+		String journalAbbreviation = matcher.group(1);
+		String year = matcher.group(2);
+		String volume = matcher.group(3);
+		String pages = matcher.group(4);
+		ArticleReference ref = new ArticleReference(journalAbbreviation, year, volume, pages);
+		
+		// get the author string
+		Nodes authorNds = abstractPageDoc.query(".//x:div[@class='bibline']/following-sibling::x:h3[2]", X_XHTML);
+		if (authorNds.size() != 1) {
+			throw new RuntimeException("Could not find author name text at: "+doi);
+		}
+		String authors = authorNds.get(0).getValue();
+		
+		// get the supplementary file URIs
+		
 		return ad;
 	}
 
