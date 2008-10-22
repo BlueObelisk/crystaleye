@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class AcsCrawler extends JournalCrawler {
+public class AcsCrawler extends Crawler {
 
 	public enum AcsJournal {
 		ACCOUNTS_OF_CHEMICAL_RESEARCH("achre4", "Accounts of Chemical Research", 1967),

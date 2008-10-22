@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class RscCrawler extends JournalCrawler{
+public class RscCrawler extends Crawler{
 
 	public enum RscJournal {
 		ANNUAL_REPORTS_SECTION_A("ic", "Annual Reports Section A"),

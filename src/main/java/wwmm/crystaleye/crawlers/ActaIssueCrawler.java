@@ -1,7 +1,5 @@
 package wwmm.crystaleye.crawlers;
 
-import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -11,7 +9,6 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
-import nu.xom.Nodes;
 
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
@@ -19,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class ActaCrawler extends JournalCrawler {
+public class ActaIssueCrawler extends Crawler {
 
 	public enum ActaJournal {
 		SECTION_A("a", "Section A: Foundations of Crystallography"),
@@ -49,9 +46,9 @@ public class ActaCrawler extends JournalCrawler {
 	}
 
 	public ActaJournal journal;
-	private static final Logger LOG = Logger.getLogger(ActaCrawler.class);
+	private static final Logger LOG = Logger.getLogger(ActaIssueCrawler.class);
 
-	public ActaCrawler(ActaJournal journal) {
+	public ActaIssueCrawler(ActaJournal journal) {
 		this.journal = journal;
 	}
 
@@ -88,10 +85,10 @@ public class ActaCrawler extends JournalCrawler {
 
 	public List<URI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
-		return getIssueDOIs(details);
+		return getDOIs(details);
 	}
 
-	public List<URI> getIssueDOIs(String year, String issueId) {
+	public List<URI> getDOIs(String year, String issueId) {
 		List<URI> dois = new ArrayList<URI>();
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/issues/"
 		+year+"/"+issueId.replaceAll("-", "/")+"/isscontsbdy.html";
@@ -117,65 +114,22 @@ public class ActaCrawler extends JournalCrawler {
 		return dois;
 	}
 
-	public List<URI> getIssueDOIs(IssueDetails id) {
-		return getIssueDOIs(id.getYear(), id.getIssueId());
+	public List<URI> getDOIs(IssueDetails id) {
+		return getDOIs(id.getYear(), id.getIssueId());
 	}
 
-	public List<ArticleDetails> getIssueArticleDetails(String year, String issueId) {
-		List<URI> dois = getIssueDOIs(year, issueId);
+	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
+		List<URI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
 		for (URI doi : dois) {
-			ArticleDetails ad = getArticleDetails(doi);
+			ArticleDetails ad = new ActaArticleCrawler(doi).getDetails();
 			adList.add(ad);
-			// FIXME - remove this break
-			break;
 		}
 		return adList;
 	}
 	
-	public List<ArticleDetails> getIssueArticleDetails(IssueDetails id) {
-		return getIssueArticleDetails(id.getYear(), id.getIssueId());
-	}
-	
-	private ArticleDetails getArticleDetails(URI doi) {
-		ArticleDetails ad = new ArticleDetails();
-		Document abstractPageDoc = httpClient.getWebpageDocument(doi);
-		
-		// get the article title
-		Nodes titleNds = abstractPageDoc.query(".//x:div[@class='bibline']/following-sibling::x:h3[1]", X_XHTML);
-		if (titleNds.size() != 1) {
-			throw new RuntimeException("Could not find article title at: "+doi);
-		}
-		String title = titleNds.get(0).toXML();
-		System.out.println(title);
-		
-		// get the bibliographic reference
-		Nodes bibNds = abstractPageDoc.query(".//x:div[@class='bibline']", X_XHTML);
-		if (bibNds.size() != 1) {
-			throw new RuntimeException("Could not find bibdata at: "+doi);
-		}
-		String bibline = bibNds.get(0).getValue();
-		Pattern pattern = Pattern.compile("([^\\.]+)\\.\\s+\\((\\d+\\))\\.\\s*(\\w+),\\s*(\\w+\\-\\w+).*");
-		Matcher matcher = pattern.matcher(bibline);
-		if (!matcher.find() || matcher.groupCount() != 4) {
-			throw new RuntimeException("Could not find bibdata at: "+doi);
-		}
-		String journalAbbreviation = matcher.group(1);
-		String year = matcher.group(2);
-		String volume = matcher.group(3);
-		String pages = matcher.group(4);
-		ArticleReference ref = new ArticleReference(journalAbbreviation, year, volume, pages);
-		
-		// get the author string
-		Nodes authorNds = abstractPageDoc.query(".//x:div[@class='bibline']/following-sibling::x:h3[2]", X_XHTML);
-		if (authorNds.size() != 1) {
-			throw new RuntimeException("Could not find author name text at: "+doi);
-		}
-		String authors = authorNds.get(0).getValue();
-		
-		// get the supplementary file URIs
-		
-		return ad;
+	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
+		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
 
 	public static void main(String[] args) {
@@ -183,11 +137,11 @@ public class ActaCrawler extends JournalCrawler {
 			if (!journal.getAbbreviation().equals("c")) {
 				continue;
 			}
-			ActaCrawler acf = new ActaCrawler(journal);
+			ActaIssueCrawler acf = new ActaIssueCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
-			List<ArticleDetails> adList = acf.getIssueArticleDetails(details);
+			List<ArticleDetails> adList = acf.getArticleDetails(details);
 			for (ArticleDetails ad : adList) {
-				
+				System.out.println(ad.toString());
 			}
 			break;
 		}
