@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class ElsevierCrawler extends JournalCrawler {
+public class ElsevierCrawler extends Crawler {
 
 	public enum ElsevierJournal {
 		POLYHEDRON("02775387", "Polyhedron");

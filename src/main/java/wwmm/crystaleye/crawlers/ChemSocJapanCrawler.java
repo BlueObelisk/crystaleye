@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class ChemSocJapanCrawler extends JournalCrawler {
+public class ChemSocJapanCrawler extends Crawler {
 
 	public enum ChemSocJapanJournal {
 		CHEMISTRY_LETTERS("chem-lett", "Chemistry Letters");

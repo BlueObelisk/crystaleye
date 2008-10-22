@@ -6,12 +6,12 @@ public class SupplementaryFile {
 
 	private URI uri;
 	private String linkText;
-	private String mimetype;
+	private String contentType;
 	
-	public SupplementaryFile(URI uri, String linkText, String mimetype) {
+	public SupplementaryFile(URI uri, String linkText, String contentType) {
 		this.uri = uri;
 		this.linkText = linkText;
-		this.mimetype = mimetype;
+		this.contentType = contentType;
 	}
 
 	public String getLinkText() {
@@ -30,20 +30,12 @@ public class SupplementaryFile {
 		return uri;
 	}
 
-	public String getTitle() {
-		return linkText;
-	}
-
-	public String getMimetype() {
-		return mimetype;
-	}
-
-	public void setTitle(String title) {
-		this.linkText = title;
+	public String getContentType() {
+		return contentType;
 	}
 
 	public void setMimetype(String mimetype) {
-		this.mimetype = mimetype;
+		this.contentType = mimetype;
 	}
 	
 	
