@@ -93,6 +93,9 @@ public class ArticleDetails {
 			}
 			scount++;
 		}
+		if (suppFiles.size() == 0) {
+			result.append("    --no supplementary files--"+NEW_LINE);
+		}
 		result.append("}"+NEW_LINE);
 
 		return result.toString();

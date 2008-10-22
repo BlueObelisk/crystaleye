@@ -2,6 +2,7 @@ package wwmm.crystaleye.crawlers;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.BasicHttpClient;
@@ -37,4 +38,15 @@ public class Crawler {
 		return contentType;
 	}
 	
+	protected URI createURI(String url) {
+		URI uri = null;
+		try {
+			uri = new URI(url, false);
+		} catch (URIException e) {
+			throw new RuntimeException("Problem creating URI from: "+url, e);
+		} catch (NullPointerException e) {
+			throw new RuntimeException("Cannot create a URI from a null String.", e);
+		}
+		return uri;
+	}
 }

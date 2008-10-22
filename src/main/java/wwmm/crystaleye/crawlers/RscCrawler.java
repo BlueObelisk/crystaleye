@@ -57,61 +57,62 @@ public class RscCrawler extends Crawler{
 		this.journal = journal;
 	}
 
-	protected IssueDetails getCurrentIssueDetails() throws Exception {
+	protected IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
 		List<Node> journalInfo = Utils.queryHTML(doc, "//x:h3[contains(text(),'Contents')]");
 		int size = journalInfo.size();
 		if (size != 1) {
-			throw new Exception("Expected to find 1 element containing"+
+			throw new RuntimeException("Expected to find 1 element containing"+
 					"the year/issue information but found "+size+".");
 		}
 		String info = journalInfo.get(0).getValue().trim();
 		Pattern pattern = Pattern.compile("[^\\d]*(\\d+),[^\\d]*(\\d+)$");
 		Matcher matcher = pattern.matcher(info);
 		if (!matcher.find() || matcher.groupCount() != 2) {
-			throw new Exception("Could not extract the year/issue information.");
+			throw new RuntimeException("Could not extract the year/issue information.");
 		}
 		String issueNum = matcher.group(1);
 		String year = matcher.group(2);
 		return new IssueDetails(year, issueNum);
 	}
 
-	public Document getCurrentIssueDocument() throws Exception {
+	public Document getCurrentIssueDocument() {
 		String url = "http://rsc.org/Publishing/Journals/"
 			+journal.getAbbreviation().toUpperCase()+"/Article.asp?Type=CurrentIssue";
-		URI uri = new URI(url, false);
+		URI uri = createURI(url);
 		return httpClient.getWebpageDocumentMinusComments(uri);
 	}
 
-	public List<URI> getCurrentIssueDOIs() throws Exception {
+	public List<URI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getIssueDOIs(details);
 	}
 
-	public List<URI> getIssueDOIs(String year, String issueId) throws Exception {
+	public List<URI> getIssueDOIs(String year, String issueId) {
 		String journalAbbreviation = journal.getAbbreviation();
 		String issueUrl = "http://rsc.org/Publishing/Journals/"+journalAbbreviation
 		+"/article.asp?Journal="+journalAbbreviation+"81&VolumeYear="+year+volume+"&Volume="+volume
 		+"&JournalCode="+journalAbbreviation+"&MasterJournalCode="+journalAbbreviation+"&SubYear="+year
 		+"&type=Issue&Issue="+issueId+"&x=11&y=5";
-		URI issueUri = new URI(issueUrl, false);
+		URI issueUri = createURI(issueUrl);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		Document issueDoc = httpClient.getWebpageDocumentMinusComments(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@title,'DOI:10.1039')]");
 		List<URI> dois = new ArrayList<URI>();
 		for (Node doiNode : doiNodes) {
 			String doi = ((Element)doiNode).getValue();
-			dois.add(new URI(doi, false));
+			URI doiUri = createURI(doi);
+			dois.add(doiUri);
 		}
 		LOG.debug("Finished finding DOIs.");
 		return dois;
 	}
 
-	public List<URI> getIssueDOIs(IssueDetails details) throws Exception {
+	public List<URI> getIssueDOIs(IssueDetails details) {
 		return getIssueDOIs(details.getYear(), details.getIssueId());
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		for (RscJournal journal : RscJournal.values()) {
 			if (!journal.getAbbreviation().equals("cc")) {
 				continue;

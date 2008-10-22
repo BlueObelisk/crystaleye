@@ -6,7 +6,6 @@ import java.io.File;
 
 import nu.xom.Document;
 import nu.xom.Nodes;
-import wwmm.crystaleye.util.HttpUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class PublisherArticles {

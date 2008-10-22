@@ -1,5 +1,7 @@
 package wwmm.crystaleye.crawlers;
 
+import static wwmm.crystaleye.crawlers.CrawlerConstants.DOI_SITE_URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -14,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class AcsCrawler extends Crawler {
+public class AcsIssueCrawler extends Crawler {
 
 	public enum AcsJournal {
 		ACCOUNTS_OF_CHEMICAL_RESEARCH("achre4", "Accounts of Chemical Research", 1967),
@@ -67,25 +69,25 @@ public class AcsCrawler extends Crawler {
 	}
 
 	public AcsJournal journal;
-	private static final Logger LOG = Logger.getLogger(AcsCrawler.class);
+	private static final Logger LOG = Logger.getLogger(AcsIssueCrawler.class);
 
-	public AcsCrawler(AcsJournal journal) {
+	public AcsIssueCrawler(AcsJournal journal) {
 		this.journal = journal;
 	}
 
-	public IssueDetails getCurrentIssueDetails() throws Exception {
+	public IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
 		List<Node> journalInfo = Utils.queryHTML(doc, ".//x:div[@id='issueinfo']");
 		int size = journalInfo.size();
 		if (size != 1) {
-			throw new Exception("Expected to find 1 element containing" +
+			throw new RuntimeException("Expected to find 1 element containing" +
 					"the year/issue information but found "+size+".");
 		}
 		String info = journalInfo.get(0).getValue().trim();
 		Pattern pattern = Pattern.compile("\\s*Vol\\.\\s+\\d+,\\s+No\\.\\s+(\\d+):.*(\\d\\d\\d\\d)");
 		Matcher matcher = pattern.matcher(info);
 		if (!matcher.find() || matcher.groupCount() != 2) {
-			throw new Exception("Could not extract the year/issue information.");
+			throw new RuntimeException("Could not extract the year/issue information.");
 		}
 		String year = matcher.group(2);
 		String issueId = matcher.group(1);
@@ -93,51 +95,69 @@ public class AcsCrawler extends Crawler {
 		return new IssueDetails(year, issueId);
 	}
 	
-	public Document getCurrentIssueDocument() throws Exception {
+	public Document getCurrentIssueDocument() {
 		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="+journal.getAbbreviation();
-		URI issueUri = new URI(url, false);
+		URI issueUri = createURI(url);
 		return httpClient.getWebpageDocument(issueUri);
 	}
 	
-	public List<URI> getCurrentIssueDOIs() throws Exception {
+	public List<URI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
-		return getIssueDOIs(details);
+		return getDOIs(details);
 	}
 
-	public List<URI> getIssueDOIs(String year, String issueId) throws Exception {
+	public List<URI> getDOIs(String year, String issueId) {
 		List<URI> dois = new ArrayList<URI>();
 		String decade = year.substring(2, 3);
 		int volume = Integer.valueOf(year)-journal.getVolumeOffset();
 		String issueUrl = "http://pubs3.acs.org/acs/journals/toc.page?incoden="
 			+journal.getAbbreviation()+"&indecade="+decade+"&involume="+String.valueOf(volume)+
 			"&inissue="+issueId;
-		URI issueUri = new URI(issueUrl, false);
+		URI issueUri = createURI(issueUrl);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri.toString());
 		Document issueDoc = httpClient.getWebpageDocument(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://dx.doi.org/10.1021')]");
 		for (Node doiNode : doiNodes) {
 			String doi = ((Element)doiNode).getValue();
-			dois.add(new URI(doi, false));
+			doi = DOI_SITE_URL+doi;
+			URI doiUri = createURI(doi);
+			dois.add(doiUri);
 		}
 		LOG.debug("Finished finding issue DOIs.");
 		return dois;
 	}
 	
-	public List<URI> getIssueDOIs(IssueDetails details) throws Exception {
-		return getIssueDOIs(details.getYear(), details.getIssueId());
+	public List<URI> getDOIs(IssueDetails details) {
+		return getDOIs(details.getYear(), details.getIssueId());
+	}
+	
+	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
+		List<URI> dois = getDOIs(year, issueId);
+		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
+		for (URI doi : dois) {
+			ArticleDetails ad = new AcsArticleCrawler(doi).getDetails();
+			adList.add(ad);
+			//FIXME 
+			break;
+		}
+		return adList;
+	}
+	
+	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
+		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		for (AcsJournal journal : AcsJournal.values()) {
 			if (!journal.getAbbreviation().equals("cgdefu")) {
 				continue;
 			}
-			AcsCrawler acf = new AcsCrawler(journal);
+			AcsIssueCrawler acf = new AcsIssueCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
-			List<URI> dois = acf.getIssueDOIs(details.getYear(), details.getIssueId());
-			for (URI doi : dois) {
-				System.out.println(doi);
+			List<ArticleDetails> adList = acf.getArticleDetails(details);
+			for (ArticleDetails ad : adList) {
+				System.out.println(ad.toString());
 			}
 			break;
 		}
