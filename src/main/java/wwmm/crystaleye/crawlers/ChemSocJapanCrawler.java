@@ -43,39 +43,39 @@ public class ChemSocJapanCrawler extends Crawler {
 		this.journal = journal;
 	}
 
-	protected IssueDetails getCurrentIssueDetails() throws Exception {
+	protected IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
 		List<Node> journalInfo = Utils.queryHTML(doc, "//x:span[@class='augr']");
 		int size = journalInfo.size();
 		if (size != 1) {
-			throw new Exception("Expected to find 1 element containing" +
+			throw new RuntimeException("Expected to find 1 element containing" +
 					"the year/issue information but found "+size+".");
 		}
 		String info = journalInfo.get(0).getValue();
 		Pattern pattern = Pattern.compile("[^,]*,\\s+\\w+\\.\\s+(\\d+)\\s+\\([^,]*,\\s+(\\d\\d\\d\\d)\\)");
 		Matcher matcher = pattern.matcher(info);
 		if (!matcher.find() || matcher.groupCount() != 2) {
-			throw new Exception("Could not extract the year/issue information.");
+			throw new RuntimeException("Could not extract the year/issue information.");
 		}
 		String year = matcher.group(2);
 		String issueNum = matcher.group(1);
 		return new IssueDetails(year, issueNum);
 	}
 	
-	public Document getCurrentIssueDocument() throws Exception {
+	public Document getCurrentIssueDocument() {
 		String url = "http://www.csj.jp/journals/"+journal.getAbbreviation()+"/cl-cont/newissue.html";
-		URI issueUri = new URI(url, false);
+		URI issueUri = createURI(url);
 		return httpClient.getWebpageDocumentMinusComments(issueUri);
 	}
 	
-	public List<URI> getCurrentIssueDOIs() throws Exception {
+	public List<URI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getIssueDOIs(details);
 	}
 
-	public List<URI> getIssueDOIs(String year, String issueId) throws Exception {
+	public List<URI> getIssueDOIs(String year, String issueId) {
 		String url = "http://www.chemistry.or.jp/journals/chem-lett/cl-cont/cl"+year+"-"+issueId+".html";
-		URI issueUri = new URI(url, false);
+		URI issueUri = createURI(url);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri.toString());
 		Document issueDoc = httpClient.getWebpageDocumentMinusComments(issueUri);
@@ -87,17 +87,18 @@ public class ChemSocJapanCrawler extends Crawler {
 			int idx = link.indexOf("id=");
 			String articleId = link.substring(idx+3).replaceAll("/", ".");
 			String doi = "http://dx.doi.org/10.1246/"+articleId;
-			dois.add(new URI(doi, false));
+			URI doiUri = createURI(doi);
+			dois.add(doiUri);
 		}
 		LOG.debug("Finished finding issue DOIs.");
 		return dois;
 	}
 	
-	public List<URI> getIssueDOIs(IssueDetails details) throws Exception {
+	public List<URI> getIssueDOIs(IssueDetails details) {
 		return getIssueDOIs(details.getYear(), details.getIssueId());
 	}
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		for (ChemSocJapanJournal journal : ChemSocJapanJournal.values()) {
 			ChemSocJapanCrawler acf = new ChemSocJapanCrawler(journal);
 			List<URI> dois = acf.getIssueDOIs("2008", "7");

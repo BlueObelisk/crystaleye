@@ -14,7 +14,6 @@ import nu.xom.Nodes;
 import nu.xom.Text;
 
 import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
 
 import wwmm.crystaleye.util.Utils;
 
@@ -50,12 +49,7 @@ public class ActaArticleCrawler extends Crawler {
 			throw new RuntimeException("Problem finding CIF link at: "+doi+" - expected 1 link, found "+cifNds.size());
 		}
 		String cifUrl = ((Element)cifNds.get(0)).getAttributeValue("href");
-		URI cifUri = null;;
-		try {
-			cifUri = new URI(cifUrl, false);
-		} catch (URIException e) {
-			throw new RuntimeException("Problem creating URI from: "+cifUrl);
-		}
+		URI cifUri = createURI(cifUrl);
 		String contentType = getContentType(cifUri);
 		SupplementaryFile suppFile = new SupplementaryFile(cifUri, "CIF", contentType);
 		List<SupplementaryFile> suppFiles = new ArrayList<SupplementaryFile>(1);
@@ -68,20 +62,20 @@ public class ActaArticleCrawler extends Crawler {
 		if (authorNds.size() != 1) {
 			throw new RuntimeException("Problem finding author name text at: "+doi);
 		}
-		String authors = authorNds.get(0).getValue();
+		String authors = authorNds.get(0).getValue().trim();
 		return authors;
 	}
 
 	private ArticleReference getReference(Document abstractPageDoc) {
 		Nodes bibNds = abstractPageDoc.query(".//x:div[@class='bibline']", X_XHTML);
 		if (bibNds.size() != 1) {
-			throw new RuntimeException("Could not find bibdata at: "+doi);
+			throw new RuntimeException("Could not find bibliographic text at: "+doi);
 		}
 		String bibline = bibNds.get(0).getValue();
 		Pattern pattern = Pattern.compile("([^\\.]+\\.)\\s+\\((\\d+)\\)\\.\\s*(\\w+),\\s*(\\w+\\-\\w+).*");
 		Matcher matcher = pattern.matcher(bibline);
 		if (!matcher.find() || matcher.groupCount() != 4) {
-			throw new RuntimeException("Problem finding bibdata at: "+doi);
+			throw new RuntimeException("Problem finding bibliographic tect at: "+doi);
 		}
 		String journalAbbreviation = matcher.group(1);
 		String year = matcher.group(2);
@@ -131,6 +125,7 @@ public class ActaArticleCrawler extends Crawler {
 		titleStr = titleStr.replaceAll("__/./__", "...");
 		titleStr = titleStr.replaceAll("__/", "&");
 		titleStr = titleStr.replaceAll("/__", ";");
+		titleStr = titleStr.trim();
 		return titleStr;
 	}
 }

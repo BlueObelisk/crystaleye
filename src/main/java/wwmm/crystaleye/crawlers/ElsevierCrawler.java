@@ -10,7 +10,6 @@ import nu.xom.Element;
 import nu.xom.Node;
 
 import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
@@ -45,44 +44,45 @@ public class ElsevierCrawler extends Crawler {
 		this.journal = journal;
 	}
 
-	public IssueDetails getCurrentIssueDetails() throws Exception {
+	public IssueDetails getCurrentIssueDetails() {
 		Document issueDoc = getCurrentIssueDocument();
 		List<Node> titleNodes = Utils.queryHTML(issueDoc, ".//x:title");
 		int size = titleNodes.size();
 		if (size != 1) {
-			throw new Exception("Expected to find 1 element containing" +
+			throw new RuntimeException("Expected to find 1 element containing" +
 					"the year/issue information but found "+size+".");
 		}
 		String title = titleNodes.get(0).getValue();
 		Pattern p = Pattern.compile("[^,]+,\\s+Volume\\s+(\\d+)\\s*,\\s+Issue[s]?\\s+([\\d-]+).*");
 		Matcher matcher = p.matcher(title);
 		if (!matcher.find() || matcher.groupCount() != 2) {
-			throw new Exception("Could not extract the year/issue information.");
+			throw new RuntimeException("Could not extract the year/issue information.");
 		}
 		String year = matcher.group(1);
 		String issue = matcher.group(2);
 		return new IssueDetails(year, issue);
 	}
 	
-	public Document getCurrentIssueDocument() throws Exception {
+	public Document getCurrentIssueDocument() {
 		String issueUrl = SITE_PREFIX+"/science/journal/"+journal.getAbbreviation();
-		URI issueUri = new URI(issueUrl, false);
+		URI issueUri = createURI(issueUrl);
 		return httpClient.getWebpageDocumentMinusComments(issueUri);
 	}
 	
-	private List<URI> getArticleLinks(Document issueDoc) throws URIException {
+	private List<URI> getArticleLinks(Document issueDoc) {
 		List<URI> links = new ArrayList<URI>();
 		List<Node> articleLinks = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://www.sciencedirect.com/science?_ob=ArticleURL')]");
 		for (Node articleLink : articleLinks) {
 			String link = ((Element)articleLink).getAttributeValue("href");
-			links.add(new URI(link, false));
+			URI linkUri = createURI(link);
+			links.add(linkUri);
 		}
 		return links;
 	}
 
-	public List<URI> getCurrentIssueDOIs() throws Exception {
+	public List<URI> getCurrentIssueDOIs() {
 		String currentIssueUrl = SITE_PREFIX+"/science/journal/"+journal.getAbbreviation(); 
-		URI currentIssueUri = new URI(currentIssueUrl, false);
+		URI currentIssueUri = createURI(currentIssueUrl);
 		LOG.debug("Started to find article DOIs from current issue of "+journal.getFullTitle()+".");
 		LOG.debug(currentIssueUri);
 		Document currentIssueDoc = httpClient.getWebpageDocumentMinusComments(currentIssueUri);
@@ -93,7 +93,8 @@ public class ElsevierCrawler extends Crawler {
 			List<Node> doiNodes = Utils.queryHTML(articleDoc, ".//x:a[contains(@href,'http://dx.doi.org/10.1016/')]");
 			if (doiNodes.size() > 0) {
 				String doi = ((Element)doiNodes.get(0)).getAttributeValue("href");
-				dois.add(new URI(doi, false));
+				URI doiUri = createURI(doi);
+				dois.add(doiUri);
 			}
 			sleep();
 		}	
@@ -101,7 +102,7 @@ public class ElsevierCrawler extends Crawler {
 		return dois;
 	}
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		for (ElsevierJournal journal : ElsevierJournal.values()) {
 			ElsevierCrawler acf = new ElsevierCrawler(journal);
 			List<URI> dois = acf.getCurrentIssueDOIs();

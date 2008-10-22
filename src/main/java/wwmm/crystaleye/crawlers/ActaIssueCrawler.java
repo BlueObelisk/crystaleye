@@ -1,5 +1,7 @@
 package wwmm.crystaleye.crawlers;
 
+import static wwmm.crystaleye.crawlers.CrawlerConstants.DOI_SITE_URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -11,7 +13,6 @@ import nu.xom.Element;
 import nu.xom.Node;
 
 import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
@@ -74,12 +75,7 @@ public class ActaIssueCrawler extends Crawler {
 
 	public Document getCurrentIssueDocument() {
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/contents/backissuesbdy.html";
-		URI issueUri;
-		try {
-			issueUri = new URI(url, false);
-		} catch (URIException e) {
-			throw new RuntimeException("Problem creating the issue URI.", e);
-		}
+		URI issueUri = createURI(url);
 		return httpClient.getWebpageDocument(issueUri);
 	}
 
@@ -92,23 +88,15 @@ public class ActaIssueCrawler extends Crawler {
 		List<URI> dois = new ArrayList<URI>();
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/issues/"
 		+year+"/"+issueId.replaceAll("-", "/")+"/isscontsbdy.html";
-		URI issueUri = null;;
-		try {
-			issueUri = new URI(url, false);
-		} catch (URIException e) {
-			throw new RuntimeException("Problem creating the issue URI.", e);
-		}
+		URI issueUri = createURI(url);
 		LOG.debug("Started to find article DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri);
 		Document issueDoc = httpClient.getWebpageDocument(issueUri);
-		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://dx.doi.org/10.1107/')]/@href");
+		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'"+DOI_SITE_URL+"10.1107/')]/@href");
 		for (Node doiNode : doiNodes) {
 			String doi = ((Attribute)doiNode).getValue();
-			try {
-				dois.add(new URI(doi, false));
-			} catch (URIException e) {
-				throw new RuntimeException("Problem creating the article DOI.", e);
-			}
+			URI doiUri = createURI(doi);
+			dois.add(doiUri);
 		}
 		LOG.debug("Finished finding issue DOIs.");
 		return dois;
@@ -127,7 +115,7 @@ public class ActaIssueCrawler extends Crawler {
 		}
 		return adList;
 	}
-	
+
 	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
 		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
