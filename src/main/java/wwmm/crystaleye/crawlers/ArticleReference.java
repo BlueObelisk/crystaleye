@@ -5,14 +5,22 @@ public class ArticleReference {
 	private String journalAbbreviation;
 	private String year;
 	private String volume;
+	private String number;
 	private String pages;
 	
 	public ArticleReference(String journalAbbreviation, String year,
-			String volume, String pages) {
+			String volume, String number, String pages) {
 		this.journalAbbreviation = journalAbbreviation;
 		this.year = year;
 		this.volume = volume;
+		this.number = number;
 		this.pages = pages;
+	}
+	public String getNumber() {
+		return number;
+	}
+	public void setNumber(String number) {
+		this.number = number;
 	}
 	public String getJournalAbbreviation() {
 		return journalAbbreviation;

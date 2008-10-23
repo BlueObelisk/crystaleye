@@ -1,5 +1,7 @@
 package wwmm.crystaleye.crawlers;
 
+import static wwmm.crystaleye.crawlers.CrawlerConstants.DOI_SITE_URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -14,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class RscCrawler extends Crawler{
+public class RscIssue extends Crawler{
 
 	public enum RscJournal {
 		ANNUAL_REPORTS_SECTION_A("ic", "Annual Reports Section A"),
@@ -51,9 +53,9 @@ public class RscCrawler extends Crawler{
 
 	public RscJournal journal;
 	private String volume = "0";
-	private static final Logger LOG = Logger.getLogger(RscCrawler.class);
+	private static final Logger LOG = Logger.getLogger(RscIssue.class);
 
-	public RscCrawler(RscJournal journal) {
+	public RscIssue(RscJournal journal) {
 		this.journal = journal;
 	}
 
@@ -85,10 +87,10 @@ public class RscCrawler extends Crawler{
 
 	public List<URI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
-		return getIssueDOIs(details);
+		return getDOIs(details);
 	}
 
-	public List<URI> getIssueDOIs(String year, String issueId) {
+	public List<URI> getDOIs(String year, String issueId) {
 		String journalAbbreviation = journal.getAbbreviation();
 		String issueUrl = "http://rsc.org/Publishing/Journals/"+journalAbbreviation
 		+"/article.asp?Journal="+journalAbbreviation+"81&VolumeYear="+year+volume+"&Volume="+volume
@@ -101,6 +103,7 @@ public class RscCrawler extends Crawler{
 		List<URI> dois = new ArrayList<URI>();
 		for (Node doiNode : doiNodes) {
 			String doi = ((Element)doiNode).getValue();
+			doi = DOI_SITE_URL+"/"+doi;
 			URI doiUri = createURI(doi);
 			dois.add(doiUri);
 		}
@@ -108,8 +111,33 @@ public class RscCrawler extends Crawler{
 		return dois;
 	}
 
-	public List<URI> getIssueDOIs(IssueDetails details) {
-		return getIssueDOIs(details.getYear(), details.getIssueId());
+	public List<URI> getDOIs(IssueDetails details) {
+		return getDOIs(details.getYear(), details.getIssueId());
+	}
+	
+	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
+		LOG.debug("Starting to find issue article details: "+year+"-"+issueId);
+		List<URI> dois = getDOIs(year, issueId);
+		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
+		//FIXME
+		int i = 0;
+		for (URI doi : dois) {
+			//FIXME
+			i++;
+			if (i != 6) {
+				continue;
+			}
+			ArticleDetails ad = new RscArticle(doi).getDetails();
+			adList.add(ad);
+			//FIXME
+			break;
+		}
+		LOG.debug("Finished finding issue article details: "+year+"-"+issueId);
+		return adList;
+	}
+	
+	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
+		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
 
 	public static void main(String[] args) {
@@ -117,11 +145,11 @@ public class RscCrawler extends Crawler{
 			if (!journal.getAbbreviation().equals("cc")) {
 				continue;
 			}
-			RscCrawler acf = new RscCrawler(journal);
+			RscIssue acf = new RscIssue(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
-			List<URI> dois = acf.getIssueDOIs(details.getYear(), details.getIssueId());
-			for (URI doi : dois) {
-				System.out.println(doi);
+			List<ArticleDetails> adList = acf.getArticleDetails(details);
+			for (ArticleDetails ad : adList) {
+				System.out.println(ad.toString());
 			}
 			break;
 		}

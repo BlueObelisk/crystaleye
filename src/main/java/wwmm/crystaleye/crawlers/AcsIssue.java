@@ -1,5 +1,6 @@
 package wwmm.crystaleye.crawlers;
 
+import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 import static wwmm.crystaleye.crawlers.CrawlerConstants.DOI_SITE_URL;
 
 import java.util.ArrayList;
@@ -10,13 +11,14 @@ import java.util.regex.Pattern;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
+import nu.xom.Nodes;
 
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class AcsIssueCrawler extends Crawler {
+public class AcsIssue extends Crawler {
 
 	public enum AcsJournal {
 		ACCOUNTS_OF_CHEMICAL_RESEARCH("achre4", "Accounts of Chemical Research", 1967),
@@ -69,15 +71,15 @@ public class AcsIssueCrawler extends Crawler {
 	}
 
 	public AcsJournal journal;
-	private static final Logger LOG = Logger.getLogger(AcsIssueCrawler.class);
+	private static final Logger LOG = Logger.getLogger(AcsIssue.class);
 
-	public AcsIssueCrawler(AcsJournal journal) {
+	public AcsIssue(AcsJournal journal) {
 		this.journal = journal;
 	}
 
 	public IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
-		List<Node> journalInfo = Utils.queryHTML(doc, ".//x:div[@id='issueinfo']");
+		Nodes journalInfo = doc.query(".//x:div[@id='issueinfo']", X_XHTML);
 		int size = journalInfo.size();
 		if (size != 1) {
 			throw new RuntimeException("Expected to find 1 element containing" +
@@ -117,15 +119,33 @@ public class AcsIssueCrawler extends Crawler {
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri.toString());
 		Document issueDoc = httpClient.getWebpageDocument(issueUri);
-		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://dx.doi.org/10.1021')]");
+		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'"+DOI_SITE_URL+"/10.1021')]");
 		for (Node doiNode : doiNodes) {
+			Element doiLink = (Element)doiNode;
 			String doi = ((Element)doiNode).getValue();
-			doi = DOI_SITE_URL+doi;
+			if (isDoiForErratum(doiLink, doi)) {
+				continue;
+			}
+			doi = DOI_SITE_URL+"/"+doi;
 			URI doiUri = createURI(doi);
 			dois.add(doiUri);
 		}
 		LOG.debug("Finished finding issue DOIs.");
 		return dois;
+	}
+
+	private boolean isDoiForErratum(Element doiLink, String doi) {
+		Element parent = (Element)doiLink.getParent();
+		Nodes prevNds = parent.query(".//x:a[contains(@href,'"+doi.replaceAll("/","%2F")+"')]/preceding-sibling::x:span[1]", X_XHTML);
+		if (prevNds.size() != 1) {
+			throw new RuntimeException("Problem finding DOI link previously found for: "+doi);
+		}
+		Element span = (Element)prevNds.get(0);
+		if (span.getValue().contains("(Additions & Corrections)")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public List<URI> getDOIs(IssueDetails details) {
@@ -133,14 +153,14 @@ public class AcsIssueCrawler extends Crawler {
 	}
 	
 	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
+		LOG.debug("Starting to find issue article details: "+year+"-"+issueId);
 		List<URI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
 		for (URI doi : dois) {
-			ArticleDetails ad = new AcsArticleCrawler(doi).getDetails();
+			ArticleDetails ad = new AcsArticle(doi).getDetails();
 			adList.add(ad);
-			//FIXME 
-			break;
 		}
+		LOG.debug("Finished finding issue article details: "+year+"-"+issueId);
 		return adList;
 	}
 	
@@ -153,7 +173,7 @@ public class AcsIssueCrawler extends Crawler {
 			if (!journal.getAbbreviation().equals("cgdefu")) {
 				continue;
 			}
-			AcsIssueCrawler acf = new AcsIssueCrawler(journal);
+			AcsIssue acf = new AcsIssue(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
 			List<ArticleDetails> adList = acf.getArticleDetails(details);
 			for (ArticleDetails ad : adList) {
