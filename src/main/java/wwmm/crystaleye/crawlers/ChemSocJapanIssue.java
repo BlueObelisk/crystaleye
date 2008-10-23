@@ -12,9 +12,10 @@ import nu.xom.Node;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
+import wwmm.crystaleye.crawlers.ActaIssue.ActaJournal;
 import wwmm.crystaleye.util.Utils;
 
-public class ChemSocJapanCrawler extends Crawler {
+public class ChemSocJapanIssue extends Crawler {
 
 	public enum ChemSocJapanJournal {
 		CHEMISTRY_LETTERS("chem-lett", "Chemistry Letters");
@@ -37,9 +38,9 @@ public class ChemSocJapanCrawler extends Crawler {
 	}
 
 	public ChemSocJapanJournal journal;
-	private static final Logger LOG = Logger.getLogger(ChemSocJapanCrawler.class);
+	private static final Logger LOG = Logger.getLogger(ChemSocJapanIssue.class);
 
-	public ChemSocJapanCrawler(ChemSocJapanJournal journal) {
+	public ChemSocJapanIssue(ChemSocJapanJournal journal) {
 		this.journal = journal;
 	}
 
@@ -70,10 +71,10 @@ public class ChemSocJapanCrawler extends Crawler {
 	
 	public List<URI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
-		return getIssueDOIs(details);
+		return getDOIs(details);
 	}
 
-	public List<URI> getIssueDOIs(String year, String issueId) {
+	public List<URI> getDOIs(String year, String issueId) {
 		String url = "http://www.chemistry.or.jp/journals/chem-lett/cl-cont/cl"+year+"-"+issueId+".html";
 		URI issueUri = createURI(url);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
@@ -94,19 +95,35 @@ public class ChemSocJapanCrawler extends Crawler {
 		return dois;
 	}
 	
-	public List<URI> getIssueDOIs(IssueDetails details) {
-		return getIssueDOIs(details.getYear(), details.getIssueId());
+	public List<URI> getDOIs(IssueDetails details) {
+		return getDOIs(details.getYear(), details.getIssueId());
 	}
 	
+	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
+		List<URI> dois = getDOIs(year, issueId);
+		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
+		for (URI doi : dois) {
+			ArticleDetails ad = new ChemSocJapanArticle(doi).getDetails();
+			adList.add(ad);
+			//FIXME
+			break;
+		}
+		return adList;
+	}
+
+	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
+		return getArticleDetails(id.getYear(), id.getIssueId());
+	}
+
 	public static void main(String[] args) {
 		for (ChemSocJapanJournal journal : ChemSocJapanJournal.values()) {
-			ChemSocJapanCrawler acf = new ChemSocJapanCrawler(journal);
-			List<URI> dois = acf.getIssueDOIs("2008", "7");
-			for (URI doi : dois) {
-				System.out.println(doi);
+			ChemSocJapanIssue acf = new ChemSocJapanIssue(journal);
+			IssueDetails details = acf.getCurrentIssueDetails();
+			List<ArticleDetails> adList = acf.getArticleDetails(details);
+			for (ArticleDetails ad : adList) {
+				System.out.println(ad.toString());
 			}
 			break;
 		}
 	}
-
 }

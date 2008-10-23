@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class ActaIssueCrawler extends Crawler {
+public class ActaIssue extends Crawler {
 
 	public enum ActaJournal {
 		SECTION_A("a", "Section A: Foundations of Crystallography"),
@@ -47,9 +47,9 @@ public class ActaIssueCrawler extends Crawler {
 	}
 
 	public ActaJournal journal;
-	private static final Logger LOG = Logger.getLogger(ActaIssueCrawler.class);
+	private static final Logger LOG = Logger.getLogger(ActaIssue.class);
 
-	public ActaIssueCrawler(ActaJournal journal) {
+	public ActaIssue(ActaJournal journal) {
 		this.journal = journal;
 	}
 
@@ -92,7 +92,7 @@ public class ActaIssueCrawler extends Crawler {
 		LOG.debug("Started to find article DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri);
 		Document issueDoc = httpClient.getWebpageDocument(issueUri);
-		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'"+DOI_SITE_URL+"10.1107/')]/@href");
+		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'"+DOI_SITE_URL+"/10.1107/')]/@href");
 		for (Node doiNode : doiNodes) {
 			String doi = ((Attribute)doiNode).getValue();
 			URI doiUri = createURI(doi);
@@ -110,7 +110,7 @@ public class ActaIssueCrawler extends Crawler {
 		List<URI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
 		for (URI doi : dois) {
-			ArticleDetails ad = new ActaArticleCrawler(doi).getDetails();
+			ArticleDetails ad = new ActaArticle(doi).getDetails();
 			adList.add(ad);
 		}
 		return adList;
@@ -125,7 +125,7 @@ public class ActaIssueCrawler extends Crawler {
 			if (!journal.getAbbreviation().equals("c")) {
 				continue;
 			}
-			ActaIssueCrawler acf = new ActaIssueCrawler(journal);
+			ActaIssue acf = new ActaIssue(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
 			List<ArticleDetails> adList = acf.getArticleDetails(details);
 			for (ArticleDetails ad : adList) {

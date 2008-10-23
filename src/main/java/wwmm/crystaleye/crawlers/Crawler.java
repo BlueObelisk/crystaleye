@@ -31,7 +31,9 @@ public class Crawler {
 		Header[] headers = httpClient.getHeaders(uri);
 		String contentType = null;
 		for (Header header : headers) {
-			if ("Content-Type".equals(header.getName())) {
+			String name = header.getName();
+			if ("Content-Type".equals(name) ||
+					"Content-type".equals(name)) {
 				contentType = header.getValue();
 			}
 		}

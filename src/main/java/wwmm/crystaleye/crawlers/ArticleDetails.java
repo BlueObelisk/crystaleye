@@ -7,6 +7,7 @@ import org.apache.commons.httpclient.URI;
 public class ArticleDetails {
 
 	private URI doi;
+	private URI fullTextHtmlLink;
 	private String title;
 	private ArticleReference reference;
 	private String authors;
@@ -16,12 +17,21 @@ public class ArticleDetails {
 		;
 	}
 
-	public ArticleDetails(URI doi, String title, ArticleReference ref, String authors, List<SupplementaryFile> suppFiles) {
+	public ArticleDetails(URI doi, URI fullTextHtmlLink, String title, ArticleReference ref, String authors, List<SupplementaryFile> suppFiles) {
 		this.doi = doi;
+		this.fullTextHtmlLink = fullTextHtmlLink;
 		this.title = title;
 		this.reference = ref;
 		this.authors = authors;
 		this.suppFiles = suppFiles;
+	}
+
+	public URI getFullTextHtmlLink() {
+		return fullTextHtmlLink;
+	}
+
+	public void setFullTextHtmlLink(URI fullTextHtmlLink) {
+		this.fullTextHtmlLink = fullTextHtmlLink;
 	}
 
 	public List<SupplementaryFile> getSuppFiles() {
@@ -77,19 +87,23 @@ public class ArticleDetails {
 
 		result.append(this.getClass().getName()+" Object {"+NEW_LINE);
 		result.append("  DOI: "+doi+NEW_LINE);
+		result.append("  Full text HTML link: "+fullTextHtmlLink+NEW_LINE);
 		result.append("  Title: "+title+NEW_LINE);
 		result.append("  Authors: "+authors+NEW_LINE);
-		result.append("  Reference: "+reference.getJournalAbbreviation()+", ("+
-				reference.getYear()+") "+reference.getVolume()+", "+
-				reference.getPages()+"."+NEW_LINE);
+		result.append("  Bib data: "+NEW_LINE);
+		result.append("    Journal: "+reference.getJournalAbbreviation()+NEW_LINE);
+		result.append("    Year: "+reference.getYear()+NEW_LINE);
+		result.append("    Volume: "+reference.getVolume()+NEW_LINE);
+		result.append("    Number: "+reference.getNumber()+NEW_LINE);
+		result.append("    Pages: "+reference.getPages()+NEW_LINE);
 		result.append("  Supplementary file details:"+NEW_LINE);
 		int scount = 1;
 		for (SupplementaryFile sf : suppFiles) {
-			result.append("    DOI: "+sf.getUri()+NEW_LINE);
+			result.append("    URI: "+sf.getUri()+NEW_LINE);
 			result.append("    Link text: "+sf.getLinkText()+NEW_LINE);
 			result.append("    Content-type: "+sf.getContentType()+NEW_LINE);
 			if (suppFiles.size() > 1 && scount < suppFiles.size()) {
-				result.append("----------"+NEW_LINE);
+				result.append("    -----"+NEW_LINE);
 			}
 			scount++;
 		}

@@ -17,17 +17,18 @@ import org.apache.commons.httpclient.URI;
 
 import wwmm.crystaleye.util.Utils;
 
-public class ActaArticleCrawler extends Crawler {
+public class ActaArticle extends Crawler {
 
 	private URI doi;
 
-	public ActaArticleCrawler(URI doi) {
+	public ActaArticle(URI doi) {
 		this.doi = doi;
 	}
 
 	public ArticleDetails getDetails() {
 		Document abstractPageDoc = httpClient.getWebpageDocument(doi);
 
+		URI fullTextHtmlLink = getFullTextHtmlLink(abstractPageDoc);
 		String title = getTitle(abstractPageDoc);
 		ArticleReference ref = getReference(abstractPageDoc);
 		String authors = getAuthors(abstractPageDoc);
@@ -35,18 +36,28 @@ public class ActaArticleCrawler extends Crawler {
 
 		ArticleDetails ad = new ArticleDetails();
 		ad.setDoi(doi);
+		ad.setFullTextHtmlLink(fullTextHtmlLink);
 		ad.setTitle(title);
 		ad.setReference(ref);
 		ad.setAuthors(authors);
 		ad.setSuppFiles(suppFiles);
 		return ad;
 	}
+	
+	private URI getFullTextHtmlLink(Document abstractPageDoc) {
+		Nodes fullTextHtmlLinks = abstractPageDoc.query(".//x:a[./x:img[contains(@src,'graphics/htmlborder.gif')]]", X_XHTML);
+		if (fullTextHtmlLinks.size() != 1) {
+			throw new RuntimeException("Problem finding full text HTML link: "+doi);
+		}
+		String fullTextUrl = ((Element)fullTextHtmlLinks.get(0)).getAttributeValue("href");
+		return createURI(fullTextUrl);
+	}
 
 	private List<SupplementaryFile> getSupplementaryFiles(
 			Document abstractPageDoc) {
 		Nodes cifNds = abstractPageDoc.query(".//x:a[contains(@href,'http://scripts.iucr.org/cgi-bin/sendcif') and not(contains(@href,'mime'))]", X_XHTML);
-		if (cifNds.size() != 1) {
-			throw new RuntimeException("Problem finding CIF link at: "+doi+" - expected 1 link, found "+cifNds.size());
+		if (cifNds.size() == 0) {
+			return new ArrayList<SupplementaryFile>(0);
 		}
 		String cifUrl = ((Element)cifNds.get(0)).getAttributeValue("href");
 		URI cifUri = createURI(cifUrl);
@@ -81,7 +92,7 @@ public class ActaArticleCrawler extends Crawler {
 		String year = matcher.group(2);
 		String volume = matcher.group(3);
 		String pages = matcher.group(4);
-		ArticleReference ref = new ArticleReference(journalAbbreviation, year, volume, pages);
+		ArticleReference ref = new ArticleReference(journalAbbreviation, year, volume, null, pages);
 		return ref;
 	}
 
