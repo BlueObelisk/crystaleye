@@ -9,32 +9,31 @@ import java.util.regex.Pattern;
 
 import nu.xom.Document;
 import nu.xom.Element;
-import nu.xom.Node;
 import nu.xom.Nodes;
 
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.util.Utils;
-
-public class RscArticle extends Crawler {
+public class RscArticleCrawler extends Crawler {
 
 	private URI doi;
-	private static final Logger LOG = Logger.getLogger(RscArticle.class);
+	private Document abstractPageDoc;
+	
+	private static final Logger LOG = Logger.getLogger(RscArticleCrawler.class);
 
-	public RscArticle(URI doi) {
+	public RscArticleCrawler(URI doi) {
 		this.doi = doi;
 	}
 
 	public ArticleDetails getDetails() {
 		LOG.debug("Finding article details: "+doi);
-		Document abstractPageDoc = httpClient.getWebpageDocument(doi);
+		abstractPageDoc = httpClient.getWebpageDocument(doi);
 		
-		URI fullTextLink = getFullTextHtmlLink(abstractPageDoc);
-		String title = getTitle(abstractPageDoc);
-		ArticleReference ref = getReference(abstractPageDoc);
-		String authors = getAuthors(abstractPageDoc);
-		List<SupplementaryFile> suppFiles = getSupplementaryFiles(abstractPageDoc);
+		URI fullTextLink = getFullTextHtmlLink();
+		String title = getTitle();
+		ArticleReference ref = getReference();
+		String authors = getAuthors();
+		List<SupplementaryFile> suppFiles = getSupplementaryFiles();
 
 		ArticleDetails ad = new ArticleDetails();
 		ad.setDoi(doi);
@@ -47,7 +46,7 @@ public class RscArticle extends Crawler {
 		return ad;
 	}
 
-	private URI getFullTextHtmlLink(Document abstractPageDoc) {
+	private URI getFullTextHtmlLink() {
 		Nodes links = abstractPageDoc.query(".//x:a[.='HTML article']", X_XHTML);
 		if (links.size() != 1) {
 			throw new RuntimeException("Problem finding full text HTML link: "+doi);
@@ -57,17 +56,17 @@ public class RscArticle extends Crawler {
 		return createURI(url);
 	}
 
-	private List<SupplementaryFile> getSupplementaryFiles(Document abstractPageDoc) {
+	private List<SupplementaryFile> getSupplementaryFiles() {
 
 		return new ArrayList<SupplementaryFile>();
 	}
 
-	private Document getSupplementaryDataDocument(Document abstractPageDoc) {
+	private Document getSupplementaryDataDocument() {
 		
 		return null;
 	}
 
-	private String getAuthors(Document abstractPageDoc) {
+	private String getAuthors() {
 		Nodes authorNds = abstractPageDoc.query(".//x:span[@style='font-size:150%;']/following-sibling::x:p[1]/x:strong", X_XHTML);
 		if (authorNds.size() != 1) {
 			throw new RuntimeException("Problem getting the author string from: "+doi);
@@ -76,7 +75,7 @@ public class RscArticle extends Crawler {
 		return authors;
 	}
 
-	private ArticleReference getReference(Document abstractPageDoc) {
+	private ArticleReference getReference() {
 		Nodes refNds = abstractPageDoc.query(".//x:p[./x:strong[contains(.,'DOI:')]]", X_XHTML);
 		if (refNds.size() != 1) {
 			throw new RuntimeException("Problem getting bibliographic data: "+doi);
@@ -95,7 +94,7 @@ public class RscArticle extends Crawler {
 		return new ArticleReference(journalAbbreviation, year, null, null, pages);
 	}
 
-	private String getTitle(Document abstractPageDoc) {
+	private String getTitle() {
 		Nodes titleNds = abstractPageDoc.query(".//x:span[@style='font-size:150%;']//x:font", X_XHTML);
 		if (titleNds.size() != 1) {
 			throw new RuntimeException("Problem getting title: "+doi);

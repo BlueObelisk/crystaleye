@@ -61,8 +61,6 @@ import org.xmlcml.cif.CIFException;
 import org.xmlcml.cif.CIFParser;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.base.CMLElement;
-import org.xmlcml.cml.base.CMLException;
-import org.xmlcml.cml.base.CMLRuntimeException;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLBond;
 import org.xmlcml.cml.element.CMLBondArray;
@@ -74,8 +72,7 @@ import org.xmlcml.cml.element.CMLMetadata;
 import org.xmlcml.cml.element.CMLMetadataList;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLMolecule.HydrogenControl;
-import org.xmlcml.cml.inchi.InChIGenerator;
-import org.xmlcml.cml.inchi.InChIGeneratorFactory;
+import org.xmlcml.cml.inchi.InChIGeneratorTool;
 import org.xmlcml.cml.legacy2cml.cif.CIFConverter;
 import org.xmlcml.cml.tools.ConnectionTableTool;
 import org.xmlcml.cml.tools.CrystalTool;
@@ -416,7 +413,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 			
 			CrystalEyeUtils.writeDateStamp(pathMinusMime+DATE_MIME);
 			Utils.writePrettyXML(cml.getDocument(), pathMinusMime+COMPLETE_CML_MIME);
-		} catch (CMLRuntimeException e) {
+		} catch (RuntimeException e) {
 			System.err.println("Error creating complete CML: "+e.getMessage());
 		}
 	}
@@ -523,7 +520,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 	private CMLMolecule getMolecule(CMLElement cml) {
 		Nodes moleculeNodes = cml.query(CMLMolecule.NS, CML_XPATH);
 		if (moleculeNodes.size() != 1) {
-			throw new CMLRuntimeException("NO MOLECULE FOUND");
+			throw new RuntimeException("NO MOLECULE FOUND");
 		}
 		return (CMLMolecule) moleculeNodes.get(0);
 	}	
@@ -564,7 +561,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 				DisorderToolControls dm = new DisorderToolControls(ProcessControl.LOOSE);
 				DisorderTool dt = new DisorderTool(mo, dm);
 				dt.resolveDisorder();
-			} catch (CMLRuntimeException e) {
+			} catch (RuntimeException e) {
 				e.printStackTrace();
 			}
 		}
@@ -761,7 +758,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 				StereochemistryTool st = new StereochemistryTool(subMol);
 				try {
 					st.add3DStereo();
-				} catch (CMLRuntimeException e) {
+				} catch (RuntimeException e) {
 					System.err.println("Error adding 3D stereochemistry.");
 				}
 				ValencyTool.addMetalAtomsAndBonds(subMol, metalMap);
@@ -827,7 +824,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 				CMLFormula formula = new CMLFormula(cmlMol);
 				formula.normalize();
 				cmlMol.appendChild(formula);
-			} catch (CMLRuntimeException e) {
+			} catch (RuntimeException e) {
 				System.err.println("Could not generate CMLFormula: "+e.getMessage());
 			}
 
@@ -1097,7 +1094,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 			CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
 			molecule.insertChild(crystalC, 0);
 		} else {
-			throw new CMLRuntimeException("Should have found a CMLCrystal element as child of CMLCml.");
+			throw new RuntimeException("Should have found a CMLCrystal element as child of CMLCml.");
 		}
 	}
 
@@ -1199,15 +1196,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 	 * @param molecule
 	 */
 	private void addInchiToMolecule(CMLMolecule molecule) {
-		InChIGeneratorFactory factory;
-		try {
-			factory = new InChIGeneratorFactory();
-			InChIGenerator gen = factory.getInChIGenerator(molecule);
-			gen.generate();
-			gen.appendToMolecule();
-		} catch (CMLException e) {
-			System.err.println("Error generating InChI: "+e.getMessage());
-		}
+		String inchi = new InChIGeneratorTool().generateInChI(molecule);
 	}
 
 

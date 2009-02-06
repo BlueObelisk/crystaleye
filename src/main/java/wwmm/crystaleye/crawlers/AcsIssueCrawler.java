@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class AcsIssue extends Crawler {
+public class AcsIssueCrawler extends Crawler {
 
 	public enum AcsJournal {
 		ACCOUNTS_OF_CHEMICAL_RESEARCH("achre4", "Accounts of Chemical Research", 1967),
@@ -71,19 +71,20 @@ public class AcsIssue extends Crawler {
 	}
 
 	public AcsJournal journal;
-	private static final Logger LOG = Logger.getLogger(AcsIssue.class);
+	private static final Logger LOG = Logger.getLogger(AcsIssueCrawler.class);
 
-	public AcsIssue(AcsJournal journal) {
+	public AcsIssueCrawler(AcsJournal journal) {
 		this.journal = journal;
 	}
 
 	public IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
+		Utils.writeXML(doc, "e:/test.xml");
 		Nodes journalInfo = doc.query(".//x:div[@id='issueinfo']", X_XHTML);
 		int size = journalInfo.size();
 		if (size != 1) {
 			throw new RuntimeException("Expected to find 1 element containing" +
-					"the year/issue information but found "+size+".");
+					" the year/issue information but found "+size+".");
 		}
 		String info = journalInfo.get(0).getValue().trim();
 		Pattern pattern = Pattern.compile("\\s*Vol\\.\\s+\\d+,\\s+No\\.\\s+(\\d+):.*(\\d\\d\\d\\d)");
@@ -98,7 +99,7 @@ public class AcsIssue extends Crawler {
 	}
 	
 	public Document getCurrentIssueDocument() {
-		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="+journal.getAbbreviation();
+		String url = "http://pubs.acs.org/toc/"+journal.getAbbreviation()+"/current";
 		URI issueUri = createURI(url);
 		return httpClient.getWebpageDocument(issueUri);
 	}
@@ -157,7 +158,7 @@ public class AcsIssue extends Crawler {
 		List<URI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
 		for (URI doi : dois) {
-			ArticleDetails ad = new AcsArticle(doi).getDetails();
+			ArticleDetails ad = new AcsArticleCrawler(doi).getDetails();
 			adList.add(ad);
 		}
 		LOG.debug("Finished finding issue article details: "+year+"-"+issueId);
@@ -173,7 +174,7 @@ public class AcsIssue extends Crawler {
 			if (!journal.getAbbreviation().equals("cgdefu")) {
 				continue;
 			}
-			AcsIssue acf = new AcsIssue(journal);
+			AcsIssueCrawler acf = new AcsIssueCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
 			List<ArticleDetails> adList = acf.getArticleDetails(details);
 			for (ArticleDetails ad : adList) {

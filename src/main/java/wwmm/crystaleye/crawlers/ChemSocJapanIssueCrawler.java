@@ -12,10 +12,9 @@ import nu.xom.Node;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.crawlers.ActaIssue.ActaJournal;
 import wwmm.crystaleye.util.Utils;
 
-public class ChemSocJapanIssue extends Crawler {
+public class ChemSocJapanIssueCrawler extends Crawler {
 
 	public enum ChemSocJapanJournal {
 		CHEMISTRY_LETTERS("chem-lett", "Chemistry Letters");
@@ -38,9 +37,9 @@ public class ChemSocJapanIssue extends Crawler {
 	}
 
 	public ChemSocJapanJournal journal;
-	private static final Logger LOG = Logger.getLogger(ChemSocJapanIssue.class);
+	private static final Logger LOG = Logger.getLogger(ChemSocJapanIssueCrawler.class);
 
-	public ChemSocJapanIssue(ChemSocJapanJournal journal) {
+	public ChemSocJapanIssueCrawler(ChemSocJapanJournal journal) {
 		this.journal = journal;
 	}
 
@@ -103,7 +102,7 @@ public class ChemSocJapanIssue extends Crawler {
 		List<URI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
 		for (URI doi : dois) {
-			ArticleDetails ad = new ChemSocJapanArticle(doi).getDetails();
+			ArticleDetails ad = new ChemSocJapanArticleCrawler(doi).getDetails();
 			adList.add(ad);
 			//FIXME
 			break;
@@ -117,7 +116,7 @@ public class ChemSocJapanIssue extends Crawler {
 
 	public static void main(String[] args) {
 		for (ChemSocJapanJournal journal : ChemSocJapanJournal.values()) {
-			ChemSocJapanIssue acf = new ChemSocJapanIssue(journal);
+			ChemSocJapanIssueCrawler acf = new ChemSocJapanIssueCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
 			List<ArticleDetails> adList = acf.getArticleDetails(details);
 			for (ArticleDetails ad : adList) {

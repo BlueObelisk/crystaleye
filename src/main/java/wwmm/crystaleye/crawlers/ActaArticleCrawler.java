@@ -14,25 +14,29 @@ import nu.xom.Nodes;
 import nu.xom.Text;
 
 import org.apache.commons.httpclient.URI;
+import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class ActaArticle extends Crawler {
+public class ActaArticleCrawler extends Crawler {
 
 	private URI doi;
+	private Document abstractPageDoc;
+	
+	private static final Logger LOG = Logger.getLogger(ActaArticleCrawler.class);
 
-	public ActaArticle(URI doi) {
+	public ActaArticleCrawler(URI doi) {
 		this.doi = doi;
 	}
 
 	public ArticleDetails getDetails() {
-		Document abstractPageDoc = httpClient.getWebpageDocument(doi);
+		abstractPageDoc = httpClient.getWebpageDocument(doi);
 
-		URI fullTextHtmlLink = getFullTextHtmlLink(abstractPageDoc);
-		String title = getTitle(abstractPageDoc);
-		ArticleReference ref = getReference(abstractPageDoc);
-		String authors = getAuthors(abstractPageDoc);
-		List<SupplementaryFile> suppFiles = getSupplementaryFiles(abstractPageDoc);
+		URI fullTextHtmlLink = getFullTextHtmlLink();
+		String title = getTitle();
+		ArticleReference ref = getReference();
+		String authors = getAuthors();
+		List<SupplementaryFile> suppFiles = getSupplementaryFiles();
 
 		ArticleDetails ad = new ArticleDetails();
 		ad.setDoi(doi);
@@ -44,7 +48,7 @@ public class ActaArticle extends Crawler {
 		return ad;
 	}
 	
-	private URI getFullTextHtmlLink(Document abstractPageDoc) {
+	private URI getFullTextHtmlLink() {
 		Nodes fullTextHtmlLinks = abstractPageDoc.query(".//x:a[./x:img[contains(@src,'graphics/htmlborder.gif')]]", X_XHTML);
 		if (fullTextHtmlLinks.size() != 1) {
 			throw new RuntimeException("Problem finding full text HTML link: "+doi);
@@ -53,8 +57,7 @@ public class ActaArticle extends Crawler {
 		return createURI(fullTextUrl);
 	}
 
-	private List<SupplementaryFile> getSupplementaryFiles(
-			Document abstractPageDoc) {
+	private List<SupplementaryFile> getSupplementaryFiles() {
 		Nodes cifNds = abstractPageDoc.query(".//x:a[contains(@href,'http://scripts.iucr.org/cgi-bin/sendcif') and not(contains(@href,'mime'))]", X_XHTML);
 		if (cifNds.size() == 0) {
 			return new ArrayList<SupplementaryFile>(0);
@@ -68,7 +71,7 @@ public class ActaArticle extends Crawler {
 		return suppFiles;
 	}
 
-	private String getAuthors(Document abstractPageDoc) {
+	private String getAuthors() {
 		Nodes authorNds = abstractPageDoc.query(".//x:div[@class='bibline']/following-sibling::x:h3[2]", X_XHTML);
 		if (authorNds.size() != 1) {
 			throw new RuntimeException("Problem finding author name text at: "+doi);
@@ -77,7 +80,7 @@ public class ActaArticle extends Crawler {
 		return authors;
 	}
 
-	private ArticleReference getReference(Document abstractPageDoc) {
+	private ArticleReference getReference() {
 		Nodes bibNds = abstractPageDoc.query(".//x:div[@class='bibline']", X_XHTML);
 		if (bibNds.size() != 1) {
 			throw new RuntimeException("Could not find bibliographic text at: "+doi);
@@ -96,7 +99,7 @@ public class ActaArticle extends Crawler {
 		return ref;
 	}
 
-	private String getTitle(Document abstractPageDoc) {
+	private String getTitle() {
 		Nodes titleNds = abstractPageDoc.query(".//x:div[@class='bibline']/following-sibling::x:h3[1]", X_XHTML);
 		if (titleNds.size() != 1) {
 			throw new RuntimeException("Could not find article title at: "+doi);
