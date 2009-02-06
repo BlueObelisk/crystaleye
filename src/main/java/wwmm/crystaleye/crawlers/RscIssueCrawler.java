@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class RscIssue extends Crawler{
+public class RscIssueCrawler extends Crawler{
 
 	public enum RscJournal {
 		ANNUAL_REPORTS_SECTION_A("ic", "Annual Reports Section A"),
@@ -53,9 +53,9 @@ public class RscIssue extends Crawler{
 
 	public RscJournal journal;
 	private String volume = "0";
-	private static final Logger LOG = Logger.getLogger(RscIssue.class);
+	private static final Logger LOG = Logger.getLogger(RscIssueCrawler.class);
 
-	public RscIssue(RscJournal journal) {
+	public RscIssueCrawler(RscJournal journal) {
 		this.journal = journal;
 	}
 
@@ -127,7 +127,7 @@ public class RscIssue extends Crawler{
 			if (i != 6) {
 				continue;
 			}
-			ArticleDetails ad = new RscArticle(doi).getDetails();
+			ArticleDetails ad = new RscArticleCrawler(doi).getDetails();
 			adList.add(ad);
 			//FIXME
 			break;
@@ -145,7 +145,7 @@ public class RscIssue extends Crawler{
 			if (!journal.getAbbreviation().equals("cc")) {
 				continue;
 			}
-			RscIssue acf = new RscIssue(journal);
+			RscIssueCrawler acf = new RscIssueCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
 			List<ArticleDetails> adList = acf.getArticleDetails(details);
 			for (ArticleDetails ad : adList) {

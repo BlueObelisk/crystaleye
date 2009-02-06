@@ -31,7 +31,7 @@ import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.base.CMLException;
-import org.xmlcml.cml.base.CMLRuntimeException;
+import org.xmlcml.cml.base.RuntimeException;
 import org.xmlcml.cml.base.CMLUtil;
 import org.xmlcml.cml.element.CMLAngle;
 import org.xmlcml.cml.element.CMLAtom;
@@ -152,7 +152,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 									if (classNodes.size() > 0) {
 										compClass = ((Element)classNodes.get(0)).getValue();
 									} else {
-										throw new CMLRuntimeException("Molecule should have a compoundClass scalar set.");
+										throw new RuntimeException("Molecule should have a compoundClass scalar set.");
 									}
 									boolean isPolymeric = false;
 									Nodes polymericNodes = cml.query(".//"+CMLMetadata.NS+"[@dictRef='"+
@@ -222,7 +222,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			System.out.println(filename);
 			molecule.serialize(new FileOutputStream(file), 1);
 		} catch (IOException e) {
-			throw new CMLRuntimeException("ERROR "+e);
+			throw new RuntimeException("ERROR "+e);
 		}
 	}
 
@@ -272,7 +272,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 	private void write2dImage(String path, CMLMolecule molecule, int width, int height, boolean showH) {
 		try {
 			if (molecule.isMoleculeContainer()) {
-				throw new CMLRuntimeException("Molecule should not contain molecule children.");
+				throw new RuntimeException("Molecule should not contain molecule children.");
 			}
 			File file = new File(path).getParentFile();
 			if (!file.exists()) {
@@ -315,7 +315,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			content = sw.toString();
 			sw.close();
 		} catch (IOException e) {
-			throw new CMLRuntimeException("ERROR "+e);
+			throw new RuntimeException("ERROR "+e);
 		} finally {
 			if (sw != null)
 				try {
@@ -381,7 +381,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 	}
 
 	private void addAtomSequenceNumbers(CMLMolecule mol) {
-		if (mol.isMoleculeContainer()) throw new CMLRuntimeException("Molecule should be a molecule container.");
+		if (mol.isMoleculeContainer()) throw new RuntimeException("Molecule should be a molecule container.");
 		int i = 0;
 		for (CMLAtom atom : mol.getAtoms()) {
 			Attribute sequenceNumber = new Attribute("sequenceNumber", String.valueOf(i+1));

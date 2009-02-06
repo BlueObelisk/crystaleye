@@ -13,7 +13,6 @@ import java.util.Properties;
 import nu.xom.Document;
 
 import org.xmlcml.cml.base.CMLConstants;
-import org.xmlcml.cml.base.CMLRuntimeException;
 import org.xmlcml.molutil.ChemicalElement;
 
 import wwmm.crystaleye.properties.SiteProperties;
@@ -85,7 +84,7 @@ public class CreateRSSFeeds implements CMLConstants {
 			this.summaryWriteDir = properties.getProperty("summary.write.dir");
 			this.rssArchiveDir = properties.getProperty("rss.archive.dir");
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Could not read properties file: "+this.propertiesPath, e);
+			throw new RuntimeException("Could not read properties file: "+this.propertiesPath, e);
 		}
 	}
 
@@ -94,7 +93,7 @@ public class CreateRSSFeeds implements CMLConstants {
 		try {
 			properties.load(new FileInputStream(this.propertiesPath));
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Could not read properties file: "+this.propertiesPath, e);
+			throw new RuntimeException("Could not read properties file: "+this.propertiesPath, e);
 		}
 		this.journalAbbreviations = properties.getProperty(publisherAbbreviation+".journal.abbreviations").split(",");
 		this.journalTitles = properties.getProperty(publisherAbbreviation+".journal.full.titles").split(",");
@@ -105,7 +104,7 @@ public class CreateRSSFeeds implements CMLConstants {
 		try {
 			properties.load(new FileInputStream(this.propertiesPath));
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Could not read properties file: "+this.propertiesPath, e);
+			throw new RuntimeException("Could not read properties file: "+this.propertiesPath, e);
 		}
 		this.publisherTitle = properties.getProperty(publisherAbbreviation+".full.title");
 	}
@@ -358,7 +357,7 @@ public class CreateRSSFeeds implements CMLConstants {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						throw new CMLRuntimeException("Problem parsing feed.");
+						throw new RuntimeException("Problem parsing feed.");
 					}
 
 					String outStr = feedWriteDir+"/journal/"+publisherAbbreviation+"/"+journalAbbreviation+"/cmlrss/"+feedType.replaceAll("\\.", "")+"/feed.xml";	
@@ -392,7 +391,7 @@ public class CreateRSSFeeds implements CMLConstants {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new CMLRuntimeException("Problem parsing feed.");
+					throw new RuntimeException("Problem parsing feed.");
 				}
 
 				String outStr = feedWriteDir+"/atoms/"+symbol+"/cmlrss/"+feedType.replaceAll("\\.", "")+"/feed.xml";
@@ -429,7 +428,7 @@ public class CreateRSSFeeds implements CMLConstants {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						throw new CMLRuntimeException("Problem parsing feed.");
+						throw new RuntimeException("Problem parsing feed.");
 					}
 
 					String outStr = feedWriteDir+"/bonds/"+symbol1+"-"+symbol2+"/cmlrss/"+feedType.replaceAll("\\.", "")+"/feed.xml";
@@ -462,7 +461,7 @@ public class CreateRSSFeeds implements CMLConstants {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new CMLRuntimeException("Problem parsing feed.");
+					throw new RuntimeException("Problem parsing feed.");
 				}
 
 				String outStr = feedWriteDir+"/class/"+clas+"/cmlrss/"+feedType.replaceAll("\\.", "")+"/feed.xml";
@@ -479,7 +478,7 @@ public class CreateRSSFeeds implements CMLConstants {
 		} else if ("atom_1.0".equals(feedType)) {
 			return FeedType.ATOM_1;
 		} else {
-			throw new CMLRuntimeException("RSS type "+feedType+" not supported.");
+			throw new RuntimeException("RSS type "+feedType+" not supported.");
 		}
 	}
 

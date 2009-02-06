@@ -17,23 +17,25 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class AcsArticle extends Crawler {
+public class AcsArticleCrawler extends Crawler {
 
 	private URI doi;
-	private static final Logger LOG = Logger.getLogger(AcsArticle.class);
+	private Document abstractPageDoc;
 	
-	public AcsArticle(URI doi) {
+	private static final Logger LOG = Logger.getLogger(AcsArticleCrawler.class);
+	
+	public AcsArticleCrawler(URI doi) {
 		this.doi = doi;
 	}
 	
 	public ArticleDetails getDetails() {
 		LOG.debug("Finding article details: "+doi);
-		Document abstractPageDoc = httpClient.getWebpageDocument(doi);
-		URI fullTextLink = getFullTextHtmlLink(abstractPageDoc);
-		String title = getTitle(abstractPageDoc);
-		ArticleReference ref = getReference(abstractPageDoc);
-		String authors = getAuthors(abstractPageDoc);
-		List<SupplementaryFile> suppFiles = getSupplementaryFiles(abstractPageDoc);
+		abstractPageDoc = httpClient.getWebpageDocument(doi);
+		URI fullTextLink = getFullTextHtmlLink();
+		String title = getTitle();
+		ArticleReference ref = getReference();
+		String authors = getAuthors();
+		List<SupplementaryFile> suppFiles = getSupplementaryFiles();
 
 		ArticleDetails ad = new ArticleDetails();
 		ad.setDoi(doi);
@@ -46,7 +48,7 @@ public class AcsArticle extends Crawler {
 		return ad;
 	}
 	
-	private URI getFullTextHtmlLink(Document abstractPageDoc) {
+	private URI getFullTextHtmlLink() {
 		Nodes fullTextLinks = abstractPageDoc.query(".//x:a[@title='Full Text HTML']", X_XHTML);
 		if (fullTextLinks.size() == 0) {
 			throw new RuntimeException("Problem getting full text HTML link: "+doi);
@@ -56,8 +58,8 @@ public class AcsArticle extends Crawler {
 		return createURI(fullTextUrl);
 	}
 	
-	private List<SupplementaryFile> getSupplementaryFiles(Document abstractPageDoc) {
-		Document suppPageDoc = getSupplementaryDataDocument(abstractPageDoc);
+	private List<SupplementaryFile> getSupplementaryFiles() {
+		Document suppPageDoc = getSupplementaryDataDocument();
 		if (suppPageDoc == null) {
 			return new ArrayList<SupplementaryFile>(0);
 		}
@@ -74,7 +76,7 @@ public class AcsArticle extends Crawler {
 		return sfList;
 	}
 
-	private Document getSupplementaryDataDocument(Document abstractPageDoc) {
+	private Document getSupplementaryDataDocument() {
 		Nodes suppPageLinks = abstractPageDoc.query(".//x:a[contains(@href,'supporting_information')]", X_XHTML);
 		if (suppPageLinks.size() > 1) {
 			throw new RuntimeException("Problem finding supplementary page link for: "+doi);
@@ -86,7 +88,7 @@ public class AcsArticle extends Crawler {
 		return httpClient.getWebpageDocument(suppPageUri);
 	}
 
-	private String getAuthors(Document abstractPageDoc) {
+	private String getAuthors() {
 		Nodes authorNds = abstractPageDoc.query(".//x:p[./x:font[@size='+2']]/following-sibling::x:p[1]", X_XHTML);
 		if (authorNds.size() != 1) {
 			throw new RuntimeException("Problem finding authors at: "+doi);
@@ -102,7 +104,7 @@ public class AcsArticle extends Crawler {
 		return authors;
 	}
 
-	private ArticleReference getReference(Document abstractPageDoc) {
+	private ArticleReference getReference() {
 		Nodes refNds = abstractPageDoc.query(".//x:div[@id='articleNav']/following-sibling::x:p[1]", X_XHTML);
 		if (refNds.size() != 1) {
 			throw new RuntimeException("Problem finding bibliographic text at: "+doi);
@@ -128,7 +130,7 @@ public class AcsArticle extends Crawler {
 		return ar;
 	}
 
-	private String getTitle(Document abstractPageDoc) {
+	private String getTitle() {
 		Nodes titleNds = abstractPageDoc.query(".//x:p/x:font[@size='+2']/x:b", X_XHTML);
 		if (titleNds.size() != 1) {
 			throw new RuntimeException("Problem finding title at: "+doi);

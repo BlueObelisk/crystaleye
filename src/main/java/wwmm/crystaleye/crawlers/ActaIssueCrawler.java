@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class ActaIssue extends Crawler {
+public class ActaIssueCrawler extends Crawler {
 
 	public enum ActaJournal {
 		SECTION_A("a", "Section A: Foundations of Crystallography"),
@@ -47,9 +47,9 @@ public class ActaIssue extends Crawler {
 	}
 
 	public ActaJournal journal;
-	private static final Logger LOG = Logger.getLogger(ActaIssue.class);
+	private static final Logger LOG = Logger.getLogger(ActaIssueCrawler.class);
 
-	public ActaIssue(ActaJournal journal) {
+	public ActaIssueCrawler(ActaJournal journal) {
 		this.journal = journal;
 	}
 
@@ -110,7 +110,7 @@ public class ActaIssue extends Crawler {
 		List<URI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
 		for (URI doi : dois) {
-			ArticleDetails ad = new ActaArticle(doi).getDetails();
+			ArticleDetails ad = new ActaArticleCrawler(doi).getDetails();
 			adList.add(ad);
 		}
 		return adList;
@@ -125,7 +125,7 @@ public class ActaIssue extends Crawler {
 			if (!journal.getAbbreviation().equals("c")) {
 				continue;
 			}
-			ActaIssue acf = new ActaIssue(journal);
+			ActaIssueCrawler acf = new ActaIssueCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
 			List<ArticleDetails> adList = acf.getArticleDetails(details);
 			for (ArticleDetails ad : adList) {
