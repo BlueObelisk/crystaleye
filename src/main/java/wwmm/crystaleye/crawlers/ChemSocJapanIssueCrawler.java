@@ -104,8 +104,6 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 		for (URI doi : dois) {
 			ArticleDetails ad = new ChemSocJapanArticleCrawler(doi).getDetails();
 			adList.add(ad);
-			//FIXME
-			break;
 		}
 		return adList;
 	}

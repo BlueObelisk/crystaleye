@@ -2,11 +2,11 @@ package wwmm.crystaleye.crawlers;
 
 public class ArticleReference {
 
-	private String journalAbbreviation;
-	private String year;
-	private String volume;
-	private String number;
-	private String pages;
+	private String journalAbbreviation = "";
+	private String year = "";
+	private String volume = "";
+	private String number = "";
+	private String pages = "";
 	
 	public ArticleReference(String journalAbbreviation, String year,
 			String volume, String number, String pages) {
