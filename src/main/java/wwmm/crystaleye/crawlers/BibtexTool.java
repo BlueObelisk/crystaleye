@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 
@@ -24,12 +26,10 @@ public class BibtexTool {
 	private void parseBibtexString() {
 		nameValuePairs = new HashMap<String, String>();
 		String bibContents = bibtexString.substring(bibtexString.indexOf("{")+1, bibtexString.lastIndexOf("}"));
-		String[] items = bibContents.split(",");
-		for (String item : items) {
-			if (!item.contains("={")) {
-				continue;
-			}
-			item = item.trim();
+		Pattern p = Pattern.compile("(\\w+=\\{.+\\})");
+		Matcher m = p.matcher(bibContents);
+		while(m.find()) {
+			String item = m.group();
 			int idx = item.indexOf("={");
 			String name = item.substring(0,idx);
 			String value = item.substring(idx+2,item.lastIndexOf("}"));
