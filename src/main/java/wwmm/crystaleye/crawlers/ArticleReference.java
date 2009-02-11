@@ -2,15 +2,15 @@ package wwmm.crystaleye.crawlers;
 
 public class ArticleReference {
 
-	private String journalAbbreviation = "";
-	private String year = "";
-	private String volume = "";
-	private String number = "";
-	private String pages = "";
+	private String journal;
+	private String year;
+	private String volume;
+	private String number;
+	private String pages;
 	
-	public ArticleReference(String journalAbbreviation, String year,
+	public ArticleReference(String journal, String year,
 			String volume, String number, String pages) {
-		this.journalAbbreviation = journalAbbreviation;
+		this.journal = journal;
 		this.year = year;
 		this.volume = volume;
 		this.number = number;
@@ -23,10 +23,10 @@ public class ArticleReference {
 		this.number = number;
 	}
 	public String getJournalAbbreviation() {
-		return journalAbbreviation;
+		return journal;
 	}
-	public void setJournalAbbreviation(String journalAbbreviation) {
-		this.journalAbbreviation = journalAbbreviation;
+	public void setJournalAbbreviation(String journal) {
+		this.journal = journal;
 	}
 	public String getYear() {
 		return year;

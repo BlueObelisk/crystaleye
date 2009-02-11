@@ -1,7 +1,7 @@
 package wwmm.crystaleye.crawlers;
 
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
-import static wwmm.crystaleye.crawlers.CrawlerConstants.DOI_SITE_URL;
+import static wwmm.crystaleye.crawlers.CrawlerConstants.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,21 +79,20 @@ public class AcsIssueCrawler extends Crawler {
 
 	public IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
-		Utils.writeXML(doc, "e:/test.xml");
-		Nodes journalInfo = doc.query(".//x:div[@id='issueinfo']", X_XHTML);
+		Nodes journalInfo = doc.query(".//x:div[@id='tocMeta']", X_XHTML);
 		int size = journalInfo.size();
 		if (size != 1) {
 			throw new RuntimeException("Expected to find 1 element containing" +
 					" the year/issue information but found "+size+".");
 		}
 		String info = journalInfo.get(0).getValue().trim();
-		Pattern pattern = Pattern.compile("\\s*Vol\\.\\s+\\d+,\\s+No\\.\\s+(\\d+):.*(\\d\\d\\d\\d)");
+		Pattern pattern = Pattern.compile("[^,]*,\\s*(\\d+)\\s+Volume\\s+(\\d+),\\s+Issue\\s+(\\d+)\\s+Pages\\s+(\\d+-\\d+).*");
 		Matcher matcher = pattern.matcher(info);
-		if (!matcher.find() || matcher.groupCount() != 2) {
+		if (!matcher.find() || matcher.groupCount() != 4) {
 			throw new RuntimeException("Could not extract the year/issue information.");
 		}
-		String year = matcher.group(2);
-		String issueId = matcher.group(1);
+		String year = matcher.group(1);
+		String issueId = matcher.group(3);
 		LOG.debug("Found latest issue details for ACS journal "+journal.getFullTitle()+": year="+year+", issue="+issueId+".");
 		return new IssueDetails(year, issueId);
 	}
@@ -111,42 +110,22 @@ public class AcsIssueCrawler extends Crawler {
 
 	public List<URI> getDOIs(String year, String issueId) {
 		List<URI> dois = new ArrayList<URI>();
-		String decade = year.substring(2, 3);
 		int volume = Integer.valueOf(year)-journal.getVolumeOffset();
-		String issueUrl = "http://pubs3.acs.org/acs/journals/toc.page?incoden="
-			+journal.getAbbreviation()+"&indecade="+decade+"&involume="+String.valueOf(volume)+
-			"&inissue="+issueId;
+		String issueUrl = ACS_HOMEPAGE_URL+"/toc/"+journal.getAbbreviation()+"/"+volume+"/"+issueId;
 		URI issueUri = createURI(issueUrl);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri.toString());
 		Document issueDoc = httpClient.getWebpageDocument(issueUri);
-		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'"+DOI_SITE_URL+"/10.1021')]");
+		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:div[@class='DOI']");
 		for (Node doiNode : doiNodes) {
-			Element doiLink = (Element)doiNode;
-			String doi = ((Element)doiNode).getValue();
-			if (isDoiForErratum(doiLink, doi)) {
-				continue;
-			}
-			doi = DOI_SITE_URL+"/"+doi;
+			String contents = ((Element)doiNode).getValue();
+			String doiPostfix = contents.replaceAll("DOI:", "").trim();
+			String doi = DOI_SITE_URL+"/"+doiPostfix;
 			URI doiUri = createURI(doi);
 			dois.add(doiUri);
 		}
 		LOG.debug("Finished finding issue DOIs.");
 		return dois;
-	}
-
-	private boolean isDoiForErratum(Element doiLink, String doi) {
-		Element parent = (Element)doiLink.getParent();
-		Nodes prevNds = parent.query(".//x:a[contains(@href,'"+doi.replaceAll("/","%2F")+"')]/preceding-sibling::x:span[1]", X_XHTML);
-		if (prevNds.size() != 1) {
-			throw new RuntimeException("Problem finding DOI link previously found for: "+doi);
-		}
-		Element span = (Element)prevNds.get(0);
-		if (span.getValue().contains("(Additions & Corrections)")) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 	
 	public List<URI> getDOIs(IssueDetails details) {
@@ -169,6 +148,12 @@ public class AcsIssueCrawler extends Crawler {
 		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
 
+	/**
+	 * Main method only for demonstration of class use. Does not require
+	 * any arguments.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		for (AcsJournal journal : AcsJournal.values()) {
 			if (!journal.getAbbreviation().equals("cgdefu")) {

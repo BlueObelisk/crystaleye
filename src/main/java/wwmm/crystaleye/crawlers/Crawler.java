@@ -1,6 +1,5 @@
 package wwmm.crystaleye.crawlers;
 
-import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
@@ -27,19 +26,6 @@ public class Crawler {
 		}
 	}
 	
-	protected String getContentType(URI uri) {
-		Header[] headers = httpClient.getHeaders(uri);
-		String contentType = null;
-		for (Header header : headers) {
-			String name = header.getName();
-			if ("Content-Type".equals(name) ||
-					"Content-type".equals(name)) {
-				contentType = header.getValue();
-			}
-		}
-		return contentType;
-	}
-	
 	protected URI createURI(String url) {
 		URI uri = null;
 		try {
@@ -51,4 +37,5 @@ public class Crawler {
 		}
 		return uri;
 	}
+	
 }

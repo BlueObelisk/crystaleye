@@ -1,8 +1,10 @@
 package wwmm.crystaleye.crawlers;
 
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
+import static wwmm.crystaleye.crawlers.CrawlerConstants.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,28 +19,28 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class AcsArticleCrawler extends Crawler {
-
-	private URI doi;
-	private Document abstractPageDoc;
+public class AcsArticleCrawler extends ArticleCrawler {
 	
 	private static final Logger LOG = Logger.getLogger(AcsArticleCrawler.class);
 	
 	public AcsArticleCrawler(URI doi) {
-		this.doi = doi;
+		super(doi);
 	}
 	
 	public ArticleDetails getDetails() {
-		LOG.debug("Finding article details: "+doi);
-		abstractPageDoc = httpClient.getWebpageDocument(doi);
-		URI fullTextLink = getFullTextHtmlLink();
+		List<SupplementaryFileDetails> suppFiles = getSupplementaryFilesDetails();
+		if (!doiResolved) {
+			LOG.warn("This DOI has not resolved so cannot get article details: "+doi.toString());
+			return ad;
+		}
+		URI fullTextLink = getFullTextLink();
+		if (fullTextLink != null) {
+			ad.setFullTextHtmlLink(fullTextLink);
+		}	
+		
 		String title = getTitle();
-		ArticleReference ref = getReference();
 		String authors = getAuthors();
-		List<SupplementaryFile> suppFiles = getSupplementaryFiles();
-
-		ArticleDetails ad = new ArticleDetails();
-		ad.setDoi(doi);
+		ArticleReference ref = getReference();
 		ad.setFullTextHtmlLink(fullTextLink);
 		ad.setTitle(title);
 		ad.setReference(ref);
@@ -48,97 +50,104 @@ public class AcsArticleCrawler extends Crawler {
 		return ad;
 	}
 	
-	private URI getFullTextHtmlLink() {
-		Nodes fullTextLinks = abstractPageDoc.query(".//x:a[@title='Full Text HTML']", X_XHTML);
+	private URI getFullTextLink() {
+		Nodes fullTextLinks = abstractPageDoc.query(".//x:a[contains(@href,'/full/')]", X_XHTML);
 		if (fullTextLinks.size() == 0) {
 			throw new RuntimeException("Problem getting full text HTML link: "+doi);
 		}
 		String urlPostfix = ((Element)fullTextLinks.get(0)).getAttributeValue("href");
-		String fullTextUrl = "http://pubs.acs.org/"+urlPostfix;
+		String fullTextUrl = ACS_HOMEPAGE_URL+urlPostfix;
 		return createURI(fullTextUrl);
 	}
 	
-	private List<SupplementaryFile> getSupplementaryFiles() {
-		Document suppPageDoc = getSupplementaryDataDocument();
+	private List<SupplementaryFileDetails> getSupplementaryFilesDetails() {
+		Document suppPageDoc = getSupplementaryDataWebpage();
 		if (suppPageDoc == null) {
-			return new ArrayList<SupplementaryFile>(0);
+			return Collections.EMPTY_LIST;
 		}
-		List<Node> suppLinks = Utils.queryHTML(suppPageDoc, ".//x:a[contains(@href,'/suppinfo/')]");
-		List<SupplementaryFile> sfList = new ArrayList<SupplementaryFile>(suppLinks.size());
+		List<Node> suppLinks = Utils.queryHTML(suppPageDoc, ".//x:div[@id='supInfoBox']//x:a[contains(@href,'/suppl/')]");
+		List<SupplementaryFileDetails> sfList = new ArrayList<SupplementaryFileDetails>(suppLinks.size());
 		for (Node suppLink : suppLinks) {
 			Element link = (Element)suppLink;
-			String text = link.getValue();
-			URI uri = createURI(link.getAttributeValue("href"));
-			String contentType = getContentType(uri);
-			SupplementaryFile sf = new SupplementaryFile(uri, text, contentType);
+			String urlPostfix = link.getAttributeValue("href");
+			String url = ACS_HOMEPAGE_URL+urlPostfix;
+			URI uri = createURI(url);
+			String linkText = link.getValue();
+			String contentType = httpClient.getContentType(uri);
+			SupplementaryFileDetails sf = new SupplementaryFileDetails(uri, linkText, contentType);
 			sfList.add(sf);
 		}
 		return sfList;
 	}
 
-	private Document getSupplementaryDataDocument() {
-		Nodes suppPageLinks = abstractPageDoc.query(".//x:a[contains(@href,'supporting_information')]", X_XHTML);
-		if (suppPageLinks.size() > 1) {
-			throw new RuntimeException("Problem finding supplementary page link for: "+doi);
-		} else if (suppPageLinks.size() == 0) {
+	private Document getSupplementaryDataWebpage() {
+		Nodes suppPageLinks = abstractPageDoc.query(".//x:a[contains(@href,'/suppl/')]", X_XHTML);
+		if (suppPageLinks.size() == 0) {
 			return null;
 		}
-		String suppPageUrl = ((Element)suppPageLinks.get(0)).getAttributeValue("href");
-		URI suppPageUri = createURI(suppPageUrl);
+		String urlPostfix = ((Element)suppPageLinks.get(0)).getAttributeValue("href");
+		String url = ACS_HOMEPAGE_URL+urlPostfix;
+		URI suppPageUri = createURI(url);
 		return httpClient.getWebpageDocument(suppPageUri);
 	}
 
 	private String getAuthors() {
-		Nodes authorNds = abstractPageDoc.query(".//x:p[./x:font[@size='+2']]/following-sibling::x:p[1]", X_XHTML);
-		if (authorNds.size() != 1) {
+		Nodes authorNds = abstractPageDoc.query(".//x:meta[@name='dc.Creator']", X_XHTML);
+		if (authorNds.size() == 0) {
 			throw new RuntimeException("Problem finding authors at: "+doi);
 		}
-		Element authorElement = (Element)authorNds.get(0);
-		List<Node> supNds = Utils.queryHTML(authorElement, ".//x:sup");
-		for (Node sup : supNds) {
-			sup.detach();
+		StringBuilder authors = new StringBuilder();
+		for (int i = 0; i < authorNds.size(); i++) {
+			String author = ((Element)authorNds.get(i)).getAttributeValue("content");
+			authors.append(author);
+			if (i < authorNds.size() - 1) {
+				authors.append(", ");
+			}
 		}
-		String authors = authorElement.getValue();
-		authors = authors.replaceAll("\\s+", " ");
-		authors = authors.trim();
-		return authors;
+		return authors.toString();
 	}
 
 	private ArticleReference getReference() {
-		Nodes refNds = abstractPageDoc.query(".//x:div[@id='articleNav']/following-sibling::x:p[1]", X_XHTML);
+		Nodes refNds = abstractPageDoc.query(".//x:div[@id='citation']", X_XHTML);
 		if (refNds.size() != 1) {
 			throw new RuntimeException("Problem finding bibliographic text at: "+doi);
 		}
-		String bibline = refNds.get(0).getValue().trim();
-		Pattern pattern = Pattern.compile("\\s*([^\\,]+),\\s+(\\d+)\\s+\\((\\d+)\\),\\s+(\\d+).(\\d+),\\s+(\\d+).*");
-		Matcher matcher = pattern.matcher(bibline);
-		if (!matcher.find() || matcher.groupCount() != 6) {
-			
-			throw new RuntimeException("Problem finding bibliographic text at: "+doi);
+		Element refNd = (Element)refNds.get(0);
+		Nodes journalNds = refNd.query("./x:cite", X_XHTML);
+		if (journalNds.size() != 1) {
+			throw new RuntimeException("Problem finding journal text at: "+doi);
 		}
-		String journalAbbreviation = matcher.group(1);
-		String number = matcher.group(2);
-		String volume = matcher.group(3);
-		volume = volume.replaceAll("\\s*", "");
-		String pageStart = matcher.group(4);
-		String pageEnd = matcher.group(5);
-		String pages = pageStart+"-"+pageEnd;
-		String year = matcher.group(6);
+		String journal = ((Element)journalNds.get(0)).getValue().trim();
+		Nodes yearNds = refNd.query("./x:span[@class='citation_year']", X_XHTML);
+		if (yearNds.size() != 1) {
+			throw new RuntimeException("Problem finding year text at: "+doi);
+		}
+		String year = ((Element)yearNds.get(0)).getValue().trim();		
+		Nodes volumeNds = refNd.query("./x:span[@class='citation_volume']", X_XHTML);
+		if (volumeNds.size() != 1) {
+			throw new RuntimeException("Problem finding volume text at: "+doi);
+		}
+		String volume = ((Element)volumeNds.get(0)).getValue().trim();
+		String refContent = refNd.getValue();
+		Pattern p = Pattern.compile("[^\\(]*\\((\\d+)\\),\\s+pp\\s+(\\d+).(\\d+).*");
+		Matcher matcher = p.matcher(refContent);
+		if (!matcher.find() || matcher.groupCount() != 3) {
+			throw new RuntimeException("Problem finding issue and pages info at: "+doi);
+		}
+		String number = matcher.group(1);
+		String pages = matcher.group(2)+"-"+matcher.group(3);
 		
-		ArticleReference ar = new ArticleReference(journalAbbreviation,
+		ArticleReference ar = new ArticleReference(journal,
 				year, volume, number, pages);	
 		return ar;
 	}
 
 	private String getTitle() {
-		Nodes titleNds = abstractPageDoc.query(".//x:p/x:font[@size='+2']/x:b", X_XHTML);
+		Nodes titleNds = abstractPageDoc.query(".//x:h1[@class='articleTitle']", X_XHTML);
 		if (titleNds.size() != 1) {
 			throw new RuntimeException("Problem finding title at: "+doi);
 		}
-		String title = titleNds.get(0).toXML();
-		title = title.replaceAll("<b>", "");
-		title = title.replaceAll("</b>", "");
-		title = title.trim();
+		String title = titleNds.get(0).getValue();
 		return title;
 	}
 	

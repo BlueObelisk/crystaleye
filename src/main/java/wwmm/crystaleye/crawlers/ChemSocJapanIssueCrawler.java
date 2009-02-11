@@ -80,7 +80,6 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 		LOG.debug(issueUri.toString());
 		Document issueDoc = httpClient.getWebpageDocumentMinusComments(issueUri);
 		List<Node> textLinks = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://www.is.csj.jp/cgi-bin/journals/pr/index.cgi?n=li') and not(contains(@href,'li_s'))]/@href");
-		System.out.println(textLinks.size());
 		List<URI> dois = new ArrayList<URI>();
 		for (Node textLink : textLinks) {
 			String link = ((Attribute)textLink).getValue();
@@ -112,6 +111,12 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
 
+	/**
+	 * Main method only for demonstration of class use. Does not require
+	 * any arguments.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		for (ChemSocJapanJournal journal : ChemSocJapanJournal.values()) {
 			ChemSocJapanIssueCrawler acf = new ChemSocJapanIssueCrawler(journal);
