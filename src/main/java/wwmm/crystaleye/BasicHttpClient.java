@@ -19,6 +19,7 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -30,15 +31,15 @@ public class BasicHttpClient {
 
 	private HttpClient client;
 	private HttpMethod method;
-	
+
 	public BasicHttpClient() {
 		client = new HttpClient();
 	}
-	
+
 	public BasicHttpClient(HttpClient client) {
 		this.client = client;
 	}
-	
+
 	private InputStream getWebpageStream(URI uri) {
 		InputStream in = null;
 		method = executeGET(uri);
@@ -48,18 +49,6 @@ public class BasicHttpClient {
 			throw new RuntimeException("Exception getting response stream for: "+uri);
 		}
 		return in;
-	}
-	
-	public Document getWebpageDocument(URI uri) {
-		InputStream in = getWebpageStream(uri);
-		Document doc = null;
-		try {
-			Builder builder = getTagsoupBuilder();
-			doc = Utils.parseXml(builder, in);
-		} finally {
-			IOUtils.closeQuietly(in);
-		}
-		return doc;
 	}
 	
 	public String getWebpageString(URI uri) {
@@ -77,7 +66,22 @@ public class BasicHttpClient {
 		}
 		return html;
 	}
-	
+
+	public Document getWebpageDocument(URI uri) {
+		InputStream in = getWebpageStream(uri);
+		Document doc = null;
+		try {
+			Builder builder = getTagsoupBuilder();
+			doc = Utils.parseXml(builder, in);
+		} finally {
+			IOUtils.closeQuietly(in);
+			if (method != null) {
+				method.releaseConnection();
+			}
+		}
+		return doc;
+	}
+
 	public Document getWebpageDocumentMinusComments(URI uri) {
 		String html = getWebpageString(uri);
 
@@ -105,6 +109,49 @@ public class BasicHttpClient {
 		return doc;
 	}
 	
+	public InputStream getPostResultStream(PostMethod postMethod) {
+		method = postMethod;
+		executeMethod(method);
+		InputStream in = null;
+		try {
+			in = method.getResponseBodyAsStream();
+		} catch (IOException e) {
+			throw new RuntimeException("Problem getting POST response stream.", e);
+		}
+		return in;
+	}
+	
+	public String getPostResultString(PostMethod postMethod) {
+		InputStream in = getPostResultStream(postMethod);
+		String result = null;
+		try {
+			result = IOUtils.toString(in);
+		} catch (IOException e) {
+			throw new RuntimeException("Problem converting POST result stream to string.", e);
+		} finally {
+			IOUtils.closeQuietly(in);
+			if (method != null) {
+				method.releaseConnection();
+			}
+		}
+		return result;
+	}
+	
+	public Document getPostResultDocument(PostMethod postMethod) {
+		InputStream in = getPostResultStream(postMethod);
+		Document doc = null;
+		try {
+			Builder builder = getTagsoupBuilder();
+			doc = Utils.parseXml(builder, in);
+		} finally {
+			IOUtils.closeQuietly(in);
+			if (method != null) {
+				method.releaseConnection();
+			}
+		}
+		return doc;
+	}
+
 	public Header[] getHeaders(URI uri) {
 		method = executeHEAD(uri);
 		try {
@@ -115,7 +162,7 @@ public class BasicHttpClient {
 			}
 		}
 	}
-	
+
 	private Builder getTagsoupBuilder() {
 		XMLReader tagsoup = null;
 		try {
@@ -125,7 +172,7 @@ public class BasicHttpClient {
 		}
 		return new Builder(tagsoup);
 	}
-	
+
 	private void executeMethod(HttpMethod method) {
 		URI uri = null;
 		try {
@@ -140,7 +187,7 @@ public class BasicHttpClient {
 			throw new RuntimeException("IOException executing "+method.getName()+" method on "+uri, e);
 		}
 	}
-	
+
 	public GetMethod executeGET(URI uri) {
 		method = new GetMethod();
 		try {
@@ -151,7 +198,7 @@ public class BasicHttpClient {
 		}
 		return (GetMethod)method;
 	}
-	
+
 	public HeadMethod executeHEAD(URI uri) {
 		HeadMethod method = new HeadMethod();
 		try {
@@ -162,7 +209,20 @@ public class BasicHttpClient {
 		}
 		return (HeadMethod)method;
 	}
-	
+
+	public String getContentType(URI uri) {
+		Header[] headers = this.getHeaders(uri);
+		String contentType = null;
+		for (Header header : headers) {
+			String name = header.getName();
+			if ("Content-Type".equals(name) ||
+					"Content-type".equals(name)) {
+				contentType = header.getValue();
+			}
+		}
+		return contentType;
+	}
+
 	public static void main(String[] args) throws URIException, NullPointerException {
 		BasicHttpClient bhc = new BasicHttpClient();
 		Header[] headers = bhc.getHeaders(new URI("http://pubs.rsc.org/suppdata/CC/b8/b811528a/b811528a.pdf", false));
@@ -170,5 +230,5 @@ public class BasicHttpClient {
 			System.out.println(h.getName()+" = "+h.getValue());
 		}
 	}
-	
+
 }

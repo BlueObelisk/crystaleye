@@ -119,18 +119,9 @@ public class RscIssueCrawler extends Crawler{
 		LOG.debug("Starting to find issue article details: "+year+"-"+issueId);
 		List<URI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
-		//FIXME
-		int i = 0;
 		for (URI doi : dois) {
-			//FIXME
-			i++;
-			if (i != 6) {
-				continue;
-			}
 			ArticleDetails ad = new RscArticleCrawler(doi).getDetails();
 			adList.add(ad);
-			//FIXME
-			break;
 		}
 		LOG.debug("Finished finding issue article details: "+year+"-"+issueId);
 		return adList;
@@ -140,6 +131,12 @@ public class RscIssueCrawler extends Crawler{
 		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
 
+	/**
+	 * Main method only for demonstration of class use. Does not require
+	 * any arguments.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		for (RscJournal journal : RscJournal.values()) {
 			if (!journal.getAbbreviation().equals("cc")) {

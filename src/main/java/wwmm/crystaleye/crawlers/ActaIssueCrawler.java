@@ -120,6 +120,12 @@ public class ActaIssueCrawler extends Crawler {
 		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
 
+	/**
+	 * Main method only for demonstration of class use. Does not require
+	 * any arguments.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		for (ActaJournal journal : ActaJournal.values()) {
 			if (!journal.getAbbreviation().equals("c")) {

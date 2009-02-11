@@ -2,13 +2,13 @@ package wwmm.crystaleye.crawlers;
 
 import org.apache.commons.httpclient.URI;
 
-public class SupplementaryFile {
+public class SupplementaryFileDetails {
 
 	private URI uri;
 	private String linkText;
 	private String contentType;
 	
-	public SupplementaryFile(URI uri, String linkText, String contentType) {
+	public SupplementaryFileDetails(URI uri, String linkText, String contentType) {
 		this.uri = uri;
 		this.linkText = linkText;
 		this.contentType = contentType;

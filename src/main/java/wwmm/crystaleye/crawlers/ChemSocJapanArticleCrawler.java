@@ -15,53 +15,35 @@ import nu.xom.Text;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
-public class ChemSocJapanArticleCrawler extends Crawler {
-
-	private URI doi;
-	private Document abstractPageDoc;
-	private BibtexTool bibtexTool;
+public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 
 	private static final Logger LOG = Logger.getLogger(ChemSocJapanArticleCrawler.class);
 
 	public ChemSocJapanArticleCrawler(URI doi) {
-		this.doi = doi;
+		super(doi);
 	}
 
 	public ArticleDetails getDetails() {
-		abstractPageDoc = httpClient.getWebpageDocument(doi);
-		if (!hasDoiResolved(abstractPageDoc)) {
-			LOG.warn("It looks like this DOI has not resolved - check and submit an error on the form "+doi);
+		List<SupplementaryFileDetails> suppFiles = getSupplementaryFilesDetails();
+		if (!doiResolved) {
+			LOG.warn("This DOI has not resolved so cannot get article details: "+doi.toString());
+			return ad;
 		}
-
-		List<SupplementaryFile> suppFiles = getSupplementaryFiles();
-		ArticleDetails ad = new ArticleDetails();
-		ad.setDoi(doi);
-		URI fullTextHtmlLink = getFullTextHtmlLink();
+		URI fullTextHtmlLink = getFullTextLink();
 		if (fullTextHtmlLink != null) {
 			ad.setFullTextHtmlLink(fullTextHtmlLink);
 		}
-		
 		setBibtexTool();
 		if (bibtexTool != null) {
-			String title = getTitle();
-			ArticleReference ref = getReference();
-			String authors = getAuthors();
+			String title = bibtexTool.getTitle();
+			ArticleReference ref = bibtexTool.getReference();
+			String authors = bibtexTool.getAuthors();
 			ad.setTitle(title);
 			ad.setReference(ref);
 			ad.setAuthors(authors);
 			ad.setSuppFiles(suppFiles);
 		}
-
 		return ad;
-	}
-	
-	private boolean hasDoiResolved(Document doc) {
-		Nodes nodes = doc.query(".//x:body[contains(.,'Error - DOI Not Found')]", X_XHTML);
-		if (nodes.size() > 0) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 	private void setBibtexTool() {
@@ -76,7 +58,7 @@ public class ChemSocJapanArticleCrawler extends Crawler {
 		bibtexTool = new BibtexTool(bibStr);
 	}
 
-	private URI getFullTextHtmlLink() {
+	private URI getFullTextLink() {
 		Nodes pdfLinks = abstractPageDoc.query(".//x:a[contains(@href,'_pdf') and contains(.,'PDF')]", X_XHTML);
 		if (pdfLinks.size() == 0) {
 			return null;
@@ -86,10 +68,10 @@ public class ChemSocJapanArticleCrawler extends Crawler {
 		return createURI(pdfUrl);
 	}
 
-	private List<SupplementaryFile> getSupplementaryFiles() {
+	private List<SupplementaryFileDetails> getSupplementaryFilesDetails() {
 		Nodes suppListLinks = abstractPageDoc.query(".//x:a[contains(@href,'_applist')]", X_XHTML);
 		if (suppListLinks.size() == 0) {
-			return new ArrayList<SupplementaryFile>(0);
+			return new ArrayList<SupplementaryFileDetails>(0);
 		}
 		String urlPostfix = ((Element)suppListLinks.get(0)).getAttributeValue("href");
 		String suppListUrl = CHEMSOCJAPAN_HOMEPAGE_URL+urlPostfix;
@@ -100,7 +82,7 @@ public class ChemSocJapanArticleCrawler extends Crawler {
 		if (tableRows.size() < 3) {
 			throw new RuntimeException("Expected the supplementary document table to have at least 3 rows, found "+tableRows.size());
 		}
-		List<SupplementaryFile> suppFiles = new ArrayList<SupplementaryFile>(1);
+		List<SupplementaryFileDetails> suppFiles = new ArrayList<SupplementaryFileDetails>(1);
 		for (int i = 2; i < tableRows.size(); i++) {
 			Element row = (Element)tableRows.get(i);
 			Nodes cells = row.query(".//x:td", X_XHTML);
@@ -114,29 +96,11 @@ public class ChemSocJapanArticleCrawler extends Crawler {
 			String suppUrlPostfix = suppLink.getAttributeValue("href");
 			String suppUrl = CHEMSOCJAPAN_HOMEPAGE_URL+suppUrlPostfix;
 			URI suppUri = createURI(suppUrl);
-			String contentType = getContentType(suppUri);
-			SupplementaryFile suppFile = new SupplementaryFile(suppUri, linkText, contentType);
+			String contentType = httpClient.getContentType(suppUri);
+			SupplementaryFileDetails suppFile = new SupplementaryFileDetails(suppUri, linkText, contentType);
 			suppFiles.add(suppFile);
 		}
 		return suppFiles;
 	}
-
-	private String getAuthors() {
-		return bibtexTool.getValue("author");
-	}
-
-	private ArticleReference getReference() {
-		String journalAbbreviation = bibtexTool.getValue("journal");
-		String year = bibtexTool.getValue("year");
-		String volume = bibtexTool.getValue("volume");
-		String pages = bibtexTool.getValue("pages");
-		String number = bibtexTool.getValue("number");
-		ArticleReference ref = new ArticleReference(journalAbbreviation, year, volume, number, pages);
-		return ref;
-	}
-
-	private String getTitle() {
-		return bibtexTool.getValue("title");
-	}
-
+	
 }
