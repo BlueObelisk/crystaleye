@@ -18,39 +18,6 @@ import wwmm.crystaleye.util.Utils;
 
 public class RscIssueCrawler extends Crawler{
 
-	public enum RscJournal {
-		ANNUAL_REPORTS_SECTION_A("ic", "Annual Reports Section A"),
-		ANNUAL_REPORTS_SECTION_B("oc", "Annual Reports Section B"),
-		ANNUAL_REPORTS_SECTION_C("pc", "Annual Reports Section C"),
-		CHEMCOMM("cc", "Chemical Communications"),
-		CHEMICAL_BIOLOGY_VIRTUAL_JOURNAL("cb", "Chemical Biology Virtual Journal"),
-		CRYSTENGCOMM("ce", "CrystEngComm"),
-		DALTON_TRANSACTIONS("dt", "Dalton Transactions"),
-		GREEN_CHEMISTRY("gc", "Green Chemistry"),
-		JOURNAL_OF_MATERIALS_CHEMISTRY("jm", "Journal of Materials Chemistry"),
-		JOURNAL_OF_ENVIRONMENTAL_MONITORING("em", "Journal of Environmental Monitoring"),
-		NATURAL_PRODUCT_REPORTS("np", "Natural Product Reports"),
-		NEW_JOURNAL_OF_CHEMISTRY("nj", "New Journal of Chemistry"),
-		ORGANIC_AND_BIOMOLECULAR_CHEMISTRY("ob", "Organic and Biomolecular Chemistry"),
-		PCCP("cp", "PCCP");
-
-		private final String abbreviation;
-		private final String fullTitle;
-
-		RscJournal(String abbreviation, String fullTitle) {
-			this.abbreviation = abbreviation;
-			this.fullTitle = fullTitle;
-		}
-
-		public String getFullTitle() {
-			return this.fullTitle;
-		}
-
-		public String getAbbreviation() {
-			return this.abbreviation;
-		}
-	}
-
 	public RscJournal journal;
 	private String volume = "0";
 	private static final Logger LOG = Logger.getLogger(RscIssueCrawler.class);
