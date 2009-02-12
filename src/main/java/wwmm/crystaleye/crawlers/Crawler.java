@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.BasicHttpClient;
 
-public class Crawler {
+public abstract class Crawler {
 
 	int maxSleep = 1000;
 	BasicHttpClient httpClient;

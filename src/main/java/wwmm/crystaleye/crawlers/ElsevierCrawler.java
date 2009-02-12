@@ -16,27 +16,7 @@ import wwmm.crystaleye.util.Utils;
 
 public class ElsevierCrawler extends Crawler {
 
-	public enum ElsevierJournal {
-		POLYHEDRON("02775387", "Polyhedron");
-
-		private final String abbreviation;
-		private final String fullTitle;
-
-		ElsevierJournal(String abbreviation, String fullTitle) {
-			this.abbreviation = abbreviation;
-			this.fullTitle = fullTitle;
-		}
-
-		public String getFullTitle() {
-			return this.fullTitle;
-		}
-
-		public String getAbbreviation() {
-			return this.abbreviation;
-		}
-	}
-
-	public ElsevierJournal journal;
+	private ElsevierJournal journal;
 	private static final String SITE_PREFIX = "http://www.sciencedirect.com";
 	private static final Logger LOG = Logger.getLogger(ElsevierCrawler.class);
 
@@ -89,7 +69,7 @@ public class ElsevierCrawler extends Crawler {
 		List<URI> articleLinks = getArticleLinks(currentIssueDoc);
 		List<URI> dois = new ArrayList<URI>();
 		for (URI articleLink : articleLinks) {
-			Document articleDoc = httpClient.getWebpageDocument(articleLink);
+			Document articleDoc = httpClient.getWebpageHTML(articleLink);
 			List<Node> doiNodes = Utils.queryHTML(articleDoc, ".//x:a[contains(@href,'http://dx.doi.org/10.1016/')]");
 			if (doiNodes.size() > 0) {
 				String doi = ((Element)doiNodes.get(0)).getAttributeValue("href");

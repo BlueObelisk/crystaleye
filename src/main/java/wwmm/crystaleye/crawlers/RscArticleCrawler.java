@@ -1,7 +1,7 @@
 package wwmm.crystaleye.crawlers;
 
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
-import static wwmm.crystaleye.crawlers.CrawlerConstants.*;
+import static wwmm.crystaleye.crawlers.CrawlerConstants.RSC_HOMEPAGE_URL;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,21 +26,20 @@ public class RscArticleCrawler extends ArticleCrawler {
 
 	public ArticleDetails getDetails() {
 		List<SupplementaryFileDetails> suppFiles = getSupplementaryFilesDetails();
-		if (!doiResolved) {
-			LOG.warn("This DOI has not resolved so cannot get article details: "+doi.toString());
+		if (articleAbstractUriIsADoi && !doiResolved) {
+			LOG.warn("The DOI provided for the article abstract ("+articleAbstractUri.toString()+") has not resolved so we cannot get article details.");
 			return ad;
-		}
-		
+		}		
 		URI fullTextLink = getFullTextLink();
 		if (fullTextLink != null) {
-			ad.setFullTextHtmlLink(fullTextLink);
-		}		
+			ad.setFullTextLink(fullTextLink);
+		}	
+		URI doi = getDOI();
+		ad.setDoi(doi);		
 		String title = getTitle();
 		ArticleReference ref = getReference();
 		String authors = getAuthors();
-
-		ad.setDoi(doi);
-		ad.setFullTextHtmlLink(fullTextLink);
+		ad.setFullTextLink(fullTextLink);
 		ad.setTitle(title);
 		ad.setReference(ref);
 		ad.setAuthors(authors);
@@ -50,9 +49,9 @@ public class RscArticleCrawler extends ArticleCrawler {
 	}
 
 	private URI getFullTextLink() {
-		Nodes links = abstractPageDoc.query(".//x:a[.='HTML article']", X_XHTML);
+		Nodes links = articleAbstractDoc.query(".//x:a[.='HTML article']", X_XHTML);
 		if (links.size() != 1) {
-			throw new RuntimeException("Problem finding full text HTML link: "+doi);
+			throw new RuntimeException("Problem finding full text HTML link: "+articleAbstractUri);
 		}
 		String urlPostfix = ((Element)links.get(0)).getAttributeValue("href");
 		String url = "http://www.rsc.org"+urlPostfix;
@@ -60,14 +59,14 @@ public class RscArticleCrawler extends ArticleCrawler {
 	}
 
 	private List<SupplementaryFileDetails> getSupplementaryFilesDetails() {
-		Nodes nds = abstractPageDoc.query(".//x:a[contains(.,'ESI')]", X_XHTML);
+		Nodes nds = articleAbstractDoc.query(".//x:a[contains(.,'ESI')]", X_XHTML);
 		if (nds.size() == 0) {
 			return Collections.EMPTY_LIST;
 		}
 		String suppListUrlPostfix = ((Element)nds.get(0)).getAttributeValue("href");
 		String suppListUrl = RSC_HOMEPAGE_URL+suppListUrlPostfix;
 		URI suppListUri = createURI(suppListUrl);
-		Document suppListDoc = httpClient.getWebpageDocument(suppListUri);
+		Document suppListDoc = httpClient.getWebpageHTML(suppListUri);
 		Nodes linkNds = suppListDoc.query(".//x:li/x:a", X_XHTML);
 		
 		List<SupplementaryFileDetails> sfdList = new ArrayList<SupplementaryFileDetails>(linkNds.size());
@@ -86,25 +85,25 @@ public class RscArticleCrawler extends ArticleCrawler {
 	}
 
 	private String getAuthors() {
-		Nodes authorNds = abstractPageDoc.query(".//x:span[@style='font-size:150%;']/following-sibling::x:p[1]/x:strong", X_XHTML);
+		Nodes authorNds = articleAbstractDoc.query(".//x:span[@style='font-size:150%;']/following-sibling::x:p[1]/x:strong", X_XHTML);
 		if (authorNds.size() != 1) {
-			throw new RuntimeException("Problem getting the author string from: "+doi);
+			throw new RuntimeException("Problem getting the author string from: "+articleAbstractUri);
 		}
 		String authors = authorNds.get(0).getValue().trim();
 		return authors;
 	}
 
 	private ArticleReference getReference() {
-		Nodes refNds = abstractPageDoc.query(".//x:p[./x:strong[contains(.,'DOI:')]]", X_XHTML);
+		Nodes refNds = articleAbstractDoc.query(".//x:p[./x:strong[contains(.,'DOI:')]]", X_XHTML);
 		if (refNds.size() != 1) {
-			throw new RuntimeException("Problem getting bibliographic data: "+doi);
+			throw new RuntimeException("Problem getting bibliographic data: "+articleAbstractUri);
 		}
 		String ref = refNds.get(0).getValue();
 		Pattern pattern = Pattern.compile("\\s*([^,]+),\\s*(\\d+),\\s*([^,]+),.*");
 		Matcher matcher = pattern.matcher(ref);
 		System.out.println(ref);
 		if (!matcher.find()) {
-			throw new RuntimeException("Problem finding bibliographic text at: "+doi);
+			throw new RuntimeException("Problem finding bibliographic text at: "+articleAbstractUri);
 		}
 		String journal = matcher.group(1);
 		String year = matcher.group(2);
@@ -114,9 +113,9 @@ public class RscArticleCrawler extends ArticleCrawler {
 	}
 
 	private String getTitle() {
-		Nodes titleNds = abstractPageDoc.query(".//x:span[@style='font-size:150%;']//x:font", X_XHTML);
+		Nodes titleNds = articleAbstractDoc.query(".//x:span[@style='font-size:150%;']//x:font", X_XHTML);
 		if (titleNds.size() != 1) {
-			throw new RuntimeException("Problem getting title: "+doi);
+			throw new RuntimeException("Problem getting title: "+articleAbstractUri);
 		}
 		String title = titleNds.get(0).toXML();
 		title = title.replaceAll("<font color=\"#9C0000\">", "");

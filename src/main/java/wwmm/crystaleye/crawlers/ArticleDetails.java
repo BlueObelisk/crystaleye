@@ -42,7 +42,7 @@ public class ArticleDetails {
 		return fullTextHtmlLink;
 	}
 
-	public void setFullTextHtmlLink(URI fullTextHtmlLink) {
+	public void setFullTextLink(URI fullTextHtmlLink) {
 		this.fullTextHtmlLink = fullTextHtmlLink;
 	}
 

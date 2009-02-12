@@ -1,6 +1,7 @@
 package wwmm.crystaleye.crawlers;
 
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
+import static wwmm.crystaleye.crawlers.CrawlerConstants.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,20 +18,22 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	
 	private static final Logger LOG = Logger.getLogger(ActaArticleCrawler.class);
 
-	public ActaArticleCrawler(URI doi) {
-		super(doi);
+	public ActaArticleCrawler(URI abstractPageUri) {
+		super(abstractPageUri);
 	}
 
 	public ArticleDetails getDetails() {
 		List<SupplementaryFileDetails> suppFiles = getSupplementaryFilesDetails();
-		if (!doiResolved) {
-			LOG.warn("This DOI has not resolved so cannot get article details: "+doi.toString());
+		if (articleAbstractUriIsADoi && !doiResolved) {
+			LOG.warn("The DOI provided for the article abstract ("+articleAbstractUri.toString()+") has not resolved so we cannot get article details.");
 			return ad;
 		}
 		URI fullTextLink = getFullTextLink();
 		if (fullTextLink != null) {
-			ad.setFullTextHtmlLink(fullTextLink);
-		}	
+			ad.setFullTextLink(fullTextLink);
+		}
+		URI doi = getDOI();
+		ad.setDoi(doi);
 		setBibtexTool();
 		if (bibtexTool != null) {
 			String title = bibtexTool.getTitle();
@@ -42,6 +45,19 @@ public class ActaArticleCrawler extends ArticleCrawler {
 			ad.setSuppFiles(suppFiles);
 		}
 		return ad;
+	}
+	
+	private URI getDOI() {
+		if (articleAbstractUriIsADoi) {
+			return articleAbstractUri;
+		}
+		Nodes nds = articleAbstractDoc.query(".//x:a[contains(@href,'"+DOI_SITE_URL+"')]", X_XHTML);
+		if (nds.size() == 0) {
+			throw new RuntimeException("Could not find DOI on page at URL, "+articleAbstractUri.toString()+
+					", perhaps the Acta layout has been updated and the crawler needs rewriting.");
+		}
+		String doi = ((Element)nds.get(0)).getAttributeValue("href");
+		return createURI(doi);
 	}
 	
 	private void setBibtexTool() {
@@ -58,25 +74,25 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	}
 	
 	private String getArticleId() {
-		Nodes nds = abstractPageDoc.query(".//x:input[@name='cnor']", X_XHTML);
+		Nodes nds = articleAbstractDoc.query(".//x:input[@name='cnor']", X_XHTML);
 		if (nds.size() == 0) {
-			throw new RuntimeException("Could not find the article ID for "+doi.toString()+
+			throw new RuntimeException("Could not find the article ID for "+articleAbstractUri.toString()+
 					" webpage structure must have changed.  Crawler needs rewriting!");
 		}
 		return ((Element)nds.get(0)).getAttributeValue("value");
 	}
 	
 	private URI getFullTextLink() {
-		Nodes fullTextHtmlLinks = abstractPageDoc.query(".//x:a[./x:img[contains(@src,'graphics/htmlborder.gif')]]", X_XHTML);
+		Nodes fullTextHtmlLinks = articleAbstractDoc.query(".//x:a[./x:img[contains(@src,'graphics/htmlborder.gif')]]", X_XHTML);
 		if (fullTextHtmlLinks.size() != 1) {
-			throw new RuntimeException("Problem finding full text HTML link: "+doi);
+			throw new RuntimeException("Problem finding full text HTML link: "+articleAbstractUri);
 		}
 		String fullTextUrl = ((Element)fullTextHtmlLinks.get(0)).getAttributeValue("href");
 		return createURI(fullTextUrl);
 	}
 
 	private List<SupplementaryFileDetails> getSupplementaryFilesDetails() {
-		Nodes cifNds = abstractPageDoc.query(".//x:a[contains(@href,'http://scripts.iucr.org/cgi-bin/sendcif') and not(contains(@href,'mime'))]", X_XHTML);
+		Nodes cifNds = articleAbstractDoc.query(".//x:a[contains(@href,'http://scripts.iucr.org/cgi-bin/sendcif') and not(contains(@href,'mime'))]", X_XHTML);
 		if (cifNds.size() == 0) {
 			return new ArrayList<SupplementaryFileDetails>(0);
 		}

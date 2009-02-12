@@ -67,12 +67,26 @@ public class BasicHttpClient {
 		return html;
 	}
 
-	public Document getWebpageDocument(URI uri) {
+	public Document getWebpageHTML(URI uri) {
 		InputStream in = getWebpageStream(uri);
 		Document doc = null;
 		try {
 			Builder builder = getTagsoupBuilder();
 			doc = Utils.parseXml(builder, in);
+		} finally {
+			IOUtils.closeQuietly(in);
+			if (method != null) {
+				method.releaseConnection();
+			}
+		}
+		return doc;
+	}
+	
+	public Document getWebpageXML(URI uri) {
+		InputStream in = getWebpageStream(uri);
+		Document doc = null;
+		try {
+			doc = Utils.parseXml(in);
 		} finally {
 			IOUtils.closeQuietly(in);
 			if (method != null) {
