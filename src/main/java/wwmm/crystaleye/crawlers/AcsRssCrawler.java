@@ -1,12 +1,14 @@
 package wwmm.crystaleye.crawlers;
 
-import static wwmm.crystaleye.crawlers.CrawlerConstants.ACS_HOMEPAGE_URL;
+import static wwmm.crystaleye.crawlers.CrawlerConstants.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nu.xom.Document;
 import nu.xom.Element;
@@ -35,14 +37,31 @@ public class AcsRssCrawler extends Crawler {
 		URI feedUri = createFeedURI();
 		Document feedDoc = httpClient.getWebpageXML(feedUri);
 		List<Element> entries = getFeedEntries(feedDoc);
+		List<ArticleDetails> adList = new ArrayList<ArticleDetails>();
 		for (Element entry : entries) {
 			URI entryLink = getEntryLink(entry);
 			Date entryDate = getEntryDate(entry);
 			if (needToCrawlArticle(entryDate)) {
-				
+				DOI doi = createDOI(entryLink);
+				ArticleDetails ad = new AcsArticleCrawler(doi).getDetails();
+				adList.add(ad);
 			}
 		}
-		return null;
+		return adList;
+	}
+	
+	private DOI createDOI(URI entryLink) {
+		Pattern p = Pattern.compile(ACS_HOMEPAGE_URL+"/doi/abs/(10.1021/.{9})\\?.*");
+		Matcher matcher = p.matcher(entryLink.toString());
+		String doiPostfix = null;
+		if (matcher.find() && matcher.groupCount() == 1) {
+			doiPostfix = matcher.group(1);
+		} else {
+			throw new RuntimeException("Could not extract DOI from <link> URI, "+
+					entryLink.toString()+"element, crawler may need rewriting.");
+		}
+		String doiStr = DOI_SITE_URL+"/"+doiPostfix;
+		return new DOI(doiStr);
 	}
 	
 	private boolean needToCrawlArticle(Date entryDate) {
@@ -84,7 +103,6 @@ public class AcsRssCrawler extends Crawler {
 	}
 	
 	private List<Element> getFeedEntries(Document feedDoc) {
-		System.out.println(feedDoc.toXML());
 		Nodes nds = feedDoc.query("./rss/channel/item");
 		if (nds.size() == 0) {
 			throw new RuntimeException("Could not find any entries in RSS feed for "+journal.getFullTitle());

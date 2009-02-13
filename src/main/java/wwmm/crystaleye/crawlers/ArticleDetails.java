@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class ArticleDetails {
 
-	private URI doi;
+	private DOI doi;
 	private boolean doiResolved;
 
 	private URI fullTextHtmlLink;
@@ -20,7 +20,7 @@ public class ArticleDetails {
 		;
 	}
 
-	public ArticleDetails(URI doi, boolean doiResolved, URI fullTextHtmlLink, String title, ArticleReference ref, String authors, List<SupplementaryFileDetails> suppFiles) {
+	public ArticleDetails(DOI doi, boolean doiResolved, URI fullTextHtmlLink, String title, ArticleReference ref, String authors, List<SupplementaryFileDetails> suppFiles) {
 		this.doi = doi;
 		this.doiResolved = doiResolved;
 		this.fullTextHtmlLink = fullTextHtmlLink;
@@ -54,11 +54,11 @@ public class ArticleDetails {
 		this.suppFiles = suppFiles;
 	}
 
-	public void setDoi(URI doi) {
+	public void setDoi(DOI doi) {
 		this.doi = doi;
 	}
 
-	public URI getDoi() {
+	public DOI getDoi() {
 		return doi;
 	}
 
