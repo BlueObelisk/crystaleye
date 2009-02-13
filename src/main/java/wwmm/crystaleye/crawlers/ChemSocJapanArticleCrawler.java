@@ -3,7 +3,6 @@ package wwmm.crystaleye.crawlers;
 import static wwmm.crystaleye.CrystalEyeConstants.XHTML_NS;
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 import static wwmm.crystaleye.crawlers.CrawlerConstants.CHEMSOCJAPAN_HOMEPAGE_URL;
-import static wwmm.crystaleye.crawlers.CrawlerConstants.DOI_SITE_URL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,24 +19,22 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 
 	private static final Logger LOG = Logger.getLogger(ChemSocJapanArticleCrawler.class);
 
-	public ChemSocJapanArticleCrawler(URI doi) {
+	public ChemSocJapanArticleCrawler(DOI doi) {
 		super(doi);
 	}
 
 	public ArticleDetails getDetails() {
-		List<SupplementaryFileDetails> suppFiles = getSupplementaryFilesDetails();
-		if (articleAbstractUriIsADoi && !doiResolved) {
+		if (!doiResolved) {
 			LOG.warn("The URI provided for the article abstract is a DOI - " +
 					"it has not resolved so we cannot get article details: "
-					+articleAbstractUri.toString());
+					+doi.toString());
 			return ad;
 		}
 		URI fullTextLink = getFullTextLink();
 		if (fullTextLink != null) {
 			ad.setFullTextLink(fullTextLink);
 		}
-		URI doi = getDOI();
-		ad.setDoi(doi);
+		List<SupplementaryFileDetails> suppFiles = getSupplementaryFilesDetails();
 		setBibtexTool();
 		if (bibtexTool != null) {
 			String title = bibtexTool.getTitle();
@@ -49,24 +46,6 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 			ad.setSuppFiles(suppFiles);
 		}
 		return ad;
-	}
-	
-	private URI getDOI() {
-		if (articleAbstractUriIsADoi) {
-			return articleAbstractUri;
-		}
-		Nodes nds = articleAbstractDoc.query(".//x:TD[contains(.,'doi:')]", X_XHTML);
-		if (nds.size() == 0) {
-			throw new RuntimeException("Problem finding DOI on page at URL, "+articleAbstractUri.toString()+
-					", expected 1 element, found "+nds.size()+".  Perhaps the Acta layout has been updated and the crawler needs rewriting.");
-		}
-		String doi = nds.get(0).getValue();
-		if (doi.startsWith("doi:10.1246")) {
-			doi = doi.substring(4);
-		} else {
-			throw new RuntimeException("Problem finding DOI on page at URL, "+articleAbstractUri.toString());
-		}
-		return createURI(doi);
 	}
 
 	private void setBibtexTool() {

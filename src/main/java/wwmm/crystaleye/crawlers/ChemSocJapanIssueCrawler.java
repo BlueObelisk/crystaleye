@@ -48,39 +48,39 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 		return httpClient.getWebpageDocumentMinusComments(issueUri);
 	}
 	
-	public List<URI> getCurrentIssueDOIs() {
+	public List<DOI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getDOIs(details);
 	}
 
-	public List<URI> getDOIs(String year, String issueId) {
+	public List<DOI> getDOIs(String year, String issueId) {
 		String url = "http://www.chemistry.or.jp/journals/chem-lett/cl-cont/cl"+year+"-"+issueId+".html";
 		URI issueUri = createURI(url);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri.toString());
 		Document issueDoc = httpClient.getWebpageDocumentMinusComments(issueUri);
 		List<Node> textLinks = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://www.is.csj.jp/cgi-bin/journals/pr/index.cgi?n=li') and not(contains(@href,'li_s'))]/@href");
-		List<URI> dois = new ArrayList<URI>();
+		List<DOI> dois = new ArrayList<DOI>();
 		for (Node textLink : textLinks) {
 			String link = ((Attribute)textLink).getValue();
 			int idx = link.indexOf("id=");
 			String articleId = link.substring(idx+3).replaceAll("/", ".");
-			String doi = "http://dx.doi.org/10.1246/"+articleId;
-			URI doiUri = createURI(doi);
-			dois.add(doiUri);
+			String doiStr = "http://dx.doi.org/10.1246/"+articleId;
+			DOI doi = new DOI(createURI(doiStr));
+			dois.add(doi);
 		}
 		LOG.debug("Finished finding issue DOIs.");
 		return dois;
 	}
 	
-	public List<URI> getDOIs(IssueDetails details) {
+	public List<DOI> getDOIs(IssueDetails details) {
 		return getDOIs(details.getYear(), details.getIssueId());
 	}
 	
 	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
-		List<URI> dois = getDOIs(year, issueId);
+		List<DOI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
-		for (URI doi : dois) {
+		for (DOI doi : dois) {
 			ArticleDetails ad = new ChemSocJapanArticleCrawler(doi).getDetails();
 			adList.add(ad);
 		}

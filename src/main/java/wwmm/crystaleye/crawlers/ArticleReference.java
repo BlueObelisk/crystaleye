@@ -7,14 +7,28 @@ public class ArticleReference {
 	private String volume;
 	private String number;
 	private String pages;
+	private boolean isAsapArticle;
 	
 	public ArticleReference(String journal, String year,
-			String volume, String number, String pages) {
+			String volume, String number, String pages, boolean isAsapArticle) {
 		this.journal = journal;
 		this.year = year;
 		this.volume = volume;
 		this.number = number;
 		this.pages = pages;
+		this.isAsapArticle = isAsapArticle;
+	}
+	public String getJournal() {
+		return journal;
+	}
+	public void setJournal(String journal) {
+		this.journal = journal;
+	}
+	public boolean isAsapArticle() {
+		return isAsapArticle;
+	}
+	public void setAsapArticle(boolean isAsapArticle) {
+		this.isAsapArticle = isAsapArticle;
 	}
 	public String getNumber() {
 		return number;

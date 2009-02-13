@@ -55,13 +55,13 @@ public class AcsIssueCrawler extends Crawler {
 		return httpClient.getWebpageHTML(issueUri);
 	}
 	
-	public List<URI> getCurrentIssueDOIs() {
+	public List<DOI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getDOIs(details);
 	}
 
-	public List<URI> getDOIs(String year, String issueId) {
-		List<URI> dois = new ArrayList<URI>();
+	public List<DOI> getDOIs(String year, String issueId) {
+		List<DOI> dois = new ArrayList<DOI>();
 		int volume = Integer.valueOf(year)-journal.getVolumeOffset();
 		String issueUrl = ACS_HOMEPAGE_URL+"/toc/"+journal.getAbbreviation()+"/"+volume+"/"+issueId;
 		URI issueUri = createURI(issueUrl);
@@ -72,23 +72,23 @@ public class AcsIssueCrawler extends Crawler {
 		for (Node doiNode : doiNodes) {
 			String contents = ((Element)doiNode).getValue();
 			String doiPostfix = contents.replaceAll("DOI:", "").trim();
-			String doi = DOI_SITE_URL+"/"+doiPostfix;
-			URI doiUri = createURI(doi);
-			dois.add(doiUri);
+			String doiStr = DOI_SITE_URL+"/"+doiPostfix;
+			DOI doi = new DOI(createURI(doiStr)); 
+			dois.add(doi);
 		}
 		LOG.debug("Finished finding issue DOIs.");
 		return dois;
 	}
 	
-	public List<URI> getDOIs(IssueDetails details) {
+	public List<DOI> getDOIs(IssueDetails details) {
 		return getDOIs(details.getYear(), details.getIssueId());
 	}
 	
 	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
 		LOG.debug("Starting to find issue article details: "+year+"-"+issueId);
-		List<URI> dois = getDOIs(year, issueId);
+		List<DOI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
-		for (URI doi : dois) {
+		for (DOI doi : dois) {
 			ArticleDetails ad = new AcsArticleCrawler(doi).getDetails();
 			adList.add(ad);
 		}

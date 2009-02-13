@@ -1,5 +1,6 @@
 package wwmm.crystaleye.crawlers;
 
+import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 import static wwmm.crystaleye.crawlers.CrawlerConstants.DOI_SITE_URL;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.regex.Pattern;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
+import nu.xom.Nodes;
 
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
@@ -28,7 +30,7 @@ public class RscIssueCrawler extends Crawler{
 
 	protected IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
-		List<Node> journalInfo = Utils.queryHTML(doc, "//x:h3[contains(text(),'Contents')]");
+		List<Node> journalInfo = Utils.queryHTML(doc, ".//x:h3[contains(text(),'Contents')]");
 		int size = journalInfo.size();
 		if (size != 1) {
 			throw new RuntimeException("Expected to find 1 element containing"+
@@ -52,12 +54,12 @@ public class RscIssueCrawler extends Crawler{
 		return httpClient.getWebpageDocumentMinusComments(uri);
 	}
 
-	public List<URI> getCurrentIssueDOIs() {
+	public List<DOI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getDOIs(details);
 	}
 
-	public List<URI> getDOIs(String year, String issueId) {
+	public List<DOI> getDOIs(String year, String issueId) {
 		String journalAbbreviation = journal.getAbbreviation();
 		String issueUrl = "http://rsc.org/Publishing/Journals/"+journalAbbreviation
 		+"/article.asp?Journal="+journalAbbreviation+"81&VolumeYear="+year+volume+"&Volume="+volume
@@ -66,34 +68,71 @@ public class RscIssueCrawler extends Crawler{
 		URI issueUri = createURI(issueUrl);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		Document issueDoc = httpClient.getWebpageDocumentMinusComments(issueUri);
-		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@title,'DOI:10.1039')]");
-		List<URI> dois = new ArrayList<URI>();
-		for (Node doiNode : doiNodes) {
-			String doi = ((Element)doiNode).getValue();
-			doi = DOI_SITE_URL+"/"+doi;
-			URI doiUri = createURI(doi);
-			dois.add(doiUri);
+		List<Node> articleNodes = Utils.queryHTML(issueDoc, ".//x:p[./x:a[contains(@title,'DOI:10.1039')]]");
+		List<DOI> dois = new ArrayList<DOI>();
+		for (Node articleNode : articleNodes) {
+			Element articleElement = (Element)articleNode;
+			if (!isArticle(articleElement)) {
+				continue;
+			}
+			Nodes doiNodes = articleNode.query(".//x:a[contains(.,'10.1039/')]", X_XHTML);
+			if (doiNodes.size() != 1) {
+				throw new RuntimeException("Problem getting DOI link from article element:\n"+articleElement.toXML());
+			}
+			String doiPrefix = ((Element)doiNodes.get(0)).getValue();
+			String doiStr = DOI_SITE_URL+"/"+doiPrefix;
+			DOI doi = new DOI(createURI(doiStr));
+			dois.add(doi);
 		}
 		LOG.debug("Finished finding DOIs.");
 		return dois;
 	}
 
-	public List<URI> getDOIs(IssueDetails details) {
+	/**
+	 * Unfortunately RSC give DOIs to the electronic version of their front 
+	 * cover, contents list, back cover a few other things that aren't actually
+	 * articles.  As we want to write an article crawler that fails if it can't 
+	 * find the full-text HTML of an article, we don't want these non-article 
+	 * DOIs being passed further down the crawler's processing.  They are 
+	 * weeded out by this method.
+	 * 
+	 * @param articleElement
+	 * @return boolean stating whether the doiElement links to an article or not
+	 */
+	private boolean isArticle(Element articleElement) {
+		Nodes linkNds = articleElement.query(".//x:a[contains(@title,'DOI:')]", X_XHTML);
+		if (linkNds.size() == 0) {
+			throw new RuntimeException("Problem getting DOI link nodes from article element:\n"+articleElement.toXML());
+		}
+		String value = ((Element)linkNds.get(0)).getValue();
+		if (value.contains("Front cover") || 
+				value.contains("Inside front cover") ||
+				value.contains("Contents and") ||
+				value.trim().equals("Contents") ||
+				value.contains("Back matter") ||
+				value.contains("Back cover"))  {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public List<DOI> getDOIs(IssueDetails details) {
 		return getDOIs(details.getYear(), details.getIssueId());
 	}
-	
+
 	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
 		LOG.debug("Starting to find issue article details: "+year+"-"+issueId);
-		List<URI> dois = getDOIs(year, issueId);
+		List<DOI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
-		for (URI doi : dois) {
+		for (DOI doi : dois) {
 			ArticleDetails ad = new RscArticleCrawler(doi).getDetails();
 			adList.add(ad);
 		}
 		LOG.debug("Finished finding issue article details: "+year+"-"+issueId);
 		return adList;
 	}
-	
+
 	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
 		return getArticleDetails(id.getYear(), id.getIssueId());
 	}

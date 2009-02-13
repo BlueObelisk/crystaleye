@@ -52,13 +52,13 @@ public class ActaIssueCrawler extends Crawler {
 		return httpClient.getWebpageHTML(issueUri);
 	}
 
-	public List<URI> getCurrentIssueDOIs() {
+	public List<DOI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getDOIs(details);
 	}
 
-	public List<URI> getDOIs(String year, String issueId) {
-		List<URI> dois = new ArrayList<URI>();
+	public List<DOI> getDOIs(String year, String issueId) {
+		List<DOI> dois = new ArrayList<DOI>();
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/issues/"
 		+year+"/"+issueId.replaceAll("-", "/")+"/isscontsbdy.html";
 		URI issueUri = createURI(url);
@@ -67,22 +67,22 @@ public class ActaIssueCrawler extends Crawler {
 		Document issueDoc = httpClient.getWebpageHTML(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'"+DOI_SITE_URL+"/10.1107/')]/@href");
 		for (Node doiNode : doiNodes) {
-			String doi = ((Attribute)doiNode).getValue();
-			URI doiUri = createURI(doi);
-			dois.add(doiUri);
+			String doiStr = ((Attribute)doiNode).getValue();
+			DOI doi = new DOI(createURI(doiStr));
+			dois.add(doi);
 		}
 		LOG.debug("Finished finding issue DOIs.");
 		return dois;
 	}
 
-	public List<URI> getDOIs(IssueDetails id) {
+	public List<DOI> getDOIs(IssueDetails id) {
 		return getDOIs(id.getYear(), id.getIssueId());
 	}
 
 	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
-		List<URI> dois = getDOIs(year, issueId);
+		List<DOI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
-		for (URI doi : dois) {
+		for (DOI doi : dois) {
 			ArticleDetails ad = new ActaArticleCrawler(doi).getDetails();
 			adList.add(ad);
 		}
