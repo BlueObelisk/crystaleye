@@ -25,9 +25,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 
 	public ArticleDetails getDetails() {
 		if (!doiResolved) {
-			LOG.warn("The URI provided for the article abstract is a DOI - " +
-					"it has not resolved so we cannot get article details: "
-					+doi.toString());
+			LOG.warn("The DOI provided for the article abstract ("+doi.toString()+") has not resolved so we cannot get article details.");
 			return ad;
 		}
 		URI fullTextLink = getFullTextLink();
@@ -39,6 +37,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 		if (bibtexTool != null) {
 			String title = bibtexTool.getTitle();
 			ArticleReference ref = bibtexTool.getReference();
+			ref.setHasBeenPublished(true);
 			String authors = bibtexTool.getAuthors();
 			ad.setTitle(title);
 			ad.setReference(ref);

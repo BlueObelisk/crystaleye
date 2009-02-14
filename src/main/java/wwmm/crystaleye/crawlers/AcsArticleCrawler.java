@@ -121,15 +121,15 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		String journal = ((Element)journalNds.get(0)).getValue().trim();
 
 		String citationContent = citationNd.getValue();
-		boolean isAsapArticle = false;
+		boolean hasBeenPublished = false;
 		if (citationContent.contains("Article ASAP")) {
-			isAsapArticle = true;
+			hasBeenPublished = true;
 		}
 		String year = null;
 		String volume = null;
 		String number = null;
 		String pages = null;
-		if (!isAsapArticle) {
+		if (!hasBeenPublished) {
 			Nodes yearNds = citationNd.query("./x:span[@class='citation_year']", X_XHTML);
 			if (yearNds.size() != 1) {
 				throw new RuntimeException("Problem finding year text at: "+doi);
@@ -150,9 +150,13 @@ public class AcsArticleCrawler extends ArticleCrawler {
 			pages = matcher.group(2)+"-"+matcher.group(3);
 		}
 
-		ArticleReference ar = new ArticleReference(journal,
-				year, volume, number, pages, isAsapArticle);
-
+		ArticleReference ar = new ArticleReference();
+		ar.setHasBeenPublished(hasBeenPublished);
+		ar.setJournal(journal);
+		ar.setVolume(volume);
+		ar.setYear(year);
+		ar.setNumber(number);
+		ar.setPages(pages);
 		return ar;
 	}
 
