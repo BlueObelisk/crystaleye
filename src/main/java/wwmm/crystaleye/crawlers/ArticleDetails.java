@@ -15,6 +15,20 @@ public class ArticleDetails {
 	private ArticleReference reference;
 	private String authors;
 	private List<SupplementaryFileDetails> suppFiles;
+	
+	private boolean hasBeenPublished;
+
+	public boolean isHasBeenPublished() {
+		return hasBeenPublished;
+	}
+
+	public void setHasBeenPublished(boolean hasBeenPublished) {
+		this.hasBeenPublished = hasBeenPublished;
+	}
+
+	public void setFullTextHtmlLink(URI fullTextHtmlLink) {
+		this.fullTextHtmlLink = fullTextHtmlLink;
+	}
 
 	public ArticleDetails() {
 		;
@@ -120,9 +134,6 @@ public class ArticleDetails {
 			if (StringUtils.isNotEmpty(reference.getPages())) {
 				result.append("    Pages: "+reference.getPages()+NEW_LINE);
 			}
-			if (!reference.hasBeenPublished()) {
-				result.append("    ### THIS ARTICLE HAS YET TO BE PUBLISHED - REFERENCE DETAILS WILL BE INCOMPLETE ###\n");
-			}
 			result.append("  Supplementary file details:"+NEW_LINE);
 			int scount = 1;
 			for (SupplementaryFileDetails sf : suppFiles) {
@@ -142,6 +153,9 @@ public class ArticleDetails {
 			}
 			if (suppFiles.size() == 0) {
 				result.append("    --no supplementary files--"+NEW_LINE);
+			}
+			if (!hasBeenPublished) {
+				result.append("    ### THIS ARTICLE HAS YET TO BE PUBLISHED - REFERENCE DETAILS WILL BE INCOMPLETE ###\n");
 			}
 		}
 		result.append("}"+NEW_LINE);

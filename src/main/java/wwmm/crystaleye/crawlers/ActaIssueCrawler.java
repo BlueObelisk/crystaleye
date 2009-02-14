@@ -37,7 +37,7 @@ public class ActaIssueCrawler extends Crawler {
 		Pattern pattern = Pattern.compile("\\.\\./issues/(\\d\\d\\d\\d)/(\\d\\d/\\d\\d)/issconts.html");
 		Matcher matcher = pattern.matcher(info);
 		if (!matcher.find() || matcher.groupCount() != 2) {
-			throw new RuntimeException("Could not extract the year/issue information " +
+			throw new CrawlerRuntimeException("Could not extract the year/issue information " +
 					"from current issue for Acta journal, "+journal.getFullTitle()+".");
 		}
 		String year = matcher.group(1);

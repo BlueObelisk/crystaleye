@@ -29,14 +29,14 @@ public class ElsevierCrawler extends Crawler {
 		List<Node> titleNodes = Utils.queryHTML(issueDoc, ".//x:title");
 		int size = titleNodes.size();
 		if (size != 1) {
-			throw new RuntimeException("Expected to find 1 element containing" +
+			throw new CrawlerRuntimeException("Expected to find 1 element containing" +
 					"the year/issue information but found "+size+".");
 		}
 		String title = titleNodes.get(0).getValue();
 		Pattern p = Pattern.compile("[^,]+,\\s+Volume\\s+(\\d+)\\s*,\\s+Issue[s]?\\s+([\\d-]+).*");
 		Matcher matcher = p.matcher(title);
 		if (!matcher.find() || matcher.groupCount() != 2) {
-			throw new RuntimeException("Could not extract the year/issue information.");
+			throw new CrawlerRuntimeException("Could not extract the year/issue information.");
 		}
 		String year = matcher.group(1);
 		String issue = matcher.group(2);

@@ -21,9 +21,9 @@ public abstract class Crawler {
 		try {
 			uri = new URI(url, false);
 		} catch (URIException e) {
-			throw new RuntimeException("Problem creating URI from: "+url, e);
+			throw new CrawlerRuntimeException("Problem creating URI from: "+url, e);
 		} catch (NullPointerException e) {
-			throw new RuntimeException("Cannot create a URI from a null String.", e);
+			throw new CrawlerRuntimeException("Cannot create a URI from a null String.", e);
 		}
 		return uri;
 	}
