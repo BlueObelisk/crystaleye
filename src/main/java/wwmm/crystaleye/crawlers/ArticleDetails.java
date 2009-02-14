@@ -20,16 +20,6 @@ public class ArticleDetails {
 		;
 	}
 
-	public ArticleDetails(DOI doi, boolean doiResolved, URI fullTextHtmlLink, String title, ArticleReference ref, String authors, List<SupplementaryFileDetails> suppFiles) {
-		this.doi = doi;
-		this.doiResolved = doiResolved;
-		this.fullTextHtmlLink = fullTextHtmlLink;
-		this.title = title;
-		this.reference = ref;
-		this.authors = authors;
-		this.suppFiles = suppFiles;
-	}
-
 	public boolean isDoiResolved() {
 		return doiResolved;
 	}
@@ -108,27 +98,30 @@ public class ArticleDetails {
 			if (fullTextHtmlLink != null) {
 				result.append("  Full text HTML link: "+fullTextHtmlLink+NEW_LINE);
 			}
-			if (!StringUtils.isEmpty(title)) {
+			if (StringUtils.isNotEmpty(title)) {
 				result.append("  Title: "+title+NEW_LINE);
 			}
-			if (!StringUtils.isEmpty(authors)) {
+			if (StringUtils.isNotEmpty(authors)) {
 				result.append("  Authors: "+authors+NEW_LINE);
 			}
 			result.append("  Bib data: "+NEW_LINE);
-			if (!StringUtils.isEmpty(reference.getJournalAbbreviation())) {
-				result.append("    Journal: "+reference.getJournalAbbreviation()+NEW_LINE);
+			if (StringUtils.isNotEmpty(reference.getJournal())) {
+				result.append("    Journal: "+reference.getJournal()+NEW_LINE);
 			}
-			if (!StringUtils.isEmpty(reference.getYear())) {
+			if (StringUtils.isNotEmpty(reference.getYear())) {
 				result.append("    Year: "+reference.getYear()+NEW_LINE);
 			}
-			if (!StringUtils.isEmpty(reference.getVolume())) {
+			if (StringUtils.isNotEmpty(reference.getVolume())) {
 				result.append("    Volume: "+reference.getVolume()+NEW_LINE);
 			}
-			if (!StringUtils.isEmpty(reference.getNumber())) {
+			if (StringUtils.isNotEmpty(reference.getNumber())) {
 				result.append("    Number: "+reference.getNumber()+NEW_LINE);
 			}
-			if (!StringUtils.isEmpty(reference.getPages())) {
+			if (StringUtils.isNotEmpty(reference.getPages())) {
 				result.append("    Pages: "+reference.getPages()+NEW_LINE);
+			}
+			if (!reference.hasBeenPublished()) {
+				result.append("    ### THIS ARTICLE HAS YET TO BE PUBLISHED - REFERENCE DETAILS WILL BE INCOMPLETE ###\n");
 			}
 			result.append("  Supplementary file details:"+NEW_LINE);
 			int scount = 1;

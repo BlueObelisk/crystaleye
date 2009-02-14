@@ -8,22 +8,12 @@ import wwmm.crystaleye.BasicHttpClient;
 
 public abstract class Crawler {
 
-	int maxSleep = 1000;
 	BasicHttpClient httpClient;
 	
 	private static final Logger LOG = Logger.getLogger(Crawler.class);
 	
 	public Crawler() {
-		httpClient = new BasicHttpClient();
-	}
-	
-	protected void sleep() {
-		int maxTime = Integer.valueOf(maxSleep);
-		try {
-			Thread.sleep(((int) (maxTime * Math.random())));
-		} catch (InterruptedException e) {
-			LOG.debug("Sleep interrupted.");
-		}
+		httpClient = new CrawlerHttpClient();
 	}
 	
 	protected URI createURI(String url) {

@@ -1,15 +1,15 @@
 package wwmm.crystaleye.crawlers;
 
-import static wwmm.crystaleye.crawlers.CrawlerConstants.ACS_HOMEPAGE_URL;
+import static wwmm.crystaleye.crawlers.CrawlerConstants.ACTA_HOMEPAGE_URL;
 import static wwmm.crystaleye.crawlers.CrawlerConstants.DOI_SITE_URL;
+import static wwmm.crystaleye.crawlers.CrawlerConstants.X_DC;
+import static wwmm.crystaleye.crawlers.CrawlerConstants.X_RSS1;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import nu.xom.Document;
 import nu.xom.Element;
@@ -18,22 +18,22 @@ import nu.xom.Nodes;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
-public class AcsRssCrawler extends Crawler {
-
-	private AcsJournal journal;
+public class ActaRssCrawler extends Crawler {
+	
+	private ActaJournal journal;
 	private Date lastCrawledDate;
 
 	private static final Logger LOG = Logger.getLogger(AcsRssCrawler.class);
 	
-	public AcsRssCrawler(AcsJournal journal) {
+	public ActaRssCrawler(ActaJournal journal) {
 		this.journal = journal;
 	}
 
-	public AcsRssCrawler(AcsJournal journal, Date lastCrawledDate) {
+	public ActaRssCrawler(ActaJournal journal, Date lastCrawledDate) {
 		this.journal = journal;
 		this.lastCrawledDate = lastCrawledDate;
 	}
-
+	
 	public List<ArticleDetails> getNewArticleDetails() {
 		URI feedUri = createFeedURI();
 		Document feedDoc = httpClient.getWebpageXML(feedUri);
@@ -43,7 +43,7 @@ public class AcsRssCrawler extends Crawler {
 			Date entryDate = getEntryDate(entry);
 			if (needToCrawlArticle(entryDate)) {
 				DOI doi = getDOI(entry);
-				ArticleDetails ad = new AcsArticleCrawler(doi).getDetails();
+				ArticleDetails ad = new ActaArticleCrawler(doi).getDetails();
 				adList.add(ad);
 			}
 		}
@@ -51,23 +51,14 @@ public class AcsRssCrawler extends Crawler {
 	}
 	
 	private DOI getDOI(Element entry) {
-		Nodes nds = entry.query("./link");
-		if (nds.size() != 1) {
-			throw new IllegalStateException("Expected to find 1 link element in this entry, found "+nds.size()+":\n"+entry.toXML());
+		Nodes nds = entry.query("./dc:identifier", X_DC);
+		if (nds.size() == 0) {
+			throw new RuntimeException("Could not get DOI from entry:\n"+entry.toXML());
 		}
-		String entryLink = ((Element)nds.get(0)).getValue();
-		
-		Pattern p = Pattern.compile(ACS_HOMEPAGE_URL+"/doi/abs/(10.1021/.{9})\\?.*");
-		Matcher matcher = p.matcher(entryLink);
-		String doiPostfix = null;
-		if (matcher.find() && matcher.groupCount() == 1) {
-			doiPostfix = matcher.group(1);
-		} else {
-			throw new RuntimeException("Could not extract DOI from <link> URI, "+
-					entryLink.toString()+"element, crawler may need rewriting.");
-		}
-		String doiStr = DOI_SITE_URL+"/"+doiPostfix;
-		return new DOI(doiStr);
+		String value = ((Element)nds.get(0)).getValue();
+		String doiPrefix = value.replaceAll("doi:", "");
+		String doi = DOI_SITE_URL+"/"+doiPrefix;
+		return new DOI(doi);
 	}
 	
 	private boolean needToCrawlArticle(Date entryDate) {
@@ -83,12 +74,12 @@ public class AcsRssCrawler extends Crawler {
 	}
 	
 	private Date getEntryDate(Element entry) {
-		Nodes nds = entry.query("./pubDate");
+		Nodes nds = entry.query("./dc:date", X_DC);
 		if (nds.size() != 1) {
 			throw new IllegalStateException("Expected to find 1 date element in this entry, found "+nds.size()+":\n"+entry.toXML());
 		}
 		String dateStr = ((Element)nds.get(0)).getValue();
-		SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy'-'MM'-'dd");
 		Date date = null;
 		try {
 			date = sdf.parse(dateStr);
@@ -100,7 +91,7 @@ public class AcsRssCrawler extends Crawler {
 	}
 	
 	private List<Element> getFeedEntries(Document feedDoc) {
-		Nodes nds = feedDoc.query("./rss/channel/item");
+		Nodes nds = feedDoc.query(".//rss1:item", X_RSS1);
 		if (nds.size() == 0) {
 			throw new RuntimeException("Could not find any entries in RSS feed for "+journal.getFullTitle());
 		}
@@ -113,8 +104,7 @@ public class AcsRssCrawler extends Crawler {
 	}
 
 	private URI createFeedURI() {
-		String feedUrl = ACS_HOMEPAGE_URL+"/action/showFeed?ui=0&mi=r41k3s&ai=54r&jc="
-		+journal.getAbbreviation()+"&type=etoc&feed=rss";
+		String feedUrl = ACTA_HOMEPAGE_URL+"/"+journal.getAbbreviation()+"/rss10.xml";
 		return createURI(feedUrl);
 	}
 
@@ -126,13 +116,14 @@ public class AcsRssCrawler extends Crawler {
 	 * @throws ParseException 
 	 */
 	public static void main(String[] args) throws ParseException {
-		for (AcsJournal journal : AcsJournal.values()) {
-			if (!journal.getAbbreviation().equals("cgdefu")) {
+		for (ActaJournal journal : ActaJournal.values()) {
+			if (!journal.getAbbreviation().equals("c")) {
 				continue;
 			}
-			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
-			Date date = sdf.parse("Thu, 12 Feb 2009 12:00:00 GMT");
-			AcsRssCrawler acf = new AcsRssCrawler(journal, date);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy'-'MM'-'dd");
+			Date date = sdf.parse("2008-08-15");
+			//Date date = new Date();
+			ActaRssCrawler acf = new ActaRssCrawler(journal, date);
 			List<ArticleDetails> details = acf.getNewArticleDetails();
 			for (ArticleDetails ad : details) {
 				System.out.println(ad.toString());
@@ -140,5 +131,5 @@ public class AcsRssCrawler extends Crawler {
 			break;
 		}
 	}
-	
+
 }

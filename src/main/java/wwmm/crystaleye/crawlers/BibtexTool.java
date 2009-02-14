@@ -67,12 +67,17 @@ public class BibtexTool {
 	}
 
 	public ArticleReference getReference() {
-		String journalAbbreviation = getValue("journal");
+		String journal = getValue("journal");
 		String year = getValue("year");
 		String volume = getValue("volume");
 		String pages = getValue("pages");
 		String number = getValue("number");
-		ArticleReference ref = new ArticleReference(journalAbbreviation, year, volume, number, pages);
+		ArticleReference ref = new ArticleReference();
+		ref.setJournal(journal);
+		ref.setYear(year);
+		ref.setVolume(volume);
+		ref.setPages(pages);
+		ref.setNumber(number);
 		return ref;
 	}
 

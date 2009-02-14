@@ -1,6 +1,3 @@
-/**
- * 
- */
 package wwmm.crystaleye.crawlers;
 
 public enum ChemSocJapanJournal {

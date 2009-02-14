@@ -35,6 +35,7 @@ public class ActaArticleCrawler extends ArticleCrawler {
 		if (bibtexTool != null) {
 			String title = bibtexTool.getTitle();
 			ArticleReference ref = bibtexTool.getReference();
+			ref.setHasBeenPublished(true);
 			String authors = bibtexTool.getAuthors();
 			ad.setTitle(title);
 			ad.setReference(ref);
