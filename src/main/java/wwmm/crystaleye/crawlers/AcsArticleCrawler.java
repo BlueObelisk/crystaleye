@@ -52,7 +52,7 @@ public class AcsArticleCrawler extends ArticleCrawler {
 	private URI getFullTextLink() {
 		Nodes fullTextLinks = articleAbstractDoc.query(".//x:a[contains(@href,'/full/')]", X_XHTML);
 		if (fullTextLinks.size() == 0) {
-			throw new RuntimeException("Problem getting full text HTML link: "+doi);
+			throw new CrawlerRuntimeException("Problem getting full text HTML link: "+doi);
 		}
 		String urlPostfix = ((Element)fullTextLinks.get(0)).getAttributeValue("href");
 		String fullTextUrl = ACS_HOMEPAGE_URL+urlPostfix;
@@ -95,7 +95,7 @@ public class AcsArticleCrawler extends ArticleCrawler {
 	private String getAuthors() {
 		Nodes authorNds = articleAbstractDoc.query(".//x:meta[@name='dc.Creator']", X_XHTML);
 		if (authorNds.size() == 0) {
-			throw new RuntimeException("Problem finding authors at: "+doi);
+			throw new CrawlerRuntimeException("Problem finding authors at: "+doi);
 		}
 		StringBuilder authors = new StringBuilder();
 		for (int i = 0; i < authorNds.size(); i++) {
@@ -111,47 +111,45 @@ public class AcsArticleCrawler extends ArticleCrawler {
 	private ArticleReference getReference() {
 		Nodes citationNds = articleAbstractDoc.query(".//x:div[@id='citation']", X_XHTML);
 		if (citationNds.size() != 1) {
-			throw new RuntimeException("Problem finding bibliographic text at: "+doi);
+			throw new CrawlerRuntimeException("Problem finding bibliographic text at: "+doi);
 		}
 		Element citationNd = (Element)citationNds.get(0);
 		Nodes journalNds = citationNd.query("./x:cite", X_XHTML);
 		if (journalNds.size() != 1) {
-			throw new RuntimeException("Problem finding journal text at: "+doi);
+			throw new CrawlerRuntimeException("Problem finding journal text at: "+doi);
 		}
 		String journal = ((Element)journalNds.get(0)).getValue().trim();
 
 		String citationContent = citationNd.getValue();
-		boolean hasBeenPublished = false;
-		if (citationContent.contains("Article ASAP")) {
-			hasBeenPublished = true;
-		}
 		String year = null;
 		String volume = null;
 		String number = null;
 		String pages = null;
-		if (!hasBeenPublished) {
+		if (!citationContent.contains("Article ASAP")) {
+			ad.setHasBeenPublished(true);
 			Nodes yearNds = citationNd.query("./x:span[@class='citation_year']", X_XHTML);
 			if (yearNds.size() != 1) {
-				throw new RuntimeException("Problem finding year text at: "+doi);
+				throw new CrawlerRuntimeException("Problem finding year text at: "+doi);
 			}
 			year = ((Element)yearNds.get(0)).getValue().trim();		
 			Nodes volumeNds = citationNd.query("./x:span[@class='citation_volume']", X_XHTML);
 			if (volumeNds.size() != 1) {
-				throw new RuntimeException("Problem finding volume text at: "+doi);
+				throw new CrawlerRuntimeException("Problem finding volume text at: "+doi);
 			}
 			volume = ((Element)volumeNds.get(0)).getValue().trim();
 			String refContent = citationNd.getValue();
 			Pattern p = Pattern.compile("[^\\(]*\\((\\d+)\\),\\s+pp\\s+(\\d+).(\\d+).*");
 			Matcher matcher = p.matcher(refContent);
 			if (!matcher.find() || matcher.groupCount() != 3) {
-				throw new RuntimeException("Problem finding issue and pages info at: "+doi);
+				throw new CrawlerRuntimeException("Problem finding issue and pages info at: "+doi);
 			}
 			number = matcher.group(1);
 			pages = matcher.group(2)+"-"+matcher.group(3);
+		} else {
+			ad.setHasBeenPublished(false);
 		}
 
 		ArticleReference ar = new ArticleReference();
-		ar.setHasBeenPublished(hasBeenPublished);
 		ar.setJournal(journal);
 		ar.setVolume(volume);
 		ar.setYear(year);
@@ -163,7 +161,7 @@ public class AcsArticleCrawler extends ArticleCrawler {
 	private String getTitle() {
 		Nodes titleNds = articleAbstractDoc.query(".//x:h1[@class='articleTitle']", X_XHTML);
 		if (titleNds.size() != 1) {
-			throw new RuntimeException("Problem finding title at: "+doi);
+			throw new CrawlerRuntimeException("Problem finding title at: "+doi);
 		}
 		String title = titleNds.get(0).getValue();
 		return title;

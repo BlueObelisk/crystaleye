@@ -34,14 +34,14 @@ public class AcsIssueCrawler extends Crawler {
 		Nodes journalInfo = doc.query(".//x:div[@id='tocMeta']", X_XHTML);
 		int size = journalInfo.size();
 		if (size != 1) {
-			throw new RuntimeException("Expected to find 1 element containing" +
+			throw new CrawlerRuntimeException("Expected to find 1 element containing" +
 					" the year/issue information but found "+size+".");
 		}
 		String info = journalInfo.get(0).getValue().trim();
 		Pattern pattern = Pattern.compile("[^,]*,\\s*(\\d+)\\s+Volume\\s+(\\d+),\\s+Issue\\s+(\\d+)\\s+Pages\\s+(\\d+-\\d+).*");
 		Matcher matcher = pattern.matcher(info);
 		if (!matcher.find() || matcher.groupCount() != 4) {
-			throw new RuntimeException("Could not extract the year/issue information.");
+			throw new CrawlerRuntimeException("Could not extract the year/issue information.");
 		}
 		String year = matcher.group(1);
 		String issueId = matcher.group(3);

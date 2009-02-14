@@ -33,14 +33,14 @@ public class RscIssueCrawler extends Crawler{
 		List<Node> journalInfo = Utils.queryHTML(doc, ".//x:h3[contains(text(),'Contents')]");
 		int size = journalInfo.size();
 		if (size != 1) {
-			throw new RuntimeException("Expected to find 1 element containing"+
+			throw new CrawlerRuntimeException("Expected to find 1 element containing"+
 					"the year/issue information but found "+size+".");
 		}
 		String info = journalInfo.get(0).getValue().trim();
 		Pattern pattern = Pattern.compile("[^\\d]*(\\d+),[^\\d]*(\\d+)$");
 		Matcher matcher = pattern.matcher(info);
 		if (!matcher.find() || matcher.groupCount() != 2) {
-			throw new RuntimeException("Could not extract the year/issue information.");
+			throw new CrawlerRuntimeException("Could not extract the year/issue information.");
 		}
 		String issueNum = matcher.group(1);
 		String year = matcher.group(2);
@@ -77,7 +77,7 @@ public class RscIssueCrawler extends Crawler{
 			}
 			Nodes doiNodes = articleNode.query(".//x:a[contains(.,'10.1039/')]", X_XHTML);
 			if (doiNodes.size() != 1) {
-				throw new RuntimeException("Problem getting DOI link from article element:\n"+articleElement.toXML());
+				throw new CrawlerRuntimeException("Problem getting DOI link from article element:\n"+articleElement.toXML());
 			}
 			String doiPrefix = ((Element)doiNodes.get(0)).getValue();
 			String doiStr = DOI_SITE_URL+"/"+doiPrefix;
@@ -102,7 +102,7 @@ public class RscIssueCrawler extends Crawler{
 	private boolean isArticle(Element articleElement) {
 		Nodes linkNds = articleElement.query(".//x:a[contains(@title,'DOI:')]", X_XHTML);
 		if (linkNds.size() == 0) {
-			throw new RuntimeException("Problem getting DOI link nodes from article element:\n"+articleElement.toXML());
+			throw new CrawlerRuntimeException("Problem getting DOI link nodes from article element:\n"+articleElement.toXML());
 		}
 		String value = ((Element)linkNds.get(0)).getValue();
 		if (value.contains("Front cover") || 

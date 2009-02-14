@@ -61,7 +61,7 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	private String getArticleId() {
 		Nodes nds = articleAbstractDoc.query(".//x:input[@name='cnor']", X_XHTML);
 		if (nds.size() == 0) {
-			throw new RuntimeException("Could not find the article ID for "+doi.toString()+
+			throw new CrawlerRuntimeException("Could not find the article ID for "+doi.toString()+
 					" webpage structure must have changed.  Crawler needs rewriting!");
 		}
 		return ((Element)nds.get(0)).getAttributeValue("value");
@@ -70,7 +70,7 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	private URI getFullTextLink() {
 		Nodes fullTextHtmlLinks = articleAbstractDoc.query(".//x:a[./x:img[contains(@src,'graphics/htmlborder.gif')]]", X_XHTML);
 		if (fullTextHtmlLinks.size() != 1) {
-			throw new RuntimeException("Problem finding full text HTML link: "+doi);
+			throw new CrawlerRuntimeException("Problem finding full text HTML link: "+doi);
 		}
 		String fullTextUrl = ((Element)fullTextHtmlLinks.get(0)).getAttributeValue("href");
 		return createURI(fullTextUrl);

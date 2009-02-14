@@ -22,7 +22,7 @@ public class DOI {
 	private void validate() {
 		String doiUrl = doiUri.toString();
 		if (!doiUri.toString().startsWith(DOI_SITE_URL)) {
-			throw new DOIException("URI "+doiUrl+" is not a DOI.");
+			throw new DOIRuntimeException("URI "+doiUrl+" is not a DOI.");
 		}
 	}
 	

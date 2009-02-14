@@ -81,7 +81,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 		Element suppTable = (Element)suppTableNodes.get(1);
 		Nodes tableRows = suppTable.query(".//x:tr", X_XHTML);
 		if (tableRows.size() < 3) {
-			throw new RuntimeException("Expected the supplementary document table to have at least 3 rows, found "+tableRows.size());
+			throw new CrawlerRuntimeException("Expected the supplementary document table to have at least 3 rows, found "+tableRows.size());
 		}
 		List<SupplementaryFileDetails> suppFiles = new ArrayList<SupplementaryFileDetails>(1);
 		for (int i = 2; i < tableRows.size(); i++) {

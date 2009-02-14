@@ -63,7 +63,7 @@ public class AcsRssCrawler extends Crawler {
 		if (matcher.find() && matcher.groupCount() == 1) {
 			doiPostfix = matcher.group(1);
 		} else {
-			throw new RuntimeException("Could not extract DOI from <link> URI, "+
+			throw new CrawlerRuntimeException("Could not extract DOI from <link> URI, "+
 					entryLink.toString()+"element, crawler may need rewriting.");
 		}
 		String doiStr = DOI_SITE_URL+"/"+doiPostfix;
@@ -93,7 +93,7 @@ public class AcsRssCrawler extends Crawler {
 		try {
 			date = sdf.parse(dateStr);
 		} catch (ParseException e) {
-			throw new RuntimeException("Could not parse date string "+dateStr+
+			throw new CrawlerRuntimeException("Could not parse date string "+dateStr+
 					", looks like the crawler may need rewriting...");
 		}
 		return date;		
@@ -102,7 +102,7 @@ public class AcsRssCrawler extends Crawler {
 	private List<Element> getFeedEntries(Document feedDoc) {
 		Nodes nds = feedDoc.query("./rss/channel/item");
 		if (nds.size() == 0) {
-			throw new RuntimeException("Could not find any entries in RSS feed for "+journal.getFullTitle());
+			throw new CrawlerRuntimeException("Could not find any entries in RSS feed for "+journal.getFullTitle());
 		}
 		List<Element> entries = new ArrayList<Element>(nds.size());
 		for (int i = 0; i < nds.size(); i++) {

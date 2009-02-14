@@ -7,7 +7,6 @@ public class ArticleReference {
 	private String volume;
 	private String number;
 	private String pages;
-	private boolean hasBeenPublished;
 	
 	public ArticleReference() {
 		;
@@ -51,14 +50,6 @@ public class ArticleReference {
 
 	public void setPages(String pages) {
 		this.pages = pages;
-	}
-
-	public boolean hasBeenPublished() {
-		return hasBeenPublished;
-	}
-
-	public void setHasBeenPublished(boolean hasBeenPublished) {
-		this.hasBeenPublished = hasBeenPublished;
 	}
 	
 }

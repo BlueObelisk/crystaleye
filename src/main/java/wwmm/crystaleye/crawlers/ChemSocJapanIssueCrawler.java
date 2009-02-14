@@ -28,14 +28,14 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 		List<Node> journalInfo = Utils.queryHTML(doc, "//x:span[@class='augr']");
 		int size = journalInfo.size();
 		if (size != 1) {
-			throw new RuntimeException("Expected to find 1 element containing" +
+			throw new CrawlerRuntimeException("Expected to find 1 element containing" +
 					"the year/issue information but found "+size+".");
 		}
 		String info = journalInfo.get(0).getValue();
 		Pattern pattern = Pattern.compile("[^,]*,\\s+\\w+\\.\\s+(\\d+)\\s+\\([^,]*,\\s+(\\d\\d\\d\\d)\\)");
 		Matcher matcher = pattern.matcher(info);
 		if (!matcher.find() || matcher.groupCount() != 2) {
-			throw new RuntimeException("Could not extract the year/issue information.");
+			throw new CrawlerRuntimeException("Could not extract the year/issue information.");
 		}
 		String year = matcher.group(2);
 		String issueNum = matcher.group(1);
