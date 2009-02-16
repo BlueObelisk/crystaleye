@@ -107,6 +107,12 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>cml</groupId>
 			<artifactId>legacy2cml</artifactId>
 			<version>0.1.1-SNAPSHOT</version>

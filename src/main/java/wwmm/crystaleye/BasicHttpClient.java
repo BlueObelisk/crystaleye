@@ -123,7 +123,7 @@ public class BasicHttpClient {
 		return doc;
 	}
 	
-	public InputStream getPostResultStream(PostMethod postMethod) {
+	private InputStream getPostResultStream(PostMethod postMethod) {
 		method = postMethod;
 		executeMethod(method);
 		InputStream in = null;
