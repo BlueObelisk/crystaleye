@@ -43,6 +43,7 @@ public class RscArticleCrawler extends ArticleCrawler {
 		ad.setReference(ref);
 		ad.setAuthors(authors);
 		ad.setSuppFiles(suppFiles);
+		ad.setHasBeenPublished(true);
 		LOG.debug("Finished finding article details.");
 		return ad;
 	}
@@ -106,7 +107,11 @@ public class RscArticleCrawler extends ArticleCrawler {
 		String year = matcher.group(2);
 		String pages = matcher.group(3);
 		pages = pages.replaceAll("\\s", "");
-		return new ArticleReference(journal, year, null, null, pages);
+		ArticleReference ar = new ArticleReference();
+		ar.setJournal(journal);
+		ar.setYear(year);
+		ar.setPages(pages);
+		return ar;
 	}
 
 	private String getTitle() {
@@ -130,10 +135,9 @@ public class RscArticleCrawler extends ArticleCrawler {
 	 * @throws URIException 
 	 */
 	public static void main(String[] args) throws URIException, NullPointerException {
-		//FIXME - make so that URI passed has to be a DOI, search for DOI class
-		String url = "http://pubs.rsc.org/Publishing/Journals/CC/article.asp?doi=b820593k";
-		URI uri = new URI(url, false);
-		RscArticleCrawler acf = new RscArticleCrawler(uri);
+		String url = "http://dx.doi.org/10.1039/b816501g";
+		DOI doi = new DOI(url);
+		RscArticleCrawler acf = new RscArticleCrawler(doi);
 		ArticleDetails details = acf.getDetails();
 		System.out.println(details.toString());
 	}
