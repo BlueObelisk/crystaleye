@@ -89,7 +89,7 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		String urlPostfix = ((Element)suppPageLinks.get(0)).getAttributeValue("href");
 		String url = ACS_HOMEPAGE_URL+urlPostfix;
 		URI suppPageUri = createURI(url);
-		return httpClient.getWebpageHTML(suppPageUri);
+		return httpClient.getResourceHTML(suppPageUri);
 	}
 
 	private String getAuthors() {

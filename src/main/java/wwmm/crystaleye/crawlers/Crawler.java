@@ -6,6 +6,17 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.BasicHttpClient;
 
+/**
+ * <p>
+ * The abstract <code>Crawler</code> class is intended to be used as a superclass
+ * for any web crawler classes.  It contains objects (e.g. a HTTP client)
+ * and methods generic to the use and manipulation of web resources.  
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public abstract class Crawler {
 
 	BasicHttpClient httpClient;
@@ -16,6 +27,13 @@ public abstract class Crawler {
 		httpClient = new CrawlerHttpClient();
 	}
 	
+	/**
+	 * Convenience method to handle the exceptions in creating a URI.
+	 * 
+	 * @param url
+	 * 
+	 * @return URI representing the provided <code>url</code>.
+	 */
 	protected URI createURI(String url) {
 		URI uri = null;
 		try {

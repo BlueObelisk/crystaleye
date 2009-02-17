@@ -1,7 +1,8 @@
 package wwmm.crystaleye.crawlers;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;

@@ -36,7 +36,7 @@ public class RscRssCrawler extends Crawler {
 
 	public List<ArticleDetails> getNewArticleDetails() {
 		URI feedUri = createFeedURI();
-		Document feedDoc = httpClient.getWebpageXML(feedUri);
+		Document feedDoc = httpClient.getResourceXML(feedUri);
 		List<Element> entries = getFeedEntries(feedDoc);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>();
 		for (Element entry : entries) {

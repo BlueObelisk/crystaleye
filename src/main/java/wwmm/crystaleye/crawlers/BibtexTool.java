@@ -7,6 +7,19 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
+/**
+ * <p>
+ * The <code>BibtexTool</code> class provides a parser for simple Bibtex files, 
+ * such as those that are provided alongside published chemistry articles (and
+ * therefore contain the details of only one publication).  
+ * 
+ * NB. It is NOT intended to parse all types of Bibtex.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class BibtexTool {
 
 	private String bibtexString;

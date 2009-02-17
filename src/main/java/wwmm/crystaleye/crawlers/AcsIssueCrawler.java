@@ -52,7 +52,7 @@ public class AcsIssueCrawler extends Crawler {
 	public Document getCurrentIssueDocument() {
 		String url = "http://pubs.acs.org/toc/"+journal.getAbbreviation()+"/current";
 		URI issueUri = createURI(url);
-		return httpClient.getWebpageHTML(issueUri);
+		return httpClient.getResourceHTML(issueUri);
 	}
 	
 	public List<DOI> getCurrentIssueDOIs() {
@@ -67,7 +67,7 @@ public class AcsIssueCrawler extends Crawler {
 		URI issueUri = createURI(issueUrl);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri.toString());
-		Document issueDoc = httpClient.getWebpageHTML(issueUri);
+		Document issueDoc = httpClient.getResourceHTML(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:div[@class='DOI']");
 		for (Node doiNode : doiNodes) {
 			String contents = ((Element)doiNode).getValue();

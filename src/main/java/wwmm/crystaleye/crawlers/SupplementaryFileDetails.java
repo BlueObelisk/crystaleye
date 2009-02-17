@@ -18,14 +18,6 @@ public class SupplementaryFileDetails {
 		return linkText;
 	}
 
-	public void setLinkText(String linkText) {
-		this.linkText = linkText;
-	}
-
-	public void setUri(URI uri) {
-		this.uri = uri;
-	}
-
 	public URI getUri() {
 		return uri;
 	}
@@ -33,11 +25,5 @@ public class SupplementaryFileDetails {
 	public String getContentType() {
 		return contentType;
 	}
-
-	public void setMimetype(String mimetype) {
-		this.contentType = mimetype;
-	}
-	
-	
 	
 }

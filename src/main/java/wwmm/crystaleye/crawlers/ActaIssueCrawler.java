@@ -49,7 +49,7 @@ public class ActaIssueCrawler extends Crawler {
 	public Document getCurrentIssueDocument() {
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/contents/backissuesbdy.html";
 		URI issueUri = createURI(url);
-		return httpClient.getWebpageHTML(issueUri);
+		return httpClient.getResourceHTML(issueUri);
 	}
 
 	public List<DOI> getCurrentIssueDOIs() {
@@ -64,7 +64,7 @@ public class ActaIssueCrawler extends Crawler {
 		URI issueUri = createURI(url);
 		LOG.debug("Started to find article DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri);
-		Document issueDoc = httpClient.getWebpageHTML(issueUri);
+		Document issueDoc = httpClient.getResourceHTML(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'"+DOI_SITE_URL+"/10.1107/')]/@href");
 		for (Node doiNode : doiNodes) {
 			String doiStr = ((Attribute)doiNode).getValue();

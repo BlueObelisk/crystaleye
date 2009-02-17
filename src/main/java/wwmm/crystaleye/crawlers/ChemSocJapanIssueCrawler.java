@@ -45,7 +45,7 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	public Document getCurrentIssueDocument() {
 		String url = "http://www.csj.jp/journals/"+journal.getAbbreviation()+"/cl-cont/newissue.html";
 		URI issueUri = createURI(url);
-		return httpClient.getWebpageDocumentMinusComments(issueUri);
+		return httpClient.getResourceHTML(issueUri);
 	}
 	
 	public List<DOI> getCurrentIssueDOIs() {
@@ -58,7 +58,7 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 		URI issueUri = createURI(url);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri.toString());
-		Document issueDoc = httpClient.getWebpageDocumentMinusComments(issueUri);
+		Document issueDoc = httpClient.getResourceHTML(issueUri);
 		List<Node> textLinks = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://www.is.csj.jp/cgi-bin/journals/pr/index.cgi?n=li') and not(contains(@href,'li_s'))]/@href");
 		List<DOI> dois = new ArrayList<DOI>();
 		for (Node textLink : textLinks) {
