@@ -5,6 +5,16 @@ import static wwmm.crystaleye.crawlers.CrawlerConstants.DOI_SITE_URL;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 
+/**
+ * <p>
+ * The <code>DOI</code> class provides a representation of a Digital Object 
+ * Identifier (DOI).  It is a simple wrapper class based around a URI.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class DOI {
 
 	URI doiUri;
@@ -19,6 +29,12 @@ public class DOI {
 		validate();
 	}
 	
+	/**
+	 * Make sure that the provided <code>URI</code> is a valid DOI.
+	 * 
+	 * @throws RuntimeException if the provided URI does not
+	 * 
+	 */
 	private void validate() {
 		String doiUrl = doiUri.toString();
 		if (!doiUri.toString().startsWith(DOI_SITE_URL)) {
@@ -26,6 +42,12 @@ public class DOI {
 		}
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @param url
+	 * @return URI
+	 */
 	private URI createURI(String url) {
 		URI uri = null;
 		try {

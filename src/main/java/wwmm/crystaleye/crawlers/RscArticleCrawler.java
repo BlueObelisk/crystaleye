@@ -66,7 +66,7 @@ public class RscArticleCrawler extends ArticleCrawler {
 		String suppListUrlPostfix = ((Element)nds.get(0)).getAttributeValue("href");
 		String suppListUrl = RSC_HOMEPAGE_URL+suppListUrlPostfix;
 		URI suppListUri = createURI(suppListUrl);
-		Document suppListDoc = httpClient.getWebpageHTML(suppListUri);
+		Document suppListDoc = httpClient.getResourceHTML(suppListUri);
 		Nodes linkNds = suppListDoc.query(".//x:li/x:a", X_XHTML);
 		List<SupplementaryFileDetails> sfdList = new ArrayList<SupplementaryFileDetails>(linkNds.size());
 		for (int i = 0; i < linkNds.size(); i++) {

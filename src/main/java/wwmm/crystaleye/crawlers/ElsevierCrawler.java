@@ -46,7 +46,7 @@ public class ElsevierCrawler extends Crawler {
 	public Document getCurrentIssueDocument() {
 		String issueUrl = SITE_PREFIX+"/science/journal/"+journal.getAbbreviation();
 		URI issueUri = createURI(issueUrl);
-		return httpClient.getWebpageDocumentMinusComments(issueUri);
+		return httpClient.getResourceHTML(issueUri);
 	}
 	
 	private List<URI> getArticleLinks(Document issueDoc) {
@@ -65,18 +65,17 @@ public class ElsevierCrawler extends Crawler {
 		URI currentIssueUri = createURI(currentIssueUrl);
 		LOG.debug("Started to find article DOIs from current issue of "+journal.getFullTitle()+".");
 		LOG.debug(currentIssueUri);
-		Document currentIssueDoc = httpClient.getWebpageDocumentMinusComments(currentIssueUri);
+		Document currentIssueDoc = httpClient.getResourceHTML(currentIssueUri);
 		List<URI> articleLinks = getArticleLinks(currentIssueDoc);
 		List<URI> dois = new ArrayList<URI>();
 		for (URI articleLink : articleLinks) {
-			Document articleDoc = httpClient.getWebpageHTML(articleLink);
+			Document articleDoc = httpClient.getResourceHTML(articleLink);
 			List<Node> doiNodes = Utils.queryHTML(articleDoc, ".//x:a[contains(@href,'http://dx.doi.org/10.1016/')]");
 			if (doiNodes.size() > 0) {
 				String doi = ((Element)doiNodes.get(0)).getAttributeValue("href");
 				URI doiUri = createURI(doi);
 				dois.add(doiUri);
 			}
-			sleep();
 		}	
 		LOG.debug("Finished finding issue DOIs.");
 		return dois;

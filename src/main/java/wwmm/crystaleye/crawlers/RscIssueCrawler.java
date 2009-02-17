@@ -51,7 +51,7 @@ public class RscIssueCrawler extends Crawler{
 		String url = "http://rsc.org/Publishing/Journals/"
 			+journal.getAbbreviation().toUpperCase()+"/Article.asp?Type=CurrentIssue";
 		URI uri = createURI(url);
-		return httpClient.getWebpageDocumentMinusComments(uri);
+		return httpClient.getResourceHTML(uri);
 	}
 
 	public List<DOI> getCurrentIssueDOIs() {
@@ -67,7 +67,7 @@ public class RscIssueCrawler extends Crawler{
 		+"&type=Issue&Issue="+issueId+"&x=11&y=5";
 		URI issueUri = createURI(issueUrl);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
-		Document issueDoc = httpClient.getWebpageDocumentMinusComments(issueUri);
+		Document issueDoc = httpClient.getResourceHTML(issueUri);
 		List<Node> articleNodes = Utils.queryHTML(issueDoc, ".//x:p[./x:a[contains(@title,'DOI:10.1039')]]");
 		List<DOI> dois = new ArrayList<DOI>();
 		for (Node articleNode : articleNodes) {

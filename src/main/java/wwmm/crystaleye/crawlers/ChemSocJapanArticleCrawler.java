@@ -55,7 +55,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 		String urlPostfix = ((Element)bibtexLinks.get(0)).getAttributeValue("href");
 		String bibUrl = CHEMSOCJAPAN_HOMEPAGE_URL+urlPostfix;
 		URI bibtexUri = createURI(bibUrl);
-		String bibStr = httpClient.getWebpageString(bibtexUri);
+		String bibStr = httpClient.getResourceString(bibtexUri);
 		bibtexTool = new BibtexTool(bibStr);
 	}
 
@@ -76,7 +76,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 		}
 		String urlPostfix = ((Element)suppListLinks.get(0)).getAttributeValue("href");
 		String suppListUrl = CHEMSOCJAPAN_HOMEPAGE_URL+urlPostfix;
-		Document suppListDoc = httpClient.getWebpageHTML(createURI(suppListUrl));
+		Document suppListDoc = httpClient.getResourceHTML(createURI(suppListUrl));
 		Nodes suppTableNodes = suppListDoc.query(".//x:table[@cellpadding='2' and @cellspacing='3']", X_XHTML);
 		Element suppTable = (Element)suppTableNodes.get(1);
 		Nodes tableRows = suppTable.query(".//x:tr", X_XHTML);

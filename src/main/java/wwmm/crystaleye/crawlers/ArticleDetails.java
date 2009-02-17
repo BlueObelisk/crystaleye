@@ -16,9 +16,15 @@ public class ArticleDetails {
 	private String authors;
 	private List<SupplementaryFileDetails> suppFiles;
 	
-	private boolean hasBeenPublished;
+	// assume initially that the article has been published,
+	// it is more likely than not.
+	private boolean hasBeenPublished = true;
+	
+	public ArticleDetails() {
+		;
+	}
 
-	public boolean isHasBeenPublished() {
+	public boolean hasBeenPublished() {
 		return hasBeenPublished;
 	}
 
@@ -28,10 +34,6 @@ public class ArticleDetails {
 
 	public void setFullTextHtmlLink(URI fullTextHtmlLink) {
 		this.fullTextHtmlLink = fullTextHtmlLink;
-	}
-
-	public ArticleDetails() {
-		;
 	}
 
 	public boolean isDoiResolved() {

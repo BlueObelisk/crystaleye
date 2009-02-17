@@ -1,11 +1,7 @@
 package wwmm.crystaleye;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import nu.xom.Builder;
 import nu.xom.Document;
@@ -27,6 +23,16 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import wwmm.crystaleye.util.Utils;
 
+/**
+ * <p>
+ * The <code>BasicHttpClient</code> class provides convenience methods for
+ * performing common HTTP methods and retrieving the results in various forms.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class BasicHttpClient {
 
 	private HttpClient client;
@@ -40,7 +46,19 @@ public class BasicHttpClient {
 		this.client = client;
 	}
 
-	private InputStream getWebpageStream(URI uri) {
+	/**
+	 * <p>
+	 * Executes a HTTP GET on the resource at the provided <code>URI</code>.  The 
+	 * resource contents are returned in an <code>InputStream</code>.
+	 * </p>
+	 * 
+	 * @param uri - the resource to retrieve.
+	 * 
+	 * @return InputStream containing the contents of the resource at the
+	 * provided <code>URI</code>.
+	 * 
+	 */
+	private InputStream getResourceStream(URI uri) {
 		InputStream in = null;
 		method = executeGET(uri);
 		try {
@@ -51,8 +69,20 @@ public class BasicHttpClient {
 		return in;
 	}
 	
-	public String getWebpageString(URI uri) {
-		InputStream in = getWebpageStream(uri);
+	/**
+	 * <p>
+	 * Executes a HTTP GET on the resource at the provided <code>URI</code>.  The 
+	 * resource contents are returned in a String.
+	 * </p>
+	 * 
+	 * @param uri - the resource to retrieve.
+	 * 
+	 * @return String containing the contents of the resource at the provided 
+	 * <code>URI</code>.
+	 * 
+	 */
+	public String getResourceString(URI uri) {
+		InputStream in = getResourceStream(uri);
 		String html = null;
 		try {
 			html = IOUtils.toString(in);
@@ -67,8 +97,21 @@ public class BasicHttpClient {
 		return html;
 	}
 
-	public Document getWebpageHTML(URI uri) {
-		InputStream in = getWebpageStream(uri);
+	/**
+	 * <p>
+	 * Executes a HTTP GET on the resource at the provided <code>URI</code>.  The 
+	 * resource contents are parsed by Tagsoup and returned as a XOM 
+	 * <code>Document</code>.
+	 * </p>
+	 * 
+	 * @param uri - the resource to retrieve.
+	 * 
+	 * @return XML <code>Document</code> containing the contents of the resource 
+	 * at the provided <code>URI</code> after they have been parsed using Tagsoup.
+	 * 
+	 */
+	public Document getResourceHTML(URI uri) {
+		InputStream in = getResourceStream(uri);
 		Document doc = null;
 		try {
 			Builder builder = getTagsoupBuilder();
@@ -82,8 +125,21 @@ public class BasicHttpClient {
 		return doc;
 	}
 	
-	public Document getWebpageXML(URI uri) {
-		InputStream in = getWebpageStream(uri);
+	/**
+	 * <p>
+	 * Executes a HTTP GET on the resource at the provided <code>URI</code>.  The 
+	 * resource contents are parsed using the default XOM <code>Builder</code> and 
+	 * returned as a XOM <code>Document</code>.
+	 * </p>
+	 * 
+	 * @param uri - the resource to retrieve.
+	 * 
+	 * @return XML <code>Document</code> containing the contents of the resource at 
+	 * the provided <code>URI</code>.
+	 * 
+	 */
+	public Document getResourceXML(URI uri) {
+		InputStream in = getResourceStream(uri);
 		Document doc = null;
 		try {
 			doc = Utils.parseXml(in);
@@ -94,35 +150,20 @@ public class BasicHttpClient {
 			}
 		}
 		return doc;
-	}
-
-	public Document getWebpageDocumentMinusComments(URI uri) {
-		String html = getWebpageString(uri);
-
-		String patternStr = "<!--(.*)?-->";
-		String replacementStr = "";
-		Pattern pattern = Pattern.compile(patternStr);
-		Matcher matcher = pattern.matcher(html);
-		html = matcher.replaceAll(replacementStr);
-		patternStr = "<!-->";
-		replacementStr = "";
-		pattern = Pattern.compile(patternStr);
-		matcher = pattern.matcher(html);
-		html = matcher.replaceAll(replacementStr);
-
-		StringReader sr = new StringReader(html);
-		BufferedReader br = new BufferedReader(sr);
-		Document doc = null;
-		try {
-			Builder builder = getTagsoupBuilder();
-			doc = Utils.parseXml(builder, br);
-		} finally {
-			IOUtils.closeQuietly(br);
-			IOUtils.closeQuietly(sr);
-		}
-		return doc;
-	}
+	}	
 	
+	/**
+	 * <p>
+	 * Executes a HTTP POST using the provided <code>postMethod</code> (which will 
+	 * contain the details of the POST URI).  The POST results retrieved are 
+	 * returned in an <code>InputStream</code>.
+	 * </p>
+	 * 
+	 * @param postMethod - POST method to execute.
+	 * 
+	 * @return InputStream containing the results of the POST method.
+	 * 
+	 */
 	private InputStream getPostResultStream(PostMethod postMethod) {
 		method = postMethod;
 		executeMethod(method);
@@ -135,6 +176,18 @@ public class BasicHttpClient {
 		return in;
 	}
 	
+	/**
+	 * <p>
+	 * Executes a HTTP POST using the provided <code>postMethod</code> (which will 
+	 * contain the details of the POST URI).  The POST results retrieved are 
+	 * returned in a <code>String</code>.
+	 * </p>
+	 * 
+	 * @param postMethod - POST method to execute.
+	 * 
+	 * @return String containing the results of the POST method.
+	 * 
+	 */
 	public String getPostResultString(PostMethod postMethod) {
 		InputStream in = getPostResultStream(postMethod);
 		String result = null;
@@ -151,7 +204,19 @@ public class BasicHttpClient {
 		return result;
 	}
 	
-	public Document getPostResultDocument(PostMethod postMethod) {
+	/**
+	 * <p>
+	 * Executes a HTTP POST using the provided <code>postMethod</code> (which will 
+	 * contain the details of the POST URI).  The POST results retrieved are returned 
+	 * in a XOM <code>Document</code>.
+	 * </p>
+	 * 
+	 * @param postMethod - POST method to execute.
+	 * 
+	 * @return XML <code>Document</code> containing the results of the POST method.
+	 * 
+	 */
+	public Document getPostResultXML(PostMethod postMethod) {
 		InputStream in = getPostResultStream(postMethod);
 		Document doc = null;
 		try {
@@ -166,6 +231,18 @@ public class BasicHttpClient {
 		return doc;
 	}
 
+	/**
+	 * <p>
+	 * Executes a HTTP HEAD on the resource at the provided URI.  All of the
+	 * resource headers are retrieved and returned.
+	 * </p>
+	 * 
+	 * @param uri - the resource for which to retrieve the headers.
+	 * 
+	 * @return array containing all of the HTTP headers for the resource at
+	 * the provided <code>URI</code>.
+	 * 
+	 */
 	public Header[] getHeaders(URI uri) {
 		method = executeHEAD(uri);
 		try {
@@ -177,6 +254,16 @@ public class BasicHttpClient {
 		}
 	}
 
+	/**
+	 * <p>
+	 * Constructs a XOM <code>Builder</code> using the Tagsoup HTML parser.  The 
+	 * <code>Builder</code> is used for all parsing and tidying of HTML in this 
+	 * class.
+	 * </p> 
+	 * 
+	 * @return XOM <code>Builder</code> created with the Tagsoup HTML parser.
+	 * 
+	 */
 	private Builder getTagsoupBuilder() {
 		XMLReader tagsoup = null;
 		try {
@@ -187,43 +274,91 @@ public class BasicHttpClient {
 		return new Builder(tagsoup);
 	}
 
+	/**
+	 * <p>
+	 * Simply executes the HTTP method provided as a parameter.
+	 * </p>
+	 * 
+	 * @param method - HTTP method to execute
+	 * 
+	 */
 	private void executeMethod(HttpMethod method) {
 		URI uri = null;
 		try {
 			uri = method.getURI();
 			int statusCode = client.executeMethod(method);
 			if (statusCode != HttpStatus.SC_OK) {
-				throw new RuntimeException("Problems executing "+method.getName()+" method on "+uri+". Returned status code = "+statusCode);
+				throw new RuntimeException("Problems executing "+method.getName()
+						+" method on "+uri+". Returned status code = "+statusCode);
 			}
 		} catch (HttpException e) {
-			throw new RuntimeException("HttpException executing "+method.getName()+" method on "+uri, e);
+			throw new RuntimeException("HttpException executing "+method.getName()
+					+" method on "+uri, e);
 		} catch (IOException e) {
-			throw new RuntimeException("IOException executing "+method.getName()+" method on "+uri, e);
+			throw new RuntimeException("IOException executing "+method.getName()
+					+" method on "+uri, e);
 		}
 	}
 
+	/**
+	 * <p>
+	 * Executes a HTTP GET on the provided <code>URI</code>.
+	 * </p>
+	 * 
+	 * @param uri - resource to GET
+	 * 
+	 * @return Apache <code>HTTPClient</code> wrapper containing the GET method 
+	 * details and results.
+	 * 
+	 */
 	public GetMethod executeGET(URI uri) {
 		method = new GetMethod();
 		try {
 			method.setURI(uri);
 			executeMethod(method);
 		} catch (URIException e) {
-			throw new RuntimeException("Exception setting the URI for the HTTP GET method: "+uri, e);
+			throw new RuntimeException("Exception setting the URI for the HTTP " +
+					"GET method: "+uri, e);
 		}
 		return (GetMethod)method;
 	}
 
+	/**
+	 * <p>
+	 * Executes a HTTP HEAD on the provided <code>URI</code>.
+	 * </p>
+	 * 
+	 * @param uri - resource to HEAD
+	 * 
+	 * @return Apache <code>HTTPClient</code> wrapper containing the HEAD method 
+	 * details and results.
+	 * 
+	 */
 	public HeadMethod executeHEAD(URI uri) {
 		HeadMethod method = new HeadMethod();
 		try {
 			method.setURI(uri);
 			executeMethod(method);
 		} catch (URIException e) {
-			throw new RuntimeException("Exception setting the URI for the HTTP GET method: "+uri, e);
+			throw new RuntimeException("Exception setting the URI for the HTTP " +
+					"GET method: "+uri, e);
 		}
 		return (HeadMethod)method;
 	}
 
+	/**
+	 * <p>
+	 * Performs a HTTP HEAD on the provided <code>URI</code> and returns the value 
+	 * of the Content-Type header.
+	 * </p>
+	 * 
+	 * @param uri - resource for which to retrieve the Content-Type
+	 * 
+	 * @return If the header exists, the String value of the resource Content-Type 
+	 * is returned.  If the header does not exist, then <code>null</code> is 
+	 * returned.
+	 * 
+	 */
 	public String getContentType(URI uri) {
 		Header[] headers = this.getHeaders(uri);
 		String contentType = null;
@@ -237,6 +372,18 @@ public class BasicHttpClient {
 		return contentType;
 	}
 
+	/**
+	 * <p>
+	 * Main method only for demonstration of class use. Does not require
+	 * any arguments.
+	 * </p>
+	 * 
+	 * @param args
+	 * 
+	 * @throws URIException
+	 * @throws NullPointerException
+	 * 
+	 */
 	public static void main(String[] args) throws URIException, NullPointerException {
 		BasicHttpClient bhc = new BasicHttpClient();
 		Header[] headers = bhc.getHeaders(new URI("http://pubs.rsc.org/suppdata/CC/b8/b811528a/b811528a.pdf", false));

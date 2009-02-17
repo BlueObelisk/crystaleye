@@ -41,7 +41,7 @@ public class PublisherArticles {
 					"&MasterJournalCode="+journalAbbreviation+"&SubYear="+year+
 					"&type=Issue&Issue="+issue+"&x=11&y=5";
 					System.out.println(url);
-					Document doc = HttpUtils.getWebpageHTML(url);
+					Document doc = HttpUtils.getResourceHTML(url);
 					Nodes articleNodes = doc.query(".//x:strong/x:a[contains(@href,'article.asp')]", X_XHTML);
 					int articles = articleNodes.size();
 					System.out.println(articles);
@@ -77,7 +77,7 @@ public class PublisherArticles {
 						+ journalAbbreviation.toLowerCase() + "&indecade=" + decade
 						+ "&involume=" + volume + "&inissue=" + issue;
 					System.out.println(url);
-					Document doc = HttpUtils.getWebpageHTML(url);
+					Document doc = HttpUtils.getResourceHTML(url);
 					Nodes articleNodes = doc.query(".//x:table[@border='1' and @width='100%' and @bordercolor='#CCCCCC' and @cellspacing='0' and @cellpadding='5']", X_XHTML);
 					int articles = articleNodes.size();
 					if (articles > 0) {

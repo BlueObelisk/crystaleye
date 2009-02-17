@@ -119,6 +119,12 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.7</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>nux</groupId>
 			<artifactId>nux</artifactId>
 			<version>1.6</version>
