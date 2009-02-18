@@ -19,16 +19,44 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
+/**
+ * <p>
+ * The <code>AcsIssueCrawler</code> class provides a method for obtaining
+ * information about all articles from a particular issue of a journal
+ * published by the American Chemical Society.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class AcsIssueCrawler extends Crawler {
 
 	private AcsJournal journal;
 	
 	private static final Logger LOG = Logger.getLogger(AcsIssueCrawler.class);
 
+	/**
+	 * <p>
+	 * Creates an instance of the AcsIssueCrawler class and
+	 * specifies the journal of the issue to be crawled.
+	 * </p>
+	 * 
+	 * @param doi of the article to be crawled.
+	 */
 	public AcsIssueCrawler(AcsJournal journal) {
 		this.journal = journal;
 	}
 
+	/**
+	 * <p>
+	 * Gets information to identify the last published issue of a
+	 * the provided <code>AcsJournal</code>.
+	 * </p>
+	 * 
+	 * @return the year and issue identifier.
+	 * 
+	 */
 	public IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
 		Nodes journalInfo = doc.query(".//x:div[@id='tocMeta']", X_XHTML);
@@ -49,17 +77,50 @@ public class AcsIssueCrawler extends Crawler {
 		return new IssueDetails(year, issueId);
 	}
 	
+	/**
+	 * <p>
+	 * Gets the HTML of the table of contents of the last 
+	 * published issue of the provided journal.
+	 * </p>
+	 * 
+	 * @return HTML of the issue table of contents.
+	 * 
+	 */
 	public Document getCurrentIssueDocument() {
 		String url = "http://pubs.acs.org/toc/"+journal.getAbbreviation()+"/current";
 		URI issueUri = createURI(url);
 		return httpClient.getResourceHTML(issueUri);
 	}
 	
+	/**
+	 * <p>
+	 * Gets the DOIs of all of the articles from the last 
+	 * published issue of the provided journal.
+	 * </p> 
+	 * 
+	 * @return a list of the DOIs of the articles.
+	 * 
+	 */
 	public List<DOI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getDOIs(details);
 	}
 
+	/**
+	 * <p>
+	 * Gets the DOIs of all articles in the issue defined
+	 * by the <code>AcsJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * </p>
+	 * 
+	 * @param year - the year the issue to be crawled was 
+	 * published.
+	 * @param issueId - the issue identifier of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list of the DOIs of the articles for the issue.
+	 * 
+	 */
 	public List<DOI> getDOIs(String year, String issueId) {
 		List<DOI> dois = new ArrayList<DOI>();
 		int volume = Integer.valueOf(year)-journal.getVolumeOffset();
@@ -80,10 +141,39 @@ public class AcsIssueCrawler extends Crawler {
 		return dois;
 	}
 	
+	/**
+	 * <p>
+	 * Gets the DOIs of all articles in the issue defined
+	 * by the <code>AcsJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * </p>
+	 * 
+	 * @param id - contains the year and issueId of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list of the DOIs of the articles for the issue.
+	 * 
+	 */
 	public List<DOI> getDOIs(IssueDetails details) {
 		return getDOIs(details.getYear(), details.getIssueId());
 	}
 	
+	/**
+	 * <p>
+	 * Gets information describing all articles in the issue 
+	 * defined by the <code>AcsJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * </p>
+	 * 
+	 * @param year - the year the issue to be crawled was 
+	 * published.
+	 * @param issueId - the issue identifier of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list where each item contains the details for 
+	 * a particular article from the issue.
+	 * 
+	 */
 	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
 		LOG.debug("Starting to find issue article details: "+year+"-"+issueId);
 		List<DOI> dois = getDOIs(year, issueId);
@@ -96,13 +186,29 @@ public class AcsIssueCrawler extends Crawler {
 		return adList;
 	}
 	
+	/**
+	 * <p>
+	 * Gets information describing all articles in the issue 
+	 * defined by the <code>AcsJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * </p>
+	 * 
+	 * @param id - contains the year and issue identifier of 
+	 * the issue to be crawled.
+	 * 
+	 * @return a list where each item contains the details for 
+	 * a particular article from the issue.
+	 * 
+	 */
 	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
 		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
 
 	/**
+	 * <p>
 	 * Main method only for demonstration of class use. Does not require
 	 * any arguments.
+	 * </p>
 	 * 
 	 * @param args
 	 */

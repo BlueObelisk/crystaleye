@@ -17,15 +17,39 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
+/**
+ * <p>
+ * The <code>ActaIssueCrawler</code> class provides a method for obtaining
+ * information about all articles from a particular issue of a journal
+ * published by Acta Crystallographica.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class ActaIssueCrawler extends Crawler {
 
 	public ActaJournal journal;
 	private static final Logger LOG = Logger.getLogger(ActaIssueCrawler.class);
 
+	/**
+	 * Creates an instance of the ActaIssueCrawler class and
+	 * specifies the journal of the issue to be crawled.
+	 * 
+	 * @param doi of the article to be crawled.
+	 */
 	public ActaIssueCrawler(ActaJournal journal) {
 		this.journal = journal;
 	}
 
+	/**
+	 * Gets information to identify the last published issue of a
+	 * the provided <code>ActaJournal</code>.
+	 * 
+	 * @return the year and issue identifier.
+	 * 
+	 */
 	public IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
 		List<Node> currentIssueLink = Utils.queryHTML(doc, "//x:a[contains(@target,'_parent')]");
@@ -46,17 +70,44 @@ public class ActaIssueCrawler extends Crawler {
 		return new IssueDetails(year, issueId);
 	}
 
+	/**
+	 * Gets the HTML of the table of contents of the last 
+	 * published issue of the provided journal.
+	 * 
+	 * @return HTML of the issue table of contents.
+	 * 
+	 */
 	public Document getCurrentIssueDocument() {
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/contents/backissuesbdy.html";
 		URI issueUri = createURI(url);
 		return httpClient.getResourceHTML(issueUri);
 	}
 
+	/**
+	 * Gets the DOIs of all of the articles from the last 
+	 * published issue of the provided journal. 
+	 * 
+	 * @return a list of the DOIs of the articles.
+	 * 
+	 */
 	public List<DOI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getDOIs(details);
 	}
 
+	/**
+	 * Gets the DOIs of all articles in the issue defined
+	 * by the <code>ActaJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param year - the year the issue to be crawled was 
+	 * published.
+	 * @param issueId - the issue identifier of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list of the DOIs of the articles for the issue.
+	 * 
+	 */
 	public List<DOI> getDOIs(String year, String issueId) {
 		List<DOI> dois = new ArrayList<DOI>();
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/issues/"
@@ -75,10 +126,35 @@ public class ActaIssueCrawler extends Crawler {
 		return dois;
 	}
 
+	/**
+	 * Gets the DOIs of all articles in the issue defined
+	 * by the <code>ActaJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param id - contains the year and issueId of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list of the DOIs of the articles for the issue.
+	 * 
+	 */
 	public List<DOI> getDOIs(IssueDetails id) {
 		return getDOIs(id.getYear(), id.getIssueId());
 	}
 
+	/**
+	 * Gets information describing all articles in the issue 
+	 * defined by the <code>ActaJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param year - the year the issue to be crawled was 
+	 * published.
+	 * @param issueId - the issue identifier of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list where each item contains the details for 
+	 * a particular article from the issue.
+	 * 
+	 */
 	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
 		List<DOI> dois = getDOIs(year, issueId);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
@@ -89,6 +165,18 @@ public class ActaIssueCrawler extends Crawler {
 		return adList;
 	}
 
+	/**
+	 * Gets information describing all articles in the issue 
+	 * defined by the <code>ActaJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param id - contains the year and issue identifier of 
+	 * the issue to be crawled.
+	 * 
+	 * @return a list where each item contains the details for 
+	 * a particular article from the issue.
+	 * 
+	 */
 	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
 		return getArticleDetails(id.getYear(), id.getIssueId());
 	}

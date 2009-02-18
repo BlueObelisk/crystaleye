@@ -19,7 +19,7 @@ import nu.xom.Nodes;
 public abstract class ArticleCrawler extends Crawler {
 
 	protected DOI doi;
-	protected Document articleAbstractDoc;
+	protected Document articleAbstractHtml;
 	protected boolean doiResolved;
 	protected ArticleDetails ad = new ArticleDetails();
 	protected BibtexTool bibtexTool;
@@ -30,36 +30,52 @@ public abstract class ArticleCrawler extends Crawler {
 	}
 
 	/**
-	 * Uses the provided DOI to init some instance variables, including:
-	 *  1. getting the HTML from the provided article abstract URI.
-	 *  2. Check whether the provided DOI has resolved (NB. if a DOI does not 
+	 * <p>
+	 * Uses the provided <code>DOI</code> to initialise some instance 
+	 * variables, including:
+	 *  1. getting the HTML from the provided article abstract URI
+	 *     and setting it as <code>articleAbstractHtml</code>.
+	 *  2. checking whether the provided DOI has resolved (NB. if a DOI does not 
 	 *     resolve, then dx.doi.org still returns a webpage with HTTP status 200 
 	 *     (OK).  So to check if something has gone awry, we need to parse the 
 	 *     HTML to check for the error message =0 ). 
-	 *  3. adds boolean flags for points 3 and 4 to a ArticleDetails instance, 
-	 *     which should be completed by getDetails() of the implementing 
-	 *     subclass of this.
+	 *  3. adds boolean flags for points 2 to an <code>ArticleDetails</code> 
+	 *     instance, which should be completed by <code>getDetails()</code> of 
+	 *     the implementing subclass of this.
+	 * </p>
 	 * 
 	 */
 	private void init() {
-		articleAbstractDoc = httpClient.getResourceHTML(doi.getUri());
+		articleAbstractHtml = httpClient.getResourceHTML(doi.getUri());
 		setHasDoiResolved();
 		ad.setDoiResolved(doiResolved);
 		ad.setDoi(doi);
 	}
 
 	/**
+	 * <p>
 	 * Sets a boolean which specifies whether the provided DOI resolves 
 	 * at http://dx.doi.org.
+	 * </p>
 	 * 
 	 */
 	private void setHasDoiResolved() {
-		Nodes nodes = articleAbstractDoc.query(".//x:body[contains(.,'Error - DOI Not Found')]", X_XHTML);
+		Nodes nodes = articleAbstractHtml.query(".//x:body[contains(.,'Error - DOI Not Found')]", X_XHTML);
 		if (nodes.size() > 0) {
 			doiResolved = false;
 		} else {
 			doiResolved = true;
 		}
 	}
+	
+	/**
+	 * <p>
+	 * Uses the instance DOI to construct an ArticleDetails class
+	 * describing the important details for an article.
+	 * </p>
+	 * 
+	 * @return ArticleDetails
+	 */
+	abstract ArticleDetails getDetails();
 
 }

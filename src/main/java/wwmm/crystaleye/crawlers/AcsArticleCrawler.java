@@ -19,14 +19,45 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
+/**
+ * <p>
+ * The <code>AcsArticleCrawler</code> class uses a provided DOI to get
+ * information about an article that is published in a journal of the 
+ * American Chemical Society.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class AcsArticleCrawler extends ArticleCrawler {
 
 	private static final Logger LOG = Logger.getLogger(AcsArticleCrawler.class);
 
+	/**
+	 * <p>
+	 * Creates an instance of the AcsArticleCrawler class and
+	 * specifies the DOI of the article to be crawled.
+	 * </p>
+	 * 
+	 * @param doi of the article to be crawled.
+	 */
 	public AcsArticleCrawler(DOI doi) {
 		super(doi);
 	}
 
+	/**
+	 * <p>
+	 * Crawls the article abstract webpage for information, which is 
+	 * returned in an ArticleDetails object.
+	 * </p> 
+	 * 
+	 * @return ArticleDetails object containing important details about
+	 * the article (e.g. title, authors, reference, supplementary 
+	 * files).
+	 * 
+	 */
+	@Override
 	public ArticleDetails getDetails() {
 		if (!doiResolved) {
 			LOG.warn("The DOI provided for the article abstract ("+doi.toString()+") has not resolved so we cannot get article details.");
@@ -49,8 +80,15 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		return ad;
 	}
 
+	/**
+	 * <p>
+	 * Gets the URI of the article full-text.
+	 * </p>
+	 * 
+	 * @return URI of the article full-text.
+	 */
 	private URI getFullTextLink() {
-		Nodes fullTextLinks = articleAbstractDoc.query(".//x:a[contains(@href,'/full/')]", X_XHTML);
+		Nodes fullTextLinks = articleAbstractHtml.query(".//x:a[contains(@href,'/full/')]", X_XHTML);
 		if (fullTextLinks.size() == 0) {
 			throw new CrawlerRuntimeException("Problem getting full text HTML link: "+doi);
 		}
@@ -59,6 +97,16 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		return createURI(fullTextUrl);
 	}
 
+	/**
+	 * <p>
+	 * Gets the details of any supplementary files provided alongside
+	 * the published article.
+	 * </p>
+	 * 
+	 * @return a list where each item describes a separate supplementary
+	 * data file (as a <code>SupplementaryFileDetails</code> object).
+	 * 
+	 */
 	private List<SupplementaryFileDetails> getSupplementaryFilesDetails() {
 		Document suppPageDoc = getSupplementaryDataWebpage();
 		if (suppPageDoc == null) {
@@ -79,8 +127,17 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		return sfList;
 	}
 
+	/**
+	 * <p>
+	 * Crawls the abstract webpage to find a link to a webpage listing the
+	 * article supplementary files.  This is then retrieved and returned.
+	 * </p>
+	 * 
+	 * @return HTML of the webpage listing the article supplementary files.
+	 * 
+	 */
 	private Document getSupplementaryDataWebpage() {
-		Nodes suppPageLinks = articleAbstractDoc.query(".//x:a[contains(@title,'Supporting Information')]", X_XHTML);
+		Nodes suppPageLinks = articleAbstractHtml.query(".//x:a[contains(@title,'Supporting Information')]", X_XHTML);
 		if (suppPageLinks.size() == 0) {
 			return null;
 		} else if (suppPageLinks.size() > 1) {
@@ -92,8 +149,16 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		return httpClient.getResourceHTML(suppPageUri);
 	}
 
+	/**
+	 * <p>
+	 * Gets a authors of the article from the abstract webpage.
+	 * </p>
+	 * 
+	 * @return String containing the article authors.
+	 * 
+	 */
 	private String getAuthors() {
-		Nodes authorNds = articleAbstractDoc.query(".//x:meta[@name='dc.Creator']", X_XHTML);
+		Nodes authorNds = articleAbstractHtml.query(".//x:meta[@name='dc.Creator']", X_XHTML);
 		if (authorNds.size() == 0) {
 			throw new CrawlerRuntimeException("Problem finding authors at: "+doi);
 		}
@@ -108,8 +173,17 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		return authors.toString();
 	}
 
+	/**
+	 * <p>
+	 * Creates the article bibliographic reference from information found 
+	 * on the abstract webpage.
+	 * </p>
+	 * 
+	 * @return the article bibliographic reference.
+	 * 
+	 */
 	private ArticleReference getReference() {
-		Nodes citationNds = articleAbstractDoc.query(".//x:div[@id='citation']", X_XHTML);
+		Nodes citationNds = articleAbstractHtml.query(".//x:div[@id='citation']", X_XHTML);
 		if (citationNds.size() != 1) {
 			throw new CrawlerRuntimeException("Problem finding bibliographic text at: "+doi);
 		}
@@ -158,8 +232,16 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		return ar;
 	}
 
+	/**
+	 * <p>
+	 * Gets the article title from the abstract webpage.
+	 * </p>
+	 * 
+	 * @return the article title.
+	 * 
+	 */
 	private String getTitle() {
-		Nodes titleNds = articleAbstractDoc.query(".//x:h1[@class='articleTitle']", X_XHTML);
+		Nodes titleNds = articleAbstractHtml.query(".//x:h1[@class='articleTitle']", X_XHTML);
 		if (titleNds.size() != 1) {
 			throw new CrawlerRuntimeException("Problem finding title at: "+doi);
 		}
