@@ -1,5 +1,15 @@
 package wwmm.crystaleye.crawlers;
 
+/**
+ * <p>
+ * The <code>CrawlerRuntimeException</code> is meant to be used for
+ * generic runtime exceptions that occur during crawler execution.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class CrawlerRuntimeException extends RuntimeException {
 
 	private static final long serialVersionUID = -8993316955991175892L;

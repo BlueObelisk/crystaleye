@@ -18,6 +18,16 @@ import nu.xom.Nodes;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
+/**
+ * <p>
+ * The <code>AcsRssCrawler</code> class provides a method for 
+ * crawling RSS feeds published by the American Chemical Society. 
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class AcsRssCrawler extends Crawler {
 
 	private AcsJournal journal;
@@ -25,15 +35,52 @@ public class AcsRssCrawler extends Crawler {
 
 	private static final Logger LOG = Logger.getLogger(AcsRssCrawler.class);
 	
+	/**
+	 * <p>
+	 * Creates an instance of the AcsRssCrawler class ready to 
+	 * crawl the feed for the provided <code>AcsJournal</code>.
+	 * By using this constructor, all articles in the feed will
+	 * be returned on executing <code>getNewArticleDetails</code>.
+	 * </p>
+	 * 
+	 * @param journal - the journals RSS feed to be crawled.
+	 * 
+	 */
 	public AcsRssCrawler(AcsJournal journal) {
 		this.journal = journal;
 	}
 
+	/**
+	 * <p>
+	 * Creates an instance of the AcsRssCrawler class ready to 
+	 * crawl the feed for the provided <code>AcsJournal</code>.
+	 * On executing <code>getNewArticleDetails</code>, only those
+	 * article included in the feed after the provided 
+	 * <code>lastCrawledDate</code> will be returned.
+	 * </p>
+	 * 
+	 * @param journal - the journals RSS feed to be crawled.
+	 * 
+	 */
 	public AcsRssCrawler(AcsJournal journal, Date lastCrawledDate) {
 		this.journal = journal;
 		this.lastCrawledDate = lastCrawledDate;
 	}
 
+	/**
+	 * <p>
+	 * Returns information about the new articles to be published
+	 * in the RSS feed.  If a <code>lastCrawledDate</code> was
+	 * provided in the constructor, then only information about
+	 * articles published after that date will be returned. If no
+	 * <code>lastCrawledDate</code> was provided, then information
+	 * about all article in the feed will be returned.
+	 * </p>
+	 * 
+	 * @return a list where each item provides information about a
+	 * separate article.
+	 * 
+	 */
 	public List<ArticleDetails> getNewArticleDetails() {
 		URI feedUri = createFeedURI();
 		Document feedDoc = httpClient.getResourceXML(feedUri);
@@ -50,6 +97,16 @@ public class AcsRssCrawler extends Crawler {
 		return adList;
 	}
 	
+	/**
+	 * <p>
+	 * Gets the article DOI from the RSS entry.
+	 * </p>
+	 * 
+	 * @param entry - the RSS entry that is being crawled.
+	 * 
+	 * @return DOI for the article described by the RSS entry.
+	 * 
+	 */
 	private DOI getDOI(Element entry) {
 		Nodes nds = entry.query("./link");
 		if (nds.size() != 1) {
@@ -70,6 +127,19 @@ public class AcsRssCrawler extends Crawler {
 		return new DOI(doiStr);
 	}
 	
+	/**
+	 * <p>
+	 * If a <code>lastCrawledDate</code> was provided in the 
+	 * constructor, then then entry for each article is checked
+	 * here to make sure it was published afterwards.
+	 * </p>
+	 * 
+	 * @param entryDate - the date of the current RSS entry.
+	 * 
+	 * @return boolean whether or not the current article needs
+	 * to be scraped.
+	 * 
+	 */
 	private boolean needToCrawlArticle(Date entryDate) {
 		if (lastCrawledDate == null) {
 			return true;
@@ -82,6 +152,17 @@ public class AcsRssCrawler extends Crawler {
 		}
 	}
 	
+	/**
+	 * <p>
+	 * Gets the published date from the provided RSS entry.
+	 * </p> 
+	 * 
+	 * @param entry - the RSS entry to be scraped.
+	 * 
+	 * @return Date that the article described by the provided 
+	 * RSS entry was published.
+	 * 
+	 */
 	private Date getEntryDate(Element entry) {
 		Nodes nds = entry.query("./pubDate");
 		if (nds.size() != 1) {
@@ -99,6 +180,16 @@ public class AcsRssCrawler extends Crawler {
 		return date;		
 	}
 	
+	/**
+	 * <p>
+	 * Gets all entries found in the RSS feed being crawled.
+	 * </p>
+	 * 
+	 * @param feedDoc - XML of the RSS feed being crawled.
+	 * 
+	 * @return list of entries from the crawled RSS feed.
+	 * 
+	 */
 	private List<Element> getFeedEntries(Document feedDoc) {
 		Nodes nds = feedDoc.query("./rss/channel/item");
 		if (nds.size() == 0) {
@@ -112,6 +203,15 @@ public class AcsRssCrawler extends Crawler {
 		return entries;
 	}
 
+	/**
+	 * <p>
+	 * Gets the URI for the RSS feed for the latest published articles
+	 * of the provided <code>AcsJournal</code>.
+	 * </p>
+	 * 
+	 * @return the RSS feed <code>URI</code>.
+	 * 
+	 */
 	private URI createFeedURI() {
 		String feedUrl = ACS_HOMEPAGE_URL+"/action/showFeed?ui=0&mi=r41k3s&ai=54r&jc="
 		+journal.getAbbreviation()+"&type=etoc&feed=rss";
@@ -119,8 +219,10 @@ public class AcsRssCrawler extends Crawler {
 	}
 
 	/**
+	 * <p>
 	 * Main method only for demonstration of class use. Does not require
 	 * any arguments.
+	 * </p>
 	 * 
 	 * @param args
 	 * @throws ParseException 

@@ -17,6 +17,17 @@ import nu.xom.Nodes;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
+/**
+ * <p>
+ * The <code>ChemSocJapanRssCrawler</code> class provides a method for 
+ * crawling RSS feeds published by the Chemical Society of 
+ * Japan. 
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class ChemSocJapanRssCrawler extends Crawler {
 
 	private ChemSocJapanJournal journal;
@@ -24,15 +35,46 @@ public class ChemSocJapanRssCrawler extends Crawler {
 
 	private static final Logger LOG = Logger.getLogger(ChemSocJapanRssCrawler.class);
 	
+	/**
+	 * Creates an instance of the ChemSocJapanRssCrawler class ready to 
+	 * crawl the feed for the provided <code>ChemSocJapanJournal</code>.
+	 * By using this constructor, all articles in the feed will
+	 * be returned on executing <code>getNewArticleDetails</code>.
+	 * 
+	 * @param journal - the journals RSS feed to be crawled.
+	 * 
+	 */
 	public ChemSocJapanRssCrawler(ChemSocJapanJournal journal) {
 		this.journal = journal;
 	}
 
+	/**
+	 * Creates an instance of the ChemSocJapanRssCrawler class ready to 
+	 * crawl the feed for the provided <code>ChemSocJapanJournal</code>.
+	 * On executing <code>getNewArticleDetails</code>, only those
+	 * article included in the feed after the provided 
+	 * <code>lastCrawledDate</code> will be returned.
+	 * 
+	 * @param journal - the journals RSS feed to be crawled.
+	 * 
+	 */
 	public ChemSocJapanRssCrawler(ChemSocJapanJournal journal, Date lastCrawledDate) {
 		this.journal = journal;
 		this.lastCrawledDate = lastCrawledDate;
 	}
 
+	/**
+	 * Returns information about the new articles to be published
+	 * in the RSS feed.  If a <code>lastCrawledDate</code> was
+	 * provided in the constructor, then only information about
+	 * articles published after that date will be returned. If no
+	 * <code>lastCrawledDate</code> was provided, then information
+	 * about all article in the feed will be returned.
+	 * 
+	 * @return a list where each item provides information about a
+	 * separate article.
+	 * 
+	 */
 	public List<ArticleDetails> getNewArticleDetails() {
 		URI feedUri = createFeedURI();
 		Document feedDoc = httpClient.getResourceXML(feedUri);
@@ -49,6 +91,14 @@ public class ChemSocJapanRssCrawler extends Crawler {
 		return adList;
 	}
 	
+	/**
+	 * Gets the article DOI from the RSS entry.
+	 * 
+	 * @param entry - the RSS entry that is being crawled.
+	 * 
+	 * @return DOI for the article described by the RSS entry.
+	 * 
+	 */
 	private DOI getDOI(Element entry) {
 		Nodes nds = entry.query("./link");
 		if (nds.size() != 1) {
@@ -68,6 +118,17 @@ public class ChemSocJapanRssCrawler extends Crawler {
 		return new DOI(doiStr);
 	}
 	
+	/**
+	 * If a <code>lastCrawledDate</code> was provided in the 
+	 * constructor, then then entry for each article is checked
+	 * here to make sure it was published afterwards.
+	 * 
+	 * @param entryDate - the date of the current RSS entry.
+	 * 
+	 * @return boolean whether or not the current article needs
+	 * to be scraped.
+	 * 
+	 */
 	private boolean needToCrawlArticle(Date entryDate) {
 		if (lastCrawledDate == null) {
 			return true;
@@ -80,6 +141,15 @@ public class ChemSocJapanRssCrawler extends Crawler {
 		}
 	}
 	
+	/**
+	 * Gets the published date from the provided RSS entry. 
+	 * 
+	 * @param entry - the RSS entry to be scraped.
+	 * 
+	 * @return Date that the article described by the provided 
+	 * RSS entry was published.
+	 * 
+	 */
 	private Date getEntryDate(Element entry) {
 		Nodes nds = entry.query("./pubDate");
 		if (nds.size() != 1) {
@@ -97,6 +167,14 @@ public class ChemSocJapanRssCrawler extends Crawler {
 		return date;		
 	}
 	
+	/**
+	 * Gets all entries found in the RSS feed being crawled.
+	 * 
+	 * @param feedDoc - XML of the RSS feed being crawled.
+	 * 
+	 * @return list of entries from the crawled RSS feed.
+	 * 
+	 */
 	private List<Element> getFeedEntries(Document feedDoc) {
 		Nodes nds = feedDoc.query("./rss/channel/item");
 		if (nds.size() == 0) {
@@ -110,6 +188,13 @@ public class ChemSocJapanRssCrawler extends Crawler {
 		return entries;
 	}
 
+	/**
+	 * Gets the URI for the RSS feed for the latest published articles
+	 * of the provided <code>ChemSocJapanJournal</code>.
+	 * 
+	 * @return the RSS feed <code>URI</code>.
+	 * 
+	 */
 	private URI createFeedURI() {
 		String feedUrl = "http://www.csj.jp/journals/"+journal.getAbbreviation()+"/cl-cont/rss/"+journal.getAbbreviation().replaceAll("-", "")+".rss";
 		return createURI(feedUrl);

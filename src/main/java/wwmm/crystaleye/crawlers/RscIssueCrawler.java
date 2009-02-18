@@ -18,16 +18,40 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
+/**
+ * <p>
+ * The <code>RscIssueCrawler</code> class provides a method for obtaining
+ * information about all articles from a particular issue of a journal
+ * published by the Royal Society of Chemistry.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class RscIssueCrawler extends Crawler{
 
 	public RscJournal journal;
 	private String volume = "0";
 	private static final Logger LOG = Logger.getLogger(RscIssueCrawler.class);
 
+	/**
+	 * Creates an instance of the RscIssueCrawler class and
+	 * specifies the journal of the issue to be crawled.
+	 * 
+	 * @param doi of the article to be crawled.
+	 */
 	public RscIssueCrawler(RscJournal journal) {
 		this.journal = journal;
 	}
 
+	/**
+	 * Gets information to identify the last published issue of a
+	 * the provided <code>RscJournal</code>.
+	 * 
+	 * @return the year and issue identifier.
+	 * 
+	 */
 	protected IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
 		List<Node> journalInfo = Utils.queryHTML(doc, ".//x:h3[contains(text(),'Contents')]");
@@ -47,6 +71,13 @@ public class RscIssueCrawler extends Crawler{
 		return new IssueDetails(year, issueNum);
 	}
 
+	/**
+	 * Gets the HTML of the table of contents of the last 
+	 * published issue of the provided journal.
+	 * 
+	 * @return HTML of the issue table of contents.
+	 * 
+	 */
 	public Document getCurrentIssueDocument() {
 		String url = "http://rsc.org/Publishing/Journals/"
 			+journal.getAbbreviation().toUpperCase()+"/Article.asp?Type=CurrentIssue";
@@ -54,11 +85,31 @@ public class RscIssueCrawler extends Crawler{
 		return httpClient.getResourceHTML(uri);
 	}
 
+	/**
+	 * Gets the DOIs of all of the articles from the last 
+	 * published issue of the provided journal. 
+	 * 
+	 * @return a list of the DOIs of the articles.
+	 * 
+	 */
 	public List<DOI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getDOIs(details);
 	}
 
+	/**
+	 * Gets the DOIs of all articles in the issue defined
+	 * by the <code>RscJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param year - the year the issue to be crawled was 
+	 * published.
+	 * @param issueId - the issue identifier of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list of the DOIs of the articles for the issue.
+	 * 
+	 */
 	public List<DOI> getDOIs(String year, String issueId) {
 		String journalAbbreviation = journal.getAbbreviation();
 		String issueUrl = "http://rsc.org/Publishing/Journals/"+journalAbbreviation
@@ -98,6 +149,7 @@ public class RscIssueCrawler extends Crawler{
 	 * 
 	 * @param articleElement
 	 * @return boolean stating whether the doiElement links to an article or not
+	 * 
 	 */
 	private boolean isArticle(Element articleElement) {
 		Nodes linkNds = articleElement.query(".//x:a[contains(@title,'DOI:')]", X_XHTML);
@@ -117,10 +169,35 @@ public class RscIssueCrawler extends Crawler{
 		}
 	}
 
+	/**
+	 * Gets the DOIs of all articles in the issue defined
+	 * by the <code>RscJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param id - contains the year and issueId of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list of the DOIs of the articles for the issue.
+	 * 
+	 */
 	public List<DOI> getDOIs(IssueDetails details) {
 		return getDOIs(details.getYear(), details.getIssueId());
 	}
 
+	/**
+	 * Gets information describing all articles in the issue 
+	 * defined by the <code>RscJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param year - the year the issue to be crawled was 
+	 * published.
+	 * @param issueId - the issue identifier of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list where each item contains the details for 
+	 * a particular article from the issue.
+	 * 
+	 */
 	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
 		LOG.debug("Starting to find issue article details: "+year+"-"+issueId);
 		List<DOI> dois = getDOIs(year, issueId);
@@ -133,6 +210,18 @@ public class RscIssueCrawler extends Crawler{
 		return adList;
 	}
 
+	/**
+	 * Gets information describing all articles in the issue 
+	 * defined by the <code>RscJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param id - contains the year and issue identifier of 
+	 * the issue to be crawled.
+	 * 
+	 * @return a list where each item contains the details for 
+	 * a particular article from the issue.
+	 * 
+	 */
 	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
 		return getArticleDetails(id.getYear(), id.getIssueId());
 	}

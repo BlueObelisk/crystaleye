@@ -19,16 +19,40 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
+/**
+ * <p>
+ * The <code>ElsevierIssueCrawler</code> class provides a method for 
+ * obtaining information about all articles from a particular issue of 
+ * a journal published by Elsevier.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class ElsevierIssueCrawler extends Crawler {
 
 private ElsevierJournal journal;
 	
 	private static final Logger LOG = Logger.getLogger(ElsevierIssueCrawler.class);
 
+	/**
+	 * Creates an instance of the ElsevierIssueCrawler class and
+	 * specifies the journal of the issue to be crawled.
+	 * 
+	 * @param doi of the article to be crawled.
+	 */
 	public ElsevierIssueCrawler(ElsevierJournal journal) {
 		this.journal = journal;
 	}
 
+	/**
+	 * Gets information to identify the last published issue of a
+	 * the provided <code>ElssevierJournal</code>.
+	 * 
+	 * @return the year and issue identifier.
+	 * 
+	 */
 	public IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
 		Nodes nds = doc.query("./x:html/x:head/x:title", X_XHTML);
@@ -49,17 +73,44 @@ private ElsevierJournal journal;
 		return new IssueDetails(year, issueId);
 	}
 	
+	/**
+	 * Gets the HTML of the table of contents of the last 
+	 * published issue of the provided journal.
+	 * 
+	 * @return HTML of the issue table of contents.
+	 * 
+	 */
 	public Document getCurrentIssueDocument() {
 		String url = "http://www.sciencedirect.com/science/journal/"+journal.getAbbreviation();
 		URI issueUri = createURI(url);
 		return httpClient.getResourceHTMLMinusComments(issueUri);
 	}
 	
+	/**
+	 * Gets the DOIs of all of the articles from the last 
+	 * published issue of the provided journal. 
+	 * 
+	 * @return a list of the DOIs of the articles.
+	 * 
+	 */
 	public List<DOI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getDOIs(details);
 	}
 
+	/**
+	 * Gets the DOIs of all articles in the issue defined
+	 * by the <code>ElsevierJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param year - the year the issue to be crawled was 
+	 * published.
+	 * @param issueId - the issue identifier of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list of the DOIs of the articles for the issue.
+	 * 
+	 */
 	public List<DOI> getDOIs(String year, String issueId) {
 		List<DOI> dois = new ArrayList<DOI>();
 		int volume = Integer.valueOf(year)-journal.getVolumeOffset();
@@ -80,10 +131,35 @@ private ElsevierJournal journal;
 		return dois;
 	}
 	
+	/**
+	 * Gets the DOIs of all articles in the issue defined
+	 * by the <code>ElsevierJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param id - contains the year and issueId of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list of the DOIs of the articles for the issue.
+	 * 
+	 */
 	public List<DOI> getDOIs(IssueDetails details) {
 		return getDOIs(details.getYear(), details.getIssueId());
 	}
 	
+	/**
+	 * Gets information describing all articles in the issue 
+	 * defined by the <code>ElsevierJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param year - the year the issue to be crawled was 
+	 * published.
+	 * @param issueId - the issue identifier of the issue
+	 * to be crawled.
+	 * 
+	 * @return a list where each item contains the details for 
+	 * a particular article from the issue.
+	 * 
+	 */
 	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
 		/*
 		LOG.debug("Starting to find issue article details: "+year+"-"+issueId);
@@ -99,6 +175,18 @@ private ElsevierJournal journal;
 		return Collections.EMPTY_LIST;
 	}
 	
+	/**
+	 * Gets information describing all articles in the issue 
+	 * defined by the <code>ElsevierJournal</code> and the provided
+	 * <code>year</code> and <code>issueId</code>.
+	 * 
+	 * @param id - contains the year and issue identifier of 
+	 * the issue to be crawled.
+	 * 
+	 * @return a list where each item contains the details for 
+	 * a particular article from the issue.
+	 * 
+	 */
 	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
 		return getArticleDetails(id.getYear(), id.getIssueId());
 	}

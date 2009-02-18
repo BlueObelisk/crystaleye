@@ -15,14 +15,41 @@ import nu.xom.Text;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
+/**
+ * <p>
+ * The <code>ChemSocJapanArticleCrawler</code> class uses a provided 
+ * DOI to get information about an article that is published in a 
+ * journal of the Chemical Society of Japan.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 
 	private static final Logger LOG = Logger.getLogger(ChemSocJapanArticleCrawler.class);
 
+	/**
+	 * Creates an instance of the ChemSocJapanArticleCrawler class and
+	 * specifies the DOI of the article to be crawled.
+	 * 
+	 * @param doi of the article to be crawled.
+	 */
 	public ChemSocJapanArticleCrawler(DOI doi) {
 		super(doi);
 	}
 
+	/**
+	 * Crawls the article abstract webpage for information, which is 
+	 * returned in an ArticleDetails object. 
+	 * 
+	 * @return ArticleDetails object containing important details about
+	 * the article (e.g. title, authors, reference, supplementary 
+	 * files).
+	 * 
+	 */
+	@Override
 	public ArticleDetails getDetails() {
 		if (!doiResolved) {
 			LOG.warn("The DOI provided for the article abstract ("+doi.toString()+") has not resolved so we cannot get article details.");
@@ -47,8 +74,13 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 		return ad;
 	}
 
+	/**
+	 * Gets the article Bibtex file from the abstract webpage and sets
+	 * the superclass <code>bibtexTool</code>.
+	 * 
+	 */
 	private void setBibtexTool() {
-		Nodes bibtexLinks = articleAbstractDoc.query(".//x:a[contains(@href,'/_bib/')]", X_XHTML);
+		Nodes bibtexLinks = articleAbstractHtml.query(".//x:a[contains(@href,'/_bib/')]", X_XHTML);
 		if (bibtexLinks.size() != 1) {
 			return;
 		}
@@ -59,8 +91,13 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 		bibtexTool = new BibtexTool(bibStr);
 	}
 
+	/**
+	 * Gets the URI of the article full-text.
+	 * 
+	 * @return URI of the article full-text.
+	 */
 	private URI getFullTextLink() {
-		Nodes pdfLinks = articleAbstractDoc.query(".//x:a[contains(@href,'_pdf') and contains(.,'PDF')]", X_XHTML);
+		Nodes pdfLinks = articleAbstractHtml.query(".//x:a[contains(@href,'_pdf') and contains(.,'PDF')]", X_XHTML);
 		if (pdfLinks.size() == 0) {
 			return null;
 		}
@@ -69,8 +106,16 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 		return createURI(pdfUrl);
 	}
 
+	/**
+	 * Gets the details of any supplementary files provided alongside
+	 * the published article.
+	 * 
+	 * @return a list where each item describes a separate supplementary
+	 * data file (as a <code>SupplementaryFileDetails</code> object).
+	 * 
+	 */
 	private List<SupplementaryFileDetails> getSupplementaryFilesDetails() {
-		Nodes suppListLinks = articleAbstractDoc.query(".//x:a[contains(@href,'_applist')]", X_XHTML);
+		Nodes suppListLinks = articleAbstractHtml.query(".//x:a[contains(@href,'_applist')]", X_XHTML);
 		if (suppListLinks.size() == 0) {
 			return new ArrayList<SupplementaryFileDetails>(0);
 		}

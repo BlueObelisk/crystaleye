@@ -17,14 +17,41 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
 
+/**
+ * <p>
+ * The <code>RscArticleCrawler</code> class uses a provided DOI to get
+ * information about an article that is published in a journal of the 
+ * Royal Society of Chemistry.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class RscArticleCrawler extends ArticleCrawler {
 
 	private static final Logger LOG = Logger.getLogger(RscArticleCrawler.class);
 
+	/**
+	 * Creates an instance of the RscArticleCrawler class and
+	 * specifies the DOI of the article to be crawled.
+	 * 
+	 * @param doi of the article to be crawled.
+	 */
 	public RscArticleCrawler(DOI doi) {
 		super(doi);
 	}
 
+	/**
+	 * Crawls the article abstract webpage for information, which is 
+	 * returned in an ArticleDetails object. 
+	 * 
+	 * @return ArticleDetails object containing important details about
+	 * the article (e.g. title, authors, reference, supplementary 
+	 * files).
+	 * 
+	 */
+	@Override
 	public ArticleDetails getDetails() {
 		if (!doiResolved) {
 			LOG.warn("The DOI provided for the article abstract ("+doi.toString()+") has not resolved so we cannot get article details.");
@@ -48,8 +75,13 @@ public class RscArticleCrawler extends ArticleCrawler {
 		return ad;
 	}
 	
+	/**
+	 * Gets the URI of the article full-text.
+	 * 
+	 * @return URI of the article full-text.
+	 */
 	private URI getFullTextLink() {
-		Nodes links = articleAbstractDoc.query(".//x:a[.='HTML article']", X_XHTML);
+		Nodes links = articleAbstractHtml.query(".//x:a[.='HTML article']", X_XHTML);
 		if (links.size() != 1) {
 			throw new RuntimeException("Problem finding full text HTML link: "+doi);
 		}
@@ -58,8 +90,16 @@ public class RscArticleCrawler extends ArticleCrawler {
 		return createURI(url);
 	}
 
+	/**
+	 * Gets the details of any supplementary files provided alongside
+	 * the published article.
+	 * 
+	 * @return a list where each item describes a separate supplementary
+	 * data file (as a <code>SupplementaryFileDetails</code> object).
+	 * 
+	 */
 	private List<SupplementaryFileDetails> getSupplementaryFilesDetails() {
-		Nodes nds = articleAbstractDoc.query(".//x:a[contains(.,'ESI')]", X_XHTML);
+		Nodes nds = articleAbstractHtml.query(".//x:a[contains(.,'ESI')]", X_XHTML);
 		if (nds.size() == 0) {
 			return Collections.EMPTY_LIST;
 		}
@@ -83,8 +123,14 @@ public class RscArticleCrawler extends ArticleCrawler {
 		return sfdList;
 	}
 
+	/**
+	 * Gets a authors of the article from the abstract webpage.
+	 * 
+	 * @return String containing the article authors.
+	 * 
+	 */
 	private String getAuthors() {
-		Nodes authorNds = articleAbstractDoc.query(".//x:span[@style='font-size:150%;']/following-sibling::x:p[1]/x:strong", X_XHTML);
+		Nodes authorNds = articleAbstractHtml.query(".//x:span[@style='font-size:150%;']/following-sibling::x:p[1]/x:strong", X_XHTML);
 		if (authorNds.size() != 1) {
 			throw new RuntimeException("Problem getting the author string from: "+doi);
 		}
@@ -92,8 +138,15 @@ public class RscArticleCrawler extends ArticleCrawler {
 		return authors;
 	}
 
+	/**
+	 * Creates the article bibliographic reference from information found 
+	 * on the abstract webpage.
+	 * 
+	 * @return the article bibliographic reference.
+	 * 
+	 */
 	private ArticleReference getReference() {
-		Nodes refNds = articleAbstractDoc.query(".//x:p[./x:strong[contains(.,'DOI:')]]", X_XHTML);
+		Nodes refNds = articleAbstractHtml.query(".//x:p[./x:strong[contains(.,'DOI:')]]", X_XHTML);
 		if (refNds.size() != 1) {
 			throw new RuntimeException("Problem getting bibliographic data: "+doi);
 		}
@@ -114,8 +167,14 @@ public class RscArticleCrawler extends ArticleCrawler {
 		return ar;
 	}
 
+	/**
+	 * Gets the article title from the abstract webpage.
+	 * 
+	 * @return the article title.
+	 * 
+	 */
 	private String getTitle() {
-		Nodes titleNds = articleAbstractDoc.query(".//x:span[@style='font-size:150%;']//x:font", X_XHTML);
+		Nodes titleNds = articleAbstractHtml.query(".//x:span[@style='font-size:150%;']//x:font", X_XHTML);
 		if (titleNds.size() != 1) {
 			throw new RuntimeException("Problem getting title: "+doi);
 		}
