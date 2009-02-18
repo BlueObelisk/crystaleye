@@ -1,17 +1,23 @@
 package wwmm.crystaleye.crawlers;
 
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
+import static wwmm.crystaleye.crawlers.CrawlerConstants.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Node;
 import nu.xom.Nodes;
 
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
+
+import wwmm.crystaleye.util.Utils;
 
 public class ElsevierIssueCrawler extends Crawler {
 
@@ -34,11 +40,11 @@ private ElsevierJournal journal;
 		Pattern pattern = Pattern.compile("ScienceDirect - "+journal.getFullTitle()+
 				", Volume \\d+, Issue (\\d+), Pages \\d+-\\d+ \\(\\d+ \\w+ (\\d{4})\\)");
 		Matcher matcher = pattern.matcher(title);
-		if (!matcher.find() || matcher.groupCount() != 3) {
+		if (!matcher.find() || matcher.groupCount() != 2) {
 			throw new CrawlerRuntimeException("Could not extract the year/issue information.");
 		}
-		String year = matcher.group(1);
-		String issueId = matcher.group(3);
+		String year = matcher.group(2);
+		String issueId = matcher.group(1);
 		LOG.debug("Found latest issue details for Elsevier journal "+journal.getFullTitle()+": year="+year+", issue="+issueId+".");
 		return new IssueDetails(year, issueId);
 	}
@@ -46,7 +52,7 @@ private ElsevierJournal journal;
 	public Document getCurrentIssueDocument() {
 		String url = "http://www.sciencedirect.com/science/journal/"+journal.getAbbreviation();
 		URI issueUri = createURI(url);
-		return httpClient.getWebpageHTML(issueUri);
+		return httpClient.getResourceHTMLMinusComments(issueUri);
 	}
 	
 	public List<DOI> getCurrentIssueDOIs() {
@@ -55,14 +61,13 @@ private ElsevierJournal journal;
 	}
 
 	public List<DOI> getDOIs(String year, String issueId) {
-		/*
 		List<DOI> dois = new ArrayList<DOI>();
 		int volume = Integer.valueOf(year)-journal.getVolumeOffset();
-		String issueUrl = Elsevier_HOMEPAGE_URL+"/toc/"+journal.getAbbreviation()+"/"+volume+"/"+issueId;
+		String issueUrl = ELSEVIER_JOURNAL_URL_PREFIX+"/toc/"+journal.getAbbreviation()+"/"+volume+"/"+issueId;
 		URI issueUri = createURI(issueUrl);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri.toString());
-		Document issueDoc = httpClient.getWebpageHTML(issueUri);
+		Document issueDoc = httpClient.getResourceHTML(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:div[@class='DOI']");
 		for (Node doiNode : doiNodes) {
 			String contents = ((Element)doiNode).getValue();
@@ -73,8 +78,6 @@ private ElsevierJournal journal;
 		}
 		LOG.debug("Finished finding issue DOIs.");
 		return dois;
-		*/
-		return Collections.EMPTY_LIST;
 	}
 	
 	public List<DOI> getDOIs(IssueDetails details) {

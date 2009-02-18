@@ -2,6 +2,7 @@ package wwmm.crystaleye.crawlers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.apache.commons.httpclient.URI;
@@ -34,15 +35,13 @@ public class DOITest {
 			DOI doi1 = new DOI(invalidUriUrl);
 			fail("Invalid URI string provided ("+invalidUriUrl+") constructor should have failed.");
 		} catch(Exception e) {
-			//fails as expected
-			;
+			assertTrue("Should throw like this if the URI is invalid.", true);
 		}
 		try {
 			DOI doi2 = new DOI(invalidDoiUrl);
 			fail("Invalid DOI string provided ("+invalidDoiUrl+") constructor should have failed.");
 		} catch(Exception e) {
-			//fails as expected
-			;
+			assertTrue("Should throw like this if the DOI is invalid.", true);
 		}
 		DOI doi3 = new DOI(validDoiUrl);
 	}
@@ -53,15 +52,13 @@ public class DOITest {
 			DOI doi1 = new DOI(invalidUri);
 			fail("Invalid URI provided ("+invalidUri.toString()+") constructor should have failed.");
 		} catch(Exception e) {
-			//fails as expected
-			;
+			assertTrue("Should throw like this if the URI is invalid.", true);
 		}
 		try {
 		DOI doi2 = new DOI(invalidDoiUri);
 		fail("Invalid DOI provided ("+invalidDoiUri.toString()+") constructor should have failed.");
 		} catch(Exception e) {
-			//fails as expected
-			;
+			assertTrue("Should throw like this if the DOI is invalid.", true);
 		}
 		DOI doi3 = new DOI(validDoiUri);
 	}

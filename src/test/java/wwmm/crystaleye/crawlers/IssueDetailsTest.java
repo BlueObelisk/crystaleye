@@ -1,6 +1,7 @@
 package wwmm.crystaleye.crawlers;
 
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -26,22 +27,19 @@ public class IssueDetailsTest {
 			IssueDetails id1 = new IssueDetails(invalidYear1, issueId);
 			fail("Invalid year string provided ("+invalidYear1+") constructor should have failed.");
 		} catch(IllegalStateException e) {
-			//fails as expected
-			;
+			assertTrue("Should throw like this if the year is invalid.", true);
 		}
 		try {
 			IssueDetails id2 = new IssueDetails(invalidYear2, issueId);
 			fail("Invalid year string provided ("+invalidYear2+") constructor should have failed.");
 		} catch(IllegalStateException e) {
-			//fails as expected
-			;
+			assertTrue("Should throw like this if the year in invalid.", true);
 		}
 		try {
 			IssueDetails id3 = new IssueDetails(invalidYear3, issueId);
 			fail("Invalid year string provided ("+invalidYear3+") constructor should have failed.");
 		} catch(IllegalStateException e) {
-			//fails as expected
-			;
+			assertTrue("Should throw like this if the year in invalid.", true);
 		}
 	}
 
