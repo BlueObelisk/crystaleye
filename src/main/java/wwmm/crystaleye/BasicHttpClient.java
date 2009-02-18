@@ -1,7 +1,11 @@
 package wwmm.crystaleye;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nu.xom.Builder;
 import nu.xom.Document;
@@ -121,6 +125,48 @@ public class BasicHttpClient {
 			if (method != null) {
 				method.releaseConnection();
 			}
+		}
+		return doc;
+	}
+	
+	/**
+	 * <p>
+	 * Executes a HTTP GET on the resource at the provided <code>URI</code>.  
+	 * The resource contents are first obtained as a <code>String</code> so that
+	 * a horrible hack can be performed to remove any comments before the HTML is 
+	 * passed to Tagsoup.  This is someimtes necessary to remove anything that might
+	 * cause Tagsoup or XOM to fail when parsing the HTML (such as including -- in 
+	 * middle of a comment).  After the comments have been removed, the HTML is tidied
+	 * and parsed by Tagsoup into a XOM <code>Document</code>.
+	 * </p>
+	 * 
+	 * @param uri of the resource for which you want to obtain the HTML.
+	 * 
+	 * @return XML <code>Document</code> containined the parsed HTML.
+	 */
+	public Document getResourceHTMLMinusComments(URI uri) {
+		String html = getResourceString(uri);
+
+		String patternStr = "<!--(.*)?-->";
+		String replacementStr = "";
+		Pattern pattern = Pattern.compile(patternStr);
+		Matcher matcher = pattern.matcher(html);
+		html = matcher.replaceAll(replacementStr);
+		patternStr = "<!-->";
+		replacementStr = "";
+		pattern = Pattern.compile(patternStr);
+		matcher = pattern.matcher(html);
+		html = matcher.replaceAll(replacementStr);
+
+		StringReader sr = new StringReader(html);
+		BufferedReader br = new BufferedReader(sr);
+		Document doc = null;
+		try {
+			Builder builder = getTagsoupBuilder();
+			doc = Utils.parseXml(builder, br);
+		} finally {
+			IOUtils.closeQuietly(br);
+			IOUtils.closeQuietly(sr);
 		}
 		return doc;
 	}

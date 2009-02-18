@@ -1,5 +1,11 @@
 package wwmm.crystaleye.crawlers;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import nu.xom.Builder;
 import nu.xom.Document;
 
 import org.apache.commons.httpclient.Header;
@@ -7,9 +13,11 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.BasicHttpClient;
+import wwmm.crystaleye.util.Utils;
 
 /**
  * <p>
@@ -96,6 +104,18 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	public Document getResourceHTML(URI uri) {
 		sleep();
 		return super.getResourceHTML(uri);
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param uri
+	 * @return
+	 */
+	@Override
+	public Document getResourceHTMLMinusComments(URI uri) {
+		sleep();
+		return super.getResourceHTMLMinusComments(uri);
 	}
 	
 	/**
