@@ -33,15 +33,15 @@ public abstract class ArticleCrawler extends Crawler {
 	 * <p>
 	 * Uses the provided <code>DOI</code> to initialise some instance 
 	 * variables, including:
-	 *  1. getting the HTML from the provided article abstract URI
+	 *  1. getting the article abstract webpage HTML from the provided DOI
 	 *     and setting it as <code>articleAbstractHtml</code>.
 	 *  2. checking whether the provided DOI has resolved (NB. if a DOI does not 
-	 *     resolve, then dx.doi.org still returns a webpage with HTTP status 200 
-	 *     (OK).  So to check if something has gone awry, we need to parse the 
-	 *     HTML to check for the error message =0 ). 
-	 *  3. adds boolean flags for points 2 to an <code>ArticleDetails</code> 
-	 *     instance, which should be completed by <code>getDetails()</code> of 
-	 *     the implementing subclass of this.
+	 *     resolve, then http://dx.doi.org still returns a webpage with HTTP 
+	 *     status 200 (OK).  So to check if something has gone awry, we need to 
+	 *     parse the HTML to check for the error message =0 ). 
+	 *  3. adds a boolean flag to an <code>ArticleDetails</code> instance, 
+	 *     which should be completed by <code>getDetails()</code> of the 
+	 *     implementing subclass of this.
 	 * </p>
 	 * 
 	 */
