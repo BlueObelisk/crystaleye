@@ -29,10 +29,12 @@ public class BibtexTool {
 	public Map<String, String> nameValuePairs;
 
 	/**
+	 * <p>
 	 * Creates an instance of <code>BibtexTool</code> from
 	 * a <code>String</code> containing a Bibtex file.  Upon
 	 * object creation, the provided Bibtex will be validated
 	 * and then parsed into its name-value pairs.
+	 * </p>
 	 * 
 	 * @param bibtexString - <code>String</code> containing a 
 	 * Bibtex file.
@@ -44,10 +46,12 @@ public class BibtexTool {
 	}
 
 	/**
+	 * <p>
 	 * Creates an instance of <code>BibtexTool</code> from
 	 * a <code>String</code> containing a Bibtex file.  Upon
 	 * object creation, the provided Bibtex will be validated
 	 * and then parsed into its name-value pairs.
+	 * </p>
 	 * 
 	 * @param bibtexFile - a <code>File</code> containing
 	 * Bibtex.
@@ -60,7 +64,9 @@ public class BibtexTool {
 	}
 	
 	/**
+	 * <p>
 	 * Simple validation of the provided Bibtex file.
+	 * </p>
 	 * 
 	 */
 	private void validate() {
@@ -73,8 +79,10 @@ public class BibtexTool {
 	}
 
 	/**
+	 * <p>
 	 * Goes through the provided Bibtex file and creates a map
 	 * of each name value pair.
+	 * </p>
 	 * 
 	 */
 	private void parseBibtexString() {
@@ -111,8 +119,10 @@ public class BibtexTool {
 	}
 	
 	/**
+	 * <p>
 	 * Get a data-item value from the Bibtex file corresponding to
 	 * the name provided.
+	 * </p>
 	 * 
 	 * @param name - the name of the data-item in the Bibtex file
 	 * for which you want the value
@@ -125,7 +135,9 @@ public class BibtexTool {
 	}
 	
 	/**
+	 * <p>
 	 * Get the value of the author data-item from the Bibtex file.
+	 * </p>
 	 * 
 	 * @return String of the author data-item
 	 */
@@ -134,7 +146,9 @@ public class BibtexTool {
 	}
 
 	/**
+	 * <p>
 	 * Get the value of the title data-item from the Bibtex file.
+	 * </p>
 	 * 
 	 * @return String of the title data-item.
 	 */
@@ -143,10 +157,12 @@ public class BibtexTool {
 	}
 
 	/**
+	 * <p>
 	 * Gets the values of commonly used data-items from the Bibtex
 	 * file and creates an aggregation class to describe the 
 	 * typical data-items found in a reference to a published
 	 * journal article.
+	 * </p>
 	 * 
 	 * @return ArticleReference providing the data-items typically
 	 * found in a reference to a published journal article.
@@ -167,7 +183,9 @@ public class BibtexTool {
 	}
 	
 	/**
+	 * <p>
 	 * Get the data items in the Bibtex file.
+	 * </p>
 	 * 
 	 * @return Map containing the data-item name-value
 	 * pairs from the Bibtex file.

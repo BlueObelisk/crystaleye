@@ -29,7 +29,9 @@ public enum ActaJournal {
 	}
 
 	/**
+	 * <p>
 	 * Gets the complete journal title.
+	 * </p>
 	 * 
 	 * @return String of the complete journal title.
 	 * 
@@ -39,8 +41,10 @@ public enum ActaJournal {
 	}
 
 	/**
+	 * <p>
 	 * Gets the journal abbreviation (as used by the publisher
 	 * on their website).
+	 * </p>
 	 * 
 	 * @return String of the journal abbreviation.
 	 * 

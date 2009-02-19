@@ -31,8 +31,10 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	private static final Logger LOG = Logger.getLogger(ChemSocJapanIssueCrawler.class);
 
 	/**
+	 * <p>
 	 * Creates an instance of the ChemSocJapanIssueCrawler class and
 	 * specifies the journal of the issue to be crawled.
+	 * </p>
 	 * 
 	 * @param doi of the article to be crawled.
 	 */
@@ -41,8 +43,10 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	}
 
 	/**
+	 * <p>
 	 * Gets information to identify the last published issue of a
 	 * the provided <code>ChemSocJapanJournal</code>.
+	 * </p>
 	 * 
 	 * @return the year and issue identifier.
 	 * 
@@ -67,8 +71,10 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	}
 	
 	/**
+	 * <p>
 	 * Gets the HTML of the table of contents of the last 
 	 * published issue of the provided journal.
+	 * </p>
 	 * 
 	 * @return HTML of the issue table of contents.
 	 * 
@@ -80,8 +86,10 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	}
 	
 	/**
+	 * <p>
 	 * Gets the DOIs of all of the articles from the last 
-	 * published issue of the provided journal. 
+	 * published issue of the provided journal.
+	 * </p> 
 	 * 
 	 * @return a list of the DOIs of the articles.
 	 * 
@@ -92,9 +100,11 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	}
 
 	/**
+	 * <p>
 	 * Gets the DOIs of all articles in the issue defined
 	 * by the <code>ChemSocJapanJournal</code> and the provided
 	 * <code>year</code> and <code>issueId</code>.
+	 * </p>
 	 * 
 	 * @param year - the year the issue to be crawled was 
 	 * published.
@@ -125,9 +135,11 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	}
 	
 	/**
+	 * <p>
 	 * Gets the DOIs of all articles in the issue defined
 	 * by the <code>ChemSocJapanJournal</code> and the provided
 	 * <code>year</code> and <code>issueId</code>.
+	 * </p>
 	 * 
 	 * @param id - contains the year and issueId of the issue
 	 * to be crawled.
@@ -140,9 +152,11 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	}
 	
 	/**
+	 * <p>
 	 * Gets information describing all articles in the issue 
 	 * defined by the <code>ChemSocJapanJournal</code> and the 
 	 * provided <code>year</code> and <code>issueId</code>.
+	 * </p>
 	 * 
 	 * @param year - the year the issue to be crawled was 
 	 * published.
@@ -164,9 +178,11 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	}
 
 	/**
+	 * <p>
 	 * Gets information describing all articles in the issue 
 	 * defined by the <code>ChemSocJapanJournal</code> and the provided
 	 * <code>year</code> and <code>issueId</code>.
+	 * </p>
 	 * 
 	 * @param id - contains the year and issue identifier of 
 	 * the issue to be crawled.
@@ -180,8 +196,10 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	}
 
 	/**
+	 * <p>
 	 * Main method only for demonstration of class use. Does not require
 	 * any arguments.
+	 * </p>
 	 * 
 	 * @param args
 	 */

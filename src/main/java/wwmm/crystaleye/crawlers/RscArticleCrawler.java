@@ -33,8 +33,10 @@ public class RscArticleCrawler extends ArticleCrawler {
 	private static final Logger LOG = Logger.getLogger(RscArticleCrawler.class);
 
 	/**
+	 * <p>
 	 * Creates an instance of the RscArticleCrawler class and
 	 * specifies the DOI of the article to be crawled.
+	 * </p>
 	 * 
 	 * @param doi of the article to be crawled.
 	 */
@@ -43,8 +45,10 @@ public class RscArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Crawls the article abstract webpage for information, which is 
-	 * returned in an ArticleDetails object. 
+	 * returned in an ArticleDetails object.
+	 * </p> 
 	 * 
 	 * @return ArticleDetails object containing important details about
 	 * the article (e.g. title, authors, reference, supplementary 
@@ -76,7 +80,9 @@ public class RscArticleCrawler extends ArticleCrawler {
 	}
 	
 	/**
+	 * <p>
 	 * Gets the URI of the article full-text.
+	 * </p>
 	 * 
 	 * @return URI of the article full-text.
 	 */
@@ -91,8 +97,10 @@ public class RscArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Gets the details of any supplementary files provided alongside
 	 * the published article.
+	 * </p>
 	 * 
 	 * @return a list where each item describes a separate supplementary
 	 * data file (as a <code>SupplementaryFileDetails</code> object).
@@ -124,7 +132,9 @@ public class RscArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Gets a authors of the article from the abstract webpage.
+	 * </p>
 	 * 
 	 * @return String containing the article authors.
 	 * 
@@ -139,8 +149,10 @@ public class RscArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Creates the article bibliographic reference from information found 
 	 * on the abstract webpage.
+	 * </p>
 	 * 
 	 * @return the article bibliographic reference.
 	 * 
@@ -168,7 +180,9 @@ public class RscArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Gets the article title from the abstract webpage.
+	 * </p>
 	 * 
 	 * @return the article title.
 	 * 
@@ -186,8 +200,10 @@ public class RscArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Main method only for demonstration of class use. Does not require
 	 * any arguments.
+	 * </p>
 	 * 
 	 * @param args
 	 * @throws NullPointerException 

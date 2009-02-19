@@ -34,8 +34,11 @@ import wwmm.crystaleye.util.Utils;
 public class CrawlerHttpClient extends BasicHttpClient {
 	
 	/**
+	 * <p>
 	 * The maximum time (in milliseconds) that each 
 	 * process will be forced to sleep for.
+	 * </p>
+	 * 
 	 */
 	int maxSleep = 1500;
 	
@@ -107,10 +110,20 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	}
 	
 	/**
+	 * <p>
+	 * Executes a HTTP GET on the resource at the provided <code>URI</code>.  
+	 * The resource contents are first obtained as a <code>String</code> so that
+	 * a horrible hack can be performed to remove any comments before the HTML is 
+	 * passed to Tagsoup.  This is someimtes necessary to remove anything that might
+	 * cause Tagsoup or XOM to fail when parsing the HTML (such as including -- in 
+	 * middle of a comment).  After the comments have been removed, the HTML is tidied
+	 * and parsed by Tagsoup into a XOM <code>Document</code>.  Includes
+	 * a period of sleep.
+	 * </p>
 	 * 
+	 * @param uri of the resource for which you want to obtain the HTML.
 	 * 
-	 * @param uri
-	 * @return
+	 * @return XML <code>Document</code> containined the parsed HTML.
 	 */
 	@Override
 	public Document getResourceHTMLMinusComments(URI uri) {

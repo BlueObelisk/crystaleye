@@ -37,10 +37,12 @@ public class RscRssCrawler extends Crawler {
 	private static final Logger LOG = Logger.getLogger(RscRssCrawler.class);
 	
 	/**
+	 * <p>
 	 * Creates an instance of the RscRssCrawler class ready to 
 	 * crawl the feed for the provided <code>RscJournal</code>.
 	 * By using this constructor, all articles in the feed will
 	 * be returned on executing <code>getNewArticleDetails</code>.
+	 * </p>
 	 * 
 	 * @param journal - the journals RSS feed to be crawled.
 	 * 
@@ -50,11 +52,13 @@ public class RscRssCrawler extends Crawler {
 	}
 
 	/**
+	 * <p>
 	 * Creates an instance of the RscRssCrawler class ready to 
 	 * crawl the feed for the provided <code>RscJournal</code>.
 	 * On executing <code>getNewArticleDetails</code>, only those
 	 * article included in the feed after the provided 
 	 * <code>lastCrawledDate</code> will be returned.
+	 * </p>
 	 * 
 	 * @param journal - the journals RSS feed to be crawled.
 	 * 
@@ -65,12 +69,14 @@ public class RscRssCrawler extends Crawler {
 	}
 
 	/**
+	 * <p>
 	 * Returns information about the new articles to be published
 	 * in the RSS feed.  If a <code>lastCrawledDate</code> was
 	 * provided in the constructor, then only information about
 	 * articles published after that date will be returned. If no
 	 * <code>lastCrawledDate</code> was provided, then information
 	 * about all article in the feed will be returned.
+	 * </p>
 	 * 
 	 * @return a list where each item provides information about a
 	 * separate article.
@@ -93,7 +99,9 @@ public class RscRssCrawler extends Crawler {
 	}
 	
 	/**
+	 * <p>
 	 * Gets the article DOI from the RSS entry.
+	 * </p>
 	 * 
 	 * @param entry - the RSS entry that is being crawled.
 	 * 
@@ -112,9 +120,11 @@ public class RscRssCrawler extends Crawler {
 	}
 	
 	/**
+	 * <p>
 	 * If a <code>lastCrawledDate</code> was provided in the 
 	 * constructor, then then entry for each article is checked
 	 * here to make sure it was published afterwards.
+	 * </p>
 	 * 
 	 * @param entryDate - the date of the current RSS entry.
 	 * 
@@ -135,7 +145,9 @@ public class RscRssCrawler extends Crawler {
 	}
 	
 	/**
-	 * Gets the published date from the provided RSS entry. 
+	 * <p>
+	 * Gets the published date from the provided RSS entry.
+	 * </p> 
 	 * 
 	 * @param entry - the RSS entry to be scraped.
 	 * 
@@ -161,7 +173,9 @@ public class RscRssCrawler extends Crawler {
 	}
 	
 	/**
+	 * <p>
 	 * Gets all entries found in the RSS feed being crawled.
+	 * </p>
 	 * 
 	 * @param feedDoc - XML of the RSS feed being crawled.
 	 * 
@@ -182,8 +196,10 @@ public class RscRssCrawler extends Crawler {
 	}
 
 	/**
+	 * <p>
 	 * Gets the URI for the RSS feed for the latest published articles
 	 * of the provided <code>RscJournal</code>.
+	 * </p>
 	 * 
 	 * @return the RSS feed <code>URI</code>.
 	 * 
@@ -194,8 +210,10 @@ public class RscRssCrawler extends Crawler {
 	}
 
 	/**
+	 * <p>
 	 * Main method only for demonstration of class use. Does not require
 	 * any arguments.
+	 * </p>
 	 * 
 	 * @param args
 	 * @throws ParseException 

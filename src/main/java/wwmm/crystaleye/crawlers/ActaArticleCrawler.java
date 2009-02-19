@@ -29,8 +29,10 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	private static final Logger LOG = Logger.getLogger(ActaArticleCrawler.class);
 
 	/**
+	 * <p>
 	 * Creates an instance of the ActaArticleCrawler class and
 	 * specifies the DOI of the article to be crawled.
+	 * </p>
 	 * 
 	 * @param doi of the article to be crawled.
 	 */
@@ -39,8 +41,10 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Crawls the article abstract webpage for information, which is 
-	 * returned in an ArticleDetails object. 
+	 * returned in an ArticleDetails object.
+	 * </p> 
 	 * 
 	 * @return ArticleDetails object containing important details about
 	 * the article (e.g. title, authors, reference, supplementary 
@@ -73,8 +77,10 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	}
 	
 	/**
+	 * <p>
 	 * Gets the article Bibtex file from the abstract webpage and sets
 	 * the superclass <code>bibtexTool</code>.
+	 * </p>
 	 * 
 	 */
 	private void setBibtexTool() {
@@ -91,8 +97,10 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	}
 	
 	/**
+	 * <p>
 	 * Gets the article's unique ID (as provided by the publisher) from
 	 * the abstract webpage.
+	 * </p>
 	 * 
 	 * @return String containing the article's unique ID.
 	 * 
@@ -107,7 +115,9 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	}
 	
 	/**
+	 * <p>
 	 * Gets the URI of the article full-text.
+	 * </p>
 	 * 
 	 * @return URI of the article full-text.
 	 * 
@@ -122,8 +132,10 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Gets the details of any supplementary files provided alongside
 	 * the published article.
+	 * </p>
 	 * 
 	 * @return a list where each item describes a separate supplementary
 	 * data file (as a <code>SupplementaryFileDetails</code> object).
