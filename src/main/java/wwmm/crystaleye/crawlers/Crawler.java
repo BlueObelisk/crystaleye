@@ -8,9 +8,10 @@ import wwmm.crystaleye.BasicHttpClient;
 
 /**
  * <p>
- * The abstract <code>Crawler</code> class is intended to be used as a superclass
- * for any web crawler classes.  It contains objects (e.g. a HTTP client)
- * and methods generic to the use and manipulation of web resources.  
+ * The abstract <code>Crawler</code> class is intended to be used as a 
+ * superclass for any web crawler classes.  It contains objects (e.g. 
+ * a HTTP client) and methods generic to the use and manipulation of 
+ * web resources.  
  * </p>
  * 
  * @author Nick Day
