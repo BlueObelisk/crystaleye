@@ -36,18 +36,23 @@ public class RscIssueCrawler extends Crawler{
 	private static final Logger LOG = Logger.getLogger(RscIssueCrawler.class);
 
 	/**
+	 * <p>
 	 * Creates an instance of the RscIssueCrawler class and
 	 * specifies the journal of the issue to be crawled.
+	 * </p>
 	 * 
 	 * @param doi of the article to be crawled.
+	 * 
 	 */
 	public RscIssueCrawler(RscJournal journal) {
 		this.journal = journal;
 	}
 
 	/**
+	 * <p>
 	 * Gets information to identify the last published issue of a
 	 * the provided <code>RscJournal</code>.
+	 * </p>
 	 * 
 	 * @return the year and issue identifier.
 	 * 
@@ -72,8 +77,10 @@ public class RscIssueCrawler extends Crawler{
 	}
 
 	/**
+	 * <p>
 	 * Gets the HTML of the table of contents of the last 
 	 * published issue of the provided journal.
+	 * </p>
 	 * 
 	 * @return HTML of the issue table of contents.
 	 * 
@@ -86,8 +93,10 @@ public class RscIssueCrawler extends Crawler{
 	}
 
 	/**
+	 * <p>
 	 * Gets the DOIs of all of the articles from the last 
-	 * published issue of the provided journal. 
+	 * published issue of the provided journal.
+	 * </p> 
 	 * 
 	 * @return a list of the DOIs of the articles.
 	 * 
@@ -98,9 +107,11 @@ public class RscIssueCrawler extends Crawler{
 	}
 
 	/**
+	 * <p>
 	 * Gets the DOIs of all articles in the issue defined
 	 * by the <code>RscJournal</code> and the provided
 	 * <code>year</code> and <code>issueId</code>.
+	 * </p>
 	 * 
 	 * @param year - the year the issue to be crawled was 
 	 * published.
@@ -140,12 +151,14 @@ public class RscIssueCrawler extends Crawler{
 	}
 
 	/**
+	 * <p>
 	 * Unfortunately RSC give DOIs to the electronic version of their front 
 	 * cover, contents list, back cover a few other things that aren't actually
 	 * articles.  As we want to write an article crawler that fails if it can't 
 	 * find the full-text HTML of an article, we don't want these non-article 
 	 * DOIs being passed further down the crawler's processing.  They are 
 	 * weeded out by this method.
+	 * </p>
 	 * 
 	 * @param articleElement
 	 * @return boolean stating whether the doiElement links to an article or not
@@ -170,9 +183,11 @@ public class RscIssueCrawler extends Crawler{
 	}
 
 	/**
+	 * <p>
 	 * Gets the DOIs of all articles in the issue defined
 	 * by the <code>RscJournal</code> and the provided
 	 * <code>year</code> and <code>issueId</code>.
+	 * </p>
 	 * 
 	 * @param id - contains the year and issueId of the issue
 	 * to be crawled.
@@ -185,9 +200,11 @@ public class RscIssueCrawler extends Crawler{
 	}
 
 	/**
+	 * <p>
 	 * Gets information describing all articles in the issue 
 	 * defined by the <code>RscJournal</code> and the provided
 	 * <code>year</code> and <code>issueId</code>.
+	 * </p>
 	 * 
 	 * @param year - the year the issue to be crawled was 
 	 * published.
@@ -211,9 +228,11 @@ public class RscIssueCrawler extends Crawler{
 	}
 
 	/**
+	 * <p>
 	 * Gets information describing all articles in the issue 
 	 * defined by the <code>RscJournal</code> and the provided
 	 * <code>year</code> and <code>issueId</code>.
+	 * </p>
 	 * 
 	 * @param id - contains the year and issue identifier of 
 	 * the issue to be crawled.
@@ -227,8 +246,10 @@ public class RscIssueCrawler extends Crawler{
 	}
 
 	/**
+	 * <p>
 	 * Main method only for demonstration of class use. Does not require
 	 * any arguments.
+	 * </p>
 	 * 
 	 * @param args
 	 */

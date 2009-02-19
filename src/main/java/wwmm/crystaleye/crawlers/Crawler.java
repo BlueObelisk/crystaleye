@@ -28,7 +28,9 @@ public abstract class Crawler {
 	}
 	
 	/**
+	 * <p>
 	 * Convenience method to handle the exceptions in creating a URI.
+	 * </p>
 	 * 
 	 * @param url
 	 * 

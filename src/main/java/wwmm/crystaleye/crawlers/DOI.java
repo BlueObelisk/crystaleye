@@ -30,7 +30,9 @@ public class DOI {
 	}
 	
 	/**
+	 * <p>
 	 * Make sure that the provided <code>URI</code> is a valid DOI.
+	 * </p>
 	 * 
 	 * @throws RuntimeException if the provided URI does not
 	 * 

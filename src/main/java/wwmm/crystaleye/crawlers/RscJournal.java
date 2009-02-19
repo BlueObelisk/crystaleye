@@ -36,7 +36,9 @@ public enum RscJournal {
 	}
 
 	/**
+	 * <p>
 	 * Gets the complete journal title.
+	 * </p>
 	 * 
 	 * @return String of the complete journal title.
 	 * 
@@ -46,8 +48,10 @@ public enum RscJournal {
 	}
 
 	/**
+	 * <p>
 	 * Gets the journal abbreviation (as used by the publisher
 	 * on their website).
+	 * </p>
 	 * 
 	 * @return String of the journal abbreviation.
 	 * 

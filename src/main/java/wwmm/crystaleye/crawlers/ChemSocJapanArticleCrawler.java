@@ -31,8 +31,10 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 	private static final Logger LOG = Logger.getLogger(ChemSocJapanArticleCrawler.class);
 
 	/**
+	 * <p>
 	 * Creates an instance of the ChemSocJapanArticleCrawler class and
 	 * specifies the DOI of the article to be crawled.
+	 * </p>
 	 * 
 	 * @param doi of the article to be crawled.
 	 */
@@ -41,8 +43,10 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Crawls the article abstract webpage for information, which is 
-	 * returned in an ArticleDetails object. 
+	 * returned in an ArticleDetails object.
+	 * </p> 
 	 * 
 	 * @return ArticleDetails object containing important details about
 	 * the article (e.g. title, authors, reference, supplementary 
@@ -75,8 +79,10 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Gets the article Bibtex file from the abstract webpage and sets
 	 * the superclass <code>bibtexTool</code>.
+	 * </p>
 	 * 
 	 */
 	private void setBibtexTool() {
@@ -92,7 +98,9 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Gets the URI of the article full-text.
+	 * </p>
 	 * 
 	 * @return URI of the article full-text.
 	 */
@@ -107,8 +115,10 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 	}
 
 	/**
+	 * <p>
 	 * Gets the details of any supplementary files provided alongside
 	 * the published article.
+	 * </p>
 	 * 
 	 * @return a list where each item describes a separate supplementary
 	 * data file (as a <code>SupplementaryFileDetails</code> object).
