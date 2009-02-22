@@ -20,7 +20,7 @@ public interface CrawlerConstants {
 	public static final String ACTA_HOMEPAGE_URL = "http://journals.iucr.org";
 	public static final String ACS_HOMEPAGE_URL = "http://pubs.acs.org";
 	public static final String CHEMSOCJAPAN_HOMEPAGE_URL = "http://www.jstage.jst.go.jp";
-	public static final String ELSEVIER_JOURNAL_URL_PREFIX = "http://www.sciencedirect.com/science/journal/";
+	public static final String ELSEVIER_JOURNAL_URL_PREFIX = "http://www.sciencedirect.com";
 	public static final String RSC_HOMEPAGE_URL = "http://pubs.rsc.org";
 	
 	// XML namespaces

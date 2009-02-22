@@ -11,14 +11,16 @@ package wwmm.crystaleye.crawlers;
  * 
  */
 public enum ElsevierJournal {
-	POLYHEDRON("02775387", "Polyhedron");
+	POLYHEDRON("02775387", "Polyhedron", 1981);
 
 	private final String abbreviation;
 	private final String fullTitle;
+	private final int volumeOffset;
 
-	ElsevierJournal(String abbreviation, String fullTitle) {
+	ElsevierJournal(String abbreviation, String fullTitle, int volumeOffset) {
 		this.abbreviation = abbreviation;
 		this.fullTitle = fullTitle;
+		this.volumeOffset = volumeOffset;
 	}
 
 	/**
@@ -44,5 +46,21 @@ public enum ElsevierJournal {
 	 */
 	public String getAbbreviation() {
 		return this.abbreviation;
+	}
+
+	/**
+	 * <p>
+	 * Gets an <code></code> which describes the relationship 
+	 * between a journals year and volume i.e. if you know 
+	 * the journal year is 2009 and the <code>volumeOffset</code> 
+	 * is 2000, then the volume of the journal in 2009 is 9. 
+	 * Magic.
+	 * </p>
+	 *
+	 * @return int
+	 * 
+	 */
+	public int getVolumeOffset() {
+		return this.volumeOffset;
 	}
 }
