@@ -229,7 +229,12 @@ public class GenerateAtomArchiveFeeds {
 		if (!file.exists()) {
 			Utils.writeText(sb.toString(), file.getAbsolutePath());
 		} else {
-			Utils.appendToFile(file, sb.toString());
+			try {
+				Utils.appendToFile(file, sb.toString());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

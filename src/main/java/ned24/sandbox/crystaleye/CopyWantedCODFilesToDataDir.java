@@ -30,7 +30,7 @@ public class CopyWantedCODFilesToDataDir {
 		this.codCellParamPath = codCellParamPath;
 	}
 
-	public void run() {
+	public void run() throws IOException {
 		Set<String[]> dataCellParamSet = populateDataCellParamSet(dataCellParamPath);
 		Set<String[]> codCellParamSet = populateCodCellParamSet(codCellParamPath);
 		Set<String> alreadyMovedSet = new HashSet<String>();
@@ -100,10 +100,10 @@ public class CopyWantedCODFilesToDataDir {
 			input.close();
 		}
 		catch (FileNotFoundException ex) {
-			throw new CrystalEyeRuntimeException("Could not find file: "+listPath);
+			throw new RuntimeException("Could not find file: "+listPath);
 		}
 		catch (IOException ex){
-			throw new CrystalEyeRuntimeException("Error reading file: "+listPath);
+			throw new RuntimeException("Error reading file: "+listPath);
 		}
 		finally {
 			try {
@@ -137,10 +137,10 @@ public class CopyWantedCODFilesToDataDir {
 			input.close();
 		}
 		catch (FileNotFoundException ex) {
-			throw new CrystalEyeRuntimeException("Could not find file: "+listPath);
+			throw new RuntimeException("Could not find file: "+listPath);
 		}
 		catch (IOException ex){
-			throw new CrystalEyeRuntimeException("Error reading file: "+listPath);
+			throw new RuntimeException("Error reading file: "+listPath);
 		}
 		finally {
 			try {
@@ -155,7 +155,7 @@ public class CopyWantedCODFilesToDataDir {
 		return set;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		String codDir = "e:/COD";
 		String dataPath = "e:/crystaleye-test/data";
 		String dataCellParamPath = "e:/data-test/publisher-cell-params.txt";
