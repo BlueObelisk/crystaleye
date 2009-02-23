@@ -23,11 +23,14 @@ import nu.xom.ParsingException;
 import nu.xom.Text;
 import nu.xom.ValidityException;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 public class CheckCifParser {
+	
+	private static final Logger LOG = Logger.getLogger(CheckCifParser.class);
 
 	Document doc;
 	String checkCifHtml;
@@ -47,9 +50,8 @@ public class CheckCifParser {
 	}
 
 	public Document parseDeposited() {
-
-		// need to remove all <pre> tags otherwise they appear almost at random and mess up
-		// all my lovely xpaths.
+		// need to remove all <pre> tags otherwise they appear almost at 
+		// random and mess up all my lovely xpaths.
 		Pattern p = Pattern.compile("<pre>|</pre>", Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(checkCifHtml);
 		checkCifHtml = m.replaceAll("");
@@ -102,20 +104,20 @@ public class CheckCifParser {
 		return checkcifXml;
 	}
 
-	protected void setDocument() {
+	private void setDocument() {
 		try {
 			XMLReader tagsoup = XMLReaderFactory.createXMLReader("org.ccil.cowan.tagsoup.Parser");
 			Builder builder = new Builder(tagsoup);
 			this.doc = builder.build(new BufferedReader(new StringReader(checkCifHtml)));
 			setBodyElement();
 		} catch (SAXException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Error reading CheckCIF XML.", e);
 		} catch (ValidityException e) {
-			System.err.println("Checkcif HTML string is not valid XML: "+e);
+			throw new RuntimeException("Checkcif HTML string is not valid XML.", e);
 		} catch (ParsingException e) {
-			System.err.println("Could not parse Checkcif HTML string: "+e);
+			throw new RuntimeException("Could not parse Checkcif HTML string.", e);
 		} catch (IOException e) {
-			System.err.println("Could not read Checkcif HTML string: "+e);
+			throw new RuntimeException("Could not read Checkcif HTML string.", e);
 		}
 	}
 
@@ -225,12 +227,10 @@ public class CheckCifParser {
 				String id = "";
 				if (m.find()) {
 					id = m.group(1);
-					//platon.addAttribute(new Attribute("blockId", id));
 				}
 				Element plLink = new Element("link", CC_NS);
 				plLink.appendChild(new Text(link));
 				platon.appendChild(plLink);
-				//checkcifXml.getRootElement().appendChild(platon);
 				Nodes blockNode = checkcifXml.query("//c:dataBlock[@id=\"" + id + "\"]", X_CC);
 				if (blockNode.size() != 0) {
 					((Element)(blockNode.get(0))).appendChild(platon);
@@ -245,14 +245,13 @@ public class CheckCifParser {
 		if (nodes.size() != 0) {
 			body = (Element) nodes.get(0);
 		} else {
-			System.err.println("ERROR: could not find body element in Checkcif HTML.");
+			throw new RuntimeException("ERROR: could not find body element in Checkcif HTML.");
 		}
 	}
 
 	private void setBlockStartPositions() {
 		Nodes syntaxError = doc.query("//x:h2[text()='Syntax problems']", X_XHTML);
 		if (syntaxError.size() == 0) {
-
 			Nodes dataStartPos = doc.query("/x:html/x:body/x:font[@size='+2']/x:b[contains(text(),'Datablock:')]/parent::x:*", X_XHTML);
 			dbPos = new Integer[dataStartPos.size()];
 			if (dataStartPos.size() != 0) {
@@ -260,31 +259,28 @@ public class CheckCifParser {
 					containsDataBlocks = true;
 					int pos = body.indexOf(dataStartPos.get(i));
 					dbPos[i] = pos;
-					//System.out.println("Element corresponding to dpPos at this time is: "+body.getChild(pos).toXML());
 				}
 			} else {
-				System.err.println("No datablocks found in this checkCIF");
+				throw new RuntimeException("No datablocks found in this checkCIF");
 			}
 
 			Nodes publStartPos = doc.query("/x:html/x:body/x:font[@size=\"+2\"]/x:b[contains(text(),'checkCIF publication errors')]/parent::x:*", X_XHTML);
 			if (publStartPos.size() != 0) {
 				pubPos = body.indexOf(publStartPos.get(0));
-				//logger.info("PublicationError block start position at node: "+pubPos);
 				containsPublErrors = true;
 			} else {
-				System.out.println("No publication errors reported in this checkCIF");
+				LOG.info("No publication errors reported in this checkCIF");
 			}
 
 			Nodes platonStartPos = doc.query("/x:html/x:body/x:font/x:b[contains(text(),'PLATON version')]/parent::x:*", X_XHTML);
 			if (platonStartPos.size() != 0) {
 				platPos = body.indexOf(platonStartPos.get(0));
-				//logger.info("PLATON block start position at node: "+platPos);
 				containsPlaton = true;
 			} else {
-				System.out.println("No PLATON results reported in this checkCIF");
+				LOG.info("No PLATON results reported in this checkCIF");
 			}
 		} else {
-			System.err.println("Syntax errors in the CIF, no checkCIF/PLATON output can be produced.");
+			LOG.warn("Syntax errors in the CIF, no checkCIF/PLATON output can be produced.");
 		}
 	}
 
@@ -349,7 +345,6 @@ public class CheckCifParser {
 		}
 
 		return platonDoc;
-
 	}
 
 }
