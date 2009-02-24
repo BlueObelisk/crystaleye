@@ -401,7 +401,15 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		String cmlPath = cmlFile.getAbsolutePath();
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
 		String id = fileName.substring(0,fileName.indexOf("."));
-		CMLCml cml = (CMLCml)IOUtils.parseCmlFile(cmlPath).getRootElement();
+		CMLCml cml = null;
+		try {
+			cml = (CMLCml)IOUtils.parseCmlFile(cmlPath).getRootElement();
+		} catch(Exception e) {
+			System.err.println("Cannot parse CML file: "+e.getMessage());
+		}
+		if (cml == null) {
+			return "";
+		}
 		Elements formulaElements = cml.getChildCMLElements(CMLFormula.TAG);
 		String formulaMoi = "";
 		String formulaSum = "";
@@ -678,7 +686,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			return null;
 		}
 		for (File moiCmlFile : moiList) {
-//			process fragments
+			//			process fragments
 			String fragPagePath = Utils.getPathMinusMimeSet(moiCmlFile)+".fragments.toc.html";
 			String fragPage = this.createOverallFragmentSummaryPages(moiCmlFile);
 			if (fragPage != null) {
@@ -971,7 +979,15 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		List<File> organometallicList = new ArrayList<File>();
 		List<File> inorganicList = new ArrayList<File>();
 		for (File file : cmlFileList) {
-			Document doc = IOUtils.parseCmlFile(file);
+			Document doc = null;
+			try {
+				doc = IOUtils.parseCmlFile(file);
+			} catch(Exception e) {
+				System.err.println("Cannot parse "+file.getAbsolutePath()+": "+e.getMessage());
+			}
+			if (doc == null) {
+				continue;
+			}
 			XPathContext x = new XPathContext("x", CML_NS);
 			Nodes nodes = doc.query("//x:scalar[@dictRef='iucr:compoundClass']", x);
 			if (nodes.size() > 0) {

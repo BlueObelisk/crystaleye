@@ -130,9 +130,15 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 									String suppId = pathMinusMime.substring(pathMinusMime.lastIndexOf(File.separator)+1);
 									String articleId = suppId.substring(0,suppId.indexOf("_"));
 									articleId = articleId.replaceAll("sup[\\d]*", "");
-
-									CMLCml cml = (CMLCml)(IOUtils.parseCmlFile(structureFile)).getRootElement();
-
+									CMLCml cml = null;
+									try {
+										cml = (CMLCml)(IOUtils.parseCmlFile(structureFile)).getRootElement();
+									} catch (Exception e) {
+										System.err.println("Error parsing CML file: "+e.getMessage());
+									}
+									if (cml == null) {
+										continue;
+									}
 									Nodes classNodes = cml.query(".//cml:scalar[@dictRef='iucr:compoundClass']", X_CML);
 									String compClass = "";
 									if (classNodes.size() > 0) {
@@ -271,7 +277,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			System.err.println("Could not produce 2D image for molecule.");
 		}
 	}
-	
+
 	private void writeGeometryHtml(List list, String filename, CMLMolecule molecule, int folderDepth) {
 		String displayPathPrefix = "";
 		for (int i = 0; i < folderDepth; i++) {
@@ -903,7 +909,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			geometryTool.createValenceTorsions(calculate, add);
 		writeGeometryHtml(torsionList, pathMinusMime+".torsions.html", molecule, depth);
 	}
-	
+
 	public static void main(String[] args) {
 		//CML2FooManager acta = new CML2FooManager("e:/crystaleye-test/docs/cif-flow-props.txt");
 		CML2FooManager acta = new CML2FooManager("e:/data-test/docs/cif-flow-props.txt");

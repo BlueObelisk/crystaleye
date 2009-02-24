@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
 
@@ -26,58 +25,75 @@ public class AcsCurrent extends CurrentIssueFetcher {
 	}
 
 	protected IssueDate getCurrentIssueId(String journalAbbreviation) {
-		// old url
-		//String url = "http://pubs.acs.org/journals/"+this.journalAbbreviation+"/index.html";
-		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="+journalAbbreviation;
-		// get current issue page as a DOM
-		Document doc = IOUtils.parseWebPage(url);
-		// query that went with first and second patterns
-		//Nodes journalInfo = doc.query("//x:p/x:img[contains(@src,'current_issue.gif')]/parent::x:*/text()[3]", XHTML);
-		Nodes journalInfo = doc.query(".//x:div[@id='issueinfo']", X_XHTML);
-		if (journalInfo.size() != 0) {
-			String info = journalInfo.get(0).getValue().trim();
-			// first pattern
-			// Pattern pattern = Pattern.compile("[^,]*,[^,\\d]*(\\d+),[\\s]+(\\d*)$");
-			// second pattern
-			// Pattern pattern = Pattern.compile("Issue\\s*(\\d+)[^,]*,\\s*(\\d+)");
-			// third pattern
-			Pattern pattern = Pattern.compile("\\s*Vol\\.\\s+\\d+,\\s+No\\.\\s+(\\d+):.*(\\d\\d\\d\\d)");
-			Matcher matcher = pattern.matcher(info);
-			if (!matcher.find()) {
-				throw new CrystalEyeRuntimeException("Could not extract the year/issue information from the 'current-issue' page "+url);
-			} else {
-				String year = matcher.group(2);
-				String issueNum = matcher.group(1);
-				return new IssueDate(year, issueNum);
-			}
-		} else {
-			throw new CrystalEyeRuntimeException("Could not find the year/issue information from the 'current-issue' page "+url);
+		Document doc = getCurrentIssueHtml(journalAbbreviation);
+		Nodes journalInfo = doc.query(".//x:div[@id='tocMeta']", X_XHTML);
+		int size = journalInfo.size();
+		if (size != 1) {
+			throw new RuntimeException("Expected to find 1 element containing" +
+					" the year/issue information but found "+size+".");
 		}
+		String info = journalInfo.get(0).getValue().trim();
+		Pattern pattern = Pattern.compile("[^,]*,\\s*(\\d+)\\s+Volume\\s+(\\d+),\\s+Issue\\s+(\\d+)\\s+Pages\\s+(\\d+-\\d+).*");
+		Matcher matcher = pattern.matcher(info);
+		if (!matcher.find() || matcher.groupCount() != 4) {
+			throw new RuntimeException("Could not extract the year/issue information.");
+		}
+		String year = matcher.group(1);
+		String issueId = matcher.group(3);
+		return new IssueDate(year, issueId);
+	}
+	
+	/**
+	 * <p>
+	 * Gets the HTML of the table of contents of the last 
+	 * published issue of the provided journal.
+	 * </p>
+	 * 
+	 * @return HTML of the issue table of contents.
+	 * 
+	 */
+	public Document getCurrentIssueHtml(String journalAbbreviation) {
+		String url = "http://pubs.acs.org/toc/"+journalAbbreviation+"/current";
+		return IOUtils.parseWebPage(url);
+	}
+	
+	private String getJournalVolumeFromYear(String journalAbbreviation, String year) {
+		String volume = null;
+		for (AcsJournal jrnl : AcsJournal.values()) {
+			if (jrnl.getAbbreviation().equals(journalAbbreviation)) {
+				int i = Integer.parseInt(year)-jrnl.getVolumeOffset();
+				volume = String.valueOf(i);
+			}
+		}
+		if (volume == null) {
+			throw new RuntimeException("Coudln't match journal abbreviation ("+journalAbbreviation+
+					") to one in AcsJournal enum.");
+		}
+		return volume;
 	}
 
 	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issueNum) {
-		String url = "http://pubs.acs.org/journals/"+journalAbbreviation+"/index.html";
-		Document doc = IOUtils.parseWebPage(url);
-		Nodes suppLinks = doc.query("//x:a[contains(text(),'Supporting')]", X_XHTML);
+		String volume = getJournalVolumeFromYear(journalAbbreviation, year);
+		String issueUrl = "http://pubs.acs.org/toc/"+journalAbbreviation+"/"+volume+"/"+issueNum;
+		Document doc = IOUtils.parseWebPage(issueUrl);
+		Nodes suppLinks = doc.query(".//x:a[contains(@href,'/doi/suppl/10.1021')]", X_XHTML);
+		System.out.println("supplinks: "+suppLinks.size());
 		sleep();
-
 		if (suppLinks.size() > 0) {
 			for (int j = 0; j < suppLinks.size(); j++) {
-				String suppUrl = ((Element)suppLinks.get(j)).getAttributeValue("href");
-				System.out.println("fetching: "+suppUrl);
+				String suppUrlPostfix = ((Element)suppLinks.get(j)).getAttributeValue("href");
+				String suppUrl = "http://pubs.acs.org"+suppUrlPostfix;
+				int idx = suppUrl.lastIndexOf("/");
+				String cifId = suppUrl.substring(idx+1);
 				doc = IOUtils.parseWebPage(suppUrl);
 				sleep();
-
+				
 				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif')]", X_XHTML);
+				System.out.println("cifLinks: "+cifLinks.size());
 				if (cifLinks.size() > 0) {
 					for (int k = 0; k < cifLinks.size(); k++) {
-						String cifUrl = ((Element)cifLinks.get(k)).getAttributeValue("href");
-						int idx = cifUrl.lastIndexOf("/");
-						String cifId = cifUrl.substring(0,idx);
-						idx = cifId.lastIndexOf("/");
-						cifId = cifId.substring(idx+1);
+						String cifUrl = "http://pubs.acs.org"+((Element)cifLinks.get(k)).getAttributeValue("href");
 						int suppNum = k+1;
-						cifUrl = cifUrl.replaceAll("pubs\\.acs\\.org/", "pubs\\.acs\\.org//");
 						String cif = getWebPage(cifUrl);
 						Nodes doiAnchors = doc.query("//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
 						String doi = null;
@@ -90,12 +106,11 @@ public class AcsCurrent extends CurrentIssueFetcher {
 				}
 			}
 		}
-		System.out.println("FINISHED FETCHING CIFS FROM "+url);
+		System.out.println("FINISHED FETCHING CIFS FROM "+issueUrl);
 	}
 
 	public static void main(String[] args) {
-		AcsCurrent acs = new AcsCurrent("E:\\data-test\\docs\\cif-flow-props.txt");
+		AcsCurrent acs = new AcsCurrent("E:\\crystaleye-new\\docs\\cif-flow-props.txt");
 		acs.execute();
-
 	}
 }
