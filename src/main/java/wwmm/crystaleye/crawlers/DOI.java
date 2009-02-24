@@ -18,12 +18,12 @@ import org.apache.commons.httpclient.URIException;
 public class DOI {
 
 	URI doiUri;
-	
+
 	public DOI(String doiUrl) {
 		doiUri = createURI(doiUrl);
 		validate();
 	}
-	
+
 	public DOI(URI doiUri) {
 		this.doiUri = doiUri;
 		validate();
@@ -31,10 +31,12 @@ public class DOI {
 	
 	/**
 	 * <p>
-	 * Make sure that the provided <code>URI</code> is a valid DOI.
+	 * Make sure that the provided <code>URI</code> is a 
+	 * valid DOI.
 	 * </p>
 	 * 
-	 * @throws RuntimeException if the provided URI does not
+	 * @throws RuntimeException if the provided URI is not
+	 * a valid DOI.
 	 * 
 	 */
 	private void validate() {
@@ -45,10 +47,12 @@ public class DOI {
 	}
 	
 	/**
+	 * Convenience method for create URIs and handling any
+	 * exceptions.
 	 * 
+	 * @param url of the resource you want to create a URI for.
 	 * 
-	 * @param url
-	 * @return URI
+	 * @return URI for the provided URL.
 	 */
 	private URI createURI(String url) {
 		URI uri = null;
@@ -62,10 +66,19 @@ public class DOI {
 		return uri;
 	}
 	
+	/**
+	 * Get the DOIs URI.
+	 * 
+	 * @return the URI for the DOI.
+	 */
 	public URI getUri() {
 		return doiUri;
 	}
 	
+	/**
+	 * Simple method to get the URI string.
+	 * 
+	 */
 	@Override
 	public String toString() {
 		return doiUri.toString();
