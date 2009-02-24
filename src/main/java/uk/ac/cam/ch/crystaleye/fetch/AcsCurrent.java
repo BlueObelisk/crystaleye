@@ -77,7 +77,6 @@ public class AcsCurrent extends CurrentIssueFetcher {
 		String issueUrl = "http://pubs.acs.org/toc/"+journalAbbreviation+"/"+volume+"/"+issueNum;
 		Document doc = IOUtils.parseWebPage(issueUrl);
 		Nodes suppLinks = doc.query(".//x:a[contains(@href,'/doi/suppl/10.1021')]", X_XHTML);
-		System.out.println("supplinks: "+suppLinks.size());
 		sleep();
 		if (suppLinks.size() > 0) {
 			for (int j = 0; j < suppLinks.size(); j++) {
@@ -89,7 +88,6 @@ public class AcsCurrent extends CurrentIssueFetcher {
 				sleep();
 				
 				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif')]", X_XHTML);
-				System.out.println("cifLinks: "+cifLinks.size());
 				if (cifLinks.size() > 0) {
 					for (int k = 0; k < cifLinks.size(); k++) {
 						String cifUrl = "http://pubs.acs.org"+((Element)cifLinks.get(k)).getAttributeValue("href");
