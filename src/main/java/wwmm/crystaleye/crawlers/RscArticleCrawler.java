@@ -173,7 +173,7 @@ public class RscArticleCrawler extends ArticleCrawler {
 		String pages = matcher.group(3);
 		pages = pages.replaceAll("\\s", "");
 		ArticleReference ar = new ArticleReference();
-		ar.setJournal(journal);
+		ar.setJournalTitle(journal);
 		ar.setYear(year);
 		ar.setPages(pages);
 		return ar;

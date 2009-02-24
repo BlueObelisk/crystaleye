@@ -176,7 +176,7 @@ public class ElsevierArticleCrawler extends ArticleCrawler {
 		String year = matcher.group(4);
 		String pages = matcher.group(5)+"-"+matcher.group(6);
 		ArticleReference ar = new ArticleReference();
-		ar.setJournal(journal);
+		ar.setJournalTitle(journal);
 		ar.setVolume(volume);
 		ar.setYear(year);
 		ar.setNumber(issue);

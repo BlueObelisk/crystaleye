@@ -14,7 +14,7 @@ import org.apache.commons.io.FileUtils;
  * therefore contain the details of only one publication).  See 
  * <code>BibtexToolTest</code> for examples of such Bibtex files.  
  * </p>
- * s
+ * 
  * <p>
  * NB. Do NOT use this class as a generic Bibtex parser.
  * </p>
@@ -174,7 +174,7 @@ public class BibtexTool {
 		String pages = getValue("pages");
 		String number = getValue("number");
 		ArticleReference ref = new ArticleReference();
-		ref.setJournal(journal);
+		ref.setJournalTitle(journal);
 		ref.setYear(year);
 		ref.setVolume(volume);
 		ref.setPages(pages);

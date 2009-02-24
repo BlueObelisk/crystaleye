@@ -25,7 +25,7 @@ import wwmm.crystaleye.Utils;
  * @version 1.1
  * 
  */
-public class ChemSocJapanIssueCrawler extends Crawler {
+public class ChemSocJapanIssueCrawler extends IssueCrawler {
 
 	public ChemSocJapanJournal journal;
 	private static final Logger LOG = Logger.getLogger(ChemSocJapanIssueCrawler.class);
@@ -51,8 +51,9 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	 * @return the year and issue identifier.
 	 * 
 	 */
-	protected IssueDetails getCurrentIssueDetails() {
-		Document doc = getCurrentIssueDocument();
+	@Override
+	public IssueDetails getCurrentIssueDetails() {
+		Document doc = getCurrentIssueHtml();
 		List<Node> journalInfo = Utils.queryHTML(doc, "//x:span[@class='augr']");
 		int size = journalInfo.size();
 		if (size != 1) {
@@ -79,7 +80,8 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	 * @return HTML of the issue table of contents.
 	 * 
 	 */
-	public Document getCurrentIssueDocument() {
+	@Override
+	public Document getCurrentIssueHtml() {
 		String url = "http://www.csj.jp/journals/"+journal.getAbbreviation()+"/cl-cont/newissue.html";
 		URI issueUri = createURI(url);
 		return httpClient.getResourceHTML(issueUri);
@@ -94,6 +96,7 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	 * @return a list of the DOIs of the articles.
 	 * 
 	 */
+	@Override
 	public List<DOI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getDOIs(details);
@@ -102,19 +105,21 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	/**
 	 * <p>
 	 * Gets the DOIs of all articles in the issue defined
-	 * by the <code>ChemSocJapanJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
+	 * by the <code>ChemSocJapanJournal</code> and the provided	
+	 * year and issue identifier (wrapped in the 
+	 * <code>issueDetails</code> parameter.
 	 * </p>
 	 * 
-	 * @param year - the year the issue to be crawled was 
-	 * published.
-	 * @param issueId - the issue identifier of the issue
-	 * to be crawled.
+	 * @param issueDetails - contains the year and issue
+	 * identifier of the issue to be crawled.
 	 * 
 	 * @return a list of the DOIs of the articles for the issue.
 	 * 
 	 */
-	public List<DOI> getDOIs(String year, String issueId) {
+	@Override
+	public List<DOI> getDOIs(IssueDetails details) {
+		String year = details.getYear();
+		String issueId = details.getIssueId();
 		String url = "http://www.chemistry.or.jp/journals/chem-lett/cl-cont/cl"+year+"-"+issueId+".html";
 		URI issueUri = createURI(url);
 		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
@@ -136,63 +141,28 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 	
 	/**
 	 * <p>
-	 * Gets the DOIs of all articles in the issue defined
-	 * by the <code>ChemSocJapanJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
-	 * </p>
-	 * 
-	 * @param id - contains the year and issueId of the issue
-	 * to be crawled.
-	 * 
-	 * @return a list of the DOIs of the articles for the issue.
-	 * 
-	 */
-	public List<DOI> getDOIs(IssueDetails details) {
-		return getDOIs(details.getYear(), details.getIssueId());
-	}
-	
-	/**
-	 * <p>
 	 * Gets information describing all articles in the issue 
 	 * defined by the <code>ChemSocJapanJournal</code> and the 
-	 * provided <code>year</code> and <code>issueId</code>.
+	 * provided	year and issue identifier (wrapped in the 
+	 * <code>issueDetails</code> parameter.
 	 * </p>
 	 * 
-	 * @param year - the year the issue to be crawled was 
-	 * published.
-	 * @param issueId - the issue identifier of the issue
-	 * to be crawled.
+	 * @param issueDetails - contains the year and issue
+	 * identifier of the issue to be crawled.
 	 * 
 	 * @return a list where each item contains the details for 
 	 * a particular article from the issue.
 	 * 
 	 */
-	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
-		List<DOI> dois = getDOIs(year, issueId);
+	@Override
+	public List<ArticleDetails> getDetailsForArticles(IssueDetails details) {
+		List<DOI> dois = getDOIs(details);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
 		for (DOI doi : dois) {
 			ArticleDetails ad = new ChemSocJapanArticleCrawler(doi).getDetails();
 			adList.add(ad);
 		}
 		return adList;
-	}
-
-	/**
-	 * <p>
-	 * Gets information describing all articles in the issue 
-	 * defined by the <code>ChemSocJapanJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
-	 * </p>
-	 * 
-	 * @param id - contains the year and issue identifier of 
-	 * the issue to be crawled.
-	 * 
-	 * @return a list where each item contains the details for 
-	 * a particular article from the issue.
-	 * 
-	 */
-	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
-		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
 
 	/**
@@ -207,7 +177,7 @@ public class ChemSocJapanIssueCrawler extends Crawler {
 		for (ChemSocJapanJournal journal : ChemSocJapanJournal.values()) {
 			ChemSocJapanIssueCrawler acf = new ChemSocJapanIssueCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
-			List<ArticleDetails> adList = acf.getArticleDetails(details);
+			List<ArticleDetails> adList = acf.getDetailsForArticles(details);
 			for (ArticleDetails ad : adList) {
 				System.out.println(ad.toString());
 			}

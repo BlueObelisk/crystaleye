@@ -71,11 +71,12 @@ public abstract class ArticleCrawler extends Crawler {
 	/**
 	 * <p>
 	 * Uses the instance DOI to construct an ArticleDetails class
-	 * describing the important details for an article.
+	 * describing the important details for an article.  This is the 
+	 * only method that each subclass should have to implement.
 	 * </p>
 	 * 
 	 * @return ArticleDetails
 	 */
-	abstract ArticleDetails getDetails();
+	abstract public ArticleDetails getDetails();
 
 }

@@ -59,7 +59,7 @@ public class AcsIssueCrawler extends IssueCrawler {
 	 */
 	@Override
 	public IssueDetails getCurrentIssueDetails() {
-		Document doc = getCurrentIssueDocument();
+		Document doc = getCurrentIssueHtml();
 		Nodes journalInfo = doc.query(".//x:div[@id='tocMeta']", X_XHTML);
 		int size = journalInfo.size();
 		if (size != 1) {
@@ -88,7 +88,7 @@ public class AcsIssueCrawler extends IssueCrawler {
 	 * 
 	 */
 	@Override
-	public Document getCurrentIssueDocument() {
+	public Document getCurrentIssueHtml() {
 		String url = "http://pubs.acs.org/toc/"+journal.getAbbreviation()+"/current";
 		URI issueUri = createURI(url);
 		return httpClient.getResourceHTML(issueUri);
@@ -113,13 +113,12 @@ public class AcsIssueCrawler extends IssueCrawler {
 	 * <p>
 	 * Gets the DOIs of all articles in the issue defined
 	 * by the <code>AcsJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
+	 * year and issue identifier (wrapped in the 
+	 * <code>issueDetails</code> parameter.
 	 * </p>
 	 * 
-	 * @param year - the year the issue to be crawled was 
-	 * published.
-	 * @param issueId - the issue identifier of the issue
-	 * to be crawled.
+	 * @param issueDetails - contains the year and issue
+	 * identifier of the issue to be crawled.
 	 * 
 	 * @return a list of the DOIs of the articles for the issue.
 	 * 
@@ -151,13 +150,12 @@ public class AcsIssueCrawler extends IssueCrawler {
 	 * <p>
 	 * Gets information describing all articles in the issue 
 	 * defined by the <code>AcsJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
+	 * year and issue identifier (wrapped in the 
+	 * <code>issueDetails</code> parameter.
 	 * </p>
 	 * 
-	 * @param year - the year the issue to be crawled was 
-	 * published.
-	 * @param issueId - the issue identifier of the issue
-	 * to be crawled.
+	 * @param issueDetails - contains the year and issue
+	 * identifier of the issue to be crawled.
 	 * 
 	 * @return a list where each item contains the details for 
 	 * a particular article from the issue.
