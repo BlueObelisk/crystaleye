@@ -1,4 +1,4 @@
-package wwmm.crystaleye.util;
+package wwmm.crystaleye;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

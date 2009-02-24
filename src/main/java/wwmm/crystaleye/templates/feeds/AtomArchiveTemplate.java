@@ -11,8 +11,8 @@ import nu.xom.Document;
 
 import org.apache.commons.io.IOUtils;
 
+import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.site.feeds.AtomArchiveFeed;
-import wwmm.crystaleye.util.Utils;
 
 public class AtomArchiveTemplate {
 

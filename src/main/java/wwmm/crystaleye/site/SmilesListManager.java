@@ -19,10 +19,10 @@ import org.xmlcml.cml.element.CMLIdentifier;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeUtils;
+import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.commandline.Execute;
 import wwmm.crystaleye.properties.SiteProperties;
-import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.Utils;
 
 public class SmilesListManager extends AbstractManager implements CMLConstants {
 

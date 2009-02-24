@@ -1,4 +1,4 @@
-package wwmm.crystaleye.util;
+package wwmm.crystaleye;
 
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 

@@ -16,7 +16,7 @@ import nu.xom.Nodes;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.Utils;
 
 /**
  * <p>

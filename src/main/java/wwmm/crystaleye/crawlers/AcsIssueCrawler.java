@@ -17,7 +17,7 @@ import nu.xom.Nodes;
 import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.Utils;
 
 /**
  * <p>
@@ -30,7 +30,7 @@ import wwmm.crystaleye.util.Utils;
  * @version 1.1
  * 
  */
-public class AcsIssueCrawler extends Crawler {
+public class AcsIssueCrawler extends IssueCrawler {
 
 	private AcsJournal journal;
 	
@@ -57,6 +57,7 @@ public class AcsIssueCrawler extends Crawler {
 	 * @return the year and issue identifier.
 	 * 
 	 */
+	@Override
 	public IssueDetails getCurrentIssueDetails() {
 		Document doc = getCurrentIssueDocument();
 		Nodes journalInfo = doc.query(".//x:div[@id='tocMeta']", X_XHTML);
@@ -86,6 +87,7 @@ public class AcsIssueCrawler extends Crawler {
 	 * @return HTML of the issue table of contents.
 	 * 
 	 */
+	@Override
 	public Document getCurrentIssueDocument() {
 		String url = "http://pubs.acs.org/toc/"+journal.getAbbreviation()+"/current";
 		URI issueUri = createURI(url);
@@ -101,6 +103,7 @@ public class AcsIssueCrawler extends Crawler {
 	 * @return a list of the DOIs of the articles.
 	 * 
 	 */
+	@Override
 	public List<DOI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getDOIs(details);
@@ -121,7 +124,10 @@ public class AcsIssueCrawler extends Crawler {
 	 * @return a list of the DOIs of the articles for the issue.
 	 * 
 	 */
-	public List<DOI> getDOIs(String year, String issueId) {
+	@Override
+	public List<DOI> getDOIs(IssueDetails issueDetails) {
+		String year = issueDetails.getYear();
+		String issueId = issueDetails.getIssueId();
 		List<DOI> dois = new ArrayList<DOI>();
 		int volume = Integer.valueOf(year)-journal.getVolumeOffset();
 		String issueUrl = ACS_HOMEPAGE_URL+"/toc/"+journal.getAbbreviation()+"/"+volume+"/"+issueId;
@@ -143,23 +149,6 @@ public class AcsIssueCrawler extends Crawler {
 	
 	/**
 	 * <p>
-	 * Gets the DOIs of all articles in the issue defined
-	 * by the <code>AcsJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
-	 * </p>
-	 * 
-	 * @param id - contains the year and issueId of the issue
-	 * to be crawled.
-	 * 
-	 * @return a list of the DOIs of the articles for the issue.
-	 * 
-	 */
-	public List<DOI> getDOIs(IssueDetails details) {
-		return getDOIs(details.getYear(), details.getIssueId());
-	}
-	
-	/**
-	 * <p>
 	 * Gets information describing all articles in the issue 
 	 * defined by the <code>AcsJournal</code> and the provided
 	 * <code>year</code> and <code>issueId</code>.
@@ -174,34 +163,17 @@ public class AcsIssueCrawler extends Crawler {
 	 * a particular article from the issue.
 	 * 
 	 */
-	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
-		LOG.debug("Starting to find issue article details: "+year+"-"+issueId);
-		List<DOI> dois = getDOIs(year, issueId);
+	@Override
+	public List<ArticleDetails> getDetailsForArticles(IssueDetails details) {
+		LOG.debug("Starting to find issue article details: "+details.getYear()+"-"+details.getIssueId());
+		List<DOI> dois = getDOIs(details);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
 		for (DOI doi : dois) {
 			ArticleDetails ad = new AcsArticleCrawler(doi).getDetails();
 			adList.add(ad);
 		}
-		LOG.debug("Finished finding issue article details: "+year+"-"+issueId);
+		LOG.debug("Finished finding issue article details: "+details.getYear()+"-"+details.getIssueId());
 		return adList;
-	}
-	
-	/**
-	 * <p>
-	 * Gets information describing all articles in the issue 
-	 * defined by the <code>AcsJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
-	 * </p>
-	 * 
-	 * @param id - contains the year and issue identifier of 
-	 * the issue to be crawled.
-	 * 
-	 * @return a list where each item contains the details for 
-	 * a particular article from the issue.
-	 * 
-	 */
-	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
-		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
 
 	/**
@@ -219,7 +191,7 @@ public class AcsIssueCrawler extends Crawler {
 			}
 			AcsIssueCrawler acf = new AcsIssueCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
-			List<ArticleDetails> adList = acf.getArticleDetails(details);
+			List<ArticleDetails> adList = acf.getDetailsForArticles(details);
 			for (ArticleDetails ad : adList) {
 				System.out.println(ad.toString());
 			}

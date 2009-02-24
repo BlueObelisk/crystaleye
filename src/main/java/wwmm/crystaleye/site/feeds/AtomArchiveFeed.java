@@ -13,7 +13,7 @@ import nu.xom.Element;
 import nu.xom.Nodes;
 import nu.xom.Text;
 import nu.xom.XPathContext;
-import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.Utils;
 
 public class AtomArchiveFeed {
 

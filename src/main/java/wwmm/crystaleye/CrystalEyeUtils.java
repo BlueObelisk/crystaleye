@@ -1,9 +1,10 @@
-package wwmm.crystaleye.util;
+package wwmm.crystaleye;
 
 import static wwmm.crystaleye.CrystalEyeConstants.CRYSTALEYE_DATE_FORMAT;
 import static wwmm.crystaleye.CrystalEyeConstants.TITLE_MIME;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.regex.Pattern;
 import nu.xom.Node;
 import nu.xom.Nodes;
 
+import org.apache.commons.io.FileUtils;
 import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.base.CMLUtil;
@@ -25,32 +27,8 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.molutil.ChemicalElement.Type;
 
 
+
 public class CrystalEyeUtils implements CMLConstants {
-
-	public static enum FragmentType {
-		LIGAND ("ligand"),
-		CHAIN_NUC ("chain-nuc"),
-		RING_NUC ("ring-nuc"),
-		RING_NUC_SPROUT_1 ("ring-nuc-sprout-1"),
-		RING_NUC_SPROUT_2 ("ring-nuc-sprout-2"),
-		CLUSTER_NUC ("cluster-nuc"),
-		CLUSTER_NUC_SPROUT_1 ("cluster-nuc-sprout-1"),
-		CLUSTER_NUC_SPROUT_2 ("cluster-nuc-sprout-2"),
-		MOIETY ("moiety"),
-		ATOM_NUC ("atom-nuc"),
-		ATOM_NUC_SPROUT_1 ("atom-nuc-sprout-1"),
-		ATOM_NUC_SPROUT_2 ("atom-nuc-sprout-2");
-
-		private FragmentType(String name) {
-			this.name = name;
-		}
-
-		private final String name;
-
-		public String toString() {
-			return name;
-		}
-	}
 
 	public static enum DisorderType {
 		UNPROCESSED,
@@ -99,47 +77,6 @@ public class CrystalEyeUtils implements CMLConstants {
 			}
 		}
 		return null;
-	}
-
-	public static List<File> getSummaryDirFileList(String issueDir, String regex) {
-		List<File> fileList = new ArrayList<File>();
-		issueDir += File.separator+"data"+File.separator;
-		File[] parents = new File(issueDir).listFiles();
-		for (File articleParent : parents) {
-			File[] articleFiles = articleParent.listFiles();
-			for (File structureParent : articleFiles) {
-				if (structureParent.isDirectory()) {
-					File[] structureFiles = structureParent.listFiles();
-					for (File structureFile : structureFiles) {
-						String structurePath = structureFile.getName();
-						if (structurePath.matches(regex)) {
-							fileList.add(structureFile);
-						}
-					}
-				}
-			}
-		}
-		return fileList;
-	}
-
-	public static List<File> getDataDirFileList(String issueDir, String regex) {
-		List<File> fileList = new ArrayList<File>();
-		File[] parents = new File(issueDir).listFiles();
-		for (File articleParent : parents) {
-			File[] articleFiles = articleParent.listFiles();
-			for (File structureParent : articleFiles) {
-				if (structureParent.isDirectory()) {
-					File[] structureFiles = structureParent.listFiles();
-					for (File structureFile : structureFiles) {
-						String structurePath = structureFile.getName();
-						if (structurePath.matches(regex)) {
-							fileList.add(structureFile);
-						}
-					}
-				}
-			}
-		}
-		return fileList;
 	}
 
 	public static boolean isBoringMolecule(CMLMolecule molecule) {
@@ -246,7 +183,11 @@ public class CrystalEyeUtils implements CMLConstants {
 		File titleFile = new File(titleParent, name+TITLE_MIME);
 		String title = "";
 		if (titleFile.exists()) {
-			title = Utils.file2String(titleFile).trim();
+			try {
+				title = FileUtils.readFileToString(titleFile).trim();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return title;
 	}

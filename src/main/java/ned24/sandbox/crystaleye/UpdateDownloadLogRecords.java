@@ -13,7 +13,7 @@ import nu.xom.XPathContext;
 
 import org.xmlcml.cml.base.CMLConstants;
 
-import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.Utils;
 
 public class UpdateDownloadLogRecords implements CMLConstants {
 

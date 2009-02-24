@@ -32,7 +32,7 @@ import nux.xom.io.StaxUtil;
 import nux.xom.io.StreamingSerializer;
 import nux.xom.io.StreamingSerializerFactory;
 import wwmm.crystaleye.FileListing;
-import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.Utils;
 
 public class RSSArchiver {
 

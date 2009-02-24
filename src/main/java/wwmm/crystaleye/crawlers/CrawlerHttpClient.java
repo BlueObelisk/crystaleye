@@ -17,7 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.BasicHttpClient;
-import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.Utils;
 
 /**
  * <p>

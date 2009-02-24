@@ -2,7 +2,7 @@ package wwmm.crystaleye.templates.webpages;
 
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
 import static wwmm.crystaleye.CrystalEyeConstants.RAW_CML_MIME;
-import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
+import wwmm.crystaleye.CrystalEyeUtils.DisorderType;
 
 public class SingleCifSummary {
 	

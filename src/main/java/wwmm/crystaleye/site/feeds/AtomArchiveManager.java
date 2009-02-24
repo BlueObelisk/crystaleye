@@ -25,10 +25,10 @@ import nu.xom.Element;
 import org.xmlcml.cml.base.CMLConstants;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeUtils;
+import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.templates.feeds.AtomArchiveTemplate;
-import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.Utils;
 
 public class AtomArchiveManager extends AbstractManager implements CMLConstants {
 

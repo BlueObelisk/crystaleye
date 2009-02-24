@@ -37,14 +37,14 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.molutil.ChemicalElement;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeUtils;
+import wwmm.crystaleye.Utils;
+import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.site.feeds.CMLRSSEntry.FeedType;
 import wwmm.crystaleye.templates.feeds.Atom1;
 import wwmm.crystaleye.templates.feeds.Rss1;
 import wwmm.crystaleye.templates.feeds.Rss2;
-import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.Utils;
-import wwmm.crystaleye.util.CrystalEyeUtils.CompoundClass;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndLinkImpl;

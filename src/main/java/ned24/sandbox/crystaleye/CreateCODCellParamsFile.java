@@ -9,7 +9,7 @@ import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLMolecule;
 
-import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.Utils;
 
 public class CreateCODCellParamsFile implements CMLConstants {
 

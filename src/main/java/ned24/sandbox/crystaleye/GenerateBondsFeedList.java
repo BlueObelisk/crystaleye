@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.xmlcml.molutil.ChemicalElement;
 
-import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.Utils;
 
 public class GenerateBondsFeedList {
 	public static void main(String[] args) {
