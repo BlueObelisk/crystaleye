@@ -224,7 +224,7 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		}
 
 		ArticleReference ar = new ArticleReference();
-		ar.setJournal(journal);
+		ar.setJournalTitle(journal);
 		ar.setVolume(volume);
 		ar.setYear(year);
 		ar.setNumber(number);

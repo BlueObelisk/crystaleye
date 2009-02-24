@@ -5,6 +5,16 @@ import java.util.List;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * <p>
+ * The <code>ArticleDetails</code> class provides 
+ * a description of a published journal article.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ * 
+ */
 public class ArticleDetails {
 
 	private DOI doi;
@@ -97,6 +107,7 @@ public class ArticleDetails {
 	 *
 	 * Here, if they are not null, the contents of every field 
 	 * are placed into the result, with one field per line.
+	 * 
 	 */
 	@Override
 	public String toString() {
@@ -121,8 +132,8 @@ public class ArticleDetails {
 				result.append("  Authors: "+authors+NEW_LINE);
 			}
 			result.append("  Bib data: "+NEW_LINE);
-			if (StringUtils.isNotEmpty(reference.getJournal())) {
-				result.append("    Journal: "+reference.getJournal()+NEW_LINE);
+			if (StringUtils.isNotEmpty(reference.getJournalTitle())) {
+				result.append("    Journal: "+reference.getJournalTitle()+NEW_LINE);
 			}
 			if (StringUtils.isNotEmpty(reference.getYear())) {
 				result.append("    Year: "+reference.getYear()+NEW_LINE);

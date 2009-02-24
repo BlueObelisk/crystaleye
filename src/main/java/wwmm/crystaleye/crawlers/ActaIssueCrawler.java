@@ -56,7 +56,7 @@ public class ActaIssueCrawler extends IssueCrawler {
 	 */
 	@Override
 	public IssueDetails getCurrentIssueDetails() {
-		Document doc = getCurrentIssueDocument();
+		Document doc = getCurrentIssueHtml();
 		List<Node> currentIssueLink = Utils.queryHTML(doc, "//x:a[contains(@target,'_parent')]");
 		Node current = currentIssueLink.get(0);
 		if (((Element) current).getValue().contains("preparation")) {
@@ -85,7 +85,7 @@ public class ActaIssueCrawler extends IssueCrawler {
 	 * 
 	 */
 	@Override
-	public Document getCurrentIssueDocument() {
+	public Document getCurrentIssueHtml() {
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/contents/backissuesbdy.html";
 		URI issueUri = createURI(url);
 		return httpClient.getResourceHTML(issueUri);
@@ -109,14 +109,13 @@ public class ActaIssueCrawler extends IssueCrawler {
 	/**
 	 * <p>
 	 * Gets the DOIs of all articles in the issue defined
-	 * by the <code>ActaJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
+	 * by the <code>ActaJournal</code> and the provided	year 
+	 * and issue identifier (wrapped in the 
+	 * <code>issueDetails</code> parameter.
 	 * </p>
 	 * 
-	 * @param year - the year the issue to be crawled was 
-	 * published.
-	 * @param issueId - the issue identifier of the issue
-	 * to be crawled.
+	 * @param issueDetails - contains the year and issue
+	 * identifier of the issue to be crawled.
 	 * 
 	 * @return a list of the DOIs of the articles for the issue.
 	 * 
@@ -145,14 +144,13 @@ public class ActaIssueCrawler extends IssueCrawler {
 	/**
 	 * <p>
 	 * Gets information describing all articles in the issue 
-	 * defined by the <code>ActaJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
+	 * defined by the <code>ActaJournal</code> and the 
+	 * provided	year and issue identifier (wrapped in the 
+	 * <code>issueDetails</code> parameter.
 	 * </p>
 	 * 
-	 * @param year - the year the issue to be crawled was 
-	 * published.
-	 * @param issueId - the issue identifier of the issue
-	 * to be crawled.
+	 * @param issueDetails - contains the year and issue
+	 * identifier of the issue to be crawled.
 	 * 
 	 * @return a list where each item contains the details for 
 	 * a particular article from the issue.

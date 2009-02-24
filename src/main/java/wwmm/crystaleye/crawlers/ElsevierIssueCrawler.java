@@ -30,7 +30,7 @@ import wwmm.crystaleye.Utils;
  * @version 1.1
  * 
  */
-public class ElsevierIssueCrawler extends Crawler {
+public class ElsevierIssueCrawler extends IssueCrawler {
 
 	private ElsevierJournal journal;
 
@@ -57,9 +57,10 @@ public class ElsevierIssueCrawler extends Crawler {
 	 * @return the year and issue identifier.
 	 * 
 	 */
+	@Override
 	public IssueDetails getCurrentIssueDetails() {
-		URI issueUri = getCurrentIssueUri();
-		return getIssueDetails(issueUri);
+		Document doc = getCurrentIssueHtml();
+		return getIssueDetails(doc);
 	}
 
 	/**
@@ -71,9 +72,8 @@ public class ElsevierIssueCrawler extends Crawler {
 	 * @return IssueDetails containing the year and issue identifier
 	 * of the issue at the provided issue URI.
 	 */
-	private IssueDetails getIssueDetails(URI issueUri) {
-		Document doc = httpClient.getResourceHTMLMinusComments(issueUri);
-		Nodes nds = doc.query("./x:html/x:head/x:title", X_XHTML);
+	private IssueDetails getIssueDetails(Document issueHtml) {
+		Nodes nds = issueHtml.query("./x:html/x:head/x:title", X_XHTML);
 		if (nds.size() != 1) {
 			throw new CrawlerRuntimeException("Expected to find 1 element containing" +
 					" the year/issue information but found "+nds.size()+".");
@@ -100,9 +100,10 @@ public class ElsevierIssueCrawler extends Crawler {
 	 * @return HTML of the issue table of contents.
 	 * 
 	 */
-	public URI getCurrentIssueUri() {
+	public Document getCurrentIssueHtml() {
 		String url = ELSEVIER_JOURNAL_URL_PREFIX+"/science/journal/"+journal.getAbbreviation();
-		return createURI(url);
+		URI uri = createURI(url);
+		return httpClient.getResourceHTML(uri);
 	}
 
 	/**
@@ -114,6 +115,7 @@ public class ElsevierIssueCrawler extends Crawler {
 	 * @return a list of the DOIs of the articles.
 	 * 
 	 */
+	@Override
 	public List<DOI> getCurrentIssueDOIs() {
 		IssueDetails details = getCurrentIssueDetails();
 		return getDOIs(details);
@@ -122,24 +124,23 @@ public class ElsevierIssueCrawler extends Crawler {
 	/**
 	 * <p>
 	 * Gets the DOIs of all articles in the issue defined
-	 * by the <code>ElsevierJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
+	 * by the <code>ElsevierJournal</code> and the provided	year and 
+	 * issue identifier (wrapped in the <code>issueDetails</code>
+	 * parameter.
 	 * </p>
 	 * 
-	 * @param year - the year the issue to be crawled was 
-	 * published.
-	 * @param issueId - the issue identifier of the issue
-	 * to be crawled.
+	 * @param issueDetails - contains the year and issue
+	 * identifier of the issue to be crawled.
 	 * 
 	 * @return a list of the DOIs of the articles for the issue.
 	 * 
 	 */
-	public List<DOI> getDOIs(String year, String issueId) {
+	public List<DOI> getDOIs(IssueDetails details) {
 		List<DOI> dois = new ArrayList<DOI>();
 		// don't know how to create the issue TOC url from the year 
 		// and IssueId alone, so we go to the current issue page
 		// and follow the links from there.
-		URI issueUri = getIssueTocUriFromCurrentIssueToc(year, issueId);
+		URI issueUri = getIssueTocUriFromCurrentIssueToc(details);
 		List<URI> articleUriList = getArticleUris(issueUri);
 		for (URI articleUri : articleUriList) {
 			DOI doi = getArticleDoi(articleUri);
@@ -172,7 +173,9 @@ public class ElsevierIssueCrawler extends Crawler {
 			URI articleUri = createURI(articleUrl, true);
 			articleUris.add(articleUri);
 			
-			//FIXME - remove these lines
+			// FIXME - remove these lines - this was added so that while
+			// creating the crawler, it wouldn't run for all articles 
+			// in the journal.
 			break;
 		}
 		return articleUris;
@@ -196,31 +199,33 @@ public class ElsevierIssueCrawler extends Crawler {
 	 * issue that matches the provided year and issueId in the navigation
 	 * list on the left of the webpage.
 	 * 
-	 * @param year - year of the issue to be crawled.
-	 * @param issueId - identifier of the issue to be crawled.
+	 * @param issueDetails - contains the year and issue
+	 * identifier of the issue to be crawled.
 	 * 
 	 * @return URI of the issue.
 	 */
-	private URI getIssueTocUriFromCurrentIssueToc(String year, String issueId) {
-		URI yearUri = getLastIssueOfYearUri(year);
-		return getIssueTocUri(yearUri, year, issueId);
+	private URI getIssueTocUriFromCurrentIssueToc(IssueDetails details) {
+		URI yearUri = getLastIssueOfYearUri(details.getYear());
+		return getIssueTocUri(yearUri, details);
 	}
 
 	/**
-	 * Gets the URI for the issue that matches the provided year and
-	 * issue identifier.
+	 * Gets the URI for the issue that matches the year and
+	 * issue identifier provided in <code>details</code>.
 	 * 
 	 * @param yearUri - URI of the last issue table of contents for 
 	 * the provided year.
-	 * @param year - year of the issue to be crawled.
-	 * @param issueId - identifier of the issue to be crawled.
+	 * @param issueDetails - contains the year and issue
+	 * identifier of the issue being crawled.
 	 * 
 	 * @return URI of the table of contents that matches the provided 
 	 * year and issue identifier.
 	 */
-	private URI getIssueTocUri(URI yearUri, String year, String issueId) {
+	private URI getIssueTocUri(URI yearUri, IssueDetails details) {
+		String year = details.getYear();
+		String issueId = details.getIssueId();
 		Document lastIssueOfYearToc = httpClient.getResourceHTMLMinusComments(yearUri);
-		if (getIssueDetails(yearUri).getIssueId().equals(issueId)) {
+		if (getIssueDetails(lastIssueOfYearToc).getIssueId().equals(issueId)) {
 			return yearUri;
 		} else {
 			int volume = Integer.parseInt(year)-journal.getVolumeOffset();
@@ -264,40 +269,25 @@ public class ElsevierIssueCrawler extends Crawler {
 
 	/**
 	 * <p>
-	 * Gets the DOIs of all articles in the issue defined
-	 * by the <code>ElsevierJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
-	 * </p>
-	 * 
-	 * @param id - contains the year and issueId of the issue
-	 * to be crawled.
-	 * 
-	 * @return a list of the DOIs of the articles for the issue.
-	 * 
-	 */
-	public List<DOI> getDOIs(IssueDetails details) {
-		return getDOIs(details.getYear(), details.getIssueId());
-	}
-
-	/**
-	 * <p>
 	 * Gets information describing all articles in the issue 
-	 * defined by the <code>ElsevierJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
+	 * defined by the <code>ElsevierJournal</code> and the provided	
+	 * year and issue identifier (wrapped in the 
+	 * <code>issueDetails</code> parameter.
 	 * </p>
 	 * 
-	 * @param year - the year the issue to be crawled was 
-	 * published.
-	 * @param issueId - the issue identifier of the issue
-	 * to be crawled.
+	 * @param issueDetails - contains the year and issue
+	 * identifier of the issue to be crawled.
 	 * 
 	 * @return a list where each item contains the details for 
 	 * a particular article from the issue.
 	 * 
 	 */
-	public List<ArticleDetails> getArticleDetails(String year, String issueId) {
+	@Override
+	public List<ArticleDetails> getDetailsForArticles(IssueDetails details) {
+		String year = details.getYear();
+		String issueId = details.getIssueId();
 		LOG.debug("Starting to find issue article details: "+year+"-"+issueId);
-		List<DOI> dois = getDOIs(year, issueId);
+		List<DOI> dois = getDOIs(details);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
 		for (DOI doi : dois) {
 			ArticleDetails ad = new ElsevierArticleCrawler(doi).getDetails();
@@ -305,24 +295,6 @@ public class ElsevierIssueCrawler extends Crawler {
 		}
 		LOG.debug("Finished finding issue article details: "+year+"-"+issueId);
 		return adList;
-	}
-
-	/**
-	 * <p>
-	 * Gets information describing all articles in the issue 
-	 * defined by the <code>ElsevierJournal</code> and the provided
-	 * <code>year</code> and <code>issueId</code>.
-	 * </p>
-	 * 
-	 * @param id - contains the year and issue identifier of 
-	 * the issue to be crawled.
-	 * 
-	 * @return a list where each item contains the details for 
-	 * a particular article from the issue.
-	 * 
-	 */
-	public List<ArticleDetails> getArticleDetails(IssueDetails id) {
-		return getArticleDetails(id.getYear(), id.getIssueId());
 	}
 
 	/**
@@ -340,7 +312,7 @@ public class ElsevierIssueCrawler extends Crawler {
 			}
 			ElsevierIssueCrawler acf = new ElsevierIssueCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
-			List<ArticleDetails> adList = acf.getArticleDetails(details);
+			List<ArticleDetails> adList = acf.getDetailsForArticles(details);
 			break;
 		}
 	}
