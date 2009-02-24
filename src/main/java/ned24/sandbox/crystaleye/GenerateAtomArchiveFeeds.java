@@ -19,13 +19,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nu.xom.Element;
+import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.site.feeds.AtomArchiveFeed;
 import wwmm.crystaleye.site.feeds.AtomEnclosure;
 import wwmm.crystaleye.site.feeds.AtomEntry;
 import wwmm.crystaleye.site.feeds.AtomHtmlContent;
 import wwmm.crystaleye.templates.feeds.AtomArchiveTemplate;
-import wwmm.crystaleye.util.Utils;
 
 public class GenerateAtomArchiveFeeds {
 

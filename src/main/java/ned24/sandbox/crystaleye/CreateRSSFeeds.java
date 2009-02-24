@@ -15,12 +15,12 @@ import nu.xom.Document;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.molutil.ChemicalElement;
 
+import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.site.feeds.CMLRSSEntry.FeedType;
 import wwmm.crystaleye.templates.feeds.Atom1;
 import wwmm.crystaleye.templates.feeds.Rss1;
 import wwmm.crystaleye.templates.feeds.Rss2;
-import wwmm.crystaleye.util.Utils;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;

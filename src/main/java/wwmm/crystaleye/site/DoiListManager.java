@@ -19,9 +19,9 @@ import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.element.CMLScalar;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeUtils;
+import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
-import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.Utils;
 
 public class DoiListManager extends AbstractManager implements CMLConstants {
 

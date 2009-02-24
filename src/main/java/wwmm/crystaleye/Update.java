@@ -9,7 +9,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.xmlcml.cml.base.CMLConstants;
 
-import wwmm.crystaleye.process.Cif2CmlManager;
+import wwmm.crystaleye.tasks.Cif2CmlManager;
 
 public class Update implements CMLConstants {
 

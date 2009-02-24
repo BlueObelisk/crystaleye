@@ -44,18 +44,18 @@ import org.xmlcml.cml.element.CMLTable.TableType;
 import org.xmlcml.cml.tools.DisorderTool;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.process.Cif2CmlManager;
+import wwmm.crystaleye.CrystalEyeUtils;
+import wwmm.crystaleye.Utils;
+import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
+import wwmm.crystaleye.CrystalEyeUtils.DisorderType;
+import wwmm.crystaleye.CrystalEyeUtils.FragmentType;
 import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.tasks.Cif2CmlManager;
 import wwmm.crystaleye.templates.webpages.CifSummaryToc;
 import wwmm.crystaleye.templates.webpages.FragmentSummaryToc;
 import wwmm.crystaleye.templates.webpages.MoietySummaryToc;
 import wwmm.crystaleye.templates.webpages.SingleCifSummary;
 import wwmm.crystaleye.templates.webpages.SingleStructureSummary;
-import wwmm.crystaleye.util.CrystalEyeUtils;
-import wwmm.crystaleye.util.Utils;
-import wwmm.crystaleye.util.CrystalEyeUtils.CompoundClass;
-import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
-import wwmm.crystaleye.util.CrystalEyeUtils.FragmentType;
 
 public class WebpageManager extends AbstractManager implements CMLConstants {
 
