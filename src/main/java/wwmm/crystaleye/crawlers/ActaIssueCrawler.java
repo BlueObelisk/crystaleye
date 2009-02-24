@@ -183,7 +183,7 @@ public class ActaIssueCrawler extends IssueCrawler {
 			}
 			ActaIssueCrawler acf = new ActaIssueCrawler(journal);
 			IssueDetails details = acf.getCurrentIssueDetails();
-			List<ArticleDetails> adList = acf.getArticleDetails(details);
+			List<ArticleDetails> adList = acf.getDetailsForArticles(details);
 			for (ArticleDetails ad : adList) {
 				System.out.println(ad.toString());
 			}

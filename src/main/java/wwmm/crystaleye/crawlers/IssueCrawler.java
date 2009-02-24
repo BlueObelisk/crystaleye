@@ -1,6 +1,8 @@
 package wwmm.crystaleye.crawlers;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nu.xom.Document;
 
@@ -15,7 +17,7 @@ import nu.xom.Document;
  *
  */
 public abstract class IssueCrawler extends Crawler {
-	
+
 	// FIXME - can we provide a superclass for the journal enums
 	// (e.g. ActaJournal) here so that implementers are forced to
 	// include one?
@@ -30,7 +32,7 @@ public abstract class IssueCrawler extends Crawler {
 	 * 
 	 */
 	abstract public IssueDetails getCurrentIssueDetails();
-	
+
 	/**
 	 * <p>
 	 * Gets the HTML of the table of contents of the last 
@@ -42,7 +44,7 @@ public abstract class IssueCrawler extends Crawler {
 	 * 
 	 */
 	abstract public Document getCurrentIssueHtml();
-	
+
 	/**
 	 * <p>
 	 * Gets the DOIs of all of the articles from the last 
@@ -53,7 +55,7 @@ public abstract class IssueCrawler extends Crawler {
 	 * 
 	 */
 	abstract public List<DOI> getCurrentIssueDOIs();
-	
+
 	/**
 	 * <p>
 	 * Gets the DOIs of all articles in the issue defined
@@ -69,7 +71,7 @@ public abstract class IssueCrawler extends Crawler {
 	 * 
 	 */
 	abstract public List<DOI> getDOIs(IssueDetails issueDetails);
-	
+
 	/**
 	 * <p>
 	 * Gets information describing all articles in the issue defined
@@ -86,5 +88,44 @@ public abstract class IssueCrawler extends Crawler {
 	 * 
 	 */
 	abstract public List<ArticleDetails> getDetailsForArticles(IssueDetails details);
-	
+
+	/**
+	 * <p>
+	 * Simple container class to describe an issue by
+	 * the year and its identifier (usually just the
+	 * issue number).  
+	 * </p>
+	 * 
+	 * @author Nick Day
+	 * @version 1.1
+	 */
+	protected class IssueDetails {
+
+		String year;
+		String issueId;
+
+		public IssueDetails(String year, String issueId) {
+			this.year = year;
+			validateYear(year);
+			this.issueId = issueId;
+		}
+
+		public String getYear() {
+			return year;
+		}
+
+		public String getIssueId() {
+			return issueId;
+		}
+
+		private void validateYear(String year) {
+			Pattern p = Pattern.compile("^\\d{4}$");
+			Matcher m = p.matcher(year);
+			if (!m.find()) {
+				throw new IllegalStateException("Provided year string is invalid ("+year+"), should be of the form YYYY.");
+			}
+		}
+
+	}
+
 }
