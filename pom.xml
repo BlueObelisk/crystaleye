@@ -53,13 +53,13 @@
 		<dependency>
 			<groupId>cml</groupId>
 			<artifactId>legacy2cml</artifactId>
-			<version>0.1.1-SNAPSHOT</version>
+			<version>0.1.1-20070611</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>cml</groupId>
 			<artifactId>jumbo</artifactId>
-			<version>5.5-SNAPSHOT</version>
+			<version>5.5-20070611</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
