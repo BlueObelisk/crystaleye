@@ -187,7 +187,12 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 											File structureParent = structureFile.getParentFile();
 											String structureId = structureParent.getName();					
 											File moietyDir = new File(structureParent, "moieties");
-											outputMoieties(moietyDir, structureId, molecule, compClass);
+											try {
+												outputMoieties(moietyDir, structureId, molecule, compClass);
+											} catch(Exception e) {
+												System.err
+														.println("Error while outputting moieties: "+e.getMessage());
+											}
 										}
 									}
 								}
