@@ -3,7 +3,6 @@ package uk.ac.cam.ch.crystaleye.fetch;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -21,20 +20,24 @@ import uk.ac.cam.ch.crystaleye.Utils;
 public class ElsevierCurrent extends CurrentIssueFetcher {
 
 	private static final String SITE_PREFIX = "http://www.sciencedirect.com";
-	private static final String PUBLISHER_ABBR = "elsevier";
+	private static final String publisherAbbreviation = "elsevier";
 	
 	private String currentIssueUrl;
 
-	public ElsevierCurrent() {
-		publisherAbbr = PUBLISHER_ABBR;
+	public ElsevierCurrent(File propertiesFile) {
+		super(publisherAbbreviation, propertiesFile);
 	}
 
-	protected IssueDate getCurrentIssueId() {
+	public ElsevierCurrent(String propertiesFile) {
+		this(new File(propertiesFile));
+	}
+
+	protected IssueDate getCurrentIssueId(String journalAbbreviation) {
 		currentIssueUrl = SITE_PREFIX+"/science/journal/";
-		if ("polyhedron".equals(journalAbbr)) {
+		if ("polyhedron".equals(journalAbbreviation)) {
 			currentIssueUrl += "02775387";
 		} else {
-			throw new CrystalEyeRuntimeException("Unrecognised "+publisherAbbr+" journal: "+journalAbbr);
+			throw new CrystalEyeRuntimeException("Unrecognised "+publisherAbbreviation+" journal: "+journalAbbreviation);
 		}
 		Document currentIssueDoc = IOUtils.parseWebPageMinusComments(currentIssueUrl);
 		Nodes titleNodes = currentIssueDoc.query(".//x:title", X_XHTML);
@@ -59,7 +62,7 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 		}
 	}
 
-	protected void fetch(File issueWriteDir, String year, String issue) throws IOException {
+	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issue) {
 		Document currentIssueDoc = IOUtils.parseWebPageMinusComments(currentIssueUrl);
 		List<String> fullTextUrls = getFullTextUrls(currentIssueDoc);
 		for (String fullTextUrl : fullTextUrls) {
@@ -68,14 +71,7 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 			String doi = getDoi(articleDoc);				
 			File doiFile = new File(doi);
 			String doiName = doiFile.getName().replaceAll("\\.", "-");
-			Nodes nodes = articleDoc.query(".//x:p[following-sibling::x:p[contains(.,'Crystal structure.ï¿½Crystallographic data.')]]//x:a[contains(@href,'.zip') and contains(.,'.zip')]", X_XHTML);
-			
-			String title = null;
-			Nodes titleNodes = articleDoc.query(".//x:div[@class='articleTitle']/x:p", X_XHTML);
-			if (titleNodes.size() > 0) {
-				title = titleNodes.get(0).getValue();
-			}
-			
+			Nodes nodes = articleDoc.query(".//x:p[following-sibling::x:p[contains(.,'Crystal structure. Crystallographic data.')]]//x:a[contains(@href,'.zip') and contains(.,'.zip')]", X_XHTML);
 			if (nodes.size() > 0) {
 				for (int i = 0; i < nodes.size(); i++) {
 					String zipUrl = ((Element)nodes.get(i)).getAttributeValue("href");
@@ -88,25 +84,16 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 					System.out.println("Writing zip file with DOI: "+doi);
 					IOUtils.saveFileFromUrl(zipUrl, filename);
 					
-					Unzip unzip = new Unzip();
-					unzip.unzip(filename);
+					String[] args = new String[1];
+					args[0] = filename;
+					Unzip.main(args);
 					File parent = new File(filename).getParentFile();
 					int cifCount = 0;
-					File[] originalFiles = parent.listFiles();
-					for (File file : originalFiles) {
+					for (File file : parent.listFiles()) {
 						if (file.getAbsolutePath().endsWith(".cif") || file.getAbsolutePath().endsWith(".CIF")) {
 							cifCount++;
-							writeFiles(issueWriteDir, parent.getName(), cifCount, file.toURI().toURL(), doi, title);							
-						}
-					}
-					if (cifCount == 0) {
-						Utils.delDir(parent.getAbsolutePath());
-						continue;
-					}
-					for (File file : originalFiles) {
-						if (file.getAbsolutePath().endsWith(".cif") || file.getAbsolutePath().endsWith(".CIF") ||
-								file.getAbsolutePath().endsWith(".zip") || file.getAbsolutePath().endsWith(".ZIP")) {
-							file.delete();							
+							String cif = Utils.file2String(file.getAbsolutePath());
+							writeFiles(issueWriteDir, parent.getName(), cifCount, cif, doi);							
 						}
 					}
 				}
@@ -137,4 +124,8 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 		return fullTextUrls;
 	}
 
+	public static void main(String[] args) {
+		ElsevierCurrent els = new ElsevierCurrent("e:/data-test/docs/cif-flow-props.txt");
+		els.execute();
+	}
 }

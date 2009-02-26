@@ -5,7 +5,6 @@ import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,14 +19,18 @@ import uk.ac.cam.ch.crystaleye.IssueDate;
 public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 
 	private static final String SITE_PREFIX = "http://www.jstage.jst.go.jp";
-	private static final String PUBLISHER_ABBR = "chemSocJapan";
+	private static final String publisherAbbreviation = "chemSocJapan";
 
-	public ChemSocJapanCurrent() {
-		publisherAbbr = PUBLISHER_ABBR;
+	public ChemSocJapanCurrent(File propertiesFile) {
+		super(publisherAbbreviation, propertiesFile);
 	}
 
-	protected IssueDate getCurrentIssueId() {
-		String url = "http://www.csj.jp/journals/"+journalAbbr+"/cl-cont/newissue.html";
+	public ChemSocJapanCurrent(String propertiesFile) {
+		this(new File(propertiesFile));
+	}
+
+	protected IssueDate getCurrentIssueId(String journalAbbreviation) {
+		String url = "http://www.csj.jp/journals/"+journalAbbreviation+"/cl-cont/newissue.html";
 		// get current issue page as a DOM
 		Document doc = IOUtils.parseWebPageMinusComments(url);
 		Nodes journalInfo = doc.query("//x:span[@class='augr']", X_XHTML);
@@ -47,8 +50,8 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 		}
 	}
 
-	protected void fetch(File issueWriteDir, String year, String issue) throws IOException {
-		String url = "http://www.csj.jp/journals/"+journalAbbr+"/cl-cont/newissue.html";
+	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issue) {
+		String url = "http://www.csj.jp/journals/"+journalAbbreviation+"/cl-cont/newissue.html";
 		Document doc = IOUtils.parseWebPageMinusComments(url);
 		Nodes abstractPageLinks = doc.query("//x:a[contains(text(),'Supporting Information')]", X_XHTML);
 		sleep();
@@ -70,25 +73,18 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 							Node crystRow = crystRows.get(j);
 							Nodes cifLinks = crystRow.query(".//x:a[contains(@href,'appendix')]", X_XHTML);
 							if (cifLinks.size() > 0) {
-								String cifUrl = SITE_PREFIX+((Element)cifLinks.get(0)).getAttributeValue("href");
+								String cifLink = SITE_PREFIX+((Element)cifLinks.get(0)).getAttributeValue("href");
 								BufferedReader reader = null;
 								try {
+									String cif = getWebPage(cifLink);
 									String cifId = new File(suppPageUrl).getParentFile().getName().replaceAll("_", "-");
-									int suppNum = j+1;
-									
 									Nodes doiElements = abstractPage.query("//*[contains(text(),'doi:10.1246')]", X_XHTML);
+									int suppNum = j+1;
 									String doi = null;
 									if (doiElements.size() > 0) {
 										doi = ((Element)doiElements.get(0)).getValue().substring(4).trim();
 									}
-									Nodes titleNodes = abstractPage.query(".//x:font[@size='+1']", X_XHTML);
-									String title = null;
-									if (titleNodes.size() > 0) {
-										title = titleNodes.get(0).getValue();
-									}
-									
-									URL cifURL = new URL(cifUrl);
-									writeFiles(issueWriteDir, cifId, suppNum, cifURL, doi, title);
+									writeFiles(issueWriteDir, cifId, suppNum, cif, doi);
 									sleep();
 								} finally {
 									try {
@@ -107,4 +103,8 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 		System.out.println("FINISHED FETCHING CIFS FROM "+url);
 	}
 
+	public static void main(String[] args) {
+		ChemSocJapanCurrent jap = new ChemSocJapanCurrent("e:/crystaleye-new/docs/cif-flow-props.txt");
+		jap.execute();
+	}
 }

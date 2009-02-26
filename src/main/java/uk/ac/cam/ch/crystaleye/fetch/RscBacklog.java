@@ -1,11 +1,8 @@
 package uk.ac.cam.ch.crystaleye.fetch;
 
-import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.RSC_DOI_PREFIX;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
 
 import nu.xom.Document;
 import nu.xom.Element;
@@ -13,7 +10,7 @@ import nu.xom.Nodes;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
 
-public class RscBacklog extends JournalFetcher {
+public class RscBacklog extends Fetcher {
 
 	private static final String HOMEPAGE_PREFIX = "http://www.rsc.org";
 	private static final String PUBLISHER_ABBREVIATION = "rsc";
@@ -23,8 +20,8 @@ public class RscBacklog extends JournalFetcher {
 	String issue;
 	String volume = "0";
 
-	public RscBacklog(String journalAbbreviation, String year, String issue) {
-		publisherAbbr = PUBLISHER_ABBREVIATION;
+	public RscBacklog(String propertiesFile, String journalAbbreviation, String year, String issue) {
+		super(PUBLISHER_ABBREVIATION, propertiesFile);
 		setYear(year);
 		setJournalAbbreviation(journalAbbreviation);
 		setIssue(issue);
@@ -61,7 +58,8 @@ public class RscBacklog extends JournalFetcher {
 		this.issue = issue;
 	}
 
-	public void fetchAll() {
+	public void fetch() {
+		String writeDir = properties.getWriteDir();
 		String url = "http://rsc.org/Publishing/Journals/"+journalAbbreviation.toLowerCase()+"/article.asp?Journal="+journalAbbreviation+"81&VolumeYear="+year+volume+"&Volume="+volume+"&JournalCode="+journalAbbreviation+"&MasterJournalCode="+journalAbbreviation+"&SubYear="+year+"&type=Issue&Issue="+issue+"&x=11&y=5";
 		System.out.println("fetching url: "+url);
 		Document doc = IOUtils.parseWebPageMinusComments(url);
@@ -72,10 +70,6 @@ public class RscBacklog extends JournalFetcher {
 		}
 		for (int i = 0; i < articleLinks.size(); i++) {
 			String articleUrl = HOMEPAGE_PREFIX+((Element)articleLinks.get(i)).getAttributeValue("href");
-			String ss = "?doi=";
-			int ssidx = articleUrl.lastIndexOf(ss);
-			String articleId = articleUrl.substring(ssidx+ss.length());
-			
 			Document articleDoc = IOUtils.parseWebPageMinusComments(articleUrl);
 			Nodes suppdataLinks = articleDoc.query("//x:a[contains(text(),'Electronic supplementary information')]", X_XHTML);
 			for (int j = 0; j < suppdataLinks.size(); j++) {
@@ -91,30 +85,62 @@ public class RscBacklog extends JournalFetcher {
 					int idx = suppdataUrl.lastIndexOf("/");
 					String parent = suppdataUrl.substring(0, idx);
 					int idx1 = cifFileName.indexOf(".");
+					String cifId = cifFileName.substring(0, idx1);
 					String cifLink = parent+"/"+cifFileName;
 
 					String cif = IOUtils.fetchWebPage(cifLink);
-					String pathMinusMime = downloadDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+articleId+File.separator+articleId;
-					String cifPath = pathMinusMime+"sup"+cifLinkNum+".cif";
-					String doiPath = pathMinusMime+".doi";
-					String doi = RSC_DOI_PREFIX+"/"+articleId;
-					IOUtils.writeText(cif, cifPath);
-					IOUtils.writeText(doi, doiPath);
+					String path = writeDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue+File.separator+cifId+File.separator+cifId+"sup"+cifLinkNum+".cif";
+					IOUtils.writeText(cif, path);
 				}
 			}
 		}
 	}
 
 	public static void main(String[] args) {
-		Properties props;
-		try {
-			props = IOUtils.loadProperties("E:\\data-test\\docs\\cif-flow-props.txt");
-			RscBacklog ore = new RscBacklog( "gc", "2007", "11");
-			ore.setDownloadDir(new File(props.getProperty("write.dir")));
-			ore.fetchAll();
-		} catch (IOException e) {
-			e.printStackTrace();
+		String props = "E:\\crystaleye-new\\docs\\cif-flow-props.txt";
+		RscBacklog ore = new RscBacklog(props, "", "", "");
+		
+		ore = new RscBacklog(props, "ob", "2008", "22");
+		ore.fetch();
+		
+		for (int i = 46; i <49; i++) {
+			ore = new RscBacklog(props, "dt", "2008", String.valueOf(i));
+			ore.fetch();
+		}
+		for (int i = 1; i <11; i++) {
+			ore = new RscBacklog(props, "dt", "2009", String.valueOf(i));
+			ore.fetch();
+		}
+		
+		ore = new RscBacklog(props, "gc", "2008", "12");
+		ore.fetch();
+		ore = new RscBacklog(props, "gc", "2009", "1");
+		ore.fetch();
+		ore = new RscBacklog(props, "gc", "2009", "2");
+		ore.fetch();
+		
+		for (int i = 46; i <49; i++) {
+			ore = new RscBacklog(props, "jm", "2008", String.valueOf(i));
+			ore.fetch();
+		}
+		for (int i = 1; i <11; i++) {
+			ore = new RscBacklog(props, "jm", "2009", String.valueOf(i));
+			ore.fetch();
 		}
 
+		ore = new RscBacklog(props, "nj", "2008", "12");
+		ore.fetch();
+		ore = new RscBacklog(props, "nj", "2009", "1");
+		ore.fetch();
+		ore = new RscBacklog(props, "nj", "2009", "2");
+		ore.fetch();
+		
+		
+		ore = new RscBacklog(props, "ob", "2008", "24");
+		ore.fetch();
+		for (int i = 1; i <6; i++) {
+			ore = new RscBacklog(props, "ob", "2009", String.valueOf(i));
+			ore.fetch();
+		}
 	}
 }

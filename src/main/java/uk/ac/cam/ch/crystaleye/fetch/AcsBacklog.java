@@ -1,178 +1,153 @@
 package uk.ac.cam.ch.crystaleye.fetch;
 
+import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CIF_MIME;
+import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.DATE_MIME;
+import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.DOI_MIME;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
+import uk.ac.cam.ch.crystaleye.CrystalEyeUtils;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
-public class AcsBacklog extends JournalFetcher {
+public class AcsBacklog extends Fetcher {
 
 	private static final String PUBLISHER_ABBREVIATION = "acs";
 
-	private String journalAbbreviation;
+	private AcsJournal journal;
 	private String year;
 	private String issue;
-	private String decade;
 	private String volume = "0";
 
-	public AcsBacklog(String journalAbbreviation, String year, String issue) {
-		this.publisherAbbr = PUBLISHER_ABBREVIATION;
-		setYear(year);
-		if (year.length() != 4) {
-			throw new CrystalEyeRuntimeException(
-			"Year supplied must be of form YYYY (e.g. 2007)");
-		}
-		setJournalAbbreviation(journalAbbreviation);
-		setIssue(issue);
-		setDecade(year.substring(2, 3));
-	}
-
-	public void setYear(String year) {
+	public AcsBacklog(String propertiesFile, AcsJournal journal, String year, String issue) {
+		super(PUBLISHER_ABBREVIATION, propertiesFile);
+		this.journal = journal;
 		this.year = year;
-	}
-
-	public void setDecade(String decade) {
-		this.decade = decade;
-	}
-
-	public void setIssue(String issue) {
 		this.issue = issue;
+		setVolumeFromYear();
 	}
 
-	public void setJournalAbbreviation(String journalAbbreviation) {
-		this.journalAbbreviation = journalAbbreviation;
-		if ("cgdefu".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 2000));
-		} else if ("inocaj".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1961));
-		} else if ("jacsat".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1878));
-		} else if ("jnprdf".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1937));
-		} else if ("joceah".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1935));
-		} else if ("orlef7".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1998));
-		} else if ("orgnd7".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1981));
-		} else if ("achre4".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1967));
-		} else if ("ancham".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1928));
-		} else if ("bichaw".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1961));
-		} else if ("chreay".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1900));
-		} else if ("cmatex".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1988));
-		} else if ("bcches".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1989));
-		} else if ("bomaf6".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1999));
-		} else if ("enfuem".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1986));
-		} else if ("iecred".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1961));
-		} else if ("jafcau".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1952));
-		} else if ("jceaax".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1955));
-		} else if ("jcisd8".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1960));
-		} else if ("jcchff".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1998));
-		} else if ("jmcmar".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1957));
-		} else if ("langd5".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1984));
-		} else if ("mamobx".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1967));
-		} else if ("mpohbp".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 2003));
-		} else if ("oprdfk".equalsIgnoreCase(journalAbbreviation)) {
-			volume = String.valueOf((Integer.parseInt(year) - 1996));
+	private void setVolumeFromYear() {
+		int vol = Integer.valueOf(year)-journal.getVolumeOffset();
+		volume = String.valueOf(vol);
+	}
+
+	public void fetch() {
+		String writeDir = properties.getWriteDir();
+		String issueWriteDir = writeDir+File.separator+PUBLISHER_ABBREVIATION
+		+File.separator+journal.getAbbreviation()+File.separator+year
+		+File.separator+issue;
+		String issueUrl = "http://pubs.acs.org/toc/"+journal.getAbbreviation()+"/"+volume+"/"+issue;
+		Document doc = IOUtils.parseWebPage(issueUrl);
+
+		if (doc == null) {
+			throw new RuntimeException("Couldn't find URL");
 		}
-	}
 
-	public void fetchAll() throws IOException {
-		String issueWriteDir = downloadDir.getCanonicalPath() + File.separator
-		+ PUBLISHER_ABBREVIATION + File.separator + journalAbbreviation
-		+ File.separator + year + File.separator + issue;
-		String url = "http://pubs3.acs.org/acs/journals/toc.page?incoden="
-			+ journalAbbreviation.toLowerCase() + "&indecade=" + decade
-			+ "&involume=" + volume + "&inissue=" + issue;
-		System.out.println("fetching url: " + url);
-		Document doc = IOUtils.parseWebPage(url);
-		Nodes suppLinks = doc.query("//x:a[contains(text(),'Supporting')]",
-				X_XHTML);
+		Nodes suppLinks = doc.query(".//x:a[contains(@href,'/doi/suppl/10.1021')]", X_XHTML);
+		System.out.println("supplinks: "+suppLinks.size());
 		sleep();
-
 		if (suppLinks.size() > 0) {
 			for (int j = 0; j < suppLinks.size(); j++) {
-				String suppUrl = ((Element) suppLinks.get(j))
-				.getAttributeValue("href");
+				String suppUrlPostfix = ((Element)suppLinks.get(j)).getAttributeValue("href");
+				String suppUrl = "http://pubs.acs.org"+suppUrlPostfix;
+				int idx = suppUrl.lastIndexOf("/");
+				String cifId = suppUrl.substring(idx+1);
 				doc = IOUtils.parseWebPage(suppUrl);
-				System.out.println("fetching: " + suppUrl);
 				sleep();
-				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif') or contains(@href,'.CIF')]",
-						X_XHTML);
-				System.out.println("cifs: " + cifLinks.size());
+
+				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif')]", X_XHTML);
 				if (cifLinks.size() > 0) {
-					String cifId = "";
 					for (int k = 0; k < cifLinks.size(); k++) {
-						String cifUrl = ((Element) cifLinks.get(k))
-						.getAttributeValue("href");
-						int idx = cifUrl.lastIndexOf("/");
-						cifId = cifUrl.substring(0, idx);
-						idx = cifId.lastIndexOf("/");
-						cifId = cifId.substring(idx + 1);
-						int suppNum = k + 1;
-						cifUrl = cifUrl.replaceAll("pubs\\.acs\\.org/",
-						"pubs\\.acs\\.org//");
-						try { 
-							String response = IOUtils.fetchWebPage(cifUrl);
-							IOUtils.writeText(response, issueWriteDir
-									+ File.separator + cifId + File.separator
-									+ cifId + "sup" + suppNum + ".cif");
-						} catch (Exception e) {
-							System.err.println("Error whilst fetching CIF at "+cifUrl);
+						String cifUrl = "http://pubs.acs.org"+((Element)cifLinks.get(k)).getAttributeValue("href");
+						int suppNum = k+1;
+						String cif = getWebPage(cifUrl);
+						Nodes doiAnchors = doc.query("//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
+						String doi = null;
+						if (doiAnchors.size() > 0) {
+							doi = ((Element)doiAnchors.get(0)).getValue();
 						}
+						writeFiles(issueWriteDir, cifId, suppNum, cif, doi);
 						sleep();
-					}
-					Nodes doiAnchors = doc.query(
-							"//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
-					if (doiAnchors.size() > 0) {
-						String doi = ((Element) doiAnchors.get(0)).getValue();
-						IOUtils.writeText(doi, issueWriteDir + File.separator
-								+ cifId + File.separator + cifId + ".doi");
 					}
 				}
 			}
-		}
-		System.out.println("FINISHED FETCHING CIFS FROM " + url);
+		}		
+		System.out.println("FINISHED FETCHING CIFS FROM " + issueUrl);
 	}
 
-	public static void main(String[] args) {
-		try {		
-			for (int i = 2000; i <= 2007; i++) {
-				for (int j = 1; j <= 26; j++) {
-					AcsBacklog ab = new AcsBacklog("jmcmar", String.valueOf(i), String.valueOf(j));
-					Properties props = new Properties();
-					props.load(new FileInputStream("e:/data-test2/docs/cif-flow-props.txt"));
-					ab.setDownloadDir(new File(props.getProperty("write.dir")));
-					ab.fetchAll();
-				}
-			}			
-		} catch (IOException e) {
-			e.printStackTrace();
+	protected void writeFiles(String issueWriteDir, String cifId, int suppNum, String cif, String doi) {
+		String pathPrefix = issueWriteDir+File.separator+cifId+File.separator+cifId;
+		System.out.println("Writing cif to: "+pathPrefix+"sup"+suppNum+CIF_MIME);
+		IOUtils.writeText(cif, pathPrefix+"sup"+suppNum+CIF_MIME);
+		if (doi != null) {
+			IOUtils.writeText(doi, pathPrefix+DOI_MIME);
 		}
+		CrystalEyeUtils.writeDateStamp(pathPrefix+DATE_MIME);
+	}
+
+
+	/**
+	 * ancham 24
+bichaw 52 
+cmatex 24
+iecred 24
+inocaj 24
+jafcau 24
+jacsat 52
+jmcmar 24
+joceah 24
+langd5 24
+mamobx 24
+orlef7 24
+orgnd7 24
+	 */
+	public static void main(String[] args) {
+		String props = "E:\\crystaleye-new\\docs\\cif-flow-props.txt";
+		String year = "2008";
+		boolean start = false;
+		for (AcsJournal journal : AcsJournal.values()) {
+			String abb = journal.getAbbreviation();
+			if (abb.equals("inocaj") ||
+					abb.equals("jafcau") ||
+					abb.equals("jmcmar") ||
+					abb.equals("joceah") ||
+					abb.equals("langd5") ||
+					abb.equals("mamobx") ||
+					abb.equals("orlef7") ||
+					abb.equals("orgnd7")) {
+				for (int i = 13; i < 25; i++) {
+					AcsBacklog ab = new AcsBacklog(props, journal, "2008", String.valueOf(i));
+					ab.fetch();
+				}
+			}
+		}
+		
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.CRYSTAL_GROWTH_AND_DESIGN, "2009", "1");
+			ab.fetch();
+			for (int i = 1; i < 6; i++) {
+				 ab = new AcsBacklog(props, AcsJournal.INORGANIC_CHEMISTRY, "2009", String.valueOf(i));
+				ab.fetch();
+			}
+			for (int i = 1; i < 7; i++) {
+				ab = new AcsBacklog(props, AcsJournal.JOURNAL_OF_THE_AMERICAN_CHEMICAL_SOCIETY, "2009", String.valueOf(i));
+				ab.fetch();
+			}
+			for (int i = 1; i < 4; i++) {
+				ab = new AcsBacklog(props, AcsJournal.THE_JOURNAL_OF_ORGANIC_CHEMISTRY, "2009", String.valueOf(i));
+				ab.fetch();
+			}
+			for (int i = 1; i < 4; i++) {
+				ab = new AcsBacklog(props, AcsJournal.ORGANOMETALLICS, "2009", String.valueOf(i));
+				ab.fetch();
+			}
+			for (int i = 1; i < 4; i++) {
+				ab = new AcsBacklog(props, AcsJournal.ORGANIC_LETTERS, "2009", String.valueOf(i));
+				ab.fetch();
+			}
 	}
 }
