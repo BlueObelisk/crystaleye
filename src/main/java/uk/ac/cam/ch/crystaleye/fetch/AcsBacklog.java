@@ -10,7 +10,6 @@ import java.io.File;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.CrystalEyeUtils;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
