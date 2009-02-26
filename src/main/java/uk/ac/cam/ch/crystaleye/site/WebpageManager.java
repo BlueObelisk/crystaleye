@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-//import java.util.regex.Matcher;
-//import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nu.xom.Attribute;
 import nu.xom.Document;
@@ -30,7 +30,7 @@ import nu.xom.Nodes;
 import nu.xom.Text;
 import nu.xom.XPathContext;
 
-//import org.xmlcml.cif.CIFUtil;
+import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.element.CMLArray;
 import org.xmlcml.cml.element.CMLAtom;
@@ -148,7 +148,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, WEBPAGE);
 					}
 				} else {
-					System.out.println("["+WEBPAGE+"] No dates to process at this time for "+publisherTitle+", "+journalTitle);
+					System.out.println("No dates to process at this time for "+publisherTitle+", "+journalTitle);
 				}
 				count++;
 			}
@@ -170,11 +170,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 					this.createCifSummaries(cmlFile);
 				}
 				String summaryWriteDir = properties.getSummaryWriteDir();
-				String issueSummaryDir = summaryWriteDir+File.separator+
-										publisherAbbreviation+File.separator+
-										journalAbbreviation+File.separator+
-										year+File.separator+
-										issueNum+File.separator ;
+				String issueSummaryDir = summaryWriteDir+File.separator+publisherAbbreviation+File.separator+journalAbbreviation+File.separator+year+File.separator+issueNum+File.separator;
 				createTableOfContents(fileList, issueSummaryDir);
 				updateSummaryLinkPage(summaryWriteDir);
 			}
@@ -314,6 +310,9 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
 		String id = fileName.substring(0,fileName.indexOf("."));
 		String summaryPage = this.createSingleCifSummaryPage(cmlFile);
+		if (summaryPage == null) {
+			return;
+		}
 		IOUtils.writeText(summaryPage, cifParentPath+File.separator+id+".cif.summary.html");
 	}
 
@@ -338,6 +337,9 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 							String fileName = path.substring(path.lastIndexOf(File.separator)+1);
 							String id = fileName.substring(0,fileName.indexOf("."));
 							String summaryPage = this.createSingleStructureSummary(moiFile, "Moiety Summary", 5);
+							if (summaryPage == null) {
+								continue;
+							}
 							IOUtils.writeText(summaryPage, moiFolder+File.separator+id+".moiety.summary.html");
 						}
 					}
@@ -353,24 +355,31 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 
 		String cmlPath = structCmlFile.getAbsolutePath();
-		CMLMolecule mol = (CMLMolecule)IOUtils.parseCmlFile(cmlPath).getRootElement();
-
+		CMLMolecule mol = null;
+		try {
+			mol = (CMLMolecule)IOUtils.parseCmlFile(cmlPath).getRootElement();
+		} catch(Exception e) {
+			System.err.println("Error parsing CML file: "+e.getMessage());
+		}
+		if (mol == null) {
+			return null;
+		}
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
 		String id = fileName.substring(0,fileName.indexOf("."));
 
-		Nodes nodes = mol.query("//cml:identifier[@convention=\"iupac:inchi\"]", CML_XPATH);
+		Nodes nodes = mol.query("//cml:identifier[@convention=\"iupac:inchi\"]", X_CML);
 		String inchi = "";
 		if (nodes.size() != 0) {
 			inchi = nodes.get(0).getValue();
-			inchi = inchi.replaceAll("-", "-<wbr />");
+			inchi = inchi.replaceAll("-", "-<wbr>");
 		}
 		String smiles = "";
-		nodes = mol.query("./cml:identifier[@convention=\"daylight:smiles\"]", CML_XPATH);
+		nodes = mol.query("./cml:identifier[@convention=\"daylight:smiles\"]", X_CML);
 		if (nodes.size() != 0) {
 			smiles = nodes.get(0).getValue();
-			smiles = smiles.replaceAll("\\)", ")<wbr />");
+			smiles = smiles.replaceAll("\\)", ")<wbr>");
 		}
-		nodes = mol.query("//cml:scalar[@dictRef=\"idf:doi\"]", CML_XPATH);
+		nodes = mol.query("//cml:scalar[@dictRef=\"idf:doi\"]", X_CML);
 		String doi = "";
 		if (nodes.size() != 0) {
 			doi = nodes.get(0).getValue();
@@ -382,8 +391,8 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}	
 		String prefix = newFile.getName()+".cif.summary.html";
 
-		Nodes unprocNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
-		Nodes procNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
+		Nodes unprocNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", X_CML);
+		Nodes procNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", X_CML);
 		DisorderType disordered = null;
 		if (unprocNodes.size() > 0) {
 			disordered = DisorderType.UNPROCESSED;
@@ -405,7 +414,15 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		String cmlPath = cmlFile.getAbsolutePath();
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
 		String id = fileName.substring(0,fileName.indexOf("."));
-		CMLCml cml = (CMLCml)IOUtils.parseCmlFile(cmlPath).getRootElement();
+		CMLCml cml = null;
+		try {
+			cml = (CMLCml)IOUtils.parseCmlFile(cmlPath).getRootElement();
+		} catch(Exception e) {
+			System.err.println("Cannot parse CML file: "+e.getMessage());
+		}
+		if (cml == null) {
+			return "";
+		}
 		Elements formulaElements = cml.getChildCMLElements(CMLFormula.TAG);
 		String formulaMoi = "";
 		String formulaSum = "";
@@ -437,60 +454,79 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			}
 		}
 
-		Nodes doiNodes = cml.query("//cml:scalar[@dictRef=\"idf:doi\"]", CML_XPATH);
+		Nodes doiNodes = cml.query("//cml:scalar[@dictRef=\"idf:doi\"]", X_CML);
 		String doi = "";
 		if (doiNodes.size() != 0) {
 			doi = doiNodes.get(0).getValue();
 		}
 		String inchi = "";
-		Nodes molNodes = cml.query("./cml:molecule", CML_XPATH);
+		Nodes molNodes = cml.query("./cml:molecule", X_CML);
 		if (molNodes.size() > 0) {
 			CMLMolecule mol = (CMLMolecule)molNodes.get(0);
-			molNodes = mol.query("./cml:identifier[@convention=\"iupac:inchi\"]", CML_XPATH);
+			molNodes = mol.query("./cml:identifier[@convention=\"iupac:inchi\"]", X_CML);
 			if (molNodes.size() != 0) {
 				inchi = molNodes.get(0).getValue();
-				inchi = inchi.replaceAll("-", "-<wbr />");
+				inchi = inchi.replaceAll("-", "-<wbr>");
 			}
 		}
 		String smiles = "";
-		Nodes molNodes2 = cml.query("./cml:molecule", CML_XPATH);
+		Nodes molNodes2 = cml.query("./cml:molecule", X_CML);
 		if (molNodes2.size() > 0) {
 			CMLMolecule mol = (CMLMolecule)molNodes2.get(0);
-			molNodes2 = mol.query("./cml:identifier[@convention=\"daylight:smiles\"]", CML_XPATH);
+			molNodes2 = mol.query("./cml:identifier[@convention=\"daylight:smiles\"]", X_CML);
 			if (molNodes2.size() != 0) {
 				smiles = molNodes2.get(0).getValue();
-				smiles = smiles.replaceAll("\\)", ")<wbr />");
+				smiles = smiles.replaceAll("\\)", ")<wbr>");
 			}
 		}
+		Nodes titleNodes = cml.query(".//cml:scalar[@dictRef=\"iucr:_publ_section_title\"]", X_CML);
+		String title = "";
+		try {
+			if (titleNodes.size() != 0) {
+				title = titleNodes.get(0).getValue();
+				title = CIFUtil.translateCIF2ISO(title);
+				title = title.replaceAll("\\\\", "");
 
-		String title = CrystalEyeUtils.getStructureTitleFromTOC(cmlFile);
-		if (title.equals("")) {
-			title = CrystalEyeUtils.getStructureTitleFromCml(cml);
+				String patternStr = "\\^(\\d+)\\^";
+				String replaceStr = "<sup>$1</sup>";
+				Pattern pattern = Pattern.compile(patternStr);
+				Matcher matcher = pattern.matcher(title);
+				title = matcher.replaceAll(replaceStr);
+
+				patternStr = "~(\\d+)~";
+				replaceStr = "<sub>$1</sub>";
+				pattern = Pattern.compile(patternStr);
+				matcher = pattern.matcher(title);
+				title = matcher.replaceAll(replaceStr);
+			}
+		} catch (Exception e) {
+			System.err.println("Could not translate CIF string to ISO: "+title);
+			title = "";
 		}
 
 		String contactAuthor = "";
-		Nodes authorNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_publ_contact_author_name')]", CML_XPATH);
+		Nodes authorNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_publ_contact_author_name')]", X_CML);
 		if (authorNodes.size() != 0) {
 			contactAuthor = authorNodes.get(0).getValue();
 		}
 		String authorEmail = "";
-		Nodes emailNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_publ_contact_author_email')]", CML_XPATH);
+		Nodes emailNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_publ_contact_author_email')]", X_CML);
 		if (emailNodes.size() != 0) {
 			authorEmail = emailNodes.get(0).getValue();
 		}
 
 		String compoundClass = "";
-		Nodes classNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:compoundClass')]", CML_XPATH);
+		Nodes classNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:compoundClass')]", X_CML);
 		if (classNodes.size() != 0) {
 			compoundClass = classNodes.get(0).getValue();
 		}
 
 		String cellSetting = "";
-		Nodes cellNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_symmetry_cell_setting')]", CML_XPATH);
+		Nodes cellNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_symmetry_cell_setting')]", X_CML);
 		if (cellNodes.size() != 0) {
 			cellSetting = cellNodes.get(0).getValue();
 		}
-		Nodes crystalNodes = cml.query(".//cml:crystal", CML_XPATH);
+		Nodes crystalNodes = cml.query(".//cml:crystal", X_CML);
 		String groupHM = "";
 		if (crystalNodes.size() == 1) {
 			CMLCrystal crystal = (CMLCrystal)crystalNodes.get(0);
@@ -498,44 +534,44 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			groupHM = symmetry.getSpaceGroup();
 		}
 		String groupHall = "";
-		Nodes hallNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_symmetry_space_group_name_hall')]", CML_XPATH);
+		Nodes hallNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_symmetry_space_group_name_hall')]", X_CML);
 		if (hallNodes.size() != 0) {
 			groupHall = hallNodes.get(0).getValue();
 		}
 		String temp = "";
-		Nodes tempNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_cell_measurement_temperature')]", CML_XPATH);
+		Nodes tempNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_cell_measurement_temperature')]", X_CML);
 		if (tempNodes.size() != 0) {
 			temp = tempNodes.get(0).getValue();
 		}
 		String dateRecorded = "";
-		Nodes dateNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_journal_date_recd_electronic')]", CML_XPATH);
+		Nodes dateNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_journal_date_recd_electronic')]", X_CML);
 		if (dateNodes.size() != 0) {
 			dateRecorded = dateNodes.get(0).getValue();
 		}
 		String rObs = "";
-		Nodes rFGTNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_r_factor_gt')]", CML_XPATH);
+		Nodes rFGTNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_r_factor_gt')]", X_CML);
 		if (rFGTNodes.size() != 0) {
 			rObs = rFGTNodes.get(0).getValue();
 		}
 		String rAll = "";
-		Nodes rFAllNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_r_factor_all')]", CML_XPATH);
+		Nodes rFAllNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_r_factor_all')]", X_CML);
 		if (rFAllNodes.size() != 0) {
 			rAll = rFAllNodes.get(0).getValue();
 		}
 		String wRObs = "";
-		Nodes WRGTNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_wr_factor_gt')]", CML_XPATH);
+		Nodes WRGTNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:_refine_ls_wr_factor_gt')]", X_CML);
 		if (WRGTNodes.size() != 0) {
 			wRObs = WRGTNodes.get(0).getValue();
 		}
 		String wRAll = "";
-		Nodes wRAllNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'iucr:_refine_ls_wr_factor_ref')]", CML_XPATH);
+		Nodes wRAllNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'iucr:_refine_ls_wr_factor_ref')]", X_CML);
 		if (wRAllNodes.size() != 0) {
 			wRAll = wRAllNodes.get(0).getValue();
 		}	
 		String crystComp = createCrystalComponentsSection(cmlFile, id);
 
-		Nodes unprocNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
-		Nodes procNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
+		Nodes unprocNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", X_CML);
+		Nodes procNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", X_CML);
 		DisorderType disordered = null;
 		if (unprocNodes.size() > 0) {
 			disordered = DisorderType.UNPROCESSED;
@@ -547,7 +583,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 
 		boolean isPolymeric = false;
 		Nodes polymericNodes = cml.query(".//"+CMLMetadata.NS+"[@dictRef='"+
-				POLYMERIC_FLAG_DICTREF+"']", CML_XPATH);
+				POLYMERIC_FLAG_DICTREF+"']", X_CML);
 		if (polymericNodes.size() > 0) {
 			isPolymeric = true;
 		}
@@ -663,7 +699,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			return null;
 		}
 		for (File moiCmlFile : moiList) {
-//			process fragments
+			//			process fragments
 			String fragPagePath = Utils.getPathMinusMimeSet(moiCmlFile)+".fragments.toc.html";
 			String fragPage = this.createOverallFragmentSummaryPages(moiCmlFile);
 			if (fragPage != null) {
@@ -726,8 +762,17 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 					File[] files = fragFolder.listFiles();
 					for (File file : files) {
 						if (file.getAbsolutePath().matches("[^\\.]*"+COMPLETE_CML_MIME_REGEX)) {
-							CMLMolecule molecule = (CMLMolecule) IOUtils.parseCmlFile(file).getRootElement();
-							Nodes inchis = molecule.query("//cml:identifier[@convention='iupac:inchi']", CML_XPATH);
+							Document doc = null;
+							try {
+								doc = IOUtils.parseCmlFile(file);
+							} catch (Exception e) {
+								System.err.println("Error parsing CML file: "+e.getMessage());
+							}
+							if (doc == null) {
+								continue;
+							}
+							CMLMolecule molecule = (CMLMolecule)doc.getRootElement();
+							Nodes inchis = molecule.query("//cml:identifier[@convention='iupac:inchi']", X_CML);
 							if (inchis.size() > 0) {
 								String inchi = ((Element)inchis.get(0)).getValue();
 								if (!inchiSet.contains(inchi)) {
@@ -885,8 +930,16 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		return sw.getBuffer().toString();
 	}
 
-	private void addOverallMoietyRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {	
-		Document doc = IOUtils.parseCmlFile(cmlFile);
+	private void addOverallMoietyRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {
+		Document doc = null;
+		try {
+			doc = IOUtils.parseCmlFile(cmlFile);
+		} catch(Exception e) {
+			System.err.println("Error parsing CML file: "+e.getMessage());
+		}
+		if (doc == null) {
+			return;
+		}
 		CMLMolecule mol = (CMLMolecule) doc.getRootElement();
 		String moietyId = cmlFile.getParentFile().getName();
 
@@ -901,8 +954,8 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 
 		// check for disorder in the structure, if so then need to indicate this on the page
-		Nodes unprocNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
-		Nodes procNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
+		Nodes unprocNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", X_CML);
+		Nodes procNodes = mol.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", X_CML);
 		if (unprocNodes.size() > 0) {
 			formula += " <span style=\"color: red; font-size: 12px;\">((DU))</span>";
 		} else if (procNodes.size() > 0) {
@@ -921,8 +974,16 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		moiRowCount++;
 	}
 
-	private void addOverallFragmentRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {	
-		Document doc = IOUtils.parseCmlFile(cmlFile);
+	private void addOverallFragmentRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {
+		Document doc = null;
+		try {
+			doc = IOUtils.parseCmlFile(cmlFile);
+		} catch(Exception e) {
+			System.err.println("Error parsing CML file: "+e.getMessage());
+		}
+		if (doc == null) {
+			return;
+		}
 		CMLMolecule mol = (CMLMolecule) doc.getRootElement();
 		String cmlPath = cmlFile.getAbsolutePath();
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
@@ -956,7 +1017,15 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		List<File> organometallicList = new ArrayList<File>();
 		List<File> inorganicList = new ArrayList<File>();
 		for (File file : cmlFileList) {
-			Document doc = IOUtils.parseCmlFile(file);
+			Document doc = null;
+			try {
+				doc = IOUtils.parseCmlFile(file);
+			} catch(Exception e) {
+				System.err.println("Cannot parse "+file.getAbsolutePath()+": "+e.getMessage());
+			}
+			if (doc == null) {
+				continue;
+			}
 			XPathContext x = new XPathContext("x", CML_NS);
 			Nodes nodes = doc.query("//x:scalar[@dictRef='iucr:compoundClass']", x);
 			if (nodes.size() > 0) {
@@ -1034,7 +1103,12 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 	}
 
 	private void addOverallCifRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray doiArray, CMLArray summaryArray) {		
-		Document doc = IOUtils.parseCmlFile(cmlFile);
+		Document doc = null;
+		try {
+			doc = IOUtils.parseCmlFile(cmlFile);
+		} catch(Exception e) {
+			System.err.println("Error parsing CML file: "+e.getMessage());
+		}
 		CMLCml cml = (CMLCml) doc.getRootElement();
 		String cmlPath = cmlFile.getAbsolutePath();
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
@@ -1060,21 +1134,19 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		Elements formulaElements = cml.getChildCMLElements(CMLFormula.TAG);
 		String moietyS = ".";
 		String sumS = ".";
+		StringWriter sw = new StringWriter();
 		for (int i = 0; i < formulaElements.size(); i++) {
 			try {
 				CMLFormula formula = (CMLFormula) formulaElements.get(i);
 				if ("iucr:_chemical_formula_moiety".equalsIgnoreCase(formula.getDictRef())) {
-					StringWriter sw = new StringWriter();
 					formula.writeHTML(sw);
 					moietyS = sw.toString();
-					sw.close();
 				}
 				if ("iucr:_chemical_formula_sum".equalsIgnoreCase(formula.getDictRef())) {
-					StringWriter sw = new StringWriter();
 					formula.writeHTML(sw);
 					sumS = sw.toString();
-					sw.close();
 				}
+				sw.close();
 			} catch (IOException e) {
 				throw new CrystalEyeRuntimeException("Problem writing HTML of formula.", e);
 			}
@@ -1082,8 +1154,8 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		moietyS = (moietyS == ".") ? sumS : moietyS;
 
 		// check for disorder in the structure, if so then need to indicate this on the page
-		Nodes unprocNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
-		Nodes procNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
+		Nodes unprocNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", X_CML);
+		Nodes procNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.RESOLVED_DISORDER_DICTREF+"')]", X_CML);
 		if (unprocNodes.size() > 0) {
 			moietyS += " <span style=\"color: red; font-size: 12px;\">((DU))</span>";
 		} else if (procNodes.size() > 0) {
@@ -1091,13 +1163,13 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 
 		String compoundClass = "";
-		Nodes classNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:compoundClass')]", CML_XPATH);
+		Nodes classNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:compoundClass')]", X_CML);
 		if (classNodes.size() != 0) {
 			compoundClass = classNodes.get(0).getValue();
 		}
 		boolean isPolymeric = false;
 		Nodes polymericNodes = cml.query(".//"+CMLMetadata.NS+"[@dictRef='"+
-				POLYMERIC_FLAG_DICTREF+"']", CML_XPATH);
+				POLYMERIC_FLAG_DICTREF+"']", X_CML);
 		if (polymericNodes.size() > 0) {
 			isPolymeric = true;
 		}
@@ -1132,7 +1204,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 					// in case errors due to atoms with zero occupancy
 					// don't do anything - assume isn't boring
 				}
-				Nodes nonUnitOccNodes = mo.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
+				Nodes nonUnitOccNodes = mo.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", X_CML);
 				if (DisorderTool.isDisordered(mo) || mo.hasCloseContacts() || nonUnitOccNodes.size() != 0 || !Cif2CmlManager.hasBondOrdersAndCharges(mo)) {
 					continue;
 				}
@@ -1213,12 +1285,9 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
-	/** Copies all files under srcDir to dstDir.
-	 * If dstDir does not exist, it will be created.
-	 * If dstDir does exist, then it will be deleted and replaced
-	 * @param srcDir
-	 * @param dstDir
-	 */
+	// Copies all files under srcDir to dstDir.
+	// If dstDir does not exist, it will be created.
+	// If dstDir does exist, then it will be deleted and replaced
 	public void copyDirectory(File srcDir, File dstDir) throws IOException {
 		if (srcDir.isDirectory()) {
 			if (!dstDir.exists()) {
@@ -1270,4 +1339,9 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 	}
 
+	public static void main(String[] args) {
+		//WebpageManager web = new WebpageManager("e:/crystaleye-test/docs/cif-flow-props.txt");
+		WebpageManager web = new WebpageManager("e:/data-test/docs/cif-flow-props.txt");
+		web.execute();
+	}
 }

@@ -32,7 +32,7 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.euclid.Real2;
 
 public class CDKUtils implements CMLConstants {
-
+	
 	public static IMolecule getCdkMol(CMLMolecule cmlMol) {
 		ByteArrayInputStream bais = null;
 		IMolecule cdkMol = null;
@@ -100,7 +100,7 @@ public class CDKUtils implements CMLConstants {
 			}
 
 			for (CMLBond bond : cmlMol.getBonds())	 {
-				List<Node> bondStereoNodes = CMLUtil.getQueryNodes(bond, ".//cml:bondStereo", CML_XPATH);
+				List<Node> bondStereoNodes = CMLUtil.getQueryNodes(bond, ".//cml:bondStereo", X_CML);
 				if (bondStereoNodes.size() == 1) {
 					CMLBondStereo bs = ((CMLBondStereo)bondStereoNodes.get(0));
 					String stereo = bs.getValue();
@@ -156,11 +156,9 @@ public class CDKUtils implements CMLConstants {
 		for (int i = 0; i < mol.getAtomCount(); i++) {
 			IAtom atom = mol.getAtom(i);
 			Point2d p = atom.getPoint2d();
-			if (!Double.isNaN(new Double(p.x)) && !Double.isNaN(new Double(p.y))) {
-				CMLAtom cmlAtom = molecule.getAtomById(atom.getID());
-				cmlAtom.setX2(p.x);
-				cmlAtom.setY2(p.y);
-			}
+			CMLAtom cmlAtom = molecule.getAtomById(atom.getID());
+			cmlAtom.setX2(p.x);
+			cmlAtom.setY2(p.y);
 		}
 		return molecule;
 	}

@@ -62,7 +62,7 @@ public class Cml2Png implements CMLConstants {
 	
 	public Cml2Png(CMLMolecule molecule) {
 		this.cmlMol = new CMLMolecule(molecule);
-		MoleculeTool mt = MoleculeTool.getOrCreateTool(this.cmlMol);
+		MoleculeTool mt = new MoleculeTool(this.cmlMol);
 		mt.contractExplicitHydrogens(CMLMolecule.HydrogenControl.REPLACE_HYDROGEN_COUNT, false);
 		if (molecule.getDescendantsOrMolecule().size() > 1) {
 			throw new CMLRuntimeException("CMLMolecule must not have any child molecules");
@@ -150,7 +150,7 @@ public class Cml2Png implements CMLConstants {
 	}
 	
 	public static void main(String[] args) {
-		File cmlFile = new File("Z:\\docs\\cifdat\\AH\\test\\completecml\\ah0001.cml");
+		File cmlFile = new File("E:\\data-test\\cif\\acta\\e\\2006\\13-00\\ac2051\\ac2051sup1_I\\ac2051sup1_I.cml.xml");
 		CMLCml cmlCml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
 		CMLMolecule mol = (CMLMolecule) cmlCml.getFirstCMLChild(CMLMolecule.TAG);
 		mol = CDKUtils.add2DCoords(mol);

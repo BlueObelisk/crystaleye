@@ -205,7 +205,7 @@ public class CODCurrent implements CMLConstants {
 		CMLCrystal crystal = (CMLCrystal)molecule.getFirstCMLChild(CMLCrystal.TAG);
 		
 		double[] params = new double[6];
-		Nodes lengthANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_a']", CML_XPATH);
+		Nodes lengthANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_a']", X_CML);
 		if (lengthANodes.size() == 1) {
 			String lengthA  = lengthANodes.get(0).getValue();
 			params[0] = Double.valueOf(lengthA);
@@ -213,7 +213,7 @@ public class CODCurrent implements CMLConstants {
 			throw new RuntimeException("Could not find lengthA node.");
 		}
 		
-		Nodes lengthBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_b']", CML_XPATH);
+		Nodes lengthBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_b']", X_CML);
 		if (lengthBNodes.size() == 1) {
 			String lengthB  = lengthBNodes.get(0).getValue();
 			params[1] = Double.valueOf(lengthB);
@@ -221,7 +221,7 @@ public class CODCurrent implements CMLConstants {
 			throw new RuntimeException("Could not find lengthB node.");
 		}
 		
-		Nodes lengthCNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_c']", CML_XPATH);
+		Nodes lengthCNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_c']", X_CML);
 		if (lengthCNodes.size() == 1) {
 			String lengthC  = lengthCNodes.get(0).getValue();
 			params[2] = Double.valueOf(lengthC);
@@ -229,7 +229,7 @@ public class CODCurrent implements CMLConstants {
 			throw new RuntimeException("Could not find lengthC node.");
 		}
 		
-		Nodes angleANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_alpha']", CML_XPATH);
+		Nodes angleANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_alpha']", X_CML);
 		if (angleANodes.size() == 1) {
 			String angleA  = angleANodes.get(0).getValue();
 			params[3] = Double.valueOf(angleA);
@@ -237,7 +237,7 @@ public class CODCurrent implements CMLConstants {
 			throw new RuntimeException("Could not find angleA node.");
 		}
 		
-		Nodes angleBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_beta']", CML_XPATH);
+		Nodes angleBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_beta']", X_CML);
 		if (angleBNodes.size() == 1) {
 			String angleB  = angleBNodes.get(0).getValue();
 			params[4] = Double.valueOf(angleB);
@@ -245,7 +245,7 @@ public class CODCurrent implements CMLConstants {
 			throw new RuntimeException("Could not find angleB node.");
 		}
 		
-		Nodes angleGNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_gamma']", CML_XPATH);
+		Nodes angleGNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_gamma']", X_CML);
 		if (angleGNodes.size() == 1) {
 			String angleG  = angleGNodes.get(0).getValue();
 			params[5] = Double.valueOf(angleG);
@@ -450,26 +450,17 @@ public class CODCurrent implements CMLConstants {
 		return set;
 	}
 
-	/**
-	 * @todo REIMPLEMENT!
-	 * @param filename
-	 */
 	private void unzipAllFiles(String filename) {
 		String[] args = new String[1];
 		args[0] = filename;
-//		Unzip.main(args);
+		Unzip.main(args);
 	}
-
-	/**
-	 * @todo REIMPLEMENT!
-	 * @param filename
-	 */
 
 	private void unzipFile(String filename, String zipName) {
 		String[] args = new String[2];
 		args[0] = filename;
 		args[1] = zipName;
-//		Unzip.main(args);
+		Unzip.main(args);
 	}
 
 	private void runCIFConverter(String infile, String outfile) {

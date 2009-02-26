@@ -1,11 +1,13 @@
 package uk.ac.cam.ch.crystaleye.site;
 
+import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.BONDLENGTHS;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CSV_MIME;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.HTML_MIME;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.POLYMERIC_FLAG_DICTREF;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.SVG_MIME;
+import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.WEBPAGE;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.X_SVG;
 
 import java.io.BufferedReader;
@@ -123,7 +125,6 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 	}
 
 	public void execute() {
-		/*
 		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
 		for (String publisherAbbreviation : publisherAbbreviations) {
 			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
@@ -146,12 +147,8 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				}
 			}
 		}
-		*/
-		
-		changedBonds = new HashSet<String>();
-		changedBonds.add("C-C");
-		
-		//generateProtocolBondLengthFiles(changedBonds);
+
+		generateProtocolBondLengthFiles(changedBonds);
 		generateHistograms(changedBonds);
 		generateHtmlLinkPages();
 	}
@@ -247,12 +244,12 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				while (( line = input.readLine()) != null){
 					if (line != null && !"".equals(line)) {
 						String[] a = line.split(",");
-						
+
 						//FIXME - shouldn't need this\
 						if (a.length != 10) {
 							continue;
 						}
-						
+
 						String tempStr = a[TEMP_COL].trim();
 						String rfStr = a[RF_COL].trim();
 						if ("".equals(tempStr) || "".equals(rfStr) ||
@@ -304,12 +301,8 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		}
 	}
 
-	/**
-	 * For those bond type lists that have been updated, regenerate the histogram
-	 * @param changedBonds
-	 */
 	private void generateHistograms(Set<String> changedBonds) {
-		 
+		// for those bond type lists that have been updated, regenerate the histogram
 		if (changedBonds == null) return;
 		for (String bondType : changedBonds) {	
 			String bondLengthsDir = properties.getBondLengthsDir();
@@ -331,9 +324,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		BufferedReader input = null;
 		double min = 0.0;
 		double max = 0.0;
-		List<Double> doubles = new ArrayList<Double> ();
-		
-		// TODO: Test the exception handling code hear for different paths		
+		List<Point> points0 = new ArrayList<Point> ();
 		try {
 			input = new BufferedReader(new FileReader(bondsPath));
 			String line = null;
@@ -341,7 +332,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			while (( line = input.readLine()) != null){
 				if (line != null && !"".equals(line)) {
 					String[] a = line.split(",");
-					
+
 					String length = a[LENGTH_COL].trim();
 					if ("".equals(length) || " ".equals(length)) {
 						continue;
@@ -359,7 +350,9 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 						}
 					}
 
-					doubles.add(d);	
+					Point p = new Point();
+					p.setX(d);
+					points0.add(p);	
 					i++;
 				}
 			}
@@ -406,7 +399,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		try {
 			//hist1.setPlotfrequency(false);
 			hist1.setNBins(numBins);
-			hist1.addDataToPlot(doublesToPoints(doubles));
+			hist1.addDataToPlot(points0);
 			hist1.setXlab("Bond Length (angstroms)");
 			hist1.setYlab("No. occurences");
 			hist1.setGraphTitle(bondType+" Bond Lengths in CrystalEye (Last updated "+dNow+")");
@@ -423,16 +416,6 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		improveSVGAndCreateHTMLSummaries(doc, minR, binWidth, bondsPath, bondType, isAfterProtocol);
 
 		return doc;
-	}
-	
-	private List<Point> doublesToPoints(List<Double> doubles) {
-		List<Point> points = new ArrayList<Point>(doubles.size());
-		for (double d : doubles) {
-			Point p = new Point();
-			p.setX(d);
-			points.add(p);
-		}
-		return points;
 	}
 
 	private void addSubtitle(Document doc, boolean isAfterProtocol) {
@@ -480,7 +463,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				while (( line = input.readLine()) != null){
 					if (line != null && !"".equals(line)) {
 						String[] a = line.split(",");
-						
+
 						String length = a[LENGTH_COL].trim();
 						if ("".equals(length) || " ".equals(length)) {
 							continue;
@@ -535,7 +518,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		String compoundClass = b.getCompoundClass();
 		boolean isPolymeric = b.isPolymeric();
 		int uniqueMols = b.getUniqueSubMols();
-		
+
 		String articleId = a[4].replaceAll("sup[\\d]*", "");
 
 		if (compoundClass.equals(CompoundClass.INORGANIC.toString()) || isPolymeric) {
@@ -552,7 +535,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 					+"/"+a[4]+"_"+a[5]+"/"+a[4]+"_"+a[5]+COMPLETE_CML_MIME+";"+jmolSelectAtomString+"',"+structureCount+");\">"+
 					moietyS+"</a>");
 			sb.append("</td>");
-			
+
 			sb.append("<td>");
 			if (b.getDoi() != null) {
 				sb.append("<a style=\"text-decoration: underline;\" href=\"http://dx.doi.org/"+b.getDoi()+"\">view</a>");
@@ -560,7 +543,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				sb.append("N/A");
 			}
 			sb.append("</td>");
-			
+
 			sb.append("<td>");
 			sb.append("<a style=\"text-decoration: underline;\" href=\"../../summary/"+a[0]+"/"+a[1]+"/"+a[2]+"/"+a[3]+"/data/"+articleId
 					+"/"+a[4]+"_"+a[5]+"/"+a[4]+"_"+a[5]+".cif.summary.html\">view</a>");
@@ -633,7 +616,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			if (items.length != 10) {
 				continue;
 			}
-			
+
 			String cmlId = items[ID_COL];
 			String[] a = cmlId.split("_");
 
@@ -669,13 +652,13 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			addOverallCifRowValues((BondLengthCmlDescription)it.next(), table);
 			table.append("</tr>");
 			rows++;
-	    }
+		}
 		table.append("</table>");
 
 		if (rows == 0) {
 			return null;
 		}
-			
+
 
 		return table.toString();
 	}
@@ -693,12 +676,20 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 
 	private void addLengthsFromCmlFile(File cmlFile) {
 		System.out.println("Processing: "+cmlFile.getAbsolutePath());
-		CMLCml c = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+		CMLCml c = null;
+		try {
+			c = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+		} catch (Exception e) {
+			System.err.println("Error parsing CML: "+e.getMessage());
+		}
+		if (c == null) {
+			return;
+		}
 		CMLCml cml = (CMLCml)c.copy();
 
 		setCmlValues(cml);
 
-		Nodes compoundClassNodes = cml.query(".//cml:scalar[@dictRef='iucr:compoundClass']", CML_XPATH);
+		Nodes compoundClassNodes = cml.query(".//cml:scalar[@dictRef='iucr:compoundClass']", X_CML);
 		if (compoundClassNodes.size() > 0) {
 			String cc = compoundClassNodes.get(0).getValue();
 			/*
@@ -717,7 +708,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				processDiscreteMoleculeCrystal(cml);
 			} else if (CompoundClass.ORGANOMETALLIC.toString().equals(cc)) {
 				Nodes polymericNodes = cml.query(".//"+CMLMetadata.NS+"[@dictRef='"+
-						POLYMERIC_FLAG_DICTREF+"']", CML_XPATH);
+						POLYMERIC_FLAG_DICTREF+"']", X_CML);
 				if (polymericNodes.size() > 0) {
 					try {
 						processAllAtomCrystal(cml);
@@ -742,7 +733,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 	}
 
 	private void setCmlValues(CMLCml cml) {
-		Nodes tempNodes = cml.query(".//cml:scalar[@dictRef='iucr:_cell_measurement_temperature']", CML_XPATH);
+		Nodes tempNodes = cml.query(".//cml:scalar[@dictRef='iucr:_cell_measurement_temperature']", X_CML);
 		if (tempNodes.size() == 1) {
 			temp = tempNodes.get(0).getValue();
 		} else {
@@ -750,7 +741,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			System.err.println("Could not retrieve cell measurement temperature: "+cml.getId());
 		}
 
-		Nodes rFactorNodes = cml.query(".//cml:scalar[@dictRef='iucr:_refine_ls_r_factor_gt']", CML_XPATH);
+		Nodes rFactorNodes = cml.query(".//cml:scalar[@dictRef='iucr:_refine_ls_r_factor_gt']", X_CML);
 		if (rFactorNodes.size() == 1) {
 			rf = rFactorNodes.get(0).getValue();
 		} else {
@@ -758,7 +749,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			System.err.println("Could not retrieve r factor gt: "+cml.getId());
 		}
 
-		Nodes doiNodes = cml.query(".//cml:scalar[@dictRef='idf:doi']", CML_XPATH);
+		Nodes doiNodes = cml.query(".//cml:scalar[@dictRef='idf:doi']", X_CML);
 		if (doiNodes.size() > 0) {
 			doiStr = doiNodes.get(0).getValue();
 		} else {
@@ -792,14 +783,14 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		moietyS = (moi == ".") ? sum : moi;
 		moietyS = moietyS.replaceAll(",", "_COMMA_");
 
-		Nodes classNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:compoundClass')]", CML_XPATH);
+		Nodes classNodes = cml.query(".//cml:scalar[contains(@dictRef,'iucr:compoundClass')]", X_CML);
 		if (classNodes.size() > 0) {
 			compoundClass = classNodes.get(0).getValue();
 		} else {
 			compoundClass = "";
 		}
 		Nodes polymericNodes = cml.query(".//"+CMLMetadata.NS+"[@dictRef='"+
-				POLYMERIC_FLAG_DICTREF+"']", CML_XPATH);
+				POLYMERIC_FLAG_DICTREF+"']", X_CML);
 		if (polymericNodes.size() > 0) {
 			isPolymeric = true;
 		} else {
@@ -830,7 +821,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			}
 		}
 
-		MoleculeTool mt = MoleculeTool.getOrCreateTool(molecule);
+		MoleculeTool mt = new MoleculeTool(molecule);
 		mt.calculateBondedAtoms(centralAtoms);
 
 		addLengthsToFiles(cml, molecule, centralAtoms, cml.getId());
@@ -885,7 +876,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 	}
 
 	private String getAtomSiteLabel(CMLAtom atom) {
-		Nodes aslNodes = atom.query(".//cml:scalar[@dictRef='iucr:_atom_site_label']", CML_XPATH);
+		Nodes aslNodes = atom.query(".//cml:scalar[@dictRef='iucr:_atom_site_label']", X_CML);
 		if (aslNodes.size() == 1) {
 			return aslNodes.get(0).getValue();
 		} else {
@@ -906,7 +897,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		Nodes refinementNodes = atom.query(".//cml:scalar[@dictRef='iucr:_atom_site_refinement_flags' and .!='.'] | " +
 				".//cml:scalar[@dictRef='iucr:_atom_site_refinement_flags_adp' and .!='.'] | " +
 				".//cml:scalar[@dictRef='iucr:_atom_site_refinement_flags_posn' and .!='.'] | " +
-				".//cml:scalar[@dictRef='iucr:_atom_site_refinement_flags_occupancy' and .!='.']", CML_XPATH);
+				".//cml:scalar[@dictRef='iucr:_atom_site_refinement_flags_occupancy' and .!='.']", X_CML);
 		if (refinementNodes.size() > 0) {
 			return true;
 		} else {
@@ -918,7 +909,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		List<Node> nodes = CMLUtil.getQueryNodes(atom, ".//" + CMLScalar.NS
 				+ "[@dictRef='" + CrystalTool.DISORDER_ASSEMBLY + "' and .!='.'] | "
 				+ ".//" + CMLScalar.NS + "[@dictRef='"
-				+ CrystalTool.DISORDER_GROUP + "' and .!='.']", CML_XPATH);
+				+ CrystalTool.DISORDER_GROUP + "' and .!='.']", X_CML);
 		if (nodes.size() > 0) {
 			return true;
 		} else {
@@ -940,7 +931,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 	}
 
 	private boolean atomHasNonUnitOccupancy(CMLAtom atom) {
-		Nodes nonUnitOccNodes = atom.query(".//@occupancy[. < 1]", CML_XPATH);
+		Nodes nonUnitOccNodes = atom.query(".//@occupancy[. < 1]", X_CML);
 		if (nonUnitOccNodes.size() > 0) {
 			return true;
 		} else {
@@ -950,7 +941,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 
 	private void addLengthToFile(CMLCml cml, CMLMolecule mol, CMLBond bond, String id) {
 		CMLMolecule originalMolecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
-		
+
 		CoordinateType coordType = CoordinateType.CARTESIAN;
 		String bondLengthsDir = properties.getBondLengthsDir();
 		double length = bond.calculateBondLength(coordType);
@@ -998,7 +989,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		List<CMLMolecule> uniqueMolList = CrystalEyeUtils.getUniqueSubMolecules(mol);	
 		int uniqueSubMols = 0;
 		for (CMLMolecule subMol : uniqueMolList) {	
-			Nodes nonUnitOccNodes = subMol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
+			Nodes nonUnitOccNodes = subMol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", X_CML);
 			if (!DisorderTool.isDisordered(subMol) && !subMol.hasCloseContacts() && nonUnitOccNodes.size() == 0
 					&& Cif2CmlManager.hasBondOrdersAndCharges(subMol)) {
 				if (CrystalEyeUtils.isBoringMolecule(subMol)) {
@@ -1019,8 +1010,8 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 	}
 
 	public static void main(String[] args) {
-		BondLengthsManager d = new BondLengthsManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
-		//BondLengthsManager d = new BondLengthsManager("e:/data-test/docs/cif-flow-props.txt");
+		//BondLengthsManager d = new BondLengthsManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
+		BondLengthsManager d = new BondLengthsManager("e:/data-test/docs/cif-flow-props.txt");
 		d.execute();
 	}
 }

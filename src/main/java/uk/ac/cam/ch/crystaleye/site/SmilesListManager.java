@@ -93,7 +93,7 @@ public class SmilesListManager extends AbstractManager implements CMLConstants {
 						CMLCml cml = (CMLCml)new CMLBuilder().build(new BufferedReader(new FileReader(cmlFile))).getRootElement();
 						CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
 						String cmlId = cml.getId();
-						Nodes smilesNodes = molecule.query("./"+CMLIdentifier.NS+"[@convention='daylight:smiles']", CML_XPATH);
+						Nodes smilesNodes = molecule.query("./"+CMLIdentifier.NS+"[@convention='daylight:smiles']", X_CML);
 						if (smilesNodes.size() > 0) {
 							String smiles = smilesNodes.get(0).getValue();
 							smiles = smiles.replaceAll("/", "");
@@ -121,8 +121,8 @@ public class SmilesListManager extends AbstractManager implements CMLConstants {
 	}
 	
 	public static void main(String[] args) {
-		SmilesListManager d = new SmilesListManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
-		//SmilesListManager d = new SmilesListManager("e:/data-test/docs/cif-flow-props.txt");
+		//SmilesListManager d = new SmilesListManager("e:/crystaleye-test/docs/cif-flow-props.txt");
+		SmilesListManager d = new SmilesListManager("e:/data-test/docs/cif-flow-props.txt");
 		d.execute();
 	}
 }
