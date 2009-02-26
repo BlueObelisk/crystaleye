@@ -310,6 +310,9 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
 		String id = fileName.substring(0,fileName.indexOf("."));
 		String summaryPage = this.createSingleCifSummaryPage(cmlFile);
+		if (summaryPage == null) {
+			return;
+		}
 		IOUtils.writeText(summaryPage, cifParentPath+File.separator+id+".cif.summary.html");
 	}
 
@@ -334,6 +337,9 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 							String fileName = path.substring(path.lastIndexOf(File.separator)+1);
 							String id = fileName.substring(0,fileName.indexOf("."));
 							String summaryPage = this.createSingleStructureSummary(moiFile, "Moiety Summary", 5);
+							if (summaryPage == null) {
+								continue;
+							}
 							IOUtils.writeText(summaryPage, moiFolder+File.separator+id+".moiety.summary.html");
 						}
 					}
@@ -349,8 +355,15 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		}
 
 		String cmlPath = structCmlFile.getAbsolutePath();
-		CMLMolecule mol = (CMLMolecule)IOUtils.parseCmlFile(cmlPath).getRootElement();
-
+		CMLMolecule mol = null;
+		try {
+			mol = (CMLMolecule)IOUtils.parseCmlFile(cmlPath).getRootElement();
+		} catch(Exception e) {
+			System.err.println("Error parsing CML file: "+e.getMessage());
+		}
+		if (mol == null) {
+			return null;
+		}
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
 		String id = fileName.substring(0,fileName.indexOf("."));
 
@@ -749,7 +762,16 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 					File[] files = fragFolder.listFiles();
 					for (File file : files) {
 						if (file.getAbsolutePath().matches("[^\\.]*"+COMPLETE_CML_MIME_REGEX)) {
-							CMLMolecule molecule = (CMLMolecule) IOUtils.parseCmlFile(file).getRootElement();
+							Document doc = null;
+							try {
+								doc = IOUtils.parseCmlFile(file);
+							} catch (Exception e) {
+								System.err.println("Error parsing CML file: "+e.getMessage());
+							}
+							if (doc == null) {
+								continue;
+							}
+							CMLMolecule molecule = (CMLMolecule)doc.getRootElement();
 							Nodes inchis = molecule.query("//cml:identifier[@convention='iupac:inchi']", X_CML);
 							if (inchis.size() > 0) {
 								String inchi = ((Element)inchis.get(0)).getValue();
@@ -908,8 +930,16 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		return sw.getBuffer().toString();
 	}
 
-	private void addOverallMoietyRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {	
-		Document doc = IOUtils.parseCmlFile(cmlFile);
+	private void addOverallMoietyRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {
+		Document doc = null;
+		try {
+			doc = IOUtils.parseCmlFile(cmlFile);
+		} catch(Exception e) {
+			System.err.println("Error parsing CML file: "+e.getMessage());
+		}
+		if (doc == null) {
+			return;
+		}
 		CMLMolecule mol = (CMLMolecule) doc.getRootElement();
 		String moietyId = cmlFile.getParentFile().getName();
 
@@ -944,8 +974,16 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		moiRowCount++;
 	}
 
-	private void addOverallFragmentRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {	
-		Document doc = IOUtils.parseCmlFile(cmlFile);
+	private void addOverallFragmentRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {
+		Document doc = null;
+		try {
+			doc = IOUtils.parseCmlFile(cmlFile);
+		} catch(Exception e) {
+			System.err.println("Error parsing CML file: "+e.getMessage());
+		}
+		if (doc == null) {
+			return;
+		}
 		CMLMolecule mol = (CMLMolecule) doc.getRootElement();
 		String cmlPath = cmlFile.getAbsolutePath();
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);
@@ -1065,7 +1103,12 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 	}
 
 	private void addOverallCifRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray doiArray, CMLArray summaryArray) {		
-		Document doc = IOUtils.parseCmlFile(cmlFile);
+		Document doc = null;
+		try {
+			doc = IOUtils.parseCmlFile(cmlFile);
+		} catch(Exception e) {
+			System.err.println("Error parsing CML file: "+e.getMessage());
+		}
 		CMLCml cml = (CMLCml) doc.getRootElement();
 		String cmlPath = cmlFile.getAbsolutePath();
 		String fileName = cmlPath.substring(cmlPath.lastIndexOf(File.separator)+1);

@@ -104,7 +104,7 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 	}
 
 	public static void main(String[] args) {
-		ChemSocJapanCurrent jap = new ChemSocJapanCurrent("e:/data-test/docs/cif-flow-props.txt");
+		ChemSocJapanCurrent jap = new ChemSocJapanCurrent("e:/crystaleye-new/docs/cif-flow-props.txt");
 		jap.execute();
 	}
 }

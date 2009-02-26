@@ -147,7 +147,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				}
 			}
 		}
-		
+
 		generateProtocolBondLengthFiles(changedBonds);
 		generateHistograms(changedBonds);
 		generateHtmlLinkPages();
@@ -244,12 +244,12 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				while (( line = input.readLine()) != null){
 					if (line != null && !"".equals(line)) {
 						String[] a = line.split(",");
-						
+
 						//FIXME - shouldn't need this\
 						if (a.length != 10) {
 							continue;
 						}
-						
+
 						String tempStr = a[TEMP_COL].trim();
 						String rfStr = a[RF_COL].trim();
 						if ("".equals(tempStr) || "".equals(rfStr) ||
@@ -332,7 +332,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			while (( line = input.readLine()) != null){
 				if (line != null && !"".equals(line)) {
 					String[] a = line.split(",");
-					
+
 					String length = a[LENGTH_COL].trim();
 					if ("".equals(length) || " ".equals(length)) {
 						continue;
@@ -463,7 +463,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				while (( line = input.readLine()) != null){
 					if (line != null && !"".equals(line)) {
 						String[] a = line.split(",");
-						
+
 						String length = a[LENGTH_COL].trim();
 						if ("".equals(length) || " ".equals(length)) {
 							continue;
@@ -518,7 +518,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 		String compoundClass = b.getCompoundClass();
 		boolean isPolymeric = b.isPolymeric();
 		int uniqueMols = b.getUniqueSubMols();
-		
+
 		String articleId = a[4].replaceAll("sup[\\d]*", "");
 
 		if (compoundClass.equals(CompoundClass.INORGANIC.toString()) || isPolymeric) {
@@ -535,7 +535,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 					+"/"+a[4]+"_"+a[5]+"/"+a[4]+"_"+a[5]+COMPLETE_CML_MIME+";"+jmolSelectAtomString+"',"+structureCount+");\">"+
 					moietyS+"</a>");
 			sb.append("</td>");
-			
+
 			sb.append("<td>");
 			if (b.getDoi() != null) {
 				sb.append("<a style=\"text-decoration: underline;\" href=\"http://dx.doi.org/"+b.getDoi()+"\">view</a>");
@@ -543,7 +543,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				sb.append("N/A");
 			}
 			sb.append("</td>");
-			
+
 			sb.append("<td>");
 			sb.append("<a style=\"text-decoration: underline;\" href=\"../../summary/"+a[0]+"/"+a[1]+"/"+a[2]+"/"+a[3]+"/data/"+articleId
 					+"/"+a[4]+"_"+a[5]+"/"+a[4]+"_"+a[5]+".cif.summary.html\">view</a>");
@@ -616,7 +616,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			if (items.length != 10) {
 				continue;
 			}
-			
+
 			String cmlId = items[ID_COL];
 			String[] a = cmlId.split("_");
 
@@ -652,13 +652,13 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			addOverallCifRowValues((BondLengthCmlDescription)it.next(), table);
 			table.append("</tr>");
 			rows++;
-	    }
+		}
 		table.append("</table>");
 
 		if (rows == 0) {
 			return null;
 		}
-			
+
 
 		return table.toString();
 	}
@@ -676,7 +676,15 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 
 	private void addLengthsFromCmlFile(File cmlFile) {
 		System.out.println("Processing: "+cmlFile.getAbsolutePath());
-		CMLCml c = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+		CMLCml c = null;
+		try {
+			c = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+		} catch (Exception e) {
+			System.err.println("Error parsing CML: "+e.getMessage());
+		}
+		if (c == null) {
+			return;
+		}
 		CMLCml cml = (CMLCml)c.copy();
 
 		setCmlValues(cml);
@@ -933,7 +941,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 
 	private void addLengthToFile(CMLCml cml, CMLMolecule mol, CMLBond bond, String id) {
 		CMLMolecule originalMolecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
-		
+
 		CoordinateType coordType = CoordinateType.CARTESIAN;
 		String bondLengthsDir = properties.getBondLengthsDir();
 		double length = bond.calculateBondLength(coordType);
