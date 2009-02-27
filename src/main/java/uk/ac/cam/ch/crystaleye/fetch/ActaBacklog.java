@@ -110,8 +110,14 @@ public class ActaBacklog extends Fetcher {
 	}
 	
 	public static void main(String[] args) {
-		ActaBacklog acta = new ActaBacklog("e:/data-test/docs/cif-flow-props.txt", "e",
-                "2007", "01", "00");
+		String props = "e:/crystaleye-new/docs/cif-flow-props.txt";
+		ActaBacklog acta = new ActaBacklog(props, "e","2007", "01", "00");
+		acta.fetch();
+		acta = new ActaBacklog(props, "e","2007", "07", "00");
+		acta.fetch();
+		acta = new ActaBacklog(props, "e","2008", "01", "00");
+		acta.fetch();
+		acta = new ActaBacklog(props, "e","2008", "07", "00");
 		acta.fetch();
 	}
 }

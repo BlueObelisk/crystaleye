@@ -46,12 +46,9 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 			String year = issueDate.getYear();
 			String issue = issueDate.getIssue();
 			boolean alreadyGot = checkDownloads(journalAbbreviation, year, issue);
-			String issueCode = PUBLISHER_ABBREVIATION+"_"+journalAbbreviation+"_"+year+"_"+issue;
-			if (alreadyGot) {
-				System.out.println("No new journals to process at this time ("+issueCode+")");
-			} else {
-				String issueWriteDir = properties.getWriteDir()+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue;
-				this.fetch(issueWriteDir, journalAbbreviation, year, issue);
+			String issueWriteDir = properties.getWriteDir()+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issue;
+			this.fetch(issueWriteDir, journalAbbreviation, year, issue);
+			if (!alreadyGot) {
 				updateLog(journalAbbreviation, year, issue);
 			}
 		}
