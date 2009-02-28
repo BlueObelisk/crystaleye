@@ -10,7 +10,7 @@ import org.apache.commons.httpclient.URIException;
 import org.junit.Before;
 import org.junit.Test;
 
-import wwmm.crawler.DOI;
+import wwmm.crystaleye.crawler.DOI;
 
 public class DOITest {
 

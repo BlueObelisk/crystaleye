@@ -11,8 +11,8 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import wwmm.crawler.ArticleReference;
-import wwmm.crawler.BibtexTool;
+import wwmm.crystaleye.crawler.ArticleReference;
+import wwmm.crystaleye.crawler.BibtexTool;
 
 public class BibtexToolTest {
 

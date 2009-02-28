@@ -5,7 +5,7 @@ import static junit.framework.Assert.*;
 
 import org.junit.Test;
 
-import wwmm.crawler.ArticleReference;
+import wwmm.crystaleye.crawler.ArticleReference;
 
 public class ArticleReferenceTest {
 	

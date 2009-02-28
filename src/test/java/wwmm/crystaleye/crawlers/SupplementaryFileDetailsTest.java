@@ -7,7 +7,7 @@ import org.apache.commons.httpclient.URI;
 import org.junit.Before;
 import org.junit.Test;
 
-import wwmm.crawler.SupplementaryFileDetails;
+import wwmm.crystaleye.crawler.SupplementaryFileDetails;
 
 public class SupplementaryFileDetailsTest {
 	
