@@ -5,7 +5,7 @@ import java.util.List;
 
 import wwmm.crawler.ArticleDetails;
 import wwmm.crawler.IssueCrawler;
-import wwmm.crawler.IssueCrawler.IssueDetails;
+import wwmm.crawler.IssueDetails;
 
 public class CifIssueCrawler {
 

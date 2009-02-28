@@ -42,12 +42,6 @@
 	</repositories>
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant</artifactId>
-			<version>1.7.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>cdk</groupId>
 			<artifactId>cdk</artifactId>
 			<version>20071025</version>
@@ -83,21 +77,9 @@
 			<version>2.3.8</version>
 		</dependency>
 		<dependency>
-			<groupId>jgrapht</groupId>
-			<artifactId>jgrapht</artifactId>
-			<version>0.6.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>net.sf</groupId>
 			<artifactId>jniinchi</artifactId>
 			<version>0.5</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>wwmm</groupId>
-			<artifactId>joegraphy</artifactId>
-			<version>0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -125,21 +107,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>nux</groupId>
-			<artifactId>nux</artifactId>
-			<version>1.6</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.ccil.cowan.tagsoup</groupId>
 			<artifactId>tagsoup</artifactId>
 			<version>1.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>vecmath</artifactId>
-			<version>1.2</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>xom</groupId>
