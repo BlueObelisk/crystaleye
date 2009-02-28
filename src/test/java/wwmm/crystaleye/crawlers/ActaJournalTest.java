@@ -4,7 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import wwmm.crawler.ActaJournal;
+import wwmm.crystaleye.crawler.ActaJournal;
 
 public class ActaJournalTest {
 	

@@ -12,10 +12,10 @@ import java.util.List;
 import org.apache.commons.httpclient.URI;
 import org.junit.Test;
 
-import wwmm.crawler.ArticleDetails;
-import wwmm.crawler.ArticleReference;
-import wwmm.crawler.DOI;
-import wwmm.crawler.SupplementaryFileDetails;
+import wwmm.crystaleye.crawler.ArticleDetails;
+import wwmm.crystaleye.crawler.ArticleReference;
+import wwmm.crystaleye.crawler.DOI;
+import wwmm.crystaleye.crawler.SupplementaryFileDetails;
 
 public class ArticleDetailsTest {
 	
