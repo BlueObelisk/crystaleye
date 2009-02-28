@@ -87,6 +87,7 @@ import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CDKUtils;
+import wwmm.crystaleye.CheckCifParser;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;

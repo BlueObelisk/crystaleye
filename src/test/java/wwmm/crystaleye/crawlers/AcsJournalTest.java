@@ -1,6 +1,8 @@
 package wwmm.crystaleye.crawlers;
 
 import org.junit.Test;
+
+import wwmm.crawler.AcsJournal;
 import static org.junit.Assert.*;
 
 public class AcsJournalTest {
