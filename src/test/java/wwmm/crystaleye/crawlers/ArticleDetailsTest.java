@@ -23,7 +23,7 @@ public class ArticleDetailsTest {
 	public void testConstructor() {
 		ArticleDetails ad = new ArticleDetails();
 		assertNull("DOI should initially be null when using the default constructor.", ad.getDoi());
-		assertNull("Full-text HTML link should initially be null when using the default constructor.", ad.getFullTextHtmlLink());
+		assertNull("Full-text HTML link should initially be null when using the default constructor.", ad.getFullTextLink());
 		assertNull("Title should initially be null when using the default constructor.", ad.getTitle());
 		assertNull("Authors should initially be null when using the default constructor.", ad.getAuthors());
 		assertNull("Reference should initially be null when using the default constructor.", ad.getReference());
@@ -43,8 +43,8 @@ public class ArticleDetailsTest {
 	public void testSetAndGetFulltextHtmlLink() {
 		ArticleDetails ad = new ArticleDetails();
 		URI uri = mock(URI.class);
-		ad.setFullTextHtmlLink(uri);
-		assertSame(uri, ad.getFullTextHtmlLink());
+		ad.setFullTextLink(uri);
+		assertSame(uri, ad.getFullTextLink());
 	}
 	
 	@Test 

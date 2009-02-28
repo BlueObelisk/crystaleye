@@ -6,9 +6,12 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import wwmm.crawler.IssueCrawler.IssueDetails;
+import wwmm.crawler.IssueCrawler;
+import wwmm.crawler.IssueDetails;
 
 public class IssueDetailsTest {
+	
+	IssueCrawler issueCrawler;
 
 	@Test
 	public void testConstructorAndGetters() {

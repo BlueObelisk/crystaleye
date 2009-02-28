@@ -1,4 +1,4 @@
-package wwmm.crystaleye;
+package wwmm.crystaleye.checkcif;
 
 import static wwmm.crystaleye.CrystalEyeConstants.CC_NS;
 import static wwmm.crystaleye.CrystalEyeConstants.XHTML_NS;
@@ -6,6 +6,7 @@ import static wwmm.crystaleye.CrystalEyeConstants.X_CC;
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -23,33 +24,89 @@ import nu.xom.ParsingException;
 import nu.xom.Text;
 import nu.xom.ValidityException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+/**
+ * <p>
+ * Parses CheckCIF HTML into an XML Document.  Note that those 
+ * CheckCIFs returned by the CheckCIF service and those published
+ * alongside articles at Acta Cryst. are slightly different.  
+ * Thus, there are two public methods provided here, one for the 
+ * published CheckCIFs (<code>parsePublished()</code>) and one 
+ * for those returned by the service (<code>parseService()</code>).
+ * </p> 
+ * 
+ * <p>
+ * Also note that the structure of CheckCIF HTML is horrible, with
+ * virtually no nesting and no semantic naming going on.  This is
+ * why the code looks rather labyrinthine.  In fact, I can't even 
+ * remember what half of it does.  But it works.  For now.  I hope
+ * Jim doesn't read this.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ */
 public class CheckCifParser {
 	
 	private static final Logger LOG = Logger.getLogger(CheckCifParser.class);
 
-	Document doc;
-	String checkCifHtml;
+	// the XML Document in which the results of parsing are placed.
+	private Document doc;
+	// the input CheckCIF as a String
+	private String checkCifHtml;
+	
+	// the HTML body element.  CheckCIF HTML is nasty and has next to 
+	// no nesting. All the elements are children of <body> and so this 
+	// element is important during parsing.  
+	private Element body;
+	// does the CheckCIF contain data for any datablocks.
+	private boolean containsDataBlocks = false;
+	// does the CheckCIF contain any publication errors.
+	private boolean containsPublErrors = false;
+	// does the CheckCIF contain any Platon information.
+	private boolean containsPlaton = false;
+	// array of ints corresponding to the child nodes of the HTML
+	// <body> element at which the datablocks start.  An array is
+	// used, as a CheckCIF may contain data on more than one crystal
+	// structure, and hence more than one datablock (as in CIF, one
+	// datablock = one crystal structure).
+	private Integer[] dbPos;
+	// int of the child node of the HTML <body> element at which the
+	// publication errors start.
+	private int pubPos;
+	// int of the child node of the HTML <body> element at which the
+	// platon information starts.
+	private int platPos;
 
-	Element body;
-
-	boolean containsDataBlocks = false;
-	boolean containsPublErrors = false;
-	boolean containsPlaton = false;
-
-	Integer[] dbPos;
-	int pubPos;
-	int platPos;
-
-	public CheckCifParser(String checkCifHtml) {
-		this.checkCifHtml = checkCifHtml;
+	/**
+	 * <p>
+	 * Creates a new instance of the <code>CheckCifParser</code>
+	 * class.
+	 * </p>
+	 * 
+	 * @param checkCifFile - file containing CheckCIF HTML
+	 * 
+	 * @throws IOException if there is an error reading the provided
+	 * file into a <code>String</code>.
+	 */
+	public CheckCifParser(File checkCifFile) throws IOException {
+		this.checkCifHtml = FileUtils.readFileToString(checkCifFile);
 	}
 
-	public Document parseDeposited() {
+	/**
+	 * Parses CheckCIF HTML that has been published alongside an
+	 * article in a journal published by Acta Crystallographica
+	 * (see the table of contents for Acta Cryst. E for examples). 
+	 * 
+	 * @return an XML Document containing the data items from the
+	 * provided CheckCIF.
+	 */
+	public Document parsePublished() {
 		// need to remove all <pre> tags otherwise they appear almost at 
 		// random and mess up all my lovely xpaths.
 		Pattern p = Pattern.compile("<pre>|</pre>", Pattern.CASE_INSENSITIVE);
@@ -103,25 +160,15 @@ public class CheckCifParser {
 		checkcifXml.getRootElement().appendChild(deposited);
 		return checkcifXml;
 	}
-
-	private void setDocument() {
-		try {
-			XMLReader tagsoup = XMLReaderFactory.createXMLReader("org.ccil.cowan.tagsoup.Parser");
-			Builder builder = new Builder(tagsoup);
-			this.doc = builder.build(new BufferedReader(new StringReader(checkCifHtml)));
-			setBodyElement();
-		} catch (SAXException e) {
-			throw new RuntimeException("Error reading CheckCIF XML.", e);
-		} catch (ValidityException e) {
-			throw new RuntimeException("Checkcif HTML string is not valid XML.", e);
-		} catch (ParsingException e) {
-			throw new RuntimeException("Could not parse Checkcif HTML string.", e);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not read Checkcif HTML string.", e);
-		}
-	}
-
-	public Document parseCalculated() {
+	
+	/**
+	 * Parses CheckCIF HTML that has been returned from the IUCr 
+	 * CheckCIF service into an XML Document.
+	 * 
+	 * @return XML Document containing the data-items from the
+	 * provided CheckCIF.
+	 */
+	public Document parseService() {
 		setDocument();
 		setBlockStartPositions();
 		Document checkcifXml = new Document(new Element("checkCif", CC_NS));
@@ -238,6 +285,23 @@ public class CheckCifParser {
 			}
 		}
 		return checkcifXml;
+	}
+	
+	private void setDocument() {
+		try {
+			XMLReader tagsoup = XMLReaderFactory.createXMLReader("org.ccil.cowan.tagsoup.Parser");
+			Builder builder = new Builder(tagsoup);
+			this.doc = builder.build(new BufferedReader(new StringReader(checkCifHtml)));
+			setBodyElement();
+		} catch (SAXException e) {
+			throw new RuntimeException("Error reading CheckCIF XML.", e);
+		} catch (ValidityException e) {
+			throw new RuntimeException("Checkcif HTML string is not valid XML.", e);
+		} catch (ParsingException e) {
+			throw new RuntimeException("Could not parse Checkcif HTML string.", e);
+		} catch (IOException e) {
+			throw new RuntimeException("Could not read Checkcif HTML string.", e);
+		}
 	}
 
 	private void setBodyElement() {
