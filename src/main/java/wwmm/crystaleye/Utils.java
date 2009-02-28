@@ -57,45 +57,6 @@ public class Utils {
 		return (double)tmp / factor;
 	}
 
-	public static String convertFileSeparators(String filePath) {
-		if ("/".equalsIgnoreCase(File.separator)) {
-			filePath = filePath.replaceAll("\\\\", File.separator);
-		} else if ("\\".equalsIgnoreCase(File.separator)) {
-			filePath = filePath.replaceAll("/", "\\\\");
-		}
-		return filePath;
-	}
-
-	/**
-	 * Create a zip file for many files
-	 * @
-	 */
-	public static void zipFiles(String[] fileNames, String outFileName) {
-		byte[] buf = new byte[1024];
-		FileInputStream in = null;
-		ZipOutputStream out = null;
-		try {
-			out = new ZipOutputStream(new FileOutputStream(
-					outFileName));
-			for (int i = 0; i < fileNames.length; i++) {
-				in = new FileInputStream(fileNames[i]);
-				out.putNextEntry(new ZipEntry(fileNames[i]));
-				int len;
-				while ((len = in.read(buf)) > 0) {
-					out.write(buf, 0, len);
-				}
-				out.closeEntry();
-				in.close();
-			}
-			out.close();
-		} catch (IOException e) {
-			throw new RuntimeException("Exception whilst creating ZIP file.");
-		} finally {
-			IOUtils.closeQuietly(in);
-			IOUtils.closeQuietly(out);
-		}
-	}
-
 	public static void appendToFile(File file, String content) throws IOException {
 		FileWriter fw = null;
 		try {

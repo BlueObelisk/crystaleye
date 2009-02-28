@@ -12,6 +12,11 @@ import java.util.List;
 import org.apache.commons.httpclient.URI;
 import org.junit.Test;
 
+import wwmm.crawler.ArticleDetails;
+import wwmm.crawler.ArticleReference;
+import wwmm.crawler.DOI;
+import wwmm.crawler.SupplementaryFileDetails;
+
 public class ArticleDetailsTest {
 	
 	@Test

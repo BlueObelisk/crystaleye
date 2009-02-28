@@ -11,6 +11,9 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import wwmm.crawler.ArticleReference;
+import wwmm.crawler.BibtexTool;
+
 public class BibtexToolTest {
 
 	@Test
@@ -81,7 +84,7 @@ public class BibtexToolTest {
 		BibtexTool bt1 = new BibtexTool(bibStr1);
 		ArticleReference ar = bt1.getReference();
 		assertNotNull(ar);
-		String journal = ar.getJournal();
+		String journal = ar.getJournalTitle();
 		assertEquals("Langmuir", journal);
 		String year = ar.getYear();
 		assertEquals("2009", year);

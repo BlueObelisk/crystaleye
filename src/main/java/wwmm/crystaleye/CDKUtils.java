@@ -21,7 +21,6 @@ import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.xmlcml.cml.base.CMLConstants;
-import org.xmlcml.cml.base.CMLRuntimeException;
 import org.xmlcml.cml.base.CMLUtil;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLBond;
@@ -42,13 +41,13 @@ public class CDKUtils implements CMLConstants {
 			bais.close();
 			IMoleculeSet mols = cf.getChemSequence(0).getChemModel(0).getMoleculeSet();
 			if (mols.getMoleculeCount() > 1) {
-				throw new CMLRuntimeException("CDK found more than one molecule in molecule.");
+				throw new RuntimeException("CDK found more than one molecule in molecule.");
 			}
 			cdkMol = mols.getMolecule(0);
 		} catch (IOException e) {
-			throw new CMLRuntimeException("Error reading molecule: "+e.getMessage());
+			throw new RuntimeException("Error reading molecule: "+e.getMessage());
 		} catch (CDKException e) {
-			throw new CMLRuntimeException("CDK Error reading molecule: "+e.getMessage());
+			throw new RuntimeException("CDK Error reading molecule: "+e.getMessage());
 		} finally {
 			if (bais != null)
 				try {
@@ -84,7 +83,7 @@ public class CDKUtils implements CMLConstants {
 			bais.close();
 			IMoleculeSet mols = cf.getChemSequence(0).getChemModel(0).getMoleculeSet();
 			if (mols.getMoleculeCount() > 1) {
-				throw new CMLRuntimeException("CDK found more than one molecule in molecule.");
+				throw new RuntimeException("CDK found more than one molecule in molecule.");
 			}
 			cdkMol = mols.getMolecule(0);
 
@@ -116,13 +115,13 @@ public class CDKUtils implements CMLConstants {
 						iBond.setStereo(CDKConstants.STEREO_BOND_UP);
 					}
 				} else if (bondStereoNodes.size() > 1) {
-					throw new CMLRuntimeException("Error: CMLBond has more than one bondStereo set: "+bond);
+					throw new RuntimeException("Error: CMLBond has more than one bondStereo set: "+bond);
 				}
 			}
 		} catch (IOException e) {
-			throw new CMLRuntimeException("Error reading molecule: "+e.getMessage());
+			throw new RuntimeException("Error reading molecule: "+e.getMessage());
 		} catch (CDKException e) {
-			throw new CMLRuntimeException("CDK Error reading molecule: "+e.getMessage());
+			throw new RuntimeException("CDK Error reading molecule: "+e.getMessage());
 		} finally {
 			if (bais != null)
 				try {
@@ -150,7 +149,7 @@ public class CDKUtils implements CMLConstants {
 		try {
 			sdg.generateCoordinates();
 		} catch (Exception e) {
-			throw new CMLRuntimeException("Error generating molecule coordinates: "+e.getMessage());
+			throw new RuntimeException("Error generating molecule coordinates: "+e.getMessage());
 		}
 		mol = sdg.getMolecule();
 		for (int i = 0; i < mol.getAtomCount(); i++) {

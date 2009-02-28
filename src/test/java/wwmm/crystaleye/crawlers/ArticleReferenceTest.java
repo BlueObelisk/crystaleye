@@ -5,12 +5,14 @@ import static junit.framework.Assert.*;
 
 import org.junit.Test;
 
+import wwmm.crawler.ArticleReference;
+
 public class ArticleReferenceTest {
 	
 	@Test
 	public void testConstructor() {
 		ArticleReference ar = new ArticleReference();
-		assertNull(ar.getJournal());
+		assertNull(ar.getJournalTitle());
 		assertNull(ar.getYear());
 		assertNull(ar.getVolume());
 		assertNull(ar.getNumber());
@@ -21,8 +23,8 @@ public class ArticleReferenceTest {
 	public void testSetAndGetJournal() {
 		ArticleReference ar = new ArticleReference();
 		String journal = "Acta. Cryst. E";
-		ar.setJournal(journal);
-		assertSame(journal, ar.getJournal());
+		ar.setJournalTitle(journal);
+		assertSame(journal, ar.getJournalTitle());
 	}
 	
 	@Test 
