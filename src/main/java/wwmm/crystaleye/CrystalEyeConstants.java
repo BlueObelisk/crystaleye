@@ -23,7 +23,6 @@ public interface CrystalEyeConstants {
 	
 	// RSS/Atom namespaces
 	public static final String ATOM_1_NS = "http://www.w3.org/2005/Atom";
-	public static final String RSS_1_NS = "http://purl.org/rss/1.0/";
 	public static final String DC_NS = "http://purl.org/dc/elements/1.1/";
 	public static final String RDF_NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	
@@ -35,7 +34,6 @@ public interface CrystalEyeConstants {
 	// for RSS/Atom
 	public static final XPathContext X_ATOM1 = new XPathContext("atom1", ATOM_1_NS);
 	public static final XPathContext X_DC = new XPathContext("dc", DC_NS);
-	public static final XPathContext X_RSS1 = new XPathContext("rss1", RSS_1_NS);
 	public static final XPathContext X_RDF = new XPathContext("rdf", RDF_NS);
 	
 	// MIME types used in CrystalEye
@@ -76,5 +74,4 @@ public interface CrystalEyeConstants {
 	// miscellaneous
 	public static final int MAX_CIF_SIZE_IN_BYTES = 2621440;
 	public static final String NEWLINE = System.getProperty("line.separator");
-	public static final String COMPLETE_CML_MIME_REGEX = COMPLETE_CML_MIME.replaceAll("\\.", "\\\\.");
 }

@@ -32,12 +32,13 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * <p>
- * Parses CheckCIF HTML into an XML Document.  Note that those 
- * CheckCIFs returned by the CheckCIF service and those published
- * alongside articles at Acta Cryst. are slightly different.  
- * Thus, there are two public methods provided here, one for the 
- * published CheckCIFs (<code>parsePublished()</code>) and one 
- * for those returned by the service (<code>parseService()</code>).
+ * Parses the CheckCIF HTML created by the IUCr CheckCIF service
+ * into an XML Document.  Note that those CheckCIFs returned by 
+ * the CheckCIF service and those published alongside articles at 
+ * Acta Cryst. are slightly different.  Thus, there are two public 
+ * methods provided here, one for the published CheckCIFs 
+ * (<code>parsePublished()</code>) and one for those returned by 
+ * the service (<code>parseService()</code>).
  * </p> 
  * 
  * <p>
@@ -55,7 +56,8 @@ public class CheckCifParser {
 	
 	private static final Logger LOG = Logger.getLogger(CheckCifParser.class);
 
-	// the XML Document in which the results of parsing are placed.
+	// the XML Document in which HTML returned from the CheckCIF service
+	// is placed so that it can be parsed.
 	private Document doc;
 	// the input CheckCIF as a String
 	private String checkCifHtml;
@@ -114,6 +116,7 @@ public class CheckCifParser {
 		checkCifHtml = m.replaceAll("");
 		setDocument();
 
+		// this is the XML doc that will eventually be returned.
 		Document checkcifXml = new Document(new Element("checkCif", CC_NS));
 		Element deposited = new Element("deposited", CC_NS);
 
@@ -171,6 +174,7 @@ public class CheckCifParser {
 	public Document parseService() {
 		setDocument();
 		setBlockStartPositions();
+		// this is the XML doc that will eventually be returned.
 		Document checkcifXml = new Document(new Element("checkCif", CC_NS));
 		Element calc = new Element("calculated", CC_NS);
 		Element data;
@@ -287,6 +291,11 @@ public class CheckCifParser {
 		return checkcifXml;
 	}
 	
+	/**
+	 * Sets an instance variable to contain the a tidied version of the
+	 * CheckCIF HTML returned by the CheckCIF service. 
+	 * 
+	 */
 	private void setDocument() {
 		try {
 			XMLReader tagsoup = XMLReaderFactory.createXMLReader("org.ccil.cowan.tagsoup.Parser");
@@ -304,6 +313,13 @@ public class CheckCifParser {
 		}
 	}
 
+	/**
+	 * Simply finds the HTML body element in the CheckCIF HTML returned
+	 * by the CheckCIF service and sets an instance variable for it.  The
+	 * body element is important for parsing, as the sections of interest
+	 * are direct children of the body element.
+	 * 
+	 */
 	private void setBodyElement() {
 		Nodes nodes = doc.query("/x:html/x:body", X_XHTML);
 		if (nodes.size() != 0) {
@@ -313,6 +329,16 @@ public class CheckCifParser {
 		}
 	}
 
+	/**
+	 * Go through the CheckCIF HTML returned by the CheckCIF service and set 
+	 * instance variable to point to the starts of the various sections of
+	 * interest.  These are the starting positions for:
+	 * 
+	 * 1. the data for each datablock (dbPos).
+	 * 2. the publication errors (pubPos).
+	 * 3. the platon information (platPos).
+	 * 
+	 */
 	private void setBlockStartPositions() {
 		Nodes syntaxError = doc.query("//x:h2[text()='Syntax problems']", X_XHTML);
 		if (syntaxError.size() == 0) {
@@ -348,6 +374,14 @@ public class CheckCifParser {
 		}
 	}
 
+	/**
+	 * Goes through the CheckCIF HTML returned by the CheckCIF service
+	 * and creates and returns XML <code>Document</code>s for the data
+	 * about each datablock. 
+	 * 
+	 * @return a list of XML <code>Document</code>s, where each contains
+	 * the information for a separate datablock in the CheckCIF.
+	 */
 	private List<Document> getDatablocks() {
 		List<Document> datablockList = new ArrayList<Document>();
 		if (dbPos.length>1) {
@@ -384,6 +418,12 @@ public class CheckCifParser {
 		return datablockList;
 	}
 
+	/**
+	 * Gets the publication errors section from the CheckCIF.
+	 * 
+	 * @return an XML <code>Document</code> containing the publication
+	 * errors section.
+	 */
 	@SuppressWarnings("unused")
 	private Document getPublErrorDoc() {
 		Document publErrorDoc = new Document(new Element("publErrorBlock", XHTML_NS));
@@ -401,6 +441,12 @@ public class CheckCifParser {
 		return publErrorDoc;
 	}
 
+	/**
+	 * Gets the Platon information from the CheckCIF.
+	 * 
+	 * @return an XML <code>Document</code> containing the Platon
+	 * information section.
+	 */
 	private Document getPlatonDoc() {
 		Document platonDoc = new Document(new Element("platonBlock", XHTML_NS));
 		for (int j = platPos; j < body.getChildCount(); j++) {

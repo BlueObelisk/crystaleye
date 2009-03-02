@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import nu.xom.Builder;
+import nu.xom.Document;
+
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -15,6 +18,9 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+
+import wwmm.crystaleye.BasicHttpClient;
+import wwmm.crystaleye.Utils;
 
 /**
  * <p>
@@ -31,6 +37,7 @@ public class CheckCifTool {
 	
 	// The endpoint to which a CIF is posted to calculate the CheckCIF. 
 	private final String POST_ENDPOINT = "http://dynhost1.iucr.org/cgi-bin/checkcif.pl";
+	private PostMethod postMethod;
 	
 	private static final Logger LOG = Logger.getLogger(CheckCifParser.class);
 	
@@ -53,45 +60,71 @@ public class CheckCifTool {
 			throw new RuntimeException("Error converting CheckCIF stream to string.", e);
 		} finally {
 			IOUtils.closeQuietly(in);
+			if (postMethod != null) {
+				postMethod.releaseConnection();
+			}
 		}
 		return checkcif;
 	}
 	
 	/**
 	 * <p>
+	 * Sends the provided CIF file off to the CheckCIF service.  The 
+	 * resulting CheckCIF HTML is tidied and converted into an XML
+	 * Document (using Tagsoup) before being returned.
+	 * </p>
+	 * 
+	 * @param cifFile - a file containing a CIF.
+	 * 
+	 * @return XML Document containing tidied CheckCIF HTML.
+	 */
+	public Document getCheckcifHtml(File cifFile) {
+		InputStream in = getCheckcifStream(cifFile);
+		Document xml = null;
+		try {
+			Builder builder = BasicHttpClient.getTagsoupBuilder();
+			xml = Utils.parseXml(builder, in);
+		} finally {
+			IOUtils.closeQuietly(in);
+			if (postMethod != null) {
+				postMethod.releaseConnection();
+			}
+		}
+		return xml;
+	}
+	
+	/**
+	 * <p>
 	 * Sends the provided CIF file off to the CheckCIF service.  The
 	 * resulting CheckCIF HTML is returned in an <code>InputStream</code>.
+	 * Any class methods calling this should remember to close the
+	 * returned InputStream AND release the connection for postMethod. See
+	 * getCheckcifHtml for an example. 
 	 * </p>
 	 * 
 	 * @param cifFile - a file containing a CIF.
 	 * 
 	 * @return InputStream containing the CheckCIF HTML.
 	 */
-	public InputStream getCheckcifStream(File cifFile) {
-		PostMethod filePost = null;
+	private InputStream getCheckcifStream(File cifFile) {
 		InputStream in = null;
 		try {
-			filePost = new PostMethod(POST_ENDPOINT);
+			postMethod = new PostMethod(POST_ENDPOINT);
 			Part[] parts = { new FilePart("file", cifFile),
 					new StringPart("runtype", "fullpublication"),
 					new StringPart("UPLOAD", "Send CIF for checking") };
-			filePost.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
+			postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
 					new DefaultHttpMethodRetryHandler(5, false));
-			filePost.setRequestEntity(new MultipartRequestEntity(parts,
-					filePost.getParams()));
+			postMethod.setRequestEntity(new MultipartRequestEntity(parts,
+					postMethod.getParams()));
 			HttpClient client = new HttpClient();
-			int statusCode = client.executeMethod(filePost);
+			int statusCode = client.executeMethod(postMethod);
 			if (statusCode != HttpStatus.SC_OK) {
 				throw new RuntimeException("Non-success status code returned: "+statusCode);
 			}
-			in = filePost.getResponseBodyAsStream();
+			in = postMethod.getResponseBodyAsStream();
 		} catch (IOException e) {
 			throw new RuntimeException("Error calculating checkcif.", e);
-		} finally {
-			if (filePost != null) {
-				filePost.releaseConnection();
-			}
-			IOUtils.closeQuietly(in);
 		}
 		return in;
 	}
