@@ -309,7 +309,7 @@ public class BasicHttpClient {
 	 * @return XOM <code>Builder</code> created with the Tagsoup HTML parser.
 	 * 
 	 */
-	private Builder getTagsoupBuilder() {
+	public static Builder getTagsoupBuilder() {
 		XMLReader tagsoup = null;
 		try {
 			tagsoup = XMLReaderFactory.createXMLReader("org.ccil.cowan.tagsoup.Parser");
