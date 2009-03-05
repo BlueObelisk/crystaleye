@@ -3,8 +3,10 @@ package wwmm.crystaleye.model;
 import static wwmm.crystaleye.CrystalEyeConstants.CIF_MIME;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.Utils;
@@ -44,12 +46,13 @@ public class CifDAO {
 	 * 
 	 * @return the primary key that the written CIF has been 
 	 * assigned.
+	 * @throws IOException 
 	 */
-	public int insertCif(InputStream in) {
+	public int insertCif(String cifContents) throws IOException {
 		int key = keyDao.insertPrimaryKey();
 		File keyFile = keyDao.getFileFromKey(key);
 		File cifFile = new File(keyFile, key+CIF_MIME);
-		Utils.writeInputStreamToFile(in, cifFile);
+		FileUtils.writeStringToFile(cifFile, cifContents);
 		return key;
 	}
 

@@ -11,7 +11,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -27,9 +26,32 @@ import nu.xom.ValidityException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
 
 public class Utils {
+	
+	private static final Logger LOG = Logger.getLogger(Utils.class);
+	
+	/**
+	 * <p>
+	 * The <code>sleep</code> method is called by all methods in this class which 
+	 * call a method in the superclass.  A random number between 0 and 
+	 * <code>maxSleep</code> is used to determine how long a period the process 
+	 * should sleep for before continuing.
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 */
+	public static void sleep(int maxSleep) {
+		int maxTime = Integer.valueOf(maxSleep);
+		try {
+			Thread.sleep(((int) (maxTime * Math.random())));
+		} catch (InterruptedException e) {
+			LOG.debug("Sleep interrupted.");
+		}
+	}
 
 	public static List<Node> queryHTML(Document doc, String xpath) {
 		Node node = doc.getRootElement();

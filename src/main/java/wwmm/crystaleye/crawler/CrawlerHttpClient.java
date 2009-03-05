@@ -1,11 +1,5 @@
 package wwmm.crystaleye.crawler;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import nu.xom.Builder;
 import nu.xom.Document;
 
 import org.apache.commons.httpclient.Header;
@@ -13,7 +7,6 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.BasicHttpClient;
@@ -50,26 +43,6 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	
 	/**
 	 * <p>
-	 * The <code>sleep</code> method is called by all methods in this class which 
-	 * call a method in the superclass.  A random number between 0 and 
-	 * <code>maxSleep</code> is used to determine how long a period the process 
-	 * should sleep for before continuing.
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 */
-	protected void sleep() {
-		int maxTime = Integer.valueOf(maxSleep);
-		try {
-			Thread.sleep(((int) (maxTime * Math.random())));
-		} catch (InterruptedException e) {
-			LOG.debug("Sleep interrupted.");
-		}
-	}
-	
-	/**
-	 * <p>
 	 * Executes a HTTP GET on the resource at the provided <code>URI</code>.  The 
 	 * resource contents are returned in a String.  Includes a period of sleep.
 	 * </p>
@@ -84,7 +57,7 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	 */
 	@Override
 	public String getResourceString(URI uri) {
-		sleep();
+		Utils.sleep(maxSleep);
 		return super.getResourceString(uri);
 	}
 
@@ -105,7 +78,7 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	 */
 	@Override
 	public Document getResourceHTML(URI uri) {
-		sleep();
+		Utils.sleep(maxSleep);
 		return super.getResourceHTML(uri);
 	}
 	
@@ -127,7 +100,7 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	 */
 	@Override
 	public Document getResourceHTMLMinusComments(URI uri) {
-		sleep();
+		Utils.sleep(maxSleep);
 		return super.getResourceHTMLMinusComments(uri);
 	}
 	
@@ -148,7 +121,7 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	 */
 	@Override
 	public Document getResourceXML(URI uri) {
-		sleep();
+		Utils.sleep(maxSleep);
 		return super.getResourceXML(uri);
 	}
 	
@@ -168,7 +141,7 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	 */
 	@Override
 	public String getPostResultString(PostMethod postMethod) {
-		sleep();
+		Utils.sleep(maxSleep);
 		return super.getPostResultString(postMethod);
 	}
 	
@@ -188,7 +161,7 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	 */
 	@Override
 	public Document getPostResultXML(PostMethod postMethod) {
-		sleep();
+		Utils.sleep(maxSleep);
 		return super.getPostResultXML(postMethod);
 	}
 
@@ -209,7 +182,7 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	 */
 	@Override
 	public Header[] getHeaders(URI uri) {
-		sleep();
+		Utils.sleep(maxSleep);
 		return super.getHeaders(uri);
 	}
 
@@ -229,7 +202,7 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	 */
 	@Override
 	public GetMethod executeGET(URI uri) {
-		sleep();
+		Utils.sleep(maxSleep);
 		return super.executeGET(uri);
 	}
 
@@ -249,7 +222,7 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	 */
 	@Override
 	public HeadMethod executeHEAD(URI uri) {
-		sleep();
+		Utils.sleep(maxSleep);
 		return super.executeHEAD(uri);
 	}
 
@@ -270,7 +243,7 @@ public class CrawlerHttpClient extends BasicHttpClient {
 	 */
 	@Override
 	public String getContentType(URI uri) {
-		sleep();
+		Utils.sleep(maxSleep);
 		return super.getContentType(uri);
 	}
 

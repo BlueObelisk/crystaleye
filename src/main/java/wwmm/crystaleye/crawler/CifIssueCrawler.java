@@ -1,5 +1,6 @@
 package wwmm.crystaleye.crawler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.httpclient.URIException;
@@ -53,12 +54,13 @@ public class CifIssueCrawler {
 	 */
 	public List<ArticleDetails> getDetailsForArticles(IssueDetails issueDetails) {
 		List<ArticleDetails> adList = issueCrawler.getDetailsForArticles(issueDetails);
+		List<ArticleDetails> cifAdList = new ArrayList<ArticleDetails>();
 		for (ArticleDetails ad : adList) {
-			if (!hasSupplementaryCifFile(ad)) {
-				adList.remove(ad);
+			if (hasSupplementaryCifFile(ad)) {
+				cifAdList.add(ad);
 			}
 		}
-		return adList;
+		return cifAdList;
 	}
 	
 	/**
