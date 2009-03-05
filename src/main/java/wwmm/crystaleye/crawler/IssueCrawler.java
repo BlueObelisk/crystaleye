@@ -98,7 +98,7 @@ public abstract class IssueCrawler extends Crawler {
 	 * @return a list where each item contains the details for 
 	 * a particular article from the issue.
 	 */
-	public List<ArticleDetails> getDetailsForCurrentArticles() {
+	final public List<ArticleDetails> getDetailsForCurrentArticles() {
 		IssueDetails issueDetails = getCurrentIssueDetails();
 		return getDetailsForArticles(issueDetails);
 	}

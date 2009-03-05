@@ -4,12 +4,9 @@ import static wwmm.crystaleye.CrystalEyeConstants.CIF_MIME;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-
-import wwmm.crystaleye.Utils;
 
 /**
  * <p>
@@ -25,6 +22,10 @@ public class CifDAO {
 	private PrimaryKeyDAO keyDao;
 
 	private static final Logger LOG = Logger.getLogger(CifDAO.class);
+	
+	public CifDAO(File storageRoot) {
+		setStorageRoot(storageRoot);
+	}
 
 	/**
 	 * Provide the root folder at which the CrystalEye database sits.
@@ -52,6 +53,7 @@ public class CifDAO {
 		int key = keyDao.insertPrimaryKey();
 		File keyFile = keyDao.getFileFromKey(key);
 		File cifFile = new File(keyFile, key+CIF_MIME);
+		System.out.println(cifFile.getAbsolutePath());
 		FileUtils.writeStringToFile(cifFile, cifContents);
 		return key;
 	}

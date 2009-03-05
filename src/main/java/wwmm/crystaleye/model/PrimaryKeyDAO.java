@@ -47,14 +47,19 @@ public class PrimaryKeyDAO {
 	
 	/**
 	 * Returns the folder in the database which represents the primary 
-	 * key provided as a parameter. 
+	 * key provided as a parameter. If the folder for the key does not 
+	 * yet exist, then NULL is returned.
 	 * 
 	 * @param key - primary key you wish to find the storage folder for.
 	 * 
 	 * @return File where the contents of the primary key are stored.
 	 */
 	public File getFileFromKey(int key) {
-		return new File(storageRoot, ""+key);
+		File f = new File(storageRoot, ""+key);
+		if (!f.exists()) {
+			return null;
+		}
+		return f;
 	}
 
 	/**
