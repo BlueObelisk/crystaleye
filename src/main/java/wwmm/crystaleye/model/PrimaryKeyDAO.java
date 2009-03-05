@@ -26,7 +26,7 @@ public class PrimaryKeyDAO {
 	// file - Nick Day
 
 	private File storageRoot;
-	private final String KEY_COUNT_FILENAME = "key_count.txt";
+	public static final String KEY_COUNT_FILENAME = "primarykey_count.txt";
 	private File keyCountFile;
 	
 	public PrimaryKeyDAO(File storageRoot) {
@@ -95,7 +95,7 @@ public class PrimaryKeyDAO {
 			throw new RuntimeException("Error setting next available key.", e);
 		} catch (NumberFormatException e) {
 			throw new RuntimeException("Content of the key count file is not" +
-					"an integer as expected: "+keyStr, e);
+					" an integer as expected: "+keyStr, e);
 		}
 		// check whether a folder corresponding to nextAvailableKey already
 		// exists.  If it does then find the next available folder.  Ensures
