@@ -19,7 +19,7 @@ public class BibtexToolTest {
 	@Test
 	public void testFailsOnEmptyFile() throws IOException {
 		String bibStr = IOUtils.toString(getClass().getClassLoader()
-				.getResourceAsStream("bibtex/empty-file.bib"));
+				.getResourceAsStream("./crawler/bibtex/empty-file.bib"));
 		try {
 			new BibtexTool(bibStr);
 			fail("Parsing the empty file should have caused an exception.");
