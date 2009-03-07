@@ -36,21 +36,6 @@ public interface CrystalEyeConstants {
 	public static final XPathContext X_DC = new XPathContext("dc", DC_NS);
 	public static final XPathContext X_RDF = new XPathContext("rdf", RDF_NS);
 	
-	// MIME types used in CrystalEye
-	public static final String COMPLETE_CML_MIME = ".complete.cml.xml";
-	public static final String CIF_HTML_SUMMARY_MIME = ".cif.summary.html";
-	public static final String RAW_CML_MIME = ".raw.cml.xml";
-	public static final String CSV_MIME = ".csv";
-	public static final String SVG_MIME = ".svg";
-	public static final String HTML_MIME = ".html";
-	public static final String CIF_MIME = ".cif";
-	public static final String DOI_MIME = ".doi";
-	public static final String DATE_MIME = ".date";
-	public static final String TITLE_MIME = ".title";
-	public static final String PNG_MIME = ".png";
-	public static final String SMALL_PNG_MIME = ".small.png";
-	public static final String PLATON_MIME = ".platon.jpeg";
-	
 	// flag dictRefs
 	public static final String POLYMERIC_FLAG_DICTREF = "ned24:isPolymeric";
 	public static final String NO_BONDS_OR_CHARGES_FLAG_DICTREF = "ned24:noBondsOrChargesSet";

@@ -1,9 +1,10 @@
 package wwmm.crystaleye.crawlers;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 
 import wwmm.crystaleye.crawler.AcsJournal;
-import static org.junit.Assert.*;
 
 public class AcsJournalTest {
 	

@@ -1,7 +1,5 @@
 package wwmm.crystaleye.model;
 
-import static wwmm.crystaleye.CrystalEyeConstants.CIF_MIME;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -20,6 +18,7 @@ public class CifDAO {
 
 	private File storageRoot;
 	private PrimaryKeyDAO keyDao;
+	public static final String CIF_MIME = ".cif";
 
 	private static final Logger LOG = Logger.getLogger(CifDAO.class);
 	
@@ -49,12 +48,16 @@ public class CifDAO {
 	 * assigned.
 	 * @throws IOException 
 	 */
-	public int insertCif(String cifContents) throws IOException {
+	public int insertCif(String cifContents) {
 		int key = keyDao.insertPrimaryKey();
 		File keyFile = keyDao.getFileFromKey(key);
 		File cifFile = new File(keyFile, key+CIF_MIME);
-		System.out.println(cifFile.getAbsolutePath());
-		FileUtils.writeStringToFile(cifFile, cifContents);
+		LOG.info("Inserting CIF to: "+cifFile.getAbsolutePath());
+		try {
+			FileUtils.writeStringToFile(cifFile, cifContents);
+		} catch (IOException e) {
+			throw new RuntimeException("Could not write CIF string to: "+cifFile.getAbsolutePath(), e);
+		}
 		return key;
 	}
 
