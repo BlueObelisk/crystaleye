@@ -1,6 +1,7 @@
 package wwmm.crystaleye.crawler;
 
 import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 
 public class SupplementaryFileDetails {
 
@@ -18,8 +19,12 @@ public class SupplementaryFileDetails {
 		return linkText;
 	}
 
-	public URI getUri() {
+	public URI getURI() {
 		return uri;
+	}
+	
+	public String getUriString() throws URIException {
+		return uri.getURI();
 	}
 
 	public String getContentType() {

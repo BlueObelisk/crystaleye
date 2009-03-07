@@ -1,7 +1,7 @@
 package wwmm.crystaleye.crawlers;
 
 import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertSame;
 
 import org.junit.Test;
 

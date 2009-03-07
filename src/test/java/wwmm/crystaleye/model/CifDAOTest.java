@@ -1,10 +1,11 @@
 package wwmm.crystaleye.model;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+import static wwmm.crystaleye.model.CifDAO.CIF_MIME;
+
 import java.io.File;
 import java.io.IOException;
-
-import static junit.framework.Assert.*;
-import static wwmm.crystaleye.CrystalEyeConstants.CIF_MIME;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;

@@ -26,7 +26,7 @@ public class SupplementaryFileDetailsTest {
 	
 	@Test
 	public void testGetURI() {
-		assertSame(uri, sfd.getUri());
+		assertSame(uri, sfd.getURI());
 	}
 	
 	@Test

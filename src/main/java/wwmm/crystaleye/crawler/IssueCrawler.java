@@ -1,8 +1,6 @@
 package wwmm.crystaleye.crawler;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import nu.xom.Document;
 

@@ -283,8 +283,8 @@ public class ArticleDetails {
 			result.append("  Supplementary file details:"+NEW_LINE);
 			int scount = 1;
 			for (SupplementaryFileDetails sf : suppFiles) {
-				if (sf.getUri() != null) {
-					result.append("    URI: "+sf.getUri()+NEW_LINE);
+				if (sf.getURI() != null) {
+					result.append("    URI: "+sf.getURI()+NEW_LINE);
 				}
 				if (!StringUtils.isEmpty(sf.getLinkText())) {
 					result.append("    Link text: "+sf.getLinkText()+NEW_LINE);

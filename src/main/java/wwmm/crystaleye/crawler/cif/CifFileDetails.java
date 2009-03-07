@@ -5,8 +5,11 @@ import org.apache.commons.httpclient.URI;
 import wwmm.crystaleye.crawler.SupplementaryFileDetails;
 
 /**
- * A class used solely to indicate that a particular 
- * supplementary file is a CIF.
+ * <p>
+ * A class intended only to extend SupplementaryFileDetails so 
+ * it can be used to indicate that a particular instance refers
+ * to a CIF.
+ * </p>
  * 
  * @author Nick Day
  * @version 0.1
