@@ -60,7 +60,7 @@ public class CrawlerTask {
 	}
 
 	public static void main(String[] args) throws IOException {
-		String root = "c:/work/crystaleye1.2-data";
+		String root = "e:/crystaleye1.2-data";
 		File storageRoot = new File(root);
 		ActaIssueCrawler actaCrawler = new ActaIssueCrawler(ActaJournal.SECTION_C);
 		CifIssueCrawler crawler = new ActaCifIssueCrawler(actaCrawler);
