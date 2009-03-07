@@ -32,7 +32,7 @@ public class ArticleMetadataDAO {
 	public void insertArticleMetadata(int primaryKey, String metadata) {
 		File keyFile = keyDao.getFileFromKey(primaryKey);
 		File metadataFile = new File(keyFile, primaryKey+ARTICLE_METADATA_MIME);
-		LOG.info("Inserting CIF to: "+metadataFile.getAbsolutePath());
+		LOG.info("Inserting article metadata to: "+metadataFile.getAbsolutePath());
 		try {
 			FileUtils.writeStringToFile(metadataFile, metadata);
 		} catch (IOException e) {
