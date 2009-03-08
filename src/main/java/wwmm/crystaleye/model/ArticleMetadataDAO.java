@@ -6,11 +6,20 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
+/**
+ * <p>
+ * Data-access class for accessing article metadata in the 
+ * CrystalEye database.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 0.1
+ */
 public class ArticleMetadataDAO {
 	
 	private PrimaryKeyDAO keyDao;
 	private File storageRoot;
-	private static final String ARTICLE_METADATA_MIME = ".mets.xml";
+	public static final String ARTICLE_METADATA_MIME = ".mets.xml";
 	
 	private static final Logger LOG = Logger.getLogger(ArticleMetadataDAO.class);
 	
@@ -19,7 +28,9 @@ public class ArticleMetadataDAO {
 	}
 	
 	/**
+	 * <p>
 	 * Provide the root folder at which the CrystalEye database sits.
+	 * </p>
 	 * 
 	 * @param storageRoot - the root folder at which the CrystalEye 
 	 * database sits.
@@ -29,15 +40,35 @@ public class ArticleMetadataDAO {
 		this.keyDao = new PrimaryKeyDAO(storageRoot);
 	}
 	
-	public void insertArticleMetadata(int primaryKey, String metadata) {
+	/**
+	 * <p>
+	 * Insert the metadata provided in the <code>String</code> parameter 
+	 * at the provided primary key location.
+	 * </p>
+	 * 
+	 * @param primaryKey - int of the primary key that the metadata is 
+	 * to be inserted to.
+	 * @param metadata - contains the contents of the metadata to be 
+	 * written to the database.
+	 * 
+	 * @return true if the metadata was successfully added to the 
+	 * database, false if not.
+	 */
+	public boolean insertArticleMetadata(int primaryKey, String metadata) {
 		File keyFile = keyDao.getFileFromKey(primaryKey);
+		if (keyFile == null) {
+			LOG.warn("The primary key provided ("+primaryKey+") does not exists in the database.");
+			return false;
+		}
 		File metadataFile = new File(keyFile, primaryKey+ARTICLE_METADATA_MIME);
 		LOG.info("Inserting article metadata to: "+metadataFile.getAbsolutePath());
 		try {
 			FileUtils.writeStringToFile(metadataFile, metadata);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not write metadata string to: "+metadataFile.getAbsolutePath(), e);
+			LOG.warn("Could not write metadata string to: "+metadataFile.getAbsolutePath(), e);
+			return false;
 		}
+		return true;
 	}
 
 }

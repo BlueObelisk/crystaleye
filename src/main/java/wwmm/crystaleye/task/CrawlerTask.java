@@ -12,11 +12,11 @@ import wwmm.crystaleye.crawler.cif.ActaCifIssueCrawler;
 import wwmm.crystaleye.crawler.cif.CifFileDetails;
 import wwmm.crystaleye.crawler.cif.CifIssueCrawler;
 import wwmm.crystaleye.model.ArticleMetadataDAO;
-import wwmm.crystaleye.model.CifDAO;
+import wwmm.crystaleye.model.CifFileDAO;
 
 public class CrawlerTask {
 
-	CifDAO cifDao;
+	CifFileDAO cifDao;
 	ArticleMetadataDAO articleMetadataDao;
 	CifIssueCrawler crawler;
 
@@ -26,7 +26,7 @@ public class CrawlerTask {
 	}
 
 	private void initDAOs(File storageRoot) {
-		cifDao = new CifDAO(storageRoot);
+		cifDao = new CifFileDAO(storageRoot);
 		articleMetadataDao = new ArticleMetadataDAO(storageRoot);
 	}
 
@@ -60,9 +60,9 @@ public class CrawlerTask {
 	}
 
 	public static void main(String[] args) throws IOException {
-		String root = "e:/crystaleye1.2-data";
+		String root = "c:/work/crystaleye1.2-data";
 		File storageRoot = new File(root);
-		ActaIssueCrawler actaCrawler = new ActaIssueCrawler(ActaJournal.SECTION_C);
+		ActaIssueCrawler actaCrawler = new ActaIssueCrawler(ActaJournal.SECTION_B);
 		CifIssueCrawler crawler = new ActaCifIssueCrawler(actaCrawler);
 		CrawlerTask ct = new CrawlerTask(crawler, storageRoot);
 		ct.crawl();
