@@ -14,15 +14,15 @@ import org.apache.log4j.Logger;
  * @author Nick Day
  * @version 0.1
  */
-public class CifDAO {
+public class CifFileDAO {
 
 	private File storageRoot;
 	private PrimaryKeyDAO keyDao;
 	public static final String CIF_MIME = ".cif";
 
-	private static final Logger LOG = Logger.getLogger(CifDAO.class);
+	private static final Logger LOG = Logger.getLogger(CifFileDAO.class);
 	
-	public CifDAO(File storageRoot) {
+	public CifFileDAO(File storageRoot) {
 		setStorageRoot(storageRoot);
 	}
 

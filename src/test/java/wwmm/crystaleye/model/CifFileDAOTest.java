@@ -2,27 +2,32 @@ package wwmm.crystaleye.model;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static wwmm.crystaleye.model.CifDAO.CIF_MIME;
+import static wwmm.crystaleye.model.CifFileDAO.CIF_MIME;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class CifDAOTest {
+public class CifFileDAOTest {
 
 	private static File fixturesRoot;
 	private static String foldername = "cifdao";
+	
+	private static final Logger LOG = Logger.getLogger(CifFileDAOTest.class);
 
 	/**
-	 * The tests in subclasses will create various folders and files.  
+	 * <p>
+	 * The tests for DAO classes will create various folders and files.  
 	 * We don't want to alter the fixtures in ./src/main/resources, 
 	 * so the folder is copied over to the ./target directory and 
 	 * the tests are run on that.  The directory is removed by the 
 	 * method tagged with @AfterClass.
+	 * </p>
 	 */
 	@BeforeClass
 	public static void setUpTestStorageRoot() throws IOException {
@@ -30,21 +35,26 @@ public class CifDAOTest {
 		File fixturesSrc = new File("./src/test/resources/model/"+foldername);
 		fixturesRoot = new File(target, foldername);
 		FileUtils.deleteDirectory(fixturesRoot);
+		LOG.debug("Creating directory at: "+fixturesRoot.getAbsolutePath());
 		FileUtils.copyDirectory(fixturesSrc, fixturesRoot);
 	}
 
 	/**
+	 * <p>
 	 * Remove the directory that was copied over to the ./target folder
+	 * in <code>setUpTestStorageRoot</code>.
+	 * </p>
 	 */
 	@AfterClass
 	public static void removeTestStorageRoot() throws IOException {
+		LOG.debug("Deleting directory at: "+fixturesRoot.getAbsolutePath());
 		FileUtils.deleteDirectory(fixturesRoot);
 	}
 	
 	@Test
 	public void testInsertCif() throws IOException {
 		File storageRoot = new File(fixturesRoot, "storage_root");
-		CifDAO cifDao = new CifDAO(storageRoot);
+		CifFileDAO cifDao = new CifFileDAO(storageRoot);
 		String cifContents = "data_1\ncell_measurement_temperature 298\n";
 		File key1File = new File(storageRoot, "1");
 		assertTrue(!key1File.exists());
