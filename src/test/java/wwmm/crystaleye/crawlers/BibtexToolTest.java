@@ -31,28 +31,28 @@ public class BibtexToolTest {
 	@Test
 	public void testReadsValidFilesWithoutFailing() throws IOException {
 		String bibStr1 = IOUtils.toString(getClass().getClassLoader()
-				.getResourceAsStream("bibtex/10.1021_cg801336t.bib"));
+				.getResourceAsStream("./crawler/bibtex/10.1021_cg801336t.bib"));
 		new BibtexTool(bibStr1);
 		
 		String bibStr2 = IOUtils.toString(getClass().getClassLoader()
-				.getResourceAsStream("bibtex/10.1107_S010876730804333X.bib"));
+				.getResourceAsStream("./crawler/bibtex/10.1107_S010876730804333X.bib"));
 		new BibtexTool(bibStr2);
 		
 		String bibStr3 = IOUtils.toString(getClass().getClassLoader()
-				.getResourceAsStream("bibtex/10.1107_S1600536809002645.bib"));
+				.getResourceAsStream("./crawler/bibtex/10.1107_S1600536809002645.bib"));
 		new BibtexTool(bibStr3);
 	}
 	
 	@Test
 	public void testGetsCorrectNumberOfDataItems() throws IOException {
 		String bibStr1 = IOUtils.toString(getClass().getClassLoader()
-				.getResourceAsStream("bibtex/10.1107_S0021889809003987.bib"));
+				.getResourceAsStream("./crawler/bibtex/10.1107_S0021889809003987.bib"));
 		BibtexTool bt1 = new BibtexTool(bibStr1);
 		Map<String, String> nvps1 = bt1.getNameValuePairs();
 		assertEquals(10, nvps1.size());
 		
 		String bibStr2 = IOUtils.toString(getClass().getClassLoader()
-				.getResourceAsStream("bibtex/10.1021_cm802828z.bib"));
+				.getResourceAsStream("./crawler/bibtex/10.1021_cm802828z.bib"));
 		BibtexTool bt2 = new BibtexTool(bibStr2);
 		Map<String, String> nvps2 = bt2.getNameValuePairs();
 		assertEquals(10, nvps2.size());
@@ -61,7 +61,7 @@ public class BibtexToolTest {
 	@Test
 	public void testGetsCorrectValues() throws IOException {
 		String bibStr1 = IOUtils.toString(getClass().getClassLoader()
-				.getResourceAsStream("bibtex/10.1107_S0108270109003370.bib"));
+				.getResourceAsStream("./crawler/bibtex/10.1107_S0108270109003370.bib"));
 		BibtexTool bt1 = new BibtexTool(bibStr1);
 		String journal = bt1.getValue("journal");
 		assertEquals("Acta Crystallographica Section C", journal);
@@ -80,7 +80,7 @@ public class BibtexToolTest {
 	@Test
 	public void testGetReference() throws IOException {
 		String bibStr1 = IOUtils.toString(getClass().getClassLoader()
-				.getResourceAsStream("bibtex/10.1021_la8028484.bib"));
+				.getResourceAsStream("./crawler/bibtex/10.1021_la8028484.bib"));
 		BibtexTool bt1 = new BibtexTool(bibStr1);
 		ArticleReference ar = bt1.getReference();
 		assertNotNull(ar);

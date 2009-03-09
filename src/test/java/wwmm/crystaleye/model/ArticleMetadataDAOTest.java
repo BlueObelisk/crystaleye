@@ -1,13 +1,11 @@
 package wwmm.crystaleye.model;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static wwmm.crystaleye.model.CifFileDAO.CIF_MIME;
 
 import java.io.File;
 import java.io.IOException;
-
-import static junit.framework.Assert.*;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -61,7 +59,7 @@ public class ArticleMetadataDAOTest {
 		File expectedPKeyLocation = new File(storageRoot, "1");
 		assertTrue(expectedPKeyLocation.exists());
 		String metadata = "this cif is AWESOME";
-		boolean success = metadataDao.insertArticleMetadata(1, metadata);
+		boolean success = metadataDao.insert(1, metadata);
 		assertTrue(success);
 		File expectedMetadataLocation = new File(expectedPKeyLocation, "1"+ArticleMetadataDAO.ARTICLE_METADATA_MIME);
 		// assert file has been created at expected location
@@ -76,7 +74,7 @@ public class ArticleMetadataDAOTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		ArticleMetadataDAO metadataDao = new ArticleMetadataDAO(storageRoot);
 		String metadata = "some metadata";
-		boolean success = metadataDao.insertArticleMetadata(99, metadata);
+		boolean success = metadataDao.insert(99, metadata);
 		// primary key 99 does not exists, so insertion should be false.
 		assertFalse(success);
 	}

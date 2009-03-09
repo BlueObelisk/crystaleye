@@ -20,7 +20,7 @@ import org.apache.commons.io.FileUtils;
  */
 public class PrimaryKeyDAO {
 	
-	// TODO I imagine the next thing to add here is to provide a 
+	// FIXME I imagine the next thing to add here is to provide a 
 	// method that allows someone
 	// to specify a primary key and say they want to add a particular
 	// file - Nick Day
@@ -30,7 +30,7 @@ public class PrimaryKeyDAO {
 	private File keyCountFile;
 	
 	public PrimaryKeyDAO(File storageRoot) {
-		setStorageRoot(storageRoot);
+		init(storageRoot);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class PrimaryKeyDAO {
 	 * 
 	 * @param storageRoot - the root folder for the CrystalEye database.
 	 */
-	public void setStorageRoot(File storageRoot) {
+	private void init(File storageRoot) {
 		this.storageRoot = storageRoot;
 		keyCountFile = new File(storageRoot, KEY_COUNT_FILENAME);
 	}
@@ -96,6 +96,11 @@ public class PrimaryKeyDAO {
 			}
 			keyStr = FileUtils.readFileToString(keyCountFile);
 			nextAvailableKey = Integer.valueOf(keyStr);
+			// check that next key is not less than 1, if for
+			// some reason it is then reset to 1.
+			if (nextAvailableKey < 1) {
+				nextAvailableKey = 1;
+			}
 		} catch (IOException e) {
 			throw new RuntimeException("Error setting next available key.", e);
 		} catch (NumberFormatException e) {

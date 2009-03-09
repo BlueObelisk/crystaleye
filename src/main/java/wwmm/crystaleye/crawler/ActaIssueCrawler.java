@@ -1,7 +1,5 @@
 package wwmm.crystaleye.crawler;
 
-import static wwmm.crystaleye.crawler.CrawlerConstants.DOI_SITE_URL;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -131,7 +129,7 @@ public class ActaIssueCrawler extends IssueCrawler {
 		LOG.debug("Started to find article DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri);
 		Document issueDoc = httpClient.getResourceHTML(issueUri);
-		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'"+DOI_SITE_URL+"/10.1107/')]/@href");
+		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'"+DOI.DOI_SITE_URL+"/10.1107/')]/@href");
 		for (Node doiNode : doiNodes) {
 			String doiStr = ((Attribute)doiNode).getValue();
 			DOI doi = new DOI(createURI(doiStr));
@@ -178,7 +176,7 @@ public class ActaIssueCrawler extends IssueCrawler {
 	 */
 	public static void main(String[] args) {
 		for (ActaJournal journal : ActaJournal.values()) {
-			if (!journal.getAbbreviation().equals("c")) {
+			if (!journal.getAbbreviation().equals("b")) {
 				continue;
 			}
 			ActaIssueCrawler acf = new ActaIssueCrawler(journal);

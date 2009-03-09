@@ -1,7 +1,5 @@
 package wwmm.crystaleye.crawler;
 
-import static wwmm.crystaleye.crawler.CrawlerConstants.DOI_SITE_URL;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -122,7 +120,7 @@ public class ChemSocJapanRssCrawler extends Crawler {
 			throw new CrawlerRuntimeException("Could not extract DOI from <link> URI, "+
 					entryLink.toString()+"element, crawler may need rewriting.");
 		}
-		String doiStr = DOI_SITE_URL+"/10.1246/cl."+doiPostfix;
+		String doiStr = DOI.DOI_SITE_URL+"/10.1246/cl."+doiPostfix;
 		return new DOI(doiStr);
 	}
 	

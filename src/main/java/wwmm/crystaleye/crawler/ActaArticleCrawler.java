@@ -4,12 +4,15 @@ import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nu.xom.Element;
 import nu.xom.Nodes;
 
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 
@@ -25,7 +28,7 @@ import org.apache.log4j.Logger;
  * 
  */
 public class ActaArticleCrawler extends ArticleCrawler {
-	
+
 	private static final Logger LOG = Logger.getLogger(ActaArticleCrawler.class);
 
 	/**
@@ -75,7 +78,7 @@ public class ActaArticleCrawler extends ArticleCrawler {
 		}
 		return ad;
 	}
-	
+
 	/**
 	 * <p>
 	 * Gets the article Bibtex file from the abstract webpage and sets
@@ -87,15 +90,15 @@ public class ActaArticleCrawler extends ArticleCrawler {
 		String articleId = getArticleId();
 		PostMethod postMethod = new PostMethod("http://scripts.iucr.org/cgi-bin/biblio");
 		NameValuePair[] nvps = {
-		        new NameValuePair("name", "saveas"),
-		        new NameValuePair("cnor", articleId),
-		        new NameValuePair("Action", "download")
-		      };
+				new NameValuePair("name", "saveas"),
+				new NameValuePair("cnor", articleId),
+				new NameValuePair("Action", "download")
+		};
 		postMethod.setRequestBody(nvps);
 		String bibstr = httpClient.getPostResultString(postMethod);
 		bibtexTool = new BibtexTool(bibstr);
 	}
-	
+
 	/**
 	 * <p>
 	 * Gets the article's unique ID (as provided by the publisher) from
@@ -109,11 +112,11 @@ public class ActaArticleCrawler extends ArticleCrawler {
 		Nodes nds = articleAbstractHtml.query(".//x:input[@name='cnor']", X_XHTML);
 		if (nds.size() == 0) {
 			throw new CrawlerRuntimeException("Could not find the article ID for "+doi.toString()+
-					" webpage structure must have changed.  Crawler needs rewriting!");
+			" webpage structure must have changed.  Crawler needs rewriting!");
 		}
 		return ((Element)nds.get(0)).getAttributeValue("value");
 	}
-	
+
 	/**
 	 * <p>
 	 * Gets the URI of the article full-text.
@@ -148,11 +151,34 @@ public class ActaArticleCrawler extends ArticleCrawler {
 		}
 		String cifUrl = ((Element)cifNds.get(0)).getAttributeValue("href");
 		URI cifUri = createURI(cifUrl);
+		String filename = getFilenameFromUri(cifUrl);
 		String contentType = httpClient.getContentType(cifUri);
-		SupplementaryFileDetails suppFile = new SupplementaryFileDetails(cifUri, "CIF", contentType);
+		SupplementaryFileDetails suppFile = new SupplementaryFileDetails(cifUri, filename, "CIF", contentType);
 		List<SupplementaryFileDetails> suppFiles = new ArrayList<SupplementaryFileDetails>(1);
 		suppFiles.add(suppFile);
 		return suppFiles;
 	}
-	
+
+	/**
+	 * <p>
+	 * Gets the name of the supplementary file at the publisher's site from
+	 * the supplementary file URL.
+	 * </p>
+	 * 
+	 * @param cifUrl - the URL from which to obtain the filename.
+	 * 
+	 * @return the filename of the supplementary file.
+	 */
+	private String getFilenameFromUri(String cifUrl) {
+		Pattern pattern = Pattern.compile("http://scripts.iucr.org/cgi-bin/sendcif\\?(.{6}sup\\d+)");
+		Matcher matcher = null;
+		matcher = pattern.matcher(cifUrl);
+		if (matcher.find()) {
+			return matcher.group(1);
+		} else {
+			throw new RuntimeException("Should always find the filename from " +
+					"the provided CIF, but couldn't: "+cifUrl);
+		}
+	}
+
 }

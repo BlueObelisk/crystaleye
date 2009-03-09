@@ -1,7 +1,6 @@
 package wwmm.crystaleye.crawler;
 
 import static wwmm.crystaleye.crawler.CrawlerConstants.ACTA_HOMEPAGE_URL;
-import static wwmm.crystaleye.crawler.CrawlerConstants.DOI_SITE_URL;
 import static wwmm.crystaleye.crawler.CrawlerConstants.X_DC;
 import static wwmm.crystaleye.crawler.CrawlerConstants.X_RSS1;
 
@@ -114,7 +113,7 @@ public class ActaRssCrawler extends Crawler {
 		}
 		String value = ((Element)nds.get(0)).getValue();
 		String doiPrefix = value.replaceAll("doi:", "");
-		String doi = DOI_SITE_URL+"/"+doiPrefix;
+		String doi = DOI.DOI_SITE_URL+"/"+doiPrefix;
 		return new DOI(doi);
 	}
 	

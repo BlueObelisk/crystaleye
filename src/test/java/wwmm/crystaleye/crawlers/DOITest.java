@@ -57,26 +57,42 @@ public class DOITest {
 			assertTrue("Should throw like this if the URI is invalid.", true);
 		}
 		try {
-		DOI doi2 = new DOI(invalidDoiUri);
-		fail("Invalid DOI provided ("+invalidDoiUri.toString()+") constructor should have failed.");
+			DOI doi2 = new DOI(invalidDoiUri);
+			fail("Invalid DOI provided ("+invalidDoiUri.toString()+") constructor should have failed.");
 		} catch(Exception e) {
 			assertTrue("Should throw like this if the DOI is invalid.", true);
 		}
 		DOI doi3 = new DOI(validDoiUri);
 	}
-	
+
 	@Test
 	public void testGetURI() {
 		DOI doi1 = new DOI(validDoiUri);
 		URI uri = doi1.getUri();
 		assertSame(validDoiUri, uri);
 	}
-	
+
 	@Test
 	public void testToString() {
 		DOI doi1 = new DOI(validDoiUrl);
 		assertEquals(validDoiUrl, doi1.toString());
 		DOI doi2 = new DOI(validDoiUri);
 		assertEquals(validDoiUrl, doi2.toString());
+	}
+
+	@Test
+	public void testDoiWithNoPrefix() {
+		try {
+			DOI doi1 = new DOI(DOI.DOI_SITE_URL);
+			fail("Invalid DOI should have thrown an exception up object creation.");
+		} catch (Exception e) {
+			assertTrue(true);
+		}
+		try {
+			DOI doi2 = new DOI(DOI.DOI_SITE_URL+"/");
+			fail("Invalid DOI should have thrown an exception up object creation.");
+		} catch (Exception e) {
+			assertTrue(true);
+		}
 	}
 }

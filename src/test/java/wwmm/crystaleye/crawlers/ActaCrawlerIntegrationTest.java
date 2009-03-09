@@ -2,10 +2,10 @@ package wwmm.crystaleye.crawlers;
 
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.AcsIssueCrawler;
-import wwmm.crystaleye.crawler.AcsJournal;
+import wwmm.crystaleye.crawler.ActaIssueCrawler;
+import wwmm.crystaleye.crawler.ActaJournal;
 
-public class AcsIssueCrawlerIntegrationTest {
+public class ActaCrawlerIntegrationTest {
 
 	/**
 	 * Test that the current issue is returned successfully
@@ -15,7 +15,7 @@ public class AcsIssueCrawlerIntegrationTest {
 	 */
 	@Test
 	public void testGetCurrentIssueHtml() {
-		AcsIssueCrawler crawler = new AcsIssueCrawler(AcsJournal.JOURNAL_OF_THE_AMERICAN_CHEMICAL_SOCIETY);
+		ActaIssueCrawler crawler = new ActaIssueCrawler(ActaJournal.SECTION_C);
 		crawler.getCurrentIssueHtml();
 	}
 

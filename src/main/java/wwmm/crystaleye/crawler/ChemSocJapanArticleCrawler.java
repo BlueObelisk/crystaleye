@@ -6,6 +6,8 @@ import static wwmm.crystaleye.crawler.CrawlerConstants.CHEMSOCJAPAN_HOMEPAGE_URL
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nu.xom.Document;
 import nu.xom.Element;
@@ -151,12 +153,28 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 			Element suppLink = cell3.getFirstChildElement("a", XHTML_NS);
 			String suppUrlPostfix = suppLink.getAttributeValue("href");
 			String suppUrl = CHEMSOCJAPAN_HOMEPAGE_URL+suppUrlPostfix;
+			String filename = getFilenameFromUri(suppUrl);
 			URI suppUri = createURI(suppUrl);
 			String contentType = httpClient.getContentType(suppUri);
-			SupplementaryFileDetails suppFile = new SupplementaryFileDetails(suppUri, linkText, contentType);
+			SupplementaryFileDetails suppFile = new SupplementaryFileDetails(suppUri, filename, linkText, contentType);
 			suppFiles.add(suppFile);
 		}
 		return suppFiles;
+	}
+	
+	/**
+	 * <p>
+	 * Gets the name of the supplementary file at the publisher's site from
+	 * the supplementary file URL.
+	 * </p>
+	 * 
+	 * @param cifUrl - the URL from which to obtain the filename.
+	 * 
+	 * @return the filename of the supplementary file.
+	 */
+	private String getFilenameFromUri(String cifUrl) {
+		int idx = cifUrl.lastIndexOf("/");
+		return cifUrl.substring(idx+1);
 	}
 	
 }

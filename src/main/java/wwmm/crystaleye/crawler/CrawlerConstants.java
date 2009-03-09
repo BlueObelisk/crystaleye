@@ -16,7 +16,6 @@ import nu.xom.XPathContext;
 public interface CrawlerConstants {
 
 	// webpage URLs
-	public static final String DOI_SITE_URL = "http://dx.doi.org";
 	public static final String ACTA_HOMEPAGE_URL = "http://journals.iucr.org";
 	public static final String ACS_HOMEPAGE_URL = "http://pubs.acs.org";
 	public static final String CHEMSOCJAPAN_HOMEPAGE_URL = "http://www.jstage.jst.go.jp";

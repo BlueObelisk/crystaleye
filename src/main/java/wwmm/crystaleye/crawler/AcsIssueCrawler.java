@@ -2,7 +2,6 @@ package wwmm.crystaleye.crawler;
 
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 import static wwmm.crystaleye.crawler.CrawlerConstants.ACS_HOMEPAGE_URL;
-import static wwmm.crystaleye.crawler.CrawlerConstants.DOI_SITE_URL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,7 +137,7 @@ public class AcsIssueCrawler extends IssueCrawler {
 		for (Node doiNode : doiNodes) {
 			String contents = ((Element)doiNode).getValue();
 			String doiPostfix = contents.replaceAll("DOI:", "").trim();
-			String doiStr = DOI_SITE_URL+"/"+doiPostfix;
+			String doiStr = DOI.DOI_SITE_URL+"/"+doiPostfix;
 			DOI doi = new DOI(createURI(doiStr)); 
 			dois.add(doi);
 		}
