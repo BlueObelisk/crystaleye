@@ -1,7 +1,5 @@
 package wwmm.crystaleye.crawler;
 
-import static wwmm.crystaleye.crawler.CrawlerConstants.DOI_SITE_URL;
-
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 
@@ -17,7 +15,8 @@ import org.apache.commons.httpclient.URIException;
  */
 public class DOI {
 
-	URI doiUri;
+	private URI doiUri;
+	public static final String DOI_SITE_URL = "http://dx.doi.org";
 
 	public DOI(String doiUrl) {
 		doiUri = createURI(doiUrl);
@@ -28,7 +27,7 @@ public class DOI {
 		this.doiUri = doiUri;
 		validate();
 	}
-	
+
 	/**
 	 * <p>
 	 * Make sure that the provided <code>URI</code> is a 
@@ -41,14 +40,33 @@ public class DOI {
 	 */
 	private void validate() {
 		String doiUrl = doiUri.toString();
-		if (!doiUri.toString().startsWith(DOI_SITE_URL)) {
-			throw new DOIRuntimeException("URI "+doiUrl+" is not a DOI.");
+		if (!doiUri.toString().startsWith(DOI_SITE_URL) ||
+				doiUrl.length() <= DOI_SITE_URL.length()+1) {
+			throw new DOIRuntimeException("URI "+doiUrl+" is not a valid DOI.");
 		}
 	}
 	
 	/**
+	 * <p>
+	 * Trims the DOI providers website URL off the start of
+	 * the provided DOI (e.g. it will return 10.1021/b789765f
+	 * from a DOI of http://dx.doi.org/10.1021/b789765f).
+	 * </p>
+	 * 
+	 * @param doi the DOI for which you want the postfix.
+	 * 
+	 * @return the postfix of the provided DOI.
+	 */
+	public String getPostfix() {
+		String doiStr = this.toString();
+		return doiStr.replaceAll(DOI.DOI_SITE_URL+"/", "");
+	}
+
+	/**
+	 * <p>
 	 * Convenience method for create URIs and handling any
 	 * exceptions.
+	 * </p>
 	 * 
 	 * @param url of the resource you want to create a URI for.
 	 * 
@@ -65,9 +83,11 @@ public class DOI {
 		}
 		return uri;
 	}
-	
+
 	/**
+	 * <p>
 	 * Get the DOIs URI.
+	 * </p>
 	 * 
 	 * @return the URI for the DOI.
 	 */
@@ -76,12 +96,55 @@ public class DOI {
 	}
 	
 	/**
-	 * Simple method to get the URI string.
+	 * <p>
+	 * Simple method to get the DOIs URI string.
+	 * </p>
 	 * 
 	 */
 	@Override
 	public String toString() {
-		return doiUri.toString();
+		try {
+			return doiUri.getURI();
+		} catch (URIException e) {
+			throw new RuntimeException("Error getting DOI string: "+doiUri, e);
+		}
 	}
-	
+
+	/**
+	 * <p>
+	 * Method to override equals in <code>Object</code> class.
+	 * </p>
+	 * 
+	 * @return true if the supplied Object is a DOI with the same
+	 * URI as this, false if not. 
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) {
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+		DOI doi = (DOI)obj;
+		if (this.doiUri.equals(doi.getUri())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * <p>
+	 * Overrides <code>hashCode</code> method in <code>Object</code> class.  
+	 * Implemented because I have overriden <code>equals(Object)</code>.
+	 * </p>
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 31 * hash + (null == doiUri ? 0 : doiUri.hashCode());
+		return hash;
+	}
+
 }

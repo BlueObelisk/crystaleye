@@ -1,7 +1,6 @@
 package wwmm.crystaleye.crawler;
 
 import static wwmm.crystaleye.crawler.CrawlerConstants.ACS_HOMEPAGE_URL;
-import static wwmm.crystaleye.crawler.CrawlerConstants.DOI_SITE_URL;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -123,7 +122,7 @@ public class AcsRssCrawler extends Crawler {
 			throw new CrawlerRuntimeException("Could not extract DOI from <link> URI, "+
 					entryLink.toString()+"element, crawler may need rewriting.");
 		}
-		String doiStr = DOI_SITE_URL+"/"+doiPostfix;
+		String doiStr = DOI.DOI_SITE_URL+"/"+doiPostfix;
 		return new DOI(doiStr);
 	}
 	

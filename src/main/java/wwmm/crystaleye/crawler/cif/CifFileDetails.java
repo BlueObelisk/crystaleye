@@ -16,8 +16,8 @@ import wwmm.crystaleye.crawler.SupplementaryFileDetails;
  */
 public class CifFileDetails extends SupplementaryFileDetails {
 
-	public CifFileDetails(URI uri, String linkText, String contentType) {
-		super(uri, linkText, contentType);
+	public CifFileDetails(URI uri, String filename, String linkText, String contentType) {
+		super(uri, filename, linkText, contentType);
 	}	
 	
 }

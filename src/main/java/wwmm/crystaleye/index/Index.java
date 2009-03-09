@@ -1,0 +1,125 @@
+package wwmm.crystaleye.index;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+
+import wwmm.crystaleye.crawler.DOI;
+
+/**
+ * <p>
+ * Abstract class that all indexes in the CrystalEye database
+ * should extend.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 0.1
+ */
+public abstract class Index {
+	
+	protected File storageRoot;
+	protected File indexFile;
+	protected String indexFilename;
+	protected static final String ENTRY_SEPARATOR = "=";
+	
+	private static final Logger LOG = Logger.getLogger(Index.class);
+	
+	/**
+	 * <p>
+	 * Implementing subclasses must call this to ensure
+	 * initialisation is performed correctly.
+	 * </p>
+	 * 
+	 * @param storageRoot - root of the CrystalEye database.
+	 * @param indexFilename - the name of the file where the 
+	 * index is stored.
+	 */
+	public Index(File storageRoot, String indexFilename) {
+		init(storageRoot, indexFilename);
+	}
+	
+	/**
+	 * <p>
+	 * Sets the root folder for the CrystalEye database and sets location
+	 * of the index.  If the index does not exist, then one is created.
+	 * </p>
+	 * 
+	 * @param storageRoot - the root folder for the CrystalEye database.
+	 */
+	protected void init(File storageRoot, String indexFilename) {
+		this.storageRoot = storageRoot;
+		indexFile = new File(storageRoot, indexFilename);
+		if (!indexFile.exists()) {
+			try {
+				indexFile.createNewFile();
+			} catch (IOException e) {
+				throw new RuntimeException("Attempted to create missing index" +
+						" file, though an exception occurred: "+
+						indexFile.getAbsolutePath(), e);
+			}
+			LOG.info("Created missing index file at: "+indexFile.getAbsolutePath());
+		}
+	}
+	
+	/**
+	 * <p>
+	 * Reads the contents of the index file into a
+	 * list of <code>String</code>s.
+	 * </p>
+	 * 
+	 * @return a list of <code>String</code>s representing
+	 * the contents of the index file.
+	 */
+	protected List<String> readIndexFile() {
+		List<String> lines = null;
+		try {
+			lines = FileUtils.readLines(indexFile);
+		} catch (IOException e) {
+			LOG.warn("Exception occurred whilst trying to " +
+					"read index file: "+indexFile.getAbsolutePath(), e);
+		}
+		return lines;
+	}
+	
+	/**
+	 * <p>
+	 * Writes the provided lines to the index file.
+	 * </p>
+	 * 
+	 * @param lines representing the contents of the
+	 * index file.
+	 */
+	protected void writeIndexFile(List<String> lines) {
+		try {
+			FileUtils.writeLines(indexFile, lines);
+		} catch (IOException e) {
+			LOG.warn("Exception occurred whilst trying to " +
+					"write index file: "+indexFile.getAbsolutePath());
+		}
+	}
+	
+	/**
+	 * <p>
+	 * Returns the DOI part of the provided entry.
+	 * </p>
+	 * 
+	 * @param entry that you want the DOI for.
+	 * 
+	 * @return DOI for the provided entry.
+	 */
+	protected String getValueFromEntry(String entry) {
+		if ("".equals(entry)) {
+			return null;
+		}
+		int idx = entry.indexOf("=");
+		if (idx == -1) {
+			throw new RuntimeException("Could not find entry separator, " +
+					"index entry is corrupt: "+entry);
+		}
+		return entry.substring(idx+1);
+	}
+
+}

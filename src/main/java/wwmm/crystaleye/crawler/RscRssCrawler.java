@@ -1,6 +1,5 @@
 package wwmm.crystaleye.crawler;
 
-import static wwmm.crystaleye.crawler.CrawlerConstants.DOI_SITE_URL;
 import static wwmm.crystaleye.crawler.CrawlerConstants.RSC_HOMEPAGE_URL;
 import static wwmm.crystaleye.crawler.CrawlerConstants.X_DC;
 import static wwmm.crystaleye.crawler.CrawlerConstants.X_RSS1;
@@ -115,7 +114,7 @@ public class RscRssCrawler extends Crawler {
 		}
 		String value = ((Element)nds.get(0)).getValue();
 		String doiPrefix = value.replaceAll("DOI", "").trim();
-		String doi = DOI_SITE_URL+"/"+doiPrefix;
+		String doi = DOI.DOI_SITE_URL+"/"+doiPrefix;
 		return new DOI(doi);
 	}
 	

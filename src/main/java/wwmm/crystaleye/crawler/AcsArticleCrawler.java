@@ -118,13 +118,29 @@ public class AcsArticleCrawler extends ArticleCrawler {
 			Element link = (Element)suppLink;
 			String urlPostfix = link.getAttributeValue("href");
 			String url = ACS_HOMEPAGE_URL+urlPostfix;
+			String filename = getFilenameFromUri(url);
 			URI uri = createURI(url);
 			String linkText = link.getValue();
 			String contentType = httpClient.getContentType(uri);
-			SupplementaryFileDetails sf = new SupplementaryFileDetails(uri, linkText, contentType);
+			SupplementaryFileDetails sf = new SupplementaryFileDetails(uri, filename, linkText, contentType);
 			sfList.add(sf);
 		}
 		return sfList;
+	}
+	
+	/**
+	 * <p>
+	 * Gets the name of the supplementary file at the publisher's site from
+	 * the supplementary file URL.
+	 * </p>
+	 * 
+	 * @param cifUrl - the URL from which to obtain the filename.
+	 * 
+	 * @return the filename of the supplementary file.
+	 */
+	private String getFilenameFromUri(String cifUrl) {
+		int idx = cifUrl.lastIndexOf("/");
+		return cifUrl.substring(idx+1);
 	}
 
 	/**

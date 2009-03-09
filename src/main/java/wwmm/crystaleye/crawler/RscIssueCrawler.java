@@ -1,7 +1,6 @@
 package wwmm.crystaleye.crawler;
 
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
-import static wwmm.crystaleye.crawler.CrawlerConstants.DOI_SITE_URL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,7 +146,7 @@ public class RscIssueCrawler extends IssueCrawler{
 				throw new CrawlerRuntimeException("Problem getting DOI link from article element:\n"+articleElement.toXML());
 			}
 			String doiPrefix = ((Element)doiNodes.get(0)).getValue();
-			String doiStr = DOI_SITE_URL+"/"+doiPrefix;
+			String doiStr = DOI.DOI_SITE_URL+"/"+doiPrefix;
 			DOI doi = new DOI(createURI(doiStr));
 			dois.add(doi);
 		}

@@ -83,7 +83,7 @@ public abstract class CifIssueCrawler {
 		for (SupplementaryFileDetails sfd : details.getSuppFiles()) {
 			if (isCifFile(sfd)) {
 				CifFileDetails cfd = new CifFileDetails(sfd.getURI(),
-						sfd.getLinkText(), sfd.getContentType());
+						sfd.getFilename(), sfd.getLinkText(), sfd.getContentType());
 				newSfdList.add(cfd);
 				isCifArticle = true;
 			} else {

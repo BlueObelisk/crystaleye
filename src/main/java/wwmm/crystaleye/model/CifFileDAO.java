@@ -23,24 +23,28 @@ public class CifFileDAO {
 	private static final Logger LOG = Logger.getLogger(CifFileDAO.class);
 	
 	public CifFileDAO(File storageRoot) {
-		setStorageRoot(storageRoot);
+		init(storageRoot);
 	}
 
 	/**
+	 * <p>
 	 * Provide the root folder at which the CrystalEye database sits.
+	 * </p>
 	 * 
 	 * @param storageRoot - the root folder at which the CrystalEye 
 	 * database sits.
 	 */
-	public void setStorageRoot(File storageRoot) {
+	private void init(File storageRoot) {
 		this.storageRoot = storageRoot;
 		this.keyDao = new PrimaryKeyDAO(storageRoot);
 	}
 
 	/**
+	 * <p>
 	 * Adds the CIF in the provided <code>InputStream</code> 
 	 * into the CIF database.  Returns the primary key that the
 	 * inserted CIF has been assigned.
+	 * </p>
 	 * 
 	 * @param in - InputStream containing the CIF to be inserted.
 	 * 

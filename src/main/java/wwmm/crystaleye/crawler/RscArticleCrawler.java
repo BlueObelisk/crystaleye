@@ -123,12 +123,28 @@ public class RscArticleCrawler extends ArticleCrawler {
 			String filename = linkNd.getAttributeValue("href");
 			String suppFileUrlPrefix = suppListUrl.substring(0,suppListUrl.lastIndexOf("/")+1);
 			String suppFileUrl = suppFileUrlPrefix+filename;
+			String suppFilename = getFilenameFromUri(suppFileUrl);
 			URI suppFileUri = createURI(suppFileUrl);
 			String contentType = httpClient.getContentType(suppFileUri);
-			SupplementaryFileDetails sfd = new SupplementaryFileDetails(suppFileUri, linkText, contentType);
+			SupplementaryFileDetails sfd = new SupplementaryFileDetails(suppFileUri, suppFilename, linkText, contentType);
 			sfdList.add(sfd);
 		}
 		return sfdList;
+	}
+	
+	/**
+	 * <p>
+	 * Gets the name of the supplementary file at the publisher's site from
+	 * the supplementary file URL.
+	 * </p>
+	 * 
+	 * @param cifUrl - the URL from which to obtain the filename.
+	 * 
+	 * @return the filename of the supplementary file.
+	 */
+	private String getFilenameFromUri(String cifUrl) {
+		int idx = cifUrl.lastIndexOf("/");
+		return cifUrl.substring(idx+1);
 	}
 
 	/**
