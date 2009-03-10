@@ -50,7 +50,7 @@ public class SupplementaryFileDetailsTest {
 
 	@Test
 	public void testGetFilename() {
-		assertSame(filename, sfd.getFilename());
+		assertSame(filename, sfd.getFileId());
 	}
 
 	@Test

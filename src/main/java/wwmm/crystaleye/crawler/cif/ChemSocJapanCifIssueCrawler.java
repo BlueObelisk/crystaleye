@@ -3,6 +3,16 @@ package wwmm.crystaleye.crawler.cif;
 import wwmm.crystaleye.crawler.ChemSocJapanIssueCrawler;
 import wwmm.crystaleye.crawler.SupplementaryFileDetails;
 
+/**
+ * <p>
+ * Provides a method of crawling an issue of a journal published
+ * by the Chemical Society of Japan, and only returning the details for
+ * those articles that have a CIF as supplementary data.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 0.1;
+ */
 public class ChemSocJapanCifIssueCrawler extends CifIssueCrawler {
 	
 	public ChemSocJapanCifIssueCrawler(ChemSocJapanIssueCrawler crawler) {
@@ -11,11 +21,12 @@ public class ChemSocJapanCifIssueCrawler extends CifIssueCrawler {
 	
 	/**
 	 * <p>
-	 * Method of finding whether a supplementary file refers to a CIF.
-	 * This is an Acta Crystallographica specific implementation.  Well, 
-	 * I guess that should be obvious from the classname.
+	 * A Chemical Society of Japan specific method of determining 
+	 * whether a supplementary file refers to a CIF.
 	 * </p>
 	 * 
+	 * @return true if the SupplementaryFileDetails described a 
+	 * CIF file, false if not.
 	 */
 	@Override
 	protected boolean isCifFile(SupplementaryFileDetails sfd) {

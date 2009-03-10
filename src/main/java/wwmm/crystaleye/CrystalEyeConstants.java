@@ -15,7 +15,6 @@ public interface CrystalEyeConstants {
 	public static final String ELSEVIER_DOI_PREFIX = "10.1016";
 	
 	// general namespaces
-	public static final String CC_NS = "http://journals.iucr.org/services/cif";
 	public static final String NED24_NS = "http://wwmm.ch.cam.ac.uk/ned24/";
 	public static final String XHTML_NS = "http://www.w3.org/1999/xhtml";
 	public static final String XLINK_NS = "http://www.w3.org/1999/xlink";
@@ -27,7 +26,6 @@ public interface CrystalEyeConstants {
 	public static final String RDF_NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	
 	// contexts for use in XPath queries
-	public static final XPathContext X_CC = new XPathContext("c", CC_NS);
 	public static final XPathContext X_NED24 = new XPathContext("n", NED24_NS);
 	public static final XPathContext X_XHTML = new XPathContext("x", XHTML_NS);
 	public static final XPathContext X_SVG = new XPathContext("svg", SVG_NS);

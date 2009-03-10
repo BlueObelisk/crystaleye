@@ -153,7 +153,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 			Element suppLink = cell3.getFirstChildElement("a", XHTML_NS);
 			String suppUrlPostfix = suppLink.getAttributeValue("href");
 			String suppUrl = CHEMSOCJAPAN_HOMEPAGE_URL+suppUrlPostfix;
-			String filename = getFilenameFromUri(suppUrl);
+			String filename = getFilenameFromUrl(suppUrl);
 			URI suppUri = createURI(suppUrl);
 			String contentType = httpClient.getContentType(suppUri);
 			SupplementaryFileDetails suppFile = new SupplementaryFileDetails(suppUri, filename, linkText, contentType);
@@ -164,7 +164,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 	
 	/**
 	 * <p>
-	 * Gets the name of the supplementary file at the publisher's site from
+	 * Gets the ID of the supplementary file at the publisher's site from
 	 * the supplementary file URL.
 	 * </p>
 	 * 
@@ -172,7 +172,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 	 * 
 	 * @return the filename of the supplementary file.
 	 */
-	private String getFilenameFromUri(String cifUrl) {
+	private String getFilenameFromUrl(String cifUrl) {
 		int idx = cifUrl.lastIndexOf("/");
 		return cifUrl.substring(idx+1);
 	}

@@ -20,6 +20,8 @@ import wwmm.crystaleye.model.ArticleMetadataDAO;
 import wwmm.crystaleye.model.CifFileDAO;
 
 public class CrawlerTask {
+	
+	// TODO pull out all the DAO stuff and moved to a CIFRecordDAO.
 
 	private CifFileDAO cifDao;
 	private ArticleMetadataDAO articleMetadataDao;
@@ -47,7 +49,7 @@ public class CrawlerTask {
 				if (!isCifFile(sfd)) {
 					continue;
 				}
-				String filename = sfd.getFilename();
+				String filename = sfd.getFileId();
 				DOI doi = ad.getDoi();
 				boolean alreadyInDb = doiVsCifFilenameIndex.contains(doi, filename);
 				if (alreadyInDb) {

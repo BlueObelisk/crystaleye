@@ -5,6 +5,15 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * <p>
+ * Abstract class that should be extended by all indexes where
+ * the key is any <code>String</code>.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 0.1
+ */
 public class StringAsKeyIndex extends Index {
 
 	private static final Logger LOG = Logger.getLogger(StringAsKeyIndex.class);
@@ -19,8 +28,8 @@ public class StringAsKeyIndex extends Index {
 	 * key and value.
 	 * </p>
 	 * 
-	 * @param primaryKey - primary key of the record being added to the index.
-	 * @param doi - DOI of the record being added to the index.
+	 * @param key of the record being added to the index.
+	 * @param value of the record being added to the index.
 	 * 
 	 * @return String representing the index entry.
 	 */
@@ -32,6 +41,27 @@ public class StringAsKeyIndex extends Index {
 		return sb.toString();
 	}
 
+	/**
+	 * <p>
+	 * Inserts an entry into the index with the provided key
+	 * and value.  If dontDuplicate is set to false, then the
+	 * entry will always be inserted into the index, which can
+	 * lead to duplicate entries if not careful.  If it
+	 * is set to true, then the index will be checked for an
+	 * entry that matches the provided one and only insert it
+	 * if no matches are found
+	 * </p>
+	 * 
+	 * @param key of the entry to be added.
+	 * @param value of the entry to be added.
+	 * @param dontDuplicate whether to check for duplicates
+	 * before adding the entry.
+	 * 
+	 * @return true if the entry was successfully added to the
+	 * index (also if dontDuplicate was set to true and a 
+	 * duplicate was found.  False if the entry was not added
+	 * to the index.
+	 */
 	protected boolean insert(String key, String value, boolean dontDuplicate) {
 		if (key == null || value == null) {
 			LOG.warn("Provided key or value is null.");
@@ -61,10 +91,35 @@ public class StringAsKeyIndex extends Index {
 		return true;
 	}
 	
+	/**
+	 * <p>
+	 * Insert an entry into the index with the provided key
+	 * and value.  The index is not checked for duplicate 
+	 * entries before the entry is added.
+	 * </p>
+	 * 
+	 * @param key of the entry to be added.
+	 * @param value of the entry to be added.
+	 * 
+	 * @return true if the entry was successfully added to the
+	 * index, false if not.
+	 */
 	protected boolean insert(String key, String value) {
 		return this.insert(key, value, false);
 	}
 	
+	/**
+	 * <p>
+	 * Determine whether the index already contains an entry
+	 * with the provided key and value.
+	 * </p>
+	 * 
+	 * @param key of the entry to be found.
+	 * @param value of the entry to be found.
+	 * 
+	 * @return true if the index already contains an entry
+	 * with the provided key and value, false if not.
+	 */
 	protected boolean contains(String key, String value) {
 		if (key == null || value == null) {
 			LOG.warn("Provided key or value is null.");
