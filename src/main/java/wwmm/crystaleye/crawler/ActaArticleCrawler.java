@@ -151,7 +151,7 @@ public class ActaArticleCrawler extends ArticleCrawler {
 		}
 		String cifUrl = ((Element)cifNds.get(0)).getAttributeValue("href");
 		URI cifUri = createURI(cifUrl);
-		String filename = getFilenameFromUri(cifUrl);
+		String filename = getFilenameFromUrl(cifUrl);
 		String contentType = httpClient.getContentType(cifUri);
 		SupplementaryFileDetails suppFile = new SupplementaryFileDetails(cifUri, filename, "CIF", contentType);
 		List<SupplementaryFileDetails> suppFiles = new ArrayList<SupplementaryFileDetails>(1);
@@ -169,7 +169,7 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	 * 
 	 * @return the filename of the supplementary file.
 	 */
-	private String getFilenameFromUri(String cifUrl) {
+	private String getFilenameFromUrl(String cifUrl) {
 		Pattern pattern = Pattern.compile("http://scripts.iucr.org/cgi-bin/sendcif\\?(.{6}sup\\d+)");
 		Matcher matcher = null;
 		matcher = pattern.matcher(cifUrl);

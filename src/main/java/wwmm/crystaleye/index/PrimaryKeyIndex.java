@@ -5,6 +5,18 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * <p>
+ * Abstract class that should be extended by all indexes where
+ * the key is the primary key of the CrystalEye database.  NOTE 
+ * that this is so that each line in the index can be dedicated
+ * to the record at the primary key of the same number.  This 
+ * allows for faster searching, easier validation etc.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 0.1
+ */
 public abstract class PrimaryKeyIndex extends Index {
 	
 	private static final Logger LOG = Logger.getLogger(PrimaryKeyIndex.class);
@@ -32,6 +44,18 @@ public abstract class PrimaryKeyIndex extends Index {
 		return sb.toString();
 	}
 	
+	/**
+	 * <p>
+	 * Inserts an entry into the index with the provided 
+	 * primary key and value.
+	 * </p>
+	 * 
+	 * @param primaryKey - the key of the entry to insert.
+	 * @param value of the entry to insert.
+	 * 
+	 * @return true if the entry was successfully added to the
+	 * index, false if not.
+	 */
 	protected boolean insert(int primaryKey, String value) {
 		if (value == null) {
 			LOG.warn("Provided DOI is null.");

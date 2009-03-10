@@ -1,8 +1,6 @@
 package wwmm.crystaleye.checkcif;
 
-import static wwmm.crystaleye.CrystalEyeConstants.CC_NS;
 import static wwmm.crystaleye.CrystalEyeConstants.XHTML_NS;
-import static wwmm.crystaleye.CrystalEyeConstants.X_CC;
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.BufferedReader;
@@ -23,6 +21,7 @@ import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.Text;
 import nu.xom.ValidityException;
+import nu.xom.XPathContext;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -84,6 +83,9 @@ public class CheckCifParser {
 	// int of the child node of the HTML <body> element at which the
 	// platon information starts.
 	private int platPos;
+	
+	public static final String CC_NS = "http://journals.iucr.org/services/cif";
+	public static final XPathContext X_CC = new XPathContext("c", CC_NS);
 
 	/**
 	 * <p>

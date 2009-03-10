@@ -13,9 +13,10 @@ import wwmm.crystaleye.crawler.SupplementaryFileDetails;
  * The <code>CifIssueCrawler</code> class uses composition to extend
  * an IssueCrawler class.  It should only return those articles
  * in a journal issue that have CIFs (Crystallographic Information 
- * Files) as supplementary data.  There should be a subclass of this
- * for each publisher so that an implementation for the isCifArticle()
- * can be provided.  This is so 
+ * Files) as supplementary data.  Each implementing subclass need only
+ * implement <code>isCifFile(SupplementaryFileDetails)</code> to 
+ * provide a publisher specific method of determing whether a 
+ * supplementary file is a CIF.
  * </p>  
  * 
  * @author Nick Day
@@ -23,6 +24,8 @@ import wwmm.crystaleye.crawler.SupplementaryFileDetails;
  *
  */
 public abstract class CifIssueCrawler {
+	
+	// TODO - provide a 'Factory' way of creating the subclasses of this? 
 
 	IssueCrawler crawler;
 	
@@ -83,7 +86,7 @@ public abstract class CifIssueCrawler {
 		for (SupplementaryFileDetails sfd : details.getSuppFiles()) {
 			if (isCifFile(sfd)) {
 				CifFileDetails cfd = new CifFileDetails(sfd.getURI(),
-						sfd.getFilename(), sfd.getLinkText(), sfd.getContentType());
+						sfd.getFileId(), sfd.getLinkText(), sfd.getContentType());
 				newSfdList.add(cfd);
 				isCifArticle = true;
 			} else {
@@ -97,8 +100,8 @@ public abstract class CifIssueCrawler {
 	/**
 	 * <p>
 	 * When overidden in a subclass, this method should be a journal 
-	 * specific method of investigating an supplementary files details to 
-	 * ascertain whether or not it is a CIF.
+	 * specific method of investigating a SupplementaryFileDetails to 
+	 * ascertain whether or not it describes a CIF.
 	 * Ideally this would be based on a mime-type, but in reality will 
 	 * probably be based around pattern-matching of URIs.
 	 * </p>

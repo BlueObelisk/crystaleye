@@ -29,6 +29,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
 
+/**
+ * <p>
+ * Utility methods used throughout CrystalEye.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 1.1
+ */
 public class Utils {
 	
 	private static final Logger LOG = Logger.getLogger(Utils.class);
@@ -40,9 +48,6 @@ public class Utils {
 	 * <code>maxSleep</code> is used to determine how long a period the process 
 	 * should sleep for before continuing.
 	 * </p>
-	 * 
-	 * @return
-	 * 
 	 */
 	public static void sleep(int maxSleep) {
 		int maxTime = Integer.valueOf(maxSleep);
@@ -53,16 +58,53 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * <p>
+	 * Convenience method for doing an XPath query and receiving 
+	 * back a list of <code>Node</code> rather than the <code>Nodes</code>
+	 * returned in the default in XOM.
+	 * </p>
+	 * 
+	 * @param doc you want to query
+	 * @param xpath - the XPath String you want to use in the query.
+	 * 
+	 * @return list of <code>Node</code> that represent the parts of
+	 * the queried XML document that matched the provided XPath query.
+	 */
 	public static List<Node> queryHTML(Document doc, String xpath) {
 		Node node = doc.getRootElement();
 		return queryHTML(node, xpath);
 	}
 
+	/**
+	 * <p>
+	 * Convenience method for doing an XPath query and receiving 
+	 * back a list of <code>Node</code> rather than the <code>Nodes</code>
+	 * returned in the default in XOM.
+	 * </p>
+	 * 
+	 * @param node you want to query
+	 * @param xpath - the XPath String you want to use in the query.
+	 * 
+	 * @return list of <code>Node</code> that represent the parts of
+	 * the queried XML document that matched the provided XPath query.
+	 */
 	public static List<Node> queryHTML(Node node, String xpath) {
 		Nodes nodes = node.query(xpath, X_XHTML);
 		return getNodeListFromNodes(nodes);
 	}
 
+	/**
+	 * <p>
+	 * Convenience method for getting a list of <code>Node</code>
+	 * from <code>Nodes</code>.
+	 * </p>
+	 * 
+	 * @param nodes you want converted to a list.
+	 * 
+	 * @return list of <Node> containing the same XML elemenst as 
+	 * the provided <code>Nodes</code>.
+	 */
 	public static List<Node> getNodeListFromNodes(Nodes nodes) {
 		List<Node> nodeList = new ArrayList<Node>(nodes.size());
 		for (int i = 0; i < nodes.size(); i++) {
@@ -71,6 +113,17 @@ public class Utils {
 		return nodeList;
 	}
 
+	/**
+	 * <p>
+	 * Convenience method for rounding a <code>double</code>.
+	 * </p>
+	 * 
+	 * @param val - the number you want rounded.
+	 * @param places - the number of decimal places you want
+	 * the provided number rounded to.
+	 * 
+	 * @return the rounded number as a <code>double</code>.
+	 */
 	public static double round(double val, int places) {
 		long factor = (long)Math.pow(10,places);
 		val = val * factor;
@@ -78,6 +131,17 @@ public class Utils {
 		return (double)tmp / factor;
 	}
 
+	/**
+	 * <p>
+	 * Convenience method for appending a String to a File.
+	 * </p>
+	 * 
+	 * @param file you want the String appended to.
+	 * @param content you want to append to the File.
+	 * 
+	 * @throws IOException if there is a problem reading or writing
+	 * the file.
+	 */
 	public static void appendToFile(File file, String content) throws IOException {
 		FileWriter fw = null;
 		try {
@@ -88,30 +152,15 @@ public class Utils {
 		}
 	}
 
-	public static void writeText(String content, String fileName) {
-		if (content == null) {
-			throw new IllegalStateException("Content to be written is null.");
-		} else if (fileName == null) {
-			throw new IllegalStateException("File name is null.");
-		} else {
-			File parentDir = new File(fileName).getParentFile();
-			if (!parentDir.exists()) {
-				parentDir.mkdirs();
-			}
-			BufferedWriter out = null;
-			try {
-				out = new BufferedWriter(new FileWriter(fileName));
-				out.write(content);
-				out.close();
-			} catch (IOException e) {
-				throw new RuntimeException("Error writing text to "
-						+ fileName, e);
-			} finally {
-				IOUtils.closeQuietly(out);
-			}
-		}
-	}
-
+	/**
+	 * <p>
+	 * Writes the provided XML out to the file defined by the
+	 * provided filename.
+	 * </p>
+	 * 
+	 * @param doc - the XML to be written.
+	 * @param fileName of the file to be written to.
+	 */
 	public static void writeXML(Document doc, String fileName) {
 		File writeFile = new File(fileName).getParentFile();
 		if (!writeFile.exists()) {
@@ -130,6 +179,16 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * <p>
+	 * Writes the provided XML out to the file defined by the
+	 * provided filename complete with indentations to make the
+	 * XML more human readable.
+	 * </p>
+	 * 
+	 * @param doc - the XML to be written.
+	 * @param fileName of the file to be written to.
+	 */
 	public static void writePrettyXML(Document doc, String fileName) {
 		File writeFile = new File(fileName).getParentFile();
 		if (!writeFile.exists()) {
@@ -149,10 +208,34 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * <p>
+	 * Parses the contents of an <code>InputStream</code> into an
+	 * XML document.
+	 * </p>
+	 * 
+	 * @param in - the InputStream you want converted to XML.
+	 * 
+	 * @return XML document representing the contents of the 
+	 * provided InputStream.
+	 */
 	public static Document parseXml(InputStream in) {
 		return parseXml(new Builder(), in);
 	}
 
+	/**
+	 * <p>
+	 * Parses the contents of an <code>InputStream</code> into an
+	 * XML document using a specified XML builder.
+	 * </p>
+	 * 
+	 * @param builder - the XML builder you want the parser to use
+	 * in creating the XML document.
+	 * @param in - the InputStream you want converted to XML.
+	 * 
+	 * @return XML document representing the contents of the 
+	 * provided InputStream.
+	 */
 	public static Document parseXml(Builder builder, InputStream in) {
 		Document doc;
 		try {
@@ -169,10 +252,34 @@ public class Utils {
 		return doc;
 	}
 
+	/**
+	 * <p>
+	 * Parses the contents of a <code>Reader</code> into an
+	 * XML document.
+	 * </p>
+	 * 
+	 * @param reader - the Reader you want converted to XML.
+	 * 
+	 * @return XML document representing the contents of the 
+	 * provided Reader.
+	 */
 	public static Document parseXml(Reader reader) {
 		return Utils.parseXml(new Builder(), reader);
 	}
 
+	/**
+	 * <p>
+	 * Parses the contents of a <code>Reader</code> into an
+	 * XML document using a specified XML builder.
+	 * </p>
+	 * 
+	 * @param builder - the XML builder you want the parser to use
+	 * in creating the XML document.
+	 * @param reader - the Reader you want converted to XML.
+	 * 
+	 * @return XML document representing the contents of the 
+	 * provided Reader.
+	 */
 	public static Document parseXml(Builder builder, Reader reader) {
 		Document doc;
 		try {
@@ -189,6 +296,16 @@ public class Utils {
 		return doc;
 	}
 
+	/**
+	 * <p>
+	 * Parses the contents of the provided <code>File</code> 
+	 * into an XML document.
+	 * </p>
+	 * 
+	 * @param file you want to be parsed.
+	 * 
+	 * @return XML document containing the contents of the file.
+	 */
 	public static Document parseXml(File file) {
 		try {
 			return Utils.parseXml(new FileReader(file));
@@ -197,6 +314,16 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * <p>
+	 * Parses the contents of the provided <code>File</code> 
+	 * into a CML document.
+	 * </p>
+	 * 
+	 * @param file you want to be parsed.
+	 * 
+	 * @return CML document containing the contents of the file.
+	 */
 	public static Document parseCml(File file) {
 		Document doc;
 		try {
@@ -220,23 +347,6 @@ public class Utils {
 					+ file.getAbsolutePath(), e);
 		}
 		return doc;
-	}
-
-	/**
-	 * Writes the contents of the provided <code>InputStream</code>
-	 * to the location defined by the provided <code>File</code>. 
-	 * 
-	 * @param in - InputStream containing the contents to be written.
-	 * @param file - the location that will be written to.
-	 */
-	public static void writeInputStreamToFile(InputStream in, File file) {
-		try {
-			byte[] bytes = IOUtils.toByteArray(in);
-			FileUtils.writeByteArrayToFile(file, bytes);
-		} catch (IOException e) {
-			throw new RuntimeException("Error writing stream to file, "+
-					file.getAbsolutePath(), e);
-		}		
 	}
 
 }

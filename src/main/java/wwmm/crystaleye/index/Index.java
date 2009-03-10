@@ -7,12 +7,9 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.crawler.DOI;
-
 /**
  * <p>
- * Abstract class that all indexes in the CrystalEye database
- * should extend.
+ * Abstract class that all indexes in the CrystalEye database extend.
  * </p>
  * 
  * @author Nick Day
@@ -103,12 +100,12 @@ public abstract class Index {
 	
 	/**
 	 * <p>
-	 * Returns the DOI part of the provided entry.
+	 * Returns the value of the provided entry.
 	 * </p>
 	 * 
-	 * @param entry that you want the DOI for.
+	 * @param entry that you want the value for.
 	 * 
-	 * @return DOI for the provided entry.
+	 * @return value for the provided entry.
 	 */
 	protected String getValueFromEntry(String entry) {
 		if ("".equals(entry)) {
