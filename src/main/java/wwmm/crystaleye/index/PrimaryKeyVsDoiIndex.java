@@ -9,12 +9,12 @@ import wwmm.crystaleye.crawler.DOI;
 
 /**
  * <p>
- * A data-access object that provides access to an index of the 
- * database primary key against the DOI for that record.
+ * Provides methods for access and manipulation for an index 
+ * of the database primary key against the DOI for that record.
  * </p>
  * 
- * @author ned24
- *
+ * @author Nick Day
+ * @version 0.1
  */
 public class PrimaryKeyVsDoiIndex extends PrimaryKeyIndex {
 	
