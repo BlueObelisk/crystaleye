@@ -24,25 +24,6 @@ public class StringAsKeyIndex extends Index {
 
 	/**
 	 * <p>
-	 * Creates the String of the index entry from the provided
-	 * key and value.
-	 * </p>
-	 * 
-	 * @param key of the record being added to the index.
-	 * @param value of the record being added to the index.
-	 * 
-	 * @return String representing the index entry.
-	 */
-	protected String createEntry(String key, String value) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(key);
-		sb.append(ENTRY_SEPARATOR);
-		sb.append(value);
-		return sb.toString();
-	}
-
-	/**
-	 * <p>
 	 * Inserts an entry into the index with the provided key
 	 * and value.  If dontDuplicate is set to false, then the
 	 * entry will always be inserted into the index, which can
