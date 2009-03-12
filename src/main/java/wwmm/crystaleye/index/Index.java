@@ -118,5 +118,24 @@ public abstract class Index {
 		}
 		return entry.substring(idx+1);
 	}
+	
+	/**
+	 * <p>
+	 * Creates the String of the index entry from the provided
+	 * key and value.
+	 * </p>
+	 * 
+	 * @param key of the record being added to the index.
+	 * @param value of the record being added to the index.
+	 * 
+	 * @return String representing the index entry.
+	 */
+	protected String createEntry(String key, String value) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(key);
+		sb.append(ENTRY_SEPARATOR);
+		sb.append(value);
+		return sb.toString();
+	}
 
 }

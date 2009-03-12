@@ -37,11 +37,7 @@ public abstract class PrimaryKeyIndex extends Index {
 	 * @return String representing the index entry.
 	 */
 	protected String createEntry(int primaryKey, String value) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(""+primaryKey);
-		sb.append(ENTRY_SEPARATOR);
-		sb.append(value);
-		return sb.toString();
+		return createEntry(""+primaryKey, value);
 	}
 	
 	/**
