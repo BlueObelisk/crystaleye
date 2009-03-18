@@ -50,6 +50,14 @@ public abstract class Crawler {
 		return uri;
 	}
 	
+	protected String getURIString(URI uri) {
+		try {
+			return uri.getURI();
+		} catch (URIException e) {
+			throw new RuntimeException("Could not convert URI to URL: "+uri, e);
+		}
+	}
+	
 	/**
 	 * <p>
 	 * Convenience method to handle the exceptions in creating a URI

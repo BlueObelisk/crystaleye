@@ -32,7 +32,7 @@ import wwmm.crystaleye.Utils;
 public class AcsIssueCrawler extends IssueCrawler {
 
 	private AcsJournal journal;
-	
+
 	private static final Logger LOG = Logger.getLogger(AcsIssueCrawler.class);
 
 	/**
@@ -76,7 +76,7 @@ public class AcsIssueCrawler extends IssueCrawler {
 		LOG.debug("Found latest issue details for ACS journal "+journal.getFullTitle()+": year="+year+", issue="+issueId+".");
 		return new IssueDetails(year, issueId);
 	}
-	
+
 	/**
 	 * <p>
 	 * Gets the HTML of the table of contents of the last 
@@ -92,7 +92,7 @@ public class AcsIssueCrawler extends IssueCrawler {
 		URI issueUri = createURI(url);
 		return httpClient.getResourceHTML(issueUri);
 	}
-	
+
 	/**
 	 * <p>
 	 * Gets the DOIs of all of the articles from the last 
@@ -130,8 +130,7 @@ public class AcsIssueCrawler extends IssueCrawler {
 		int volume = Integer.valueOf(year)-journal.getVolumeOffset();
 		String issueUrl = ACS_HOMEPAGE_URL+"/toc/"+journal.getAbbreviation()+"/"+volume+"/"+issueId;
 		URI issueUri = createURI(issueUrl);
-		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
-		LOG.debug(issueUri.toString());
+		LOG.info("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		Document issueDoc = httpClient.getResourceHTML(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:div[@class='DOI']");
 		for (Node doiNode : doiNodes) {
@@ -141,10 +140,10 @@ public class AcsIssueCrawler extends IssueCrawler {
 			DOI doi = new DOI(createURI(doiStr)); 
 			dois.add(doi);
 		}
-		LOG.debug("Finished finding issue DOIs.");
+		LOG.info("Finished finding issue DOIs.");
 		return dois;
 	}
-	
+
 	/**
 	 * <p>
 	 * Gets information describing all articles in the issue 
@@ -182,17 +181,11 @@ public class AcsIssueCrawler extends IssueCrawler {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		for (AcsJournal journal : AcsJournal.values()) {
-			if (!journal.getAbbreviation().equals("cgdefu")) {
-				continue;
-			}
-			AcsIssueCrawler acf = new AcsIssueCrawler(journal);
-			IssueDetails details = acf.getCurrentIssueDetails();
-			List<ArticleDetails> adList = acf.getDetailsForArticles(details);
-			for (ArticleDetails ad : adList) {
-				System.out.println(ad.toString());
-			}
-			break;
+		AcsIssueCrawler acf = new AcsIssueCrawler(AcsJournal.THE_JOURNAL_OF_ORGANIC_CHEMISTRY);
+		IssueDetails details = acf.getCurrentIssueDetails();
+		List<ArticleDetails> adList = acf.getDetailsForArticles(details);
+		for (ArticleDetails ad : adList) {
+			System.out.println(ad.toString());
 		}
 	}
 
