@@ -122,7 +122,7 @@ public class ChemSocJapanIssueCrawler extends IssueCrawler {
 		String issueId = details.getIssueId();
 		String url = "http://www.chemistry.or.jp/journals/chem-lett/cl-cont/cl"+year+"-"+issueId+".html";
 		URI issueUri = createURI(url);
-		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
+		LOG.info("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri.toString());
 		Document issueDoc = httpClient.getResourceHTML(issueUri);
 		List<Node> textLinks = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'http://www.is.csj.jp/cgi-bin/journals/pr/index.cgi?n=li') and not(contains(@href,'li_s'))]/@href");
@@ -135,7 +135,7 @@ public class ChemSocJapanIssueCrawler extends IssueCrawler {
 			DOI doi = new DOI(createURI(doiStr));
 			dois.add(doi);
 		}
-		LOG.debug("Finished finding issue DOIs.");
+		LOG.info("Finished finding issue DOIs.");
 		return dois;
 	}
 	

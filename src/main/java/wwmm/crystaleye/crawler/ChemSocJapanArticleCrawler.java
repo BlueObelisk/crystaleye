@@ -62,9 +62,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 			return ad;
 		}
 		URI fullTextLink = getFullTextLink();
-		if (fullTextLink != null) {
-			ad.setFullTextLink(fullTextLink);
-		}
+		ad.setFullTextLink(fullTextLink);
 		List<SupplementaryFileDetails> suppFiles = getSupplementaryFilesDetails();
 		setBibtexTool();
 		if (bibtexTool != null) {
@@ -77,6 +75,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 			ad.setAuthors(authors);
 			ad.setSuppFiles(suppFiles);
 		}
+		LOG.info("Finished finding article details: "+doi);
 		return ad;
 	}
 
@@ -109,6 +108,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 	private URI getFullTextLink() {
 		Nodes pdfLinks = articleAbstractHtml.query(".//x:a[contains(@href,'_pdf') and contains(.,'PDF')]", X_XHTML);
 		if (pdfLinks.size() == 0) {
+			LOG.warn("Could not find PDF link for: "+doi);
 			return null;
 		}
 		String urlPostfix = ((Element)pdfLinks.get(0)).getAttributeValue("href");
@@ -138,7 +138,8 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 		Element suppTable = (Element)suppTableNodes.get(1);
 		Nodes tableRows = suppTable.query(".//x:tr", X_XHTML);
 		if (tableRows.size() < 3) {
-			throw new CrawlerRuntimeException("Expected the supplementary document table to have at least 3 rows, found "+tableRows.size());
+			LOG.warn("Expected the supplementary document table to have at least 3 rows, found "+tableRows.size());
+			return null;
 		}
 		List<SupplementaryFileDetails> suppFiles = new ArrayList<SupplementaryFileDetails>(1);
 		for (int i = 2; i < tableRows.size(); i++) {
@@ -161,7 +162,7 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 		}
 		return suppFiles;
 	}
-	
+
 	/**
 	 * <p>
 	 * Gets the ID of the supplementary file at the publisher's site from
@@ -176,5 +177,5 @@ public class ChemSocJapanArticleCrawler extends ArticleCrawler {
 		int idx = cifUrl.lastIndexOf("/");
 		return cifUrl.substring(idx+1);
 	}
-	
+
 }
