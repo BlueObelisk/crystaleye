@@ -5,15 +5,15 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.crawler.AcsIssueCrawler;
-import wwmm.crystaleye.crawler.AcsJournal;
 import wwmm.crystaleye.crawler.ArticleDetails;
 import wwmm.crystaleye.crawler.CrawlerHttpClient;
 import wwmm.crystaleye.crawler.DOI;
+import wwmm.crystaleye.crawler.RscIssueCrawler;
+import wwmm.crystaleye.crawler.RscJournal;
 import wwmm.crystaleye.crawler.SupplementaryFileDetails;
-import wwmm.crystaleye.crawler.cif.AcsCifIssueCrawler;
 import wwmm.crystaleye.crawler.cif.CifFileDetails;
 import wwmm.crystaleye.crawler.cif.CifIssueCrawler;
+import wwmm.crystaleye.crawler.cif.RscCifIssueCrawler;
 import wwmm.crystaleye.index.DoiVsCifFilenameIndex;
 import wwmm.crystaleye.index.PrimaryKeyVsDoiIndex;
 import wwmm.crystaleye.model.ArticleMetadataDAO;
@@ -122,11 +122,12 @@ public class CrawlerTask {
 	 * 
 	 */
 	public static void main(String[] args) throws IOException {
-		String root = "c:/work/crystaleye1.2-data";
+		String root = "e:/crystaleye1.2-data";
 		File storageRoot = new File(root);
 		//ActaIssueCrawler actaCrawler = new ActaIssueCrawler(ActaJournal.SECTION_B);
-		AcsIssueCrawler acsCrawler = new AcsIssueCrawler(AcsJournal.CRYSTAL_GROWTH_AND_DESIGN);
-		CifIssueCrawler crawler = new AcsCifIssueCrawler(acsCrawler);
+		//AcsIssueCrawler acsCrawler = new AcsIssueCrawler(AcsJournal.CRYSTAL_GROWTH_AND_DESIGN);
+		RscIssueCrawler rscCrawler = new RscIssueCrawler(RscJournal.DALTON_TRANSACTIONS);
+		CifIssueCrawler crawler = new RscCifIssueCrawler(rscCrawler);
 		CrawlerTask ct = new CrawlerTask(crawler, storageRoot);
 		ct.crawl();
 	}
