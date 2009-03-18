@@ -69,7 +69,7 @@ public class ActaIssueCrawler extends IssueCrawler {
 		}
 		String year = matcher.group(1);
 		String issueId = matcher.group(2).replaceAll("/", "-");
-		LOG.debug("Found latest issue details for Acta journal "+journal.getFullTitle()+": year="+year+", issue="+issueId+".");
+		LOG.info("Found latest issue details for Acta journal "+journal.getFullTitle()+": year="+year+", issue="+issueId+".");
 		return new IssueDetails(year, issueId);
 	}
 
@@ -126,7 +126,7 @@ public class ActaIssueCrawler extends IssueCrawler {
 		String url = "http://journals.iucr.org/"+journal.getAbbreviation()+"/issues/"
 		+year+"/"+issueId.replaceAll("-", "/")+"/isscontsbdy.html";
 		URI issueUri = createURI(url);
-		LOG.debug("Started to find article DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
+		LOG.info("Started to find article DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		LOG.debug(issueUri);
 		Document issueDoc = httpClient.getResourceHTML(issueUri);
 		List<Node> doiNodes = Utils.queryHTML(issueDoc, ".//x:a[contains(@href,'"+DOI.DOI_SITE_URL+"/10.1107/')]/@href");
@@ -135,7 +135,7 @@ public class ActaIssueCrawler extends IssueCrawler {
 			DOI doi = new DOI(createURI(doiStr));
 			dois.add(doi);
 		}
-		LOG.debug("Finished finding issue DOIs.");
+		LOG.info("Finished finding issue DOIs.");
 		return dois;
 	}
 
@@ -175,17 +175,11 @@ public class ActaIssueCrawler extends IssueCrawler {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		for (ActaJournal journal : ActaJournal.values()) {
-			if (!journal.getAbbreviation().equals("b")) {
-				continue;
-			}
-			ActaIssueCrawler acf = new ActaIssueCrawler(journal);
-			IssueDetails details = acf.getCurrentIssueDetails();
-			List<ArticleDetails> adList = acf.getDetailsForArticles(details);
-			for (ArticleDetails ad : adList) {
-				System.out.println(ad.toString());
-			}
-			break;
+		ActaIssueCrawler acf = new ActaIssueCrawler(ActaJournal.SECTION_B);
+		IssueDetails details = acf.getCurrentIssueDetails();
+		List<ArticleDetails> adList = acf.getDetailsForArticles(details);
+		for (ArticleDetails ad : adList) {
+			System.out.println(ad.toString());
 		}
 	}
 

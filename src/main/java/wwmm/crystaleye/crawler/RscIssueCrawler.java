@@ -132,7 +132,7 @@ public class RscIssueCrawler extends IssueCrawler{
 		+"&JournalCode="+journalAbbreviation+"&MasterJournalCode="+journalAbbreviation+"&SubYear="+year
 		+"&type=Issue&Issue="+issueId+"&x=11&y=5";
 		URI issueUri = createURI(issueUrl);
-		LOG.debug("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
+		LOG.info("Started to find DOIs from "+journal.getFullTitle()+", year "+year+", issue "+issueId+".");
 		Document issueDoc = httpClient.getResourceHTML(issueUri);
 		List<Node> articleNodes = Utils.queryHTML(issueDoc, ".//x:p[./x:a[contains(@title,'DOI:10.1039')]]");
 		List<DOI> dois = new ArrayList<DOI>();
@@ -150,7 +150,7 @@ public class RscIssueCrawler extends IssueCrawler{
 			DOI doi = new DOI(createURI(doiStr));
 			dois.add(doi);
 		}
-		LOG.debug("Finished finding DOIs.");
+		LOG.info("Finished finding DOIs.");
 		return dois;
 	}
 
@@ -205,14 +205,14 @@ public class RscIssueCrawler extends IssueCrawler{
 	public List<ArticleDetails> getDetailsForArticles(IssueDetails details) {
 		String year = details.getYear();
 		String issueId = details.getIssueId();
-		LOG.debug("Starting to find issue article details: "+year+"-"+issueId);
+		LOG.info("Starting to find issue article details: "+year+"-"+issueId);
 		List<DOI> dois = getDOIs(details);
 		List<ArticleDetails> adList = new ArrayList<ArticleDetails>(dois.size());
 		for (DOI doi : dois) {
 			ArticleDetails ad = new RscArticleCrawler(doi).getDetails();
 			adList.add(ad);
 		}
-		LOG.debug("Finished finding issue article details: "+year+"-"+issueId);
+		LOG.info("Finished finding issue article details: "+year+"-"+issueId);
 		return adList;
 	}
 

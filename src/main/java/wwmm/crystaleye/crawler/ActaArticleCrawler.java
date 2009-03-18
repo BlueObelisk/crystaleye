@@ -75,6 +75,7 @@ public class ActaArticleCrawler extends ArticleCrawler {
 			ad.setAuthors(authors);
 			ad.setSuppFiles(suppFiles);
 		}
+		LOG.info("Finished finding article details: "+doi);
 		return ad;
 	}
 
