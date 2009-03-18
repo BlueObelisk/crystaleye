@@ -5,7 +5,7 @@ import org.junit.Test;
 import wwmm.crystaleye.crawler.ActaIssueCrawler;
 import wwmm.crystaleye.crawler.ActaJournal;
 
-public class ActaCrawlerIntegrationTest {
+public class ActaIssueCrawlerIntegrationTest {
 
 	/**
 	 * Test that the current issue is returned successfully
