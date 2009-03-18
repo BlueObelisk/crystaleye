@@ -43,22 +43,7 @@ public class CrawlerTask {
 	public CrawlerTask(CifIssueCrawler crawler, File storageRoot) {
 		initDAOs(storageRoot);
 		this.crawler = crawler;
-	}
-
-	/**
-	 * <p>
-	 * Initialises the data-access objects used to write the scraped
-	 * data.
-	 * </p>
-	 * 
-	 * @param storageRoot - the root folder of the database.
-	 */
-	private void initDAOs(File storageRoot) {
-		cifDao = new CifFileDAO(storageRoot);
-		articleMetadataDao = new ArticleMetadataDAO(storageRoot);
-		doiVsCifFilenameIndex = new DoiVsCifFilenameIndex(storageRoot);
-		pKeyVsDoiIndex = new PrimaryKeyVsDoiIndex(storageRoot);
-	}
+	}	
 
 	/**
 	 * <p>
@@ -79,76 +64,35 @@ public class CrawlerTask {
 				if (alreadyInDb) {
 					continue;
 				}
-				int primaryKey = writeCIF(sfd);
-				insertArticleMetadata(primaryKey, sfd);
-				updatePKeyVsDoiIndex(primaryKey, doi);
-				updateDoiVsCifFilenameIndex(doi, filename);
+				String cifContents = new CrawlerHttpClient().getResourceString(sfd.getURI());
+				int primaryKey = cifDao.insertCif(cifContents);
+				String articleMetadata = new BibliontTool(ad).toString();
+				if (!articleMetadataDao.insert(primaryKey, articleMetadata)) {
+					LOG.warn("Problem inserting article metadata.");
+				}
+				if (!pKeyVsDoiIndex.insert(primaryKey, doi)) {
+					LOG.warn("Problem updating PrimaryKey vs DOI index.");
+				}
+				if (!doiVsCifFilenameIndex.insert(doi, filename)) {
+					LOG.warn("Problem updating DOI vs CIF filename index.");
+				}
 			}
 		}
 	}
 	
 	/**
 	 * <p>
-	 * Writes a file out containing the provided article metadata.
+	 * Initialises the data-access objects used to write the scraped
+	 * data.
 	 * </p>
 	 * 
-	 * @param primaryKey - the key for which you are inserting the
-	 * metadata.
-	 * @param sfd - details about the supplementary file.
+	 * @param storageRoot - the root folder of the database.
 	 */
-	private void insertArticleMetadata(int primaryKey, SupplementaryFileDetails sfd) {
-		boolean success = articleMetadataDao.insert(primaryKey, sfd.toString());
-		if (!success) {
-			LOG.warn("Problem inserting article metadata.");
-		}
-	}
-	
-	/**
-	 * <p>
-	 * Updates the index of the CIFs origin DOI against the CIFs 
-	 * file name at the site it was scraped from. 
-	 * </p>
-	 * 
-	 * @param doi of the article the CIF was obtained from.
-	 * @param filename of the CIF at the site it was scraped from.
-	 */
-	private void updateDoiVsCifFilenameIndex(DOI doi, String filename) {
-		boolean success = doiVsCifFilenameIndex.insert(doi, filename);
-		if (!success) {
-			LOG.warn("Problem updating DOI vs CIF filename index.");
-		}
-	}
-
-	/**
-	 * <p>
-	 * Updates an index of the primary key for the CIF against
-	 * the DOI of the article the CIF was scraped from.
-	 * </p>
-	 * 
-	 * @param primaryKey of the CIF in the database.
-	 * @param doi of the article the CIF was obtained from.
-	 */
-	private void updatePKeyVsDoiIndex(int primaryKey, DOI doi) {
-		boolean success = pKeyVsDoiIndex.insert(primaryKey, doi);
-		if (!success) {
-			LOG.warn("Problem updating PrimaryKey vs DOI index.");
-		}
-	}
-
-	/**
-	 * <p>
-	 * Writes the CIF described by the provided 
-	 * <code>SupplementaryFileDetails</code> to the database.
-	 * </p>
-	 * 
-	 * @param sfd - details of the CIF to be written.
-	 * 
-	 * @return the database primary key that the CIF was 
-	 * assigned when it was inserted into the database.
-	 */
-	private int writeCIF(SupplementaryFileDetails sfd) {
-		String cifContents = new CrawlerHttpClient().getResourceString(sfd.getURI());
-		return cifDao.insertCif(cifContents);
+	private void initDAOs(File storageRoot) {
+		cifDao = new CifFileDAO(storageRoot);
+		articleMetadataDao = new ArticleMetadataDAO(storageRoot);
+		doiVsCifFilenameIndex = new DoiVsCifFilenameIndex(storageRoot);
+		pKeyVsDoiIndex = new PrimaryKeyVsDoiIndex(storageRoot);
 	}
 
 	/**

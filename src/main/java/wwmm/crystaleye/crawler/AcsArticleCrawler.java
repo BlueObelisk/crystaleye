@@ -64,9 +64,7 @@ public class AcsArticleCrawler extends ArticleCrawler {
 			return ad;
 		}
 		URI fullTextLink = getFullTextLink();
-		if (fullTextLink != null) {
-			ad.setFullTextLink(fullTextLink);
-		}	
+		ad.setFullTextLink(fullTextLink);
 		String title = getTitle();
 		String authors = getAuthors();
 		ArticleReference ref = getReference();
@@ -76,7 +74,7 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		ad.setReference(ref);
 		ad.setAuthors(authors);
 		ad.setSuppFiles(suppFiles);
-		LOG.debug("Finished finding article details.");
+		LOG.debug("Finished finding article details: "+doi.toString());
 		return ad;
 	}
 
@@ -90,7 +88,8 @@ public class AcsArticleCrawler extends ArticleCrawler {
 	private URI getFullTextLink() {
 		Nodes fullTextLinks = articleAbstractHtml.query(".//x:a[contains(@href,'/full/')]", X_XHTML);
 		if (fullTextLinks.size() == 0) {
-			throw new CrawlerRuntimeException("Problem getting full text HTML link: "+doi);
+			LOG.warn("Problem getting full text HTML link: "+doi);
+			return null;
 		}
 		String urlPostfix = ((Element)fullTextLinks.get(0)).getAttributeValue("href");
 		String fullTextUrl = ACS_HOMEPAGE_URL+urlPostfix;
@@ -127,7 +126,7 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		}
 		return sfList;
 	}
-	
+
 	/**
 	 * <p>
 	 * Gets the ID of the supplementary file at the publisher's site from
@@ -159,7 +158,7 @@ public class AcsArticleCrawler extends ArticleCrawler {
 		if (suppPageLinks.size() == 0) {
 			return null;
 		} else if (suppPageLinks.size() > 1) {
-			System.out.println("Expected either 0 or 1 links to supporting info page, found "+suppPageLinks.size());
+			LOG.warn("Expected either 0 or 1 links to supporting info page, found "+suppPageLinks.size());
 		}
 		String urlPostfix = ((Element)suppPageLinks.get(0)).getAttributeValue("href");
 		String url = ACS_HOMEPAGE_URL+urlPostfix;
@@ -178,7 +177,8 @@ public class AcsArticleCrawler extends ArticleCrawler {
 	private String getAuthors() {
 		Nodes authorNds = articleAbstractHtml.query(".//x:meta[@name='dc.Creator']", X_XHTML);
 		if (authorNds.size() == 0) {
-			throw new CrawlerRuntimeException("Problem finding authors at: "+doi);
+			LOG.warn("Problem finding authors at: "+doi);
+			return null;
 		}
 		StringBuilder authors = new StringBuilder();
 		for (int i = 0; i < authorNds.size(); i++) {
@@ -203,14 +203,18 @@ public class AcsArticleCrawler extends ArticleCrawler {
 	private ArticleReference getReference() {
 		Nodes citationNds = articleAbstractHtml.query(".//x:div[@id='citation']", X_XHTML);
 		if (citationNds.size() != 1) {
-			throw new CrawlerRuntimeException("Problem finding bibliographic text at: "+doi);
+			LOG.warn("Problem finding bibliographic text at: "+doi);
+			return null;
 		}
+
 		Element citationNd = (Element)citationNds.get(0);
 		Nodes journalNds = citationNd.query("./x:cite", X_XHTML);
+		String journal = null;
 		if (journalNds.size() != 1) {
-			throw new CrawlerRuntimeException("Problem finding journal text at: "+doi);
+			LOG.warn("Problem finding journal text at: "+doi);
+		} else {
+			journal = ((Element)journalNds.get(0)).getValue().trim();
 		}
-		String journal = ((Element)journalNds.get(0)).getValue().trim();
 
 		String citationContent = citationNd.getValue();
 		String year = null;
@@ -221,22 +225,23 @@ public class AcsArticleCrawler extends ArticleCrawler {
 			ad.setHasBeenPublished(true);
 			Nodes yearNds = citationNd.query("./x:span[@class='citation_year']", X_XHTML);
 			if (yearNds.size() != 1) {
-				throw new CrawlerRuntimeException("Problem finding year text at: "+doi);
+				LOG.warn("Problem finding year text at: "+doi);
 			}
 			year = ((Element)yearNds.get(0)).getValue().trim();		
 			Nodes volumeNds = citationNd.query("./x:span[@class='citation_volume']", X_XHTML);
 			if (volumeNds.size() != 1) {
-				throw new CrawlerRuntimeException("Problem finding volume text at: "+doi);
+				LOG.warn("Problem finding volume text at: "+doi);
 			}
 			volume = ((Element)volumeNds.get(0)).getValue().trim();
 			String refContent = citationNd.getValue();
 			Pattern p = Pattern.compile("[^\\(]*\\((\\d+)\\),\\s+pp\\s+(\\d+).(\\d+).*");
 			Matcher matcher = p.matcher(refContent);
 			if (!matcher.find() || matcher.groupCount() != 3) {
-				throw new CrawlerRuntimeException("Problem finding issue and pages info at: "+doi);
+				LOG.warn("Problem finding issue and pages info at: "+doi);
+			} else {
+				number = matcher.group(1);
+				pages = matcher.group(2)+"-"+matcher.group(3);
 			}
-			number = matcher.group(1);
-			pages = matcher.group(2)+"-"+matcher.group(3);
 		} else {
 			ad.setHasBeenPublished(false);
 		}
@@ -261,7 +266,8 @@ public class AcsArticleCrawler extends ArticleCrawler {
 	private String getTitle() {
 		Nodes titleNds = articleAbstractHtml.query(".//x:h1[@class='articleTitle']", X_XHTML);
 		if (titleNds.size() != 1) {
-			throw new CrawlerRuntimeException("Problem finding title at: "+doi);
+			LOG.warn("Problem finding title at: "+doi);
+			return null;
 		}
 		String title = titleNds.get(0).getValue();
 		return title;

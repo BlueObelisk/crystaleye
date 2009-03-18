@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 
@@ -61,9 +62,7 @@ public class ActaArticleCrawler extends ArticleCrawler {
 			return ad;
 		}
 		URI fullTextLink = getFullTextLink();
-		if (fullTextLink != null) {
-			ad.setFullTextLink(fullTextLink);
-		}
+		ad.setFullTextLink(fullTextLink);
 		List<SupplementaryFileDetails> suppFiles = getSupplementaryFilesDetails();
 		setBibtexTool();
 		if (bibtexTool != null) {
@@ -111,8 +110,9 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	private String getArticleId() {
 		Nodes nds = articleAbstractHtml.query(".//x:input[@name='cnor']", X_XHTML);
 		if (nds.size() == 0) {
-			throw new CrawlerRuntimeException("Could not find the article ID for "+doi.toString()+
-			" webpage structure must have changed.  Crawler needs rewriting!");
+			LOG.warn("Could not find the article ID for "+doi.toString()+
+			" webpage structure may have changed.  Crawler may need rewriting!");
+			return null;
 		}
 		return ((Element)nds.get(0)).getAttributeValue("value");
 	}
@@ -128,7 +128,8 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	private URI getFullTextLink() {
 		Nodes fullTextHtmlLinks = articleAbstractHtml.query(".//x:a[./x:img[contains(@src,'graphics/htmlborder.gif')]]", X_XHTML);
 		if (fullTextHtmlLinks.size() != 1) {
-			throw new CrawlerRuntimeException("Problem finding full text HTML link: "+doi);
+			LOG.warn("Problem finding full text HTML link: "+doi);
+			return null;
 		}
 		String fullTextUrl = ((Element)fullTextHtmlLinks.get(0)).getAttributeValue("href");
 		return createURI(fullTextUrl);
@@ -149,14 +150,66 @@ public class ActaArticleCrawler extends ArticleCrawler {
 		if (cifNds.size() == 0) {
 			return new ArrayList<SupplementaryFileDetails>(0);
 		}
-		String cifUrl = ((Element)cifNds.get(0)).getAttributeValue("href");
-		URI cifUri = createURI(cifUrl);
-		String filename = getFilenameFromUrl(cifUrl);
-		String contentType = httpClient.getContentType(cifUri);
-		SupplementaryFileDetails suppFile = new SupplementaryFileDetails(cifUri, filename, "CIF", contentType);
-		List<SupplementaryFileDetails> suppFiles = new ArrayList<SupplementaryFileDetails>(1);
-		suppFiles.add(suppFile);
+		String url = ((Element)cifNds.get(0)).getAttributeValue("href");
+		URI uri = createURI(url);
+		List<URI> cifUriList = getCifUrisFromUri(uri);
+		List<SupplementaryFileDetails> suppFiles = new ArrayList<SupplementaryFileDetails>(cifUriList.size());
+		for (URI cifUri : cifUriList) {
+			String filename = getFilenameFromUrl(getURIString(cifUri));
+			String contentType = httpClient.getContentType(cifUri);
+			SupplementaryFileDetails suppFile = new SupplementaryFileDetails(cifUri, filename, "CIF", contentType);
+			suppFiles.add(suppFile);
+		}
 		return suppFiles;
+	}
+
+	/**
+	 * <p>
+	 * Retrieve the CIF URIs for this article from the URI provided.
+	 * </p>
+	 * 
+	 * @param uri from which to obtain the CIF URIs for this article.
+	 * 
+	 * @return a list of the URIs for the CIFs for this article.
+	 */
+	private List<URI> getCifUrisFromUri(URI uri) {
+		List<URI> cifUriList = new ArrayList<URI>();
+		if (uriPointsToCifListPage(uri)) {
+			Document pageDoc = httpClient.getResourceHTML(uri);
+			Nodes linkNds = pageDoc.query(".//x:a[contains(@href,'http://scripts.iucr.org/cgi-bin/sendcif')]", X_XHTML);
+			if (linkNds.size() == 0) {
+				LOG.warn("Could not find any CIF links at the supposed CIF list page: "+uri);
+			}
+			for (int i = 0; i < linkNds.size(); i++) {
+				String url = ((Element)linkNds.get(i)).getAttributeValue("href");
+				cifUriList.add(createURI(url));
+			}
+		} else {
+			cifUriList.add(uri);
+		}
+		return cifUriList;
+	}
+
+	/**
+	 * <p>
+	 * If the URI does not contain sup(\\d+) at the end, then it means that
+	 * if doesn't point to a CIF, but instead points to another webpage that
+	 * contains a list of CIFs.
+	 * </p>
+	 * 
+	 * @param uri
+	 * 
+	 * @return
+	 */
+	private boolean uriPointsToCifListPage(URI uri) {
+		String url = getURIString(uri);
+		int idx = url.lastIndexOf("/");
+		String s = url.substring(idx);
+		if (s.contains("sup")) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	/**
@@ -165,19 +218,19 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	 * the supplementary file URL.
 	 * </p>
 	 * 
-	 * @param cifUrl - the URL from which to obtain the filename.
+	 * @param fileUrl - the URL from which to obtain the filename.
 	 * 
 	 * @return the filename of the supplementary file.
 	 */
-	private String getFilenameFromUrl(String cifUrl) {
+	private String getFilenameFromUrl(String fileUrl) {
 		Pattern pattern = Pattern.compile("http://scripts.iucr.org/cgi-bin/sendcif\\?(.{6}sup\\d+)");
 		Matcher matcher = null;
-		matcher = pattern.matcher(cifUrl);
+		matcher = pattern.matcher(fileUrl);
 		if (matcher.find()) {
 			return matcher.group(1);
 		} else {
 			throw new RuntimeException("Should always find the filename from " +
-					"the provided CIF, but couldn't: "+cifUrl);
+					"the provided file, but couldn't: "+fileUrl);
 		}
 	}
 
