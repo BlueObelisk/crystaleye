@@ -148,9 +148,17 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 			}
 		}
 
+		removeVeryCommonBonds(changedBonds);
+		
 		generateProtocolBondLengthFiles(changedBonds);
 		generateHistograms(changedBonds);
 		generateHtmlLinkPages();
+	}
+	
+	private void removeVeryCommonBonds(Set<String> changedBonds) {
+		changedBonds.remove("C-C");
+		changedBonds.remove("C-H");
+		changedBonds.remove("H-C");
 	}
 
 	public void process(String issueWriteDir) {		
