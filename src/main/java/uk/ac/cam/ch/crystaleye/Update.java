@@ -89,8 +89,10 @@ public class Update implements CMLConstants {
 				cell.execute();
 			}
 			if (cl.hasOption("bondlengths")) {
+				/*
 				BondLengthsManager bond = new BondLengthsManager(propsPath);
 				bond.execute();
+				*/
 			}
 			if (cl.hasOption("smiles")) {
 				SmilesListManager smi = new SmilesListManager(propsPath);
@@ -120,8 +122,10 @@ public class Update implements CMLConstants {
 		dois.execute();
 		CellParamsManager cell = new CellParamsManager(propsPath);
 		cell.execute();
+		/*
 		BondLengthsManager bond = new BondLengthsManager(propsPath);
 		bond.execute();
+		*/
 		SmilesListManager smi = new SmilesListManager(propsPath);
 		smi.execute();
 		AtomPubManager ap = new AtomPubManager(propsPath);
