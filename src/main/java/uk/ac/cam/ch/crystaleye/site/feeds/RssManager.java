@@ -149,7 +149,8 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			fileList = CrystalEyeUtils.getSummaryDirFileList(issueWriteDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
 			if (fileList.size() > 0) {
 				webJournalDirPath = webSummaryWriteDir+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+issueNum;
-				updateJournalCmlrssFeeds(fileList);
+				// FIXME - have stopped CMLRSS being updated by commenting this line - this may want uncommenting in the future
+				//updateJournalCmlrssFeeds(fileList);
 				updateAllOtherRSSAndCmlrssFeeds(fileList);
 			}
 		}
@@ -168,15 +169,6 @@ public class RssManager extends AbstractManager implements CMLConstants {
 	}
 
 	private void createNewJournalCmlrssFeed(List<File> cmlFileList, String cmlRssUrl, String cmlRssWritePath, String archiveUrl, String feedType) {
-		/*
-		 *  don't do this any more, just write over the old journal feeds
-		try {
-			archiveCmlRssFeed(cmlRssWritePath, archiveUrl);
-		} catch (Exception e) {
-			throw new CrystalEyeRuntimeException("Problem archiving CMLRSS feed.", e);
-		}
-		 */
-
 		String feedTitle = "CrystalEye CMLRSS: "+this.publisherTitle+", "+this.journalTitle;
 		String feedDescription = "CrystalEye CMLRSS: "+this.publisherTitle+", "+this.journalTitle+", "+year+", "+issueNum;
 
@@ -235,7 +227,8 @@ public class RssManager extends AbstractManager implements CMLConstants {
 
 			credList.add(new CMLRSSEntryDetails(title, author, htmlLink, description, htmlLink, cmlLink, cmlFile.getAbsolutePath(), htmlLink));		
 		}
-		new CMLRSSHandler(cmlRssWritePath, type, credList).addEntries();
+		// FIXME - have stopped CMLRSS being updated by commenting this line - this may want uncommenting in the future
+		// new CMLRSSHandler(cmlRssWritePath, type, credList).addEntries();
 	}
 
 	private void updateAllOtherRSSAndCmlrssFeeds(List<File> fileList) {
@@ -432,7 +425,8 @@ public class RssManager extends AbstractManager implements CMLConstants {
 				String rssPath = rootFeedsDir+rssFeedPostfix;
 				if (!"journal".equals(id) && !"all".equals(id)) {
 					System.out.println("Updating feed: "+cmlrssPath);
-					new CMLRSSHandler(cmlrssPath, type, credList).addEntries();
+					// FIXME - have stopped CMLRSS being updated by commenting this line - this may want uncommenting in the future
+					//new CMLRSSHandler(cmlrssPath, type, credList).addEntries();
 				}
 				System.out.println("Updating feed: "+rssPath);
 				new RSSHandler(rssPath, entryList).addEntries();
