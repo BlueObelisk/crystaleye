@@ -118,4 +118,17 @@ public class SupplementaryFileDetails {
 		return contentType;
 	}
 	
+	/**
+	 * <p>
+	 * Sets the Content-type of the supplementary file, as would be 
+	 * described by its HTTP header. 
+	 * </p>
+	 * 
+	 * @param contentType
+	 */
+	public void appendToContentType(String contentType) {
+		String newContentType = contentType+"; "+this.contentType;
+		this.contentType = newContentType;
+	}
+	
 }

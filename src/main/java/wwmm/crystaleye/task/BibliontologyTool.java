@@ -26,13 +26,13 @@ import wwmm.crystaleye.model.CifFileDAO;
  * @author Nick Day
  * @version 0.1
  */
-public class BibliontTool {
+public class BibliontologyTool {
 	
 	ArticleDetails ad;
 	
-	private static final Logger LOG = Logger.getLogger(BibliontTool.class);
+	private static final Logger LOG = Logger.getLogger(BibliontologyTool.class);
 	
-	public BibliontTool(ArticleDetails ad) {
+	public BibliontologyTool(ArticleDetails ad) {
 		this.ad = ad;
 	}
 	
@@ -66,7 +66,7 @@ public class BibliontTool {
 		ad.setReference(ar);
 		String title = "The article's title";
 		ad.setTitle(title);
-		BibliontTool bt = new BibliontTool(ad);
+		BibliontologyTool bt = new BibliontologyTool(ad);
 		System.out.println(bt.toString());
 	}
 

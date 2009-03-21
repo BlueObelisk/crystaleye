@@ -1,5 +1,7 @@
 package wwmm.crystaleye.task;
 
+import static wwmm.crystaleye.CrystalEyeConstants.CIF_CONTENT_TYPE;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -11,7 +13,6 @@ import wwmm.crystaleye.crawler.DOI;
 import wwmm.crystaleye.crawler.RscIssueCrawler;
 import wwmm.crystaleye.crawler.RscJournal;
 import wwmm.crystaleye.crawler.SupplementaryFileDetails;
-import wwmm.crystaleye.crawler.cif.CifFileDetails;
 import wwmm.crystaleye.crawler.cif.CifIssueCrawler;
 import wwmm.crystaleye.crawler.cif.RscCifIssueCrawler;
 import wwmm.crystaleye.index.DoiVsCifFilenameIndex;
@@ -66,7 +67,7 @@ public class CrawlerTask {
 				}
 				String cifContents = new CrawlerHttpClient().getResourceString(sfd.getURI());
 				int primaryKey = cifDao.insertCif(cifContents);
-				String articleMetadata = new BibliontTool(ad).toString();
+				String articleMetadata = new BibliontologyTool(ad).toString();
 				if (!articleMetadataDao.insert(primaryKey, articleMetadata)) {
 					LOG.warn("Problem inserting article metadata.");
 				}
@@ -107,7 +108,8 @@ public class CrawlerTask {
 	 * if not.
 	 */
 	private boolean isCifFile(SupplementaryFileDetails sfd) {
-		if (sfd instanceof CifFileDetails) {
+		String contentType = sfd.getContentType();
+		if (contentType.contains(CIF_CONTENT_TYPE)) {
 			return true;
 		} else {
 			return false;
