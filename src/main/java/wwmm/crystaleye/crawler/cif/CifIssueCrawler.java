@@ -1,5 +1,7 @@
 package wwmm.crystaleye.crawler.cif;
 
+import static wwmm.crystaleye.CrystalEyeConstants.CIF_CONTENT_TYPE;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,9 +74,9 @@ public abstract class CifIssueCrawler {
 	/**
 	 * <p>
 	 * Ascertains whether or not the article has a CIF as supplementary 
-	 * data.  NOTE that this method casts any SupplementaryFileDetails that 
-	 * are found to refer to CIFs into CifFileDetails (a subclass of 
-	 * SupplementaryFileDetails).
+	 * data.  NOTE that if a supp file is deemed to be a CIF, then this
+	 * method makes certain that its content type contains the official 
+	 * CIF content-type (chemical/x-cif).
 	 * </p>
 	 * 
 	 * @param details
@@ -82,18 +84,15 @@ public abstract class CifIssueCrawler {
 	 */
 	final private boolean isCifArticle(ArticleDetails details) {
 		boolean isCifArticle = false;
-		List<SupplementaryFileDetails> newSfdList = new ArrayList<SupplementaryFileDetails>();
 		for (SupplementaryFileDetails sfd : details.getSuppFiles()) {
 			if (isCifFile(sfd)) {
-				CifFileDetails cfd = new CifFileDetails(sfd.getURI(),
-						sfd.getFileId(), sfd.getLinkText(), sfd.getContentType());
-				newSfdList.add(cfd);
+				String oldContentType = sfd.getContentType();
+				if (!oldContentType.contains(CIF_CONTENT_TYPE)) {
+					sfd.appendToContentType(CIF_CONTENT_TYPE);
+				}
 				isCifArticle = true;
-			} else {
-				newSfdList.add(sfd);
 			}
 		}
-		details.setSuppFiles(newSfdList);
 		return isCifArticle;
 	}
 	

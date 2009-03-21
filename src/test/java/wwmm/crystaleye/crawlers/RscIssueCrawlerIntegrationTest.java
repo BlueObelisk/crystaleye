@@ -8,25 +8,25 @@ import org.junit.Test;
 
 import wwmm.crystaleye.crawler.AcsIssueCrawler;
 import wwmm.crystaleye.crawler.AcsJournal;
-import wwmm.crystaleye.crawler.ActaIssueCrawler;
-import wwmm.crystaleye.crawler.ActaJournal;
 import wwmm.crystaleye.crawler.DOI;
 import wwmm.crystaleye.crawler.IssueDetails;
+import wwmm.crystaleye.crawler.RscIssueCrawler;
+import wwmm.crystaleye.crawler.RscJournal;
 
-public class ActaIssueCrawlerIntegrationTest {
+public class RscIssueCrawlerIntegrationTest {
 	
 	/**
-	 * Goes out to the Acta site to check that the correct number
+	 * Goes out to the RSC site to check that the correct number
 	 * of DOIs are scraped from a particular issue.  Basically a 
 	 * check that the table of contents HTML structure hasn't 
 	 * been changed.
 	 */
 	@Test
 	public void testGetIssueDois() {
-		IssueDetails details = new IssueDetails("2009", "01-00");
-		ActaIssueCrawler crawler = new ActaIssueCrawler(ActaJournal.SECTION_C);
+		IssueDetails details = new IssueDetails("2009", "2");
+		RscIssueCrawler crawler = new RscIssueCrawler(RscJournal.DALTON_TRANSACTIONS);
 		List<DOI> doiList = crawler.getDOIs(details);
-		assertEquals(23, doiList.size());
+		assertEquals(20, doiList.size());
 	}
 
 	/**
@@ -37,8 +37,8 @@ public class ActaIssueCrawlerIntegrationTest {
 	 */
 	@Test
 	public void testGetCurrentIssueHtml() {
-		ActaIssueCrawler crawler = new ActaIssueCrawler(ActaJournal.SECTION_C);
+		RscIssueCrawler crawler = new RscIssueCrawler(RscJournal.CHEMCOMM);
 		crawler.getCurrentIssueHtml();
 	}
-
+	
 }

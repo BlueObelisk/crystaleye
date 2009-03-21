@@ -182,19 +182,33 @@ public class RscArticleCrawler extends ArticleCrawler {
 			return null;
 		}
 		String ref = refNds.get(0).getValue();
-		Pattern pattern = Pattern.compile("\\s*([^,]+),\\s*(\\d+),\\s*([^,]+),.*");
-		Matcher matcher = pattern.matcher(ref);
-		if (!matcher.find()) {
-			LOG.warn("Problem finding bibliographic text at: "+doi);
-			return null;
+		String journal = null;
+		String year = null;
+		String volume = null;
+		String pages = null;
+		Pattern firstPattern = Pattern.compile("\\s*([^,]+),[^\\d]*(\\d+),[^\\d]*(\\d+),[^\\d]*([^,]+),\\s*DOI:.*");
+		Matcher firstMatcher = firstPattern.matcher(ref);
+		if (firstMatcher.find()) {
+			journal = firstMatcher.group(1);
+			year = firstMatcher.group(2);
+			volume = firstMatcher.group(3);
+			pages = firstMatcher.group(4);
+		} else {
+			Pattern secondPattern = Pattern.compile("\\s*([^,]+),[^\\d]*(\\d+),[^\\d]*([^,]+),\\s*DOI:.*");
+			Matcher secondMatcher = secondPattern.matcher(ref);
+			if (!secondMatcher.find()) {
+				LOG.warn("Problem finding bibliographic text at: "+doi);
+				return null;
+			}
+			journal = secondMatcher.group(1);
+			year = secondMatcher.group(2);
+			pages = secondMatcher.group(3);
+			pages = pages.replaceAll("\\s", "");
 		}
-		String journal = matcher.group(1);
-		String year = matcher.group(2);
-		String pages = matcher.group(3);
-		pages = pages.replaceAll("\\s", "");
 		ArticleReference ar = new ArticleReference();
 		ar.setJournalTitle(journal);
 		ar.setYear(year);
+		ar.setVolume(volume);
 		ar.setPages(pages);
 		return ar;
 	}
@@ -231,11 +245,18 @@ public class RscArticleCrawler extends ArticleCrawler {
 	 * @throws URIException 
 	 */
 	public static void main(String[] args) throws URIException, NullPointerException {
-		String url = "http://dx.doi.org/10.1039/b816501g";
-		DOI doi = new DOI(url);
-		RscArticleCrawler acf = new RscArticleCrawler(doi);
-		ArticleDetails details = acf.getDetails();
-		System.out.println(details.toString());
+		String ref = "Org. Biomol. Chem., 2009, 7, 1355 - 1360, DOI: 10.1039/b821431j";
+		//String p = "\\s*([^,]+),\\s*(\\d+),\\s*(\\d+),\\s*([^,]+),\\s*DOI:.*";
+		String p = "\\s*([^,]+),\\s*(\\d+),[^\\d]*(\\d+),\\s*([^,]+),\\s*DOI:.*";
+		Pattern firstPattern = Pattern.compile(p);
+		Matcher firstMatcher = firstPattern.matcher(ref);
+		if (firstMatcher.find()) {
+			for (int i = 0; i <= firstMatcher.groupCount(); i++) {
+				System.out.println(firstMatcher.group(i));
+			}
+		} else {
+			System.out.println("no match");
+		}
 	}
 
 }
