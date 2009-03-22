@@ -1,16 +1,16 @@
-package wwmm.crystaleye.crawlers;
+package wwmm.crystaleye.crawler;
 
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.ChemSocJapanJournal;
+import wwmm.crystaleye.crawler.ActaJournal;
 
-public class ChemSocJapanJournalTest {
+public class ActaJournalTest {
 	
 	@Test
 	public void checkJournalsHaveAllParamatersSet() {
-		for (ChemSocJapanJournal journal : ChemSocJapanJournal.values()) {
+		for (ActaJournal journal : ActaJournal.values()) {
 			String abbreviation = journal.getAbbreviation();
 			assertNotNull("Journal "+journal.toString()+" has a NULL abbreviation, must be set to a string.", abbreviation);
 			String fullTitle = journal.getFullTitle();
