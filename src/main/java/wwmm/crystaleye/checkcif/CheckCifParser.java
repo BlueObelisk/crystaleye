@@ -30,6 +30,13 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
+ * 
+ * <p>
+ * NOTE: this parser currently does not work correctly for 
+ * CheckCIFs containing information for more than one datablock 
+ * (i.e. more than one crystal structure).
+ * </p>
+ * 
  * <p>
  * Parses the CheckCIF HTML created by the IUCr CheckCIF service
  * into an XML Document.  Note that those CheckCIFs returned by 
@@ -100,6 +107,10 @@ public class CheckCifParser {
 	 */
 	public CheckCifParser(File checkCifFile) throws IOException {
 		this.checkCifHtml = FileUtils.readFileToString(checkCifFile);
+	}
+	
+	public CheckCifParser(String checkCifHtml) {
+		this.checkCifHtml = checkCifHtml;
 	}
 
 	/**
@@ -175,6 +186,7 @@ public class CheckCifParser {
 	 */
 	public Document parseService() {
 		setDocument();
+		LOG.debug(doc.toXML());
 		setBlockStartPositions();
 		// this is the XML doc that will eventually be returned.
 		Document checkcifXml = new Document(new Element("checkCif", CC_NS));
@@ -197,16 +209,18 @@ public class CheckCifParser {
 					alerts.appendChild(alert);
 				} else {
 					//get alert elements and add them to the new checkcif document
-					nodes = d.query("/x:datablock/x:a[contains(@href,'javascript:makeHelpWindow')]", X_XHTML);
+					nodes = d.query("/x:datablock/x:tt/x:a[contains(@href,'javascript:makeHelpWindow')]", X_XHTML);
 					if (nodes.size() != 0) {
 						data.addAttribute(new Attribute("id", blockId));
 						for (int i = 0; i < nodes.size(); i++) {
 							Element alert = new Element("alert", CC_NS);
-							String alertCode = nodes.get(i).getValue();
+							Element alertEl = (Element)nodes.get(i);
+							Element parent = (Element)alertEl.getParent();
+							int idx = parent.indexOf(alertEl);
+							String alertCode = alertEl.getValue();
 							alert.addAttribute(new Attribute("code", alertCode));
-							int j = root.indexOf(nodes.get(i));
 							Element alertText = new Element("alertText", CC_NS);
-							String text = root.getChild(j+1).getValue().trim();
+							String text = parent.getChild(idx+1).getValue().trim();
 							alertText.appendChild(new Text(text));
 							alert.appendChild(alertText);
 							alerts.appendChild(alert);
@@ -344,8 +358,9 @@ public class CheckCifParser {
 	private void setBlockStartPositions() {
 		Nodes syntaxError = doc.query("//x:h2[text()='Syntax problems']", X_XHTML);
 		if (syntaxError.size() == 0) {
-			Nodes dataStartPos = doc.query("/x:html/x:body/x:font[@size='+2']/x:b[contains(text(),'Datablock:')]/parent::x:*", X_XHTML);
+			Nodes dataStartPos = doc.query("./x:html/x:body/x:font[@size='+2']/x:b[contains(text(),'Datablock:')]/parent::x:*", X_XHTML);
 			dbPos = new Integer[dataStartPos.size()];
+			LOG.debug(dbPos.length);
 			if (dataStartPos.size() != 0) {
 				for (int i = 0; i < dataStartPos.size();i++) {
 					containsDataBlocks = true;
@@ -356,7 +371,7 @@ public class CheckCifParser {
 				throw new RuntimeException("No datablocks found in this checkCIF");
 			}
 
-			Nodes publStartPos = doc.query("/x:html/x:body/x:font[@size=\"+2\"]/x:b[contains(text(),'checkCIF publication errors')]/parent::x:*", X_XHTML);
+			Nodes publStartPos = doc.query("./x:html/x:body/x:tt[./x:font[@size=\"+2\"]/x:b[contains(text(),'checkCIF publication errors')]]", X_XHTML);
 			if (publStartPos.size() != 0) {
 				pubPos = body.indexOf(publStartPos.get(0));
 				containsPublErrors = true;
@@ -364,7 +379,7 @@ public class CheckCifParser {
 				LOG.info("No publication errors reported in this checkCIF");
 			}
 
-			Nodes platonStartPos = doc.query("/x:html/x:body/x:font/x:b[contains(text(),'PLATON version')]/parent::x:*", X_XHTML);
+			Nodes platonStartPos = doc.query("./x:html/x:body/x:tt[./x:font/x:b[contains(text(),'PLATON version')]]", X_XHTML);
 			if (platonStartPos.size() != 0) {
 				platPos = body.indexOf(platonStartPos.get(0));
 				containsPlaton = true;

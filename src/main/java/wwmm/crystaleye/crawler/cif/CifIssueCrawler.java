@@ -29,7 +29,7 @@ public abstract class CifIssueCrawler {
 	
 	// TODO - provide a 'Factory' way of creating the subclasses of this? 
 
-	IssueCrawler crawler;
+	protected IssueCrawler crawler;
 	
 	public CifIssueCrawler(IssueCrawler crawler) {
 		this.crawler = crawler;

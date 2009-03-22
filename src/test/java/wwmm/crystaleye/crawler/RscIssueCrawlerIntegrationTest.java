@@ -6,13 +6,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.AcsIssueCrawler;
-import wwmm.crystaleye.crawler.AcsJournal;
-import wwmm.crystaleye.crawler.DOI;
-import wwmm.crystaleye.crawler.IssueDetails;
-import wwmm.crystaleye.crawler.RscIssueCrawler;
-import wwmm.crystaleye.crawler.RscJournal;
-
 public class RscIssueCrawlerIntegrationTest {
 	
 	/**

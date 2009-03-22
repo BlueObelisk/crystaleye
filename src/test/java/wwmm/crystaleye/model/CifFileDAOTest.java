@@ -58,7 +58,7 @@ public class CifFileDAOTest {
 		String cifContents = "data_1\ncell_measurement_temperature 298\n";
 		File key1File = new File(storageRoot, "1");
 		assertTrue(!key1File.exists());
-		cifDao.insertCif(cifContents);
+		cifDao.insert(cifContents);
 		assertTrue(key1File.exists());
 		File key1Cif = new File(key1File, "1"+CIF_MIME);
 		assertTrue(key1Cif.exists());

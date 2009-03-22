@@ -15,15 +15,9 @@ import org.apache.commons.io.FileUtils;
  * </p>
  * 
  * @author Nick Day
- * 
  * @version 0.1
  */
 public class PrimaryKeyDAO {
-	
-	// FIXME I imagine the next thing to add here is to provide a 
-	// method that allows someone
-	// to specify a primary key and say they want to add a particular
-	// file - Nick Day
 
 	private File storageRoot;
 	public static final String KEY_COUNT_FILENAME = "primarykey_count.txt";

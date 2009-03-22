@@ -1,19 +1,14 @@
 package wwmm.crystaleye.crawler;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.junit.Test;
-
-import wwmm.crystaleye.crawler.ArticleDetails;
-import wwmm.crystaleye.crawler.ArticleReference;
-import wwmm.crystaleye.crawler.DOI;
-import wwmm.crystaleye.crawler.RscArticleCrawler;
-import wwmm.crystaleye.crawler.SupplementaryFileDetails;
 
 public class RscArticleCrawlerIntegrationTest {
 

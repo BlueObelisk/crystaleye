@@ -6,8 +6,6 @@ import static wwmm.crystaleye.crawler.CrawlerConstants.CHEMSOCJAPAN_HOMEPAGE_URL
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import nu.xom.Document;
 import nu.xom.Element;
