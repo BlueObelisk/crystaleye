@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawlers;
+package wwmm.crystaleye.crawler;
 
 import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.assertTrue;
