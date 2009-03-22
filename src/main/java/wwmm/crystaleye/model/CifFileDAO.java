@@ -3,7 +3,6 @@ package wwmm.crystaleye.model;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -14,53 +13,33 @@ import org.apache.log4j.Logger;
  * @author Nick Day
  * @version 0.1
  */
-public class CifFileDAO {
+public class CifFileDAO extends PrimaryFileDAO {
 
-	private File storageRoot;
-	private PrimaryKeyDAO keyDao;
 	public static final String CIF_MIME = ".cif";
 
 	private static final Logger LOG = Logger.getLogger(CifFileDAO.class);
 	
 	public CifFileDAO(File storageRoot) {
-		init(storageRoot);
+		super(storageRoot);
 	}
-
+	
 	/**
 	 * <p>
-	 * Provide the root folder at which the CrystalEye database sits.
+	 * Inserts a CIF into the database.  Returns the primary key
+	 * that the CIF was assigned when it was written.
 	 * </p>
 	 * 
-	 * @param storageRoot - the root folder at which the CrystalEye 
-	 * database sits.
-	 */
-	private void init(File storageRoot) {
-		this.storageRoot = storageRoot;
-		this.keyDao = new PrimaryKeyDAO(storageRoot);
-	}
-
-	/**
-	 * <p>
-	 * Adds the CIF in the provided <code>InputStream</code> 
-	 * into the CIF database.  Returns the primary key that the
-	 * inserted CIF has been assigned.
-	 * </p>
+	 * @param cifContents - a <code>String</code> containing the
+	 * contents of the CIF to be written.
 	 * 
-	 * @param in - InputStream containing the CIF to be inserted.
-	 * 
-	 * @return the primary key that the written CIF has been 
-	 * assigned.
-	 * @throws IOException 
+	 * @return the database primary key assigned to the inserted CIF.
 	 */
-	public int insertCif(String cifContents) {
-		int key = keyDao.insertPrimaryKey();
-		File keyFile = keyDao.getFileFromKey(key);
-		File cifFile = new File(keyFile, key+CIF_MIME);
-		LOG.info("Inserting CIF to: "+cifFile.getAbsolutePath());
+	public int insert(String cifContents) {
+		int key = -1;
 		try {
-			FileUtils.writeStringToFile(cifFile, cifContents);
+			key = insert(cifContents, CIF_MIME);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not write CIF string to: "+cifFile.getAbsolutePath(), e);
+			LOG.warn("Exception try to insert CIF to the database.");
 		}
 		return key;
 	}

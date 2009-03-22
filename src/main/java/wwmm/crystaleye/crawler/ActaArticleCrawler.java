@@ -13,7 +13,6 @@ import nu.xom.Nodes;
 
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 
@@ -224,14 +223,18 @@ public class ActaArticleCrawler extends ArticleCrawler {
 	 * @return the filename of the supplementary file.
 	 */
 	private String getFilenameFromUrl(String fileUrl) {
+		// first, see if the file is a CIF, which has special URLs of the form
+		// below
 		Pattern pattern = Pattern.compile("http://scripts.iucr.org/cgi-bin/sendcif\\?(.{6}sup\\d+)");
 		Matcher matcher = null;
 		matcher = pattern.matcher(fileUrl);
 		if (matcher.find()) {
 			return matcher.group(1);
 		} else {
-			throw new RuntimeException("Should always find the filename from " +
-					"the provided file, but couldn't: "+fileUrl);
+			// if the previous regexp does not match, then it isn't a CIF, so
+			// it should be fine just to take substring after the final '/'
+			int idx = fileUrl.lastIndexOf("/");
+			return fileUrl.substring(idx+1);
 		}
 	}
 

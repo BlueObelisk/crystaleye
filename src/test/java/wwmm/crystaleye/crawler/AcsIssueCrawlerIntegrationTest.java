@@ -1,15 +1,10 @@
 package wwmm.crystaleye.crawler;
 
+import static junit.framework.Assert.assertEquals;
+
 import java.util.List;
 
-import static junit.framework.Assert.*;
-
 import org.junit.Test;
-
-import wwmm.crystaleye.crawler.AcsIssueCrawler;
-import wwmm.crystaleye.crawler.AcsJournal;
-import wwmm.crystaleye.crawler.DOI;
-import wwmm.crystaleye.crawler.IssueDetails;
 
 public class AcsIssueCrawlerIntegrationTest {
 	

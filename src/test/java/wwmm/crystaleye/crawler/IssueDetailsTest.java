@@ -6,9 +6,6 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.IssueCrawler;
-import wwmm.crystaleye.crawler.IssueDetails;
-
 public class IssueDetailsTest {
 	
 	IssueCrawler issueCrawler;

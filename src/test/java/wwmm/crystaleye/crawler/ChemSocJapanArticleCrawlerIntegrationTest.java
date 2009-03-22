@@ -9,12 +9,6 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.ArticleDetails;
-import wwmm.crystaleye.crawler.ArticleReference;
-import wwmm.crystaleye.crawler.ChemSocJapanArticleCrawler;
-import wwmm.crystaleye.crawler.DOI;
-import wwmm.crystaleye.crawler.SupplementaryFileDetails;
-
 public class ChemSocJapanArticleCrawlerIntegrationTest {
 
 	/**
