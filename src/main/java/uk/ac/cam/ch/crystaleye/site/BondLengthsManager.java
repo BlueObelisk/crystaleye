@@ -37,6 +37,7 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import nu.xom.Text;
 
+import org.apache.log4j.Logger;
 import org.graph.GraphException;
 import org.graph.Point;
 import org.graph.SVGElement;
@@ -72,6 +73,8 @@ import uk.ac.cam.ch.crystaleye.templates.webpages.BondLengthIndex;
 import uk.ac.cam.ch.crystaleye.templates.webpages.CifSummaryToc;
 
 public class BondLengthsManager extends AbstractManager implements CMLConstants {
+	
+	private static final Logger LOG = Logger.getLogger(BondLengthsManager.class);
 
 	private String temp = "";
 	private String rf = "";
@@ -143,7 +146,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, BONDLENGTHS);
 					}
 				} else {
-					System.out.println("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 				}
 			}
 		}
@@ -683,7 +686,6 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 	}
 
 	private void addLengthsFromCmlFile(File cmlFile) {
-		System.out.println("Processing: "+cmlFile.getAbsolutePath());
 		CMLCml c = null;
 		try {
 			c = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();

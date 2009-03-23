@@ -46,7 +46,6 @@ public class RSSArchiver {
 		try {
 			List<File> feedFiles = FileListing.byRegex(new File(feedDir), regex);
 			for (File feedFile : feedFiles) {
-				System.out.println("Deleting entries over "+numberOfDays+" of days old from: "+feedFile.getAbsolutePath());
 				boolean isRSS1 = false;
 				String feedPath = feedFile.getAbsolutePath();
 				if (feedPath.contains("journal")) continue;
@@ -150,7 +149,6 @@ public class RSSArchiver {
 					for (String link : linkList) {
 						Nodes linkNodes = items.query(".//rdf:Seq/rdf:li[@resource='"+link+"']", X_RDF);
 						for (int i = 0; i < linkNodes.size(); i++) {
-							System.out.println("removing link node");
 							linkNodes.get(0).detach();
 						}
 					}
@@ -221,7 +219,6 @@ public class RSSArchiver {
 			Document entry = new StaxParser(reader, new NodeFactory()).buildFragment();
 			if (entry.getRootElement().getLocalName().equals("entry")) {
 				Nodes updatedNodes = entry.query(".//atom1:entry/atom1:updated", X_ATOM1);
-				System.out.println("up "+updatedNodes.size());
 				if (updatedNodes.size() == 1) {
 					String entryDateString = updatedNodes.get(0).getValue();
 					SimpleDateFormat formatter = new SimpleDateFormat(CRYSTALEYE_DATE_FORMAT);

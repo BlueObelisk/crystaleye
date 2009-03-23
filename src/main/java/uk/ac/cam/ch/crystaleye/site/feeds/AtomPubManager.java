@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import nu.xom.Element;
 
+import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLConstants;
 
 import uk.ac.cam.ch.crystaleye.AbstractManager;
@@ -33,6 +34,8 @@ import uk.ac.cam.ch.crystaleye.properties.SiteProperties;
 import uk.ac.cam.ch.crystaleye.templates.feeds.AtomPubTemplate;
 
 public class AtomPubManager extends AbstractManager implements CMLConstants {
+	
+	private static final Logger LOG = Logger.getLogger(AtomPubManager.class);
 
 	public static final String CURRENT_FEED_NAME = "feed.xml";
 	public static final String FEED_TITLE = "CrystalEye:  All Structures";
@@ -73,7 +76,7 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, ATOMPUB);
 					}
 				} else {
-					System.out.println("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 				}
 			}
 		}
@@ -102,23 +105,16 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 		String currentFeedPath = properties.getAtomPubRootDir()+File.separator+CURRENT_FEED_NAME;
 		File currentFile = new File(currentFeedPath);
 		AtomPubFeed a = null;
-		System.out.println(currentFeedPath);
 		if (currentFile.exists()) {
-			System.out.println("exists");
 			a = new AtomPubFeed(currentFile);
 		} else {
-			System.out.println("doesn't exist");
 			AtomPubTemplate tp = new AtomPubTemplate(FEED_TITLE, FEED_SUBTITLE, FEED_AUTHOR, FEED_LINK);
 			a = tp.getFeedSkeleton();
 		}
 		updateFeeds(a, fileList, 0); 
 	}
 
-	public void updateFeeds(AtomPubFeed currentFeed, List<File> fileList, int position) {
-		//System.out.println("==========================================");
-		//System.out.println("start pos: "+position);
-		//System.out.println("filelist size: "+fileList.size());
-		
+	public void updateFeeds(AtomPubFeed currentFeed, List<File> fileList, int position) {		
 		Map<UUID, File> uuidMap = new HashMap<UUID, File>();
 		int MAX_ENTRIES = properties.getAtomPubFeedMaxEntries();
 		int entriesLeft = -1;
@@ -192,7 +188,6 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 
 		int penultimateNum = getPenultimateFeedNum();
 		boolean isCurrentDoc = false;
-		//System.out.println("gah: "+entriesLeft+" "+numFilesLeft);
 		if (entriesLeft >= numFilesLeft) {
 			// this is the currentdoc
 			String prevLink = null;

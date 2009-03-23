@@ -10,11 +10,16 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
 
 public class ActaCurrent extends CurrentIssueFetcher {
+	
+	private static final Logger LOG = Logger.getLogger(ActaCurrent.class);
 
 	private static final String SITE_PREFIX = "http://journals.iucr.org";
 	private static final String publisherAbbreviation = "acta";
@@ -102,7 +107,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 				}
 			}
 		}
-		System.out.println("FINISHED FETCHING CIFS FROM "+url);
+		LOG.info("FINISHED FETCHING CIFS FROM "+url);
 	}
 
 	public static void main(String[] args) {

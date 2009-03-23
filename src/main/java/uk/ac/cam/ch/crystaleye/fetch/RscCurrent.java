@@ -10,11 +10,16 @@ import java.util.regex.Pattern;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
 
 public class RscCurrent extends CurrentIssueFetcher {
+	
+	private static final Logger LOG = Logger.getLogger(RscCurrent.class);
 
 	private static final String SITE_PREFIX = "http://www.rsc.org";
 	private static final String publisherAbbreviation = "rsc";
@@ -60,8 +65,6 @@ public class RscCurrent extends CurrentIssueFetcher {
 				doc = IOUtils.parseWebPageMinusComments(articleUrl);
 				sleep();
 				Nodes suppLinks = doc.query("//x:a[contains(text(),'Electronic supplementary information')]", X_XHTML);
-				System.out.println(articleUrl);
-				System.out.println("supplinks: "+suppLinks.size());
 				if (suppLinks.size() > 0) {
 					for (int j = 0; j < suppLinks.size(); j++) {
 						String link = ((Element)suppLinks.get(j)).getAttributeValue("href");
@@ -85,7 +88,7 @@ public class RscCurrent extends CurrentIssueFetcher {
 				}
 			}
 		}
-		System.out.println("FINISHED FETCHING CIFS FROM "+url);
+		LOG.info("FINISHED FETCHING CIFS FROM "+url);
 	}
 
 	public static void main(String[] args) {

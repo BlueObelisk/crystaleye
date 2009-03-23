@@ -50,6 +50,7 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.log4j.Logger;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
@@ -98,6 +99,8 @@ import uk.ac.cam.ch.crystaleye.CrystalEyeUtils.CompoundClass;
 import uk.ac.cam.ch.crystaleye.properties.ProcessProperties;
 
 public class Cif2CmlManager extends AbstractManager implements CMLConstants {
+	
+	private static final Logger LOG = Logger.getLogger(Cif2CmlManager.class);
 
 	private ProcessProperties properties;
 
@@ -136,7 +139,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CIF2CML);
 					}
 				} else {
-					System.out.println("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 				}
 			}
 		}

@@ -11,7 +11,11 @@ import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.Nodes;
 
+import org.apache.log4j.Logger;
+
 public abstract class AbstractManager {
+	
+	private static final Logger LOG = Logger.getLogger(AbstractManager.class);
 
 	public void updateProps(String downloadLogPath, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum, String managerTag) {
 		String issueCode = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum;
@@ -22,7 +26,7 @@ public abstract class AbstractManager {
 			Element proc = (Element) procNodes.get(0);
 			proc.getAttribute("value").setValue("true");
 			IOUtils.writePrettyXML(doc, propsPath.getAbsolutePath());
-			System.out.println("Updated "+downloadLogPath+" - "+managerTag+"=true ("+issueCode+")");
+			LOG.info("Updated "+downloadLogPath+" - "+managerTag+"=true ("+issueCode+")");
 		} else {
 			throw new CrystalEyeRuntimeException("Attempted to update "+downloadLogPath+" but could not locate element ("+issueCode+")");
 		}
@@ -65,7 +69,7 @@ public abstract class AbstractManager {
 							String iss = issueElement.getAttributeValue("id");
 							Element yearNode = (Element)issueElement.getParent();
 							String year = yearNode.getAttributeValue("id");
-							System.out.println("CIFs from "+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+iss+" have yet to be processed through '"+managerTag+"' manager");
+							LOG.info("CIFs from "+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+iss+" have yet to be processed through '"+managerTag+"' manager");
 							outputList.add(new IssueDate(year, iss));
 						}
 					} else {
@@ -76,7 +80,7 @@ public abstract class AbstractManager {
 				}
 			}
 		} else {
-			System.out.println("No dates to check in the props file!");
+			LOG.info("No dates to check in the props file!");
 		}
 		return outputList;
 	}

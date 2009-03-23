@@ -13,9 +13,14 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
 public class ActaOldLayout extends Fetcher {
+	
+	private static final Logger LOG = Logger.getLogger(ActaOldLayout.class);
 
 	private static final String PUBLISHER_ABBREVIATION = "acta";
 
@@ -55,7 +60,7 @@ public class ActaOldLayout extends Fetcher {
 	public void fetch() {
 		String writeDir = properties.getWriteDir();		
 		String url = "http://journals.iucr.org/"+journalAbbreviation+"/issues/"+year+"/"+issueNum+"/"+issuePart+"/isscontsbdy.html";
-		System.out.println("Fetching CIFs from "+url);
+		LOG.info("Fetching CIFs from "+url);
 		Document doc = IOUtils.parseWebPage(url);
 		List<Element> entries = getTocEntryList(doc);
 		for (Element el : entries) {
@@ -82,12 +87,11 @@ public class ActaOldLayout extends Fetcher {
 			if (link) {
 				String cif = IOUtils.fetchWebPage(cifLink);
 				String pathMinusMime = writeDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issueNum+"-"+issuePart+File.separator+cifId+File.separator+cifId;
-				System.out.println(pathMinusMime);
 				IOUtils.writeText(cif, pathMinusMime+".cif");
 				IOUtils.writeText(doi, pathMinusMime+".doi");
 			}
 		}
-		System.out.println("FINISHED FETCHING CIFS FROM "+url);
+		LOG.info("FINISHED FETCHING CIFS FROM "+url);
 	}
 
 	public List<Element> getTocEntryList(Document doc) {
