@@ -27,6 +27,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -34,13 +35,15 @@ import org.xmlcml.cml.base.CMLBuilder;
 
 public class IOUtils {
 	
+	private static final Logger LOG = Logger.getLogger(IOUtils.class);
+	
 	public static void appendToFile(File file, String content) {
 		try {
 			FileWriter fw = new FileWriter(file, true);
 			fw.write(content);
 			fw.close();
 		} catch(IOException e) {
-			System.err.println("IOException: "+e.getMessage());
+			LOG.warn("IOException: "+e.getMessage());
 		}
 	}
 	

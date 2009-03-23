@@ -30,6 +30,7 @@ import nu.xom.Nodes;
 import nu.xom.Text;
 import nu.xom.XPathContext;
 
+import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.element.CMLArray;
@@ -64,6 +65,8 @@ import uk.ac.cam.ch.crystaleye.templates.webpages.SingleCifSummary;
 import uk.ac.cam.ch.crystaleye.templates.webpages.SingleStructureSummary;
 
 public class WebpageManager extends AbstractManager implements CMLConstants {
+	
+	private static final Logger LOG = Logger.getLogger(WebpageManager.class);
 
 	private SiteProperties properties;
 
@@ -148,7 +151,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, WEBPAGE);
 					}
 				} else {
-					System.out.println("No dates to process at this time for "+publisherTitle+", "+journalTitle);
+					LOG.info("No dates to process at this time for "+publisherTitle+", "+journalTitle);
 				}
 				count++;
 			}
@@ -161,7 +164,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			fileList = CrystalEyeUtils.getDataDirFileList(issueWriteDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
 			if (fileList.size() > 0) {
 				for (File cmlFile : fileList ) {
-					System.out.println("Creating webpages for CML file "+cmlFile.getAbsolutePath());
+					LOG.info("Creating webpages for CML file "+cmlFile.getAbsolutePath());
 					// create moiety and fragment tocs
 					this.createMoietyAndFragmentTocs(cmlFile);
 					// create moiety and fragment summary html pages
@@ -282,8 +285,6 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			issueLink.addAttribute(new Attribute("href", "./"+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+issueNum+"/index.html"));
 			issueLink.appendChild(new Text("Issue "+issueNum));
 			if (closestAndBelow > 0) {
-				System.out.println(allContainer.toXML());
-				System.out.println("./x:div[@class='yearContainer' and ./x:li[.='"+closestAndBelow+"']]");
 				Nodes nodes = allContainer.query("./x:div[@class='yearContainer' and ./x:li[.='"+closestAndBelow+"']]", X_XHTML);
 				Element node = (Element)nodes.get(0);
 				int idx = allContainer.indexOf(node);
@@ -1246,10 +1247,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		if (!file.exists()) {
 			file.mkdirs();
 		}
-
-		System.out.println("issue summary dir: "+issueSummaryDir);
-		System.out.println("display dir: "+displayDir);
-
+		
 		// retrieve presentational files from the file
 		try {
 			Utils.getFileFromURL("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet0.jar", issueSummaryDir+File.separator+"JmolApplet0.jar");

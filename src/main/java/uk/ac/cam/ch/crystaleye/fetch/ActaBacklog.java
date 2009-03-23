@@ -10,10 +10,15 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
 public class ActaBacklog extends Fetcher {
+	
+	private static final Logger LOG = Logger.getLogger(ActaBacklog.class);
 
 	private static final String SITE_PREFIX = "http://journals.iucr.org";
 	private static final String PUBLISHER_ABBREVIATION = "acta";
@@ -57,11 +62,10 @@ public class ActaBacklog extends Fetcher {
                     "Make sure all parameters are set before calling fetch() method.");
         } else {
 			String url = "http://journals.iucr.org/"+journalAbbreviation+"/issues/"+year+"/"+issueNum+"/"+issuePart+"/isscontsbdy.html";
-			System.out.println("Fetching CIFs from: "+url);
+			LOG.info("Fetching CIFs from: "+url);
 			Document doc = IOUtils.parseWebPage(url);
 			Nodes tocEntries = doc.query("//x:div[@class='toc entry']", X_XHTML);
 			sleep();
-			System.out.println("TOC entries: "+tocEntries.size());
 			if (tocEntries.size() > 0) {
 				for (int i = 0; i < tocEntries.size(); i++) {
 					Node tocEntry = tocEntries.get(i);
@@ -81,7 +85,7 @@ public class ActaBacklog extends Fetcher {
 							cifWriteDir = issueWriteDir+File.separator+cifId.substring(0,cifId.length()-4);
 							String result = IOUtils.fetchWebPage(cifUrl);
 							String cifPath = cifWriteDir+File.separator+cifId+".cif";
-							System.out.println("Writing CIF to "+cifPath);
+							LOG.info("Writing CIF to "+cifPath);
 							IOUtils.writeText(result, cifPath);
 							sleep();
 						}
@@ -105,7 +109,7 @@ public class ActaBacklog extends Fetcher {
 					}
 				}
 			}
-			System.out.println("FINISHED FETCHING CIFS FROM "+url);
+			LOG.info("FINISHED FETCHING CIFS FROM "+url);
 		}
 	}
 	

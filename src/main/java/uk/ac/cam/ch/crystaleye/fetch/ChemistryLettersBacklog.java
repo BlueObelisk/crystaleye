@@ -9,9 +9,14 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
 public class ChemistryLettersBacklog extends Fetcher {
+	
+	private static final Logger LOG = Logger.getLogger(ChemistryLettersBacklog.class);
 
 	private static final String SITE_PREFIX = "http://www.jstage.jst.go.jp";	
 	private static final String PUBLISHER_ABBREVIATION = "chemSocJapan";
@@ -37,10 +42,9 @@ public class ChemistryLettersBacklog extends Fetcher {
 	public void fetch() {
 		String writeDir = properties.getWriteDir();
 		String url = "http://www.chemistry.or.jp/journals/chem-lett/cl-cont/cl"+this.year+"-"+this.issue+".html";
-		System.out.println("Fetching CIFs from "+url);
+		LOG.info("Fetching CIFs from "+url);
 		Document doc = IOUtils.parseWebPage(url);
 
-		//System.out.println(doc.toXML());
 		Nodes abstractPageLinks = doc.query("//x:a[contains(@href ,'n=li_s')]", X_XHTML);
 		sleep();
 		if (abstractPageLinks.size() > 0) {
@@ -51,7 +55,6 @@ public class ChemistryLettersBacklog extends Fetcher {
 				sleep();
 				if (suppPageLinks.size() > 0) {
 					String suppPageUrl = SITE_PREFIX+((Element)suppPageLinks.get(0)).getAttributeValue("href");
-					System.out.println("supp page url: "+suppPageUrl);
 					Document suppPage = IOUtils.parseWebPage(suppPageUrl);
 					Nodes crystRows = suppPage.query("//x:tr[x:td[contains(text(),'cif')]] | //x:tr[x:td[contains(text(),'CIF')]]", X_XHTML);
 					sleep();
@@ -78,7 +81,7 @@ public class ChemistryLettersBacklog extends Fetcher {
 				}
 			}
 		}
-		System.out.println("FINISHED FETCHING CIFS FROM "+url);
+		LOG.info("FINISHED FETCHING CIFS FROM "+url);
 	}
 
 	public static void main(String[] args) {

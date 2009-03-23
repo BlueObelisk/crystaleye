@@ -1,12 +1,8 @@
 package uk.ac.cam.ch.crystaleye;
 
-import java.io.File;
-
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.xmlcml.cml.base.CMLConstants;
@@ -14,8 +10,6 @@ import org.xmlcml.cml.base.CMLConstants;
 import uk.ac.cam.ch.crystaleye.fetch.FetchManager;
 import uk.ac.cam.ch.crystaleye.process.CML2FooManager;
 import uk.ac.cam.ch.crystaleye.process.Cif2CmlManager;
-import uk.ac.cam.ch.crystaleye.properties.SiteProperties;
-import uk.ac.cam.ch.crystaleye.site.BondLengthsManager;
 import uk.ac.cam.ch.crystaleye.site.CellParamsManager;
 import uk.ac.cam.ch.crystaleye.site.DoiListManager;
 import uk.ac.cam.ch.crystaleye.site.SmilesListManager;

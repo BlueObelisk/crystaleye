@@ -13,6 +13,7 @@ import java.util.List;
 
 import nu.xom.Nodes;
 
+import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.base.CMLElement;
@@ -27,6 +28,8 @@ import uk.ac.cam.ch.crystaleye.properties.SiteProperties;
 
 public class DoiListManager extends AbstractManager implements CMLConstants {
 
+	private static final Logger LOG = Logger.getLogger(DoiListManager.class);
+	
 	private SiteProperties properties;
 
 	public DoiListManager(File propertiesFile) {
@@ -60,7 +63,7 @@ public class DoiListManager extends AbstractManager implements CMLConstants {
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, DOILIST);
 					}
 				} else {
-					System.out.println("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 				}
 			}
 		}
@@ -83,7 +86,6 @@ public class DoiListManager extends AbstractManager implements CMLConstants {
 						if (doiNodes.size() > 0) {
 							String doi = doiNodes.get(0).getValue();
 							String path = cmlFile.getAbsolutePath();
-							System.out.println(path);
 							String[] parts = null;
 							if (File.separator.equals("/")) {
 								parts = path.split("/");
@@ -94,7 +96,6 @@ public class DoiListManager extends AbstractManager implements CMLConstants {
 							String cifSummaryUrl = CRYSTALEYE_HOME_URL+"/summary/"+parts[k-7]+"/"+
 							parts[k-6]+"/"+parts[k-5]+"/"+parts[k-4]+"/"+parts[k-3]+"/"+parts[k-2]+"/"+parts[k-1]+"/"+
 							parts[k-1]+".cif.summary.html";
-							System.out.println(cifSummaryUrl);
 							sb.append(doi+"="+cifSummaryUrl+"\n");
 						} else {
 							System.err.println("Could not find DOI in file "+cmlFile.getAbsolutePath());

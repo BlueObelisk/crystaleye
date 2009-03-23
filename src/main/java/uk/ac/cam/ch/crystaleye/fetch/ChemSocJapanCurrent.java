@@ -12,11 +12,16 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
 
 public class ChemSocJapanCurrent extends CurrentIssueFetcher {
+	
+	private static final Logger LOG = Logger.getLogger(ChemSocJapanCurrent.class);
 
 	private static final String SITE_PREFIX = "http://www.jstage.jst.go.jp";
 	private static final String publisherAbbreviation = "chemSocJapan";
@@ -63,10 +68,8 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 				sleep();
 				if (suppPageLinks.size() > 0) {
 					String suppPageUrl = SITE_PREFIX+((Element)suppPageLinks.get(0)).getAttributeValue("href");
-					System.out.println(suppPageUrl);
 					Document suppPage = IOUtils.parseWebPage(suppPageUrl);
 					Nodes crystRows = suppPage.query("//x:tr[x:td[contains(text(),'cif')]] | //x:tr[x:td[contains(text(),'CIF')]]", X_XHTML);
-					System.out.println("crystrows: "+crystRows.size());
 					sleep();
 					if (crystRows.size() > 0) {
 						for (int j = 0; j < crystRows.size(); j++) {
@@ -100,7 +103,7 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 				}
 			}
 		}
-		System.out.println("FINISHED FETCHING CIFS FROM "+url);
+		LOG.info("FINISHED FETCHING CIFS FROM "+url);
 	}
 
 	public static void main(String[] args) {

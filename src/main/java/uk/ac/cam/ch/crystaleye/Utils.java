@@ -133,7 +133,6 @@ public class Utils {
 		String[] files = d.list();
 		for (int i = 0; i < files.length; i++) {
 			String filePath = dirName + separator + files[i];
-			System.out.println(filePath);
 			File f = new File(filePath);
 			if (f.isDirectory()) {
 				delDir(filePath);

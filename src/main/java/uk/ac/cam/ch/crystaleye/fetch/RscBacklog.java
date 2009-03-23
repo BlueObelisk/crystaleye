@@ -7,10 +7,15 @@ import java.io.File;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
 
 public class RscBacklog extends Fetcher {
+	
+	private static final Logger LOG = Logger.getLogger(RscBacklog.class);
 
 	private static final String HOMEPAGE_PREFIX = "http://www.rsc.org";
 	private static final String PUBLISHER_ABBREVIATION = "rsc";
@@ -61,12 +66,10 @@ public class RscBacklog extends Fetcher {
 	public void fetch() {
 		String writeDir = properties.getWriteDir();
 		String url = "http://rsc.org/Publishing/Journals/"+journalAbbreviation.toLowerCase()+"/article.asp?Journal="+journalAbbreviation+"81&VolumeYear="+year+volume+"&Volume="+volume+"&JournalCode="+journalAbbreviation+"&MasterJournalCode="+journalAbbreviation+"&SubYear="+year+"&type=Issue&Issue="+issue+"&x=11&y=5";
-		System.out.println("fetching url: "+url);
 		Document doc = IOUtils.parseWebPageMinusComments(url);
 		Nodes articleLinks = doc.query("//x:a[contains(@href,'/Publishing/Journals/"+journalAbbreviation.toUpperCase()+"/article.asp?doi=') and preceding-sibling::x:strong[contains(text(),'DOI:')]]", X_XHTML);
-		System.out.println(articleLinks.size());
 		if (articleLinks.size() > 0) {
-			System.out.println("Reading "+journalAbbreviation.toUpperCase()+" issue "+issue+" at "+url);
+			LOG.info("Reading "+journalAbbreviation.toUpperCase()+" issue "+issue+" at "+url);
 		}
 		for (int i = 0; i < articleLinks.size(); i++) {
 			String articleUrl = HOMEPAGE_PREFIX+((Element)articleLinks.get(i)).getAttributeValue("href");

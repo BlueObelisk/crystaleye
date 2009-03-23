@@ -12,6 +12,7 @@ import java.util.List;
 
 import nu.xom.Nodes;
 
+import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.element.CMLCml;
@@ -27,6 +28,8 @@ import uk.ac.cam.ch.crystaleye.Utils;
 import uk.ac.cam.ch.crystaleye.properties.SiteProperties;
 
 public class SmilesListManager extends AbstractManager implements CMLConstants {
+	
+	private static final Logger LOG = Logger.getLogger(SmilesListManager.class);
 
 	private SiteProperties properties;
 
@@ -63,7 +66,7 @@ public class SmilesListManager extends AbstractManager implements CMLConstants {
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, SMILESLIST);
 					}
 				} else {
-					System.out.println("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 				}
 			}
 		}
