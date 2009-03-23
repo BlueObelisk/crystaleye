@@ -12,9 +12,14 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
 public class PolyhedronBacklog {
+	
+	private static final Logger LOG = Logger.getLogger(PolyhedronBacklog.class);
 
 	String writeDir;
 	String logPath;
@@ -49,10 +54,10 @@ public class PolyhedronBacklog {
 				sleep();
 				YearAndIssue yi = getYearAndIssue(issueDoc);
 				if (alreadyFinishedIssue(yi)) {
-					System.out.println("already finished: "+yi.getYear()+", "+yi.getIssue());
+					LOG.info("already finished: "+yi.getYear()+", "+yi.getIssue());
 					continue;
 				}
-				System.out.println("Downloading from year "+yi.getYear()+", issue "+yi.getIssue());
+				LOG.info("Downloading from year "+yi.getYear()+", issue "+yi.getIssue());
 				List<String> fullTextUrls = getFullTextUrls(issueDoc);
 				for (String fullTextUrl : fullTextUrls) {
 					Document articleDoc = IOUtils.parseWebPage(fullTextUrl);					
@@ -74,7 +79,7 @@ public class PolyhedronBacklog {
 							}
 							String filename = outFolder+File.separator+doiName+"-"+String.valueOf(i+1)+".zip";
 							IOUtils.saveFileFromUrl(zipUrl, filename);
-							System.out.println("Writing zip file with DOI: "+doi);
+							LOG.info("Writing zip file with DOI: "+doi);
 						}
 					}
 				}
@@ -164,7 +169,6 @@ public class PolyhedronBacklog {
 		Nodes titleNodes = issueDoc.query(".//x:title", X_XHTML);
 		if (titleNodes.size() == 1) {
 			String title = titleNodes.get(0).getValue();
-			System.out.println(title);
 			Pattern p = Pattern.compile("[^,]+,\\s+Volume\\s+(\\d+)\\s*,\\s+Issue[s]?\\s+([\\d-]+).*");
 			Matcher m = p.matcher(title);
 			if (m.find()) {

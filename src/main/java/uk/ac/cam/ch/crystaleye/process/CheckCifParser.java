@@ -23,11 +23,14 @@ import nu.xom.ParsingException;
 import nu.xom.Text;
 import nu.xom.ValidityException;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 public class CheckCifParser {
+	
+	private static final Logger LOG = Logger.getLogger(CheckCifParser.class);
 
 	Document doc;
 	String checkCifHtml;
@@ -260,7 +263,6 @@ public class CheckCifParser {
 					containsDataBlocks = true;
 					int pos = body.indexOf(dataStartPos.get(i));
 					dbPos[i] = pos;
-					//System.out.println("Element corresponding to dpPos at this time is: "+body.getChild(pos).toXML());
 				}
 			} else {
 				System.err.println("No datablocks found in this checkCIF");
@@ -272,7 +274,7 @@ public class CheckCifParser {
 				//logger.info("PublicationError block start position at node: "+pubPos);
 				containsPublErrors = true;
 			} else {
-				System.out.println("No publication errors reported in this checkCIF");
+				LOG.info("No publication errors reported in this checkCIF");
 			}
 
 			Nodes platonStartPos = doc.query("/x:html/x:body/x:font/x:b[contains(text(),'PLATON version')]/parent::x:*", X_XHTML);
@@ -281,7 +283,7 @@ public class CheckCifParser {
 				//logger.info("PLATON block start position at node: "+platPos);
 				containsPlaton = true;
 			} else {
-				System.out.println("No PLATON results reported in this checkCIF");
+				LOG.info("No PLATON results reported in this checkCIF");
 			}
 		} else {
 			System.err.println("Syntax errors in the CIF, no checkCIF/PLATON output can be produced.");

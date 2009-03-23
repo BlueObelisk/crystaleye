@@ -9,10 +9,15 @@ import java.util.regex.Pattern;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
 
 public class AcsCurrent extends CurrentIssueFetcher {
+	
+	private static final Logger LOG = Logger.getLogger(AcsCurrent.class);
 	
 	private static final String publisherAbbreviation = "acs";
 	
@@ -104,7 +109,7 @@ public class AcsCurrent extends CurrentIssueFetcher {
 				}
 			}
 		}
-		System.out.println("FINISHED FETCHING CIFS FROM "+issueUrl);
+		LOG.info("FINISHED FETCHING CIFS FROM "+issueUrl);
 	}
 
 	public static void main(String[] args) {

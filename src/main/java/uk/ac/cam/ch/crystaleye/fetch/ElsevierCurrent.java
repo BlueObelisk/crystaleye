@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
@@ -18,6 +21,8 @@ import uk.ac.cam.ch.crystaleye.Unzip;
 import uk.ac.cam.ch.crystaleye.Utils;
 
 public class ElsevierCurrent extends CurrentIssueFetcher {
+	
+	private static final Logger LOG = Logger.getLogger(ElsevierCurrent.class);
 
 	private static final String SITE_PREFIX = "http://www.sciencedirect.com";
 	private static final String publisherAbbreviation = "elsevier";
@@ -43,7 +48,6 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 		Nodes titleNodes = currentIssueDoc.query(".//x:title", X_XHTML);
 		if (titleNodes.size() == 1) {
 			String title = titleNodes.get(0).getValue();
-			System.out.println(title);
 			Pattern p = Pattern.compile("[^,]+,\\s+Volume\\s+(\\d+)\\s*,\\s+Issue[s]?\\s+([\\d-]+).*");
 			Matcher m = p.matcher(title);
 			if (m.find()) {
@@ -81,7 +85,7 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 						outFile.mkdirs();
 					}
 					String filename = outFolder+File.separator+doiName+"-"+String.valueOf(i+1)+".zip";
-					System.out.println("Writing zip file with DOI: "+doi);
+					LOG.info("Writing zip file with DOI: "+doi);
 					IOUtils.saveFileFromUrl(zipUrl, filename);
 					
 					String[] args = new String[1];
@@ -100,7 +104,7 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 			}
 		}
 		
-		System.out.println("FINISHED FETCHING CIFS FROM "+currentIssueUrl);
+		LOG.info("FINISHED FETCHING CIFS FROM "+currentIssueUrl);
 	}
 	
 	public String getDoi(Document articleDoc) {

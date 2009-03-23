@@ -19,12 +19,17 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
 import uk.ac.cam.ch.crystaleye.CrystalEyeUtils;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 import uk.ac.cam.ch.crystaleye.IssueDate;
 
 public abstract class CurrentIssueFetcher extends Fetcher {
+	
+	private static final Logger LOG = Logger.getLogger(CurrentIssueFetcher.class);
 
 	protected CurrentIssueFetcher(String publisherAbbreviation, File propertiesFile) {
 		super(publisherAbbreviation, propertiesFile);
@@ -41,7 +46,7 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 	public void execute() {
 		String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(PUBLISHER_ABBREVIATION);
 		for (String journalAbbreviation : journalAbbreviations) {
-			System.out.println("Getting TOC of latest issue of "+PUBLISHER_ABBREVIATION.toUpperCase()+" journal "+journalAbbreviation.toUpperCase());
+			LOG.info("Getting TOC of latest issue of "+PUBLISHER_ABBREVIATION.toUpperCase()+" journal "+journalAbbreviation.toUpperCase());
 			IssueDate issueDate = getCurrentIssueId(journalAbbreviation);
 			String year = issueDate.getYear();
 			String issue = issueDate.getIssue();
@@ -108,7 +113,7 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 		}
 
 		IOUtils.writeXML(doc, downloadLogPath);
-		System.out.println("Updated "+downloadLogPath+" by adding "+year+"-"+issueNum);
+		LOG.info("Updated "+downloadLogPath+" by adding "+year+"-"+issueNum);
 	}
 
 	private Element getNewIssueElement(String issueNum) {
@@ -166,7 +171,7 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 
 	protected void writeFiles(String issueWriteDir, String cifId, int suppNum, String cif, String doi) {
 		String pathPrefix = issueWriteDir+File.separator+cifId+File.separator+cifId;
-		System.out.println("Writing cif to: "+pathPrefix+"sup"+suppNum+CIF_MIME);
+		LOG.info("Writing cif to: "+pathPrefix+"sup"+suppNum+CIF_MIME);
 		IOUtils.writeText(cif, pathPrefix+"sup"+suppNum+CIF_MIME);
 		if (doi != null) {
 			IOUtils.writeText(doi, pathPrefix+DOI_MIME);

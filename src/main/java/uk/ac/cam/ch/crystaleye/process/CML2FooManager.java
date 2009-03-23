@@ -25,6 +25,7 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import nu.xom.Text;
 
+import org.apache.log4j.Logger;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
@@ -66,6 +67,8 @@ import uk.ac.cam.ch.crystaleye.properties.ProcessProperties;
 import uk.ac.cam.ch.crystaleye.site.Cml2Png;
 
 public class CML2FooManager extends AbstractManager implements CMLConstants {
+	
+	private static final Logger LOG = Logger.getLogger(CML2FooManager.class);
 
 	private ProcessProperties properties;
 
@@ -107,7 +110,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CML2FOO);
 					}
 				} else {
-					System.out.println("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 				}
 			}
 		}
@@ -125,7 +128,6 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 							File[] structureFiles = file.listFiles();
 							for (File structureFile : structureFiles) {
 								if (structureFile.getName().endsWith(COMPLETE_CML_MIME)) {
-									System.out.println("Processing "+structureFile.getAbsolutePath());
 									String pathMinusMime = Utils.getPathMinusMimeSet(structureFile);
 									String suppId = pathMinusMime.substring(pathMinusMime.lastIndexOf(File.separator)+1);
 									String articleId = suppId.substring(0,suppId.indexOf("_"));
@@ -439,7 +441,6 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			MoleculeTool mt = new MoleculeTool(subMolecule);
 			List<CMLMolecule> fragmentList = new ArrayList<CMLMolecule>();
 			if ("chain-nuc".equals(fragType)) {
-				//System.out.println("chain");
 				molecule = new CMLMolecule(molecule);
 				subMolecule = new CMLMolecule(subMolecule);
 				MoleculeTool.removeMetalAtomsAndBonds(subMolecule, false);
@@ -448,7 +449,6 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 					fragmentList.addAll(new MoleculeTool(subSubMol).getChainMolecules());
 				}
 			} else if ("ring-nuc".equals(fragType)) {
-				//System.out.println("ring");
 				molecule = new CMLMolecule(molecule);
 				subMolecule = new CMLMolecule(subMolecule);
 				MoleculeTool.removeMetalAtomsAndBonds(subMolecule, false);
@@ -458,13 +458,11 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 				}
 				sprout = true;
 			} else if ("cluster-nuc".equals(fragType)) {
-				//System.out.println("cluster");
 				List<Type> typeList = new ArrayList<Type>();
 				typeList.add(ChemicalElement.Type.METAL);
 				fragmentList = mt.createClusters(typeList);
 				sprout = true;
 			} else if ("ligand".equals(fragType)) {
-				//System.out.println("ligand");
 				List<Type> typeList = new ArrayList<Type>();
 				typeList.add(ChemicalElement.Type.METAL);
 				fragmentList = mt.createLigands(typeList);

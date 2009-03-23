@@ -43,6 +43,7 @@ import nu.xom.ParsingException;
 import nux.xom.io.StaxParser;
 import nux.xom.io.StaxUtil;
 
+import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.base.CMLRuntimeException;
@@ -68,6 +69,8 @@ import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndLinkImpl;
 
 public class RssManager extends AbstractManager implements CMLConstants {
+	
+	private static final Logger LOG = Logger.getLogger(RssManager.class);
 
 	private SiteProperties properties;
 
@@ -136,7 +139,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, RSS);
 					}
 				} else {
-					System.out.println("No dates to process at this time for "+this.publisherTitle+", "+this.journalTitle);
+					LOG.info("No dates to process at this time for "+this.publisherTitle+", "+this.journalTitle);
 				}
 				count++;
 			}
@@ -163,7 +166,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			String cmlRssUrl = rootWebFeedsDir+prefix;
 			String cmlRssWritePath = rootFeedsDir+prefix;
 			String archiveUrl = rootFeedsDir+"/"+RSS_JOURNAL_DIR_NAME+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+CMLRSS_DIR_NAME+"/"+feedType;
-			System.out.println("Creating new Journal RSS feed at "+cmlRssWritePath);
+			LOG.info("Creating new Journal RSS feed at "+cmlRssWritePath);
 			this.createNewJournalCmlrssFeed(cmlFileList, cmlRssUrl, cmlRssWritePath, archiveUrl, feedTypes[i]);
 		}
 	}
@@ -191,8 +194,6 @@ public class RssManager extends AbstractManager implements CMLConstants {
 		List<CMLRSSEntryDetails> credList = new LinkedList<CMLRSSEntryDetails>();
 		for (File cmlFile : cmlFileList) {
 			// set feed entries 
-			System.out.println("Reading "+cmlFile.getAbsolutePath()+" whilst creating a new Journal RSS feed.");
-
 			Document doc = null;
 			try {
 				doc = IOUtils.parseCmlFile(cmlFile);
@@ -237,9 +238,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 		Map<String, List<File>> bondMap = new HashMap<String, List<File>>();
 		Map<String, List<File>> classMap = new HashMap<String, List<File>>();
 
-		for (File cmlFile : fileList) {
-			System.out.println("Updating RSS feeds from CML file "+cmlFile.getAbsolutePath());
-			
+		for (File cmlFile : fileList) {		
 			CMLCml cml = null;
 			try {
 				cml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
@@ -418,17 +417,14 @@ public class RssManager extends AbstractManager implements CMLConstants {
 				} else if ("all".equals(id)) {
 					rssFeedPostfix = "/"+RSS_ALL_DIR_NAME+"/"+RSS_DIR_NAME+"/"+feedType+"/"+FEED_FILE_NAME;
 				} else {
-					System.out.println("id: "+id);
 					throw new RuntimeException("Should never reach here.");
 				}	
 				String cmlrssPath = rootFeedsDir+cmlrssFeedPostfix;
 				String rssPath = rootFeedsDir+rssFeedPostfix;
 				if (!"journal".equals(id) && !"all".equals(id)) {
-					System.out.println("Updating feed: "+cmlrssPath);
 					// FIXME - have stopped CMLRSS being updated by commenting this line - this may want uncommenting in the future
 					//new CMLRSSHandler(cmlrssPath, type, credList).addEntries();
 				}
-				System.out.println("Updating feed: "+rssPath);
 				new RSSHandler(rssPath, entryList).addEntries();
 			}
 		}

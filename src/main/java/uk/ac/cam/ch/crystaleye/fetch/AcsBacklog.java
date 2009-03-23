@@ -10,10 +10,15 @@ import java.io.File;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.cam.ch.crystaleye.CrystalEyeUtils;
 import uk.ac.cam.ch.crystaleye.IOUtils;
 
 public class AcsBacklog extends Fetcher {
+	
+	private static final Logger LOG = Logger.getLogger(AcsBacklog.class);
 
 	private static final String PUBLISHER_ABBREVIATION = "acs";
 
@@ -48,7 +53,7 @@ public class AcsBacklog extends Fetcher {
 		}
 
 		Nodes suppLinks = doc.query(".//x:a[contains(@href,'/doi/suppl/10.1021')]", X_XHTML);
-		System.out.println("supplinks: "+suppLinks.size());
+		LOG.debug("supplinks: "+suppLinks.size());
 		sleep();
 		if (suppLinks.size() > 0) {
 			for (int j = 0; j < suppLinks.size(); j++) {
@@ -76,12 +81,12 @@ public class AcsBacklog extends Fetcher {
 				}
 			}
 		}		
-		System.out.println("FINISHED FETCHING CIFS FROM " + issueUrl);
+		LOG.info("FINISHED FETCHING CIFS FROM " + issueUrl);
 	}
 
 	protected void writeFiles(String issueWriteDir, String cifId, int suppNum, String cif, String doi) {
 		String pathPrefix = issueWriteDir+File.separator+cifId+File.separator+cifId;
-		System.out.println("Writing cif to: "+pathPrefix+"sup"+suppNum+CIF_MIME);
+		LOG.info("Writing cif to: "+pathPrefix+"sup"+suppNum+CIF_MIME);
 		IOUtils.writeText(cif, pathPrefix+"sup"+suppNum+CIF_MIME);
 		if (doi != null) {
 			IOUtils.writeText(doi, pathPrefix+DOI_MIME);

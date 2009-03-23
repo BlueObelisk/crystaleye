@@ -22,6 +22,7 @@ import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.Nodes;
 
+import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFDataBlock;
 import org.xmlcml.cif.CIFException;
@@ -39,6 +40,8 @@ import uk.ac.cam.ch.crystaleye.Utils;
 import uk.ac.cam.ch.crystaleye.properties.CODProperties;
 
 public class CODCurrent implements CMLConstants {
+	
+	private static final Logger LOG = Logger.getLogger(CODCurrent.class);
 
 	private CODProperties properties;
 
@@ -90,7 +93,6 @@ public class CODCurrent implements CMLConstants {
 		// list we maintain.  Saves us having to parse all of the COD cif files
 		// each time we download it to check whether we already have the files (continued below) ....
 		Set<String> alreadyGotSet = populateAlreadyGotSet();
-		System.out.println(alreadyGotSet.size());
 		Set<File> notGotSet = new HashSet<File>();
 
 		for (File file : codFile.listFiles()) {
@@ -181,7 +183,6 @@ public class CODCurrent implements CMLConstants {
 						if (!f.exists()) {
 							f.mkdirs();
 						}
-						System.out.println("moving "+splitCif.getAbsolutePath()+" to "+newPath);
 						splitCif.renameTo(new File(newPath));
 						expectedNoCifs++;
 					}
@@ -526,7 +527,7 @@ public class CODCurrent implements CMLConstants {
 		}
 		
 		IOUtils.writeXML(doc, downloadLogPath);
-		System.out.println("Updated "+downloadLogPath+" by adding "+year+"-"+issueNum);
+		LOG.info("Updated "+downloadLogPath+" by adding "+year+"-"+issueNum);
 	}
 
 	private Element getNewIssueElement(String issueNum) {
