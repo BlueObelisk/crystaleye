@@ -57,8 +57,8 @@ public abstract class PrimaryFileDAO {
 	 * to the database.  
 	 */
 	protected int insert(String fileContents, String fileMime) throws IOException {
-		int key = keyDao.insertPrimaryKey();
-		File keyFolder = keyDao.getFileFromKey(key);
+		int key = keyDao.insert();
+		File keyFolder = keyDao.getFolderFromKey(key);
 		File primaryFile = new File(keyFolder, key+fileMime);
 		LOG.info("Inserting file to: "+primaryFile.getAbsolutePath());
 		FileUtils.writeStringToFile(primaryFile, fileContents);

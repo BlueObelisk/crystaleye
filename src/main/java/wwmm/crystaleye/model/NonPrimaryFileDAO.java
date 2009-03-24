@@ -60,7 +60,7 @@ public abstract class NonPrimaryFileDAO {
 	 * to the database. 
 	 */
 	public boolean insert(int primaryKey, String fileContents, String fileMime) throws IOException {
-		File keyFolder = keyDao.getFileFromKey(primaryKey);
+		File keyFolder = keyDao.getFolderFromKey(primaryKey);
 		if (keyFolder == null) {
 			LOG.warn("The primary key provided ("+primaryKey+") does not exist in the database.");
 			return false;

@@ -47,7 +47,7 @@ public class PrimaryKeyDAOTest {
 		File storageRoot = new File(fixturesRoot, "storage_root_with_countfile_at_2");
 		PrimaryKeyDAO pkd = new PrimaryKeyDAO(storageRoot);
 		int key = 1;
-		File file = pkd.getFileFromKey(key);
+		File file = pkd.getFolderFromKey(key);
 		assertNotNull(file);
 		assertEquals(new File(storageRoot, ""+key), file);
 	}
@@ -57,7 +57,7 @@ public class PrimaryKeyDAOTest {
 		File storageRoot = new File(fixturesRoot, "storage_root_with_countfile_at_2");
 		PrimaryKeyDAO pkd = new PrimaryKeyDAO(storageRoot);
 		int key = 999;
-		File file = pkd.getFileFromKey(key);
+		File file = pkd.getFolderFromKey(key);
 		assertEquals(null, file);
 	}
 	
@@ -71,7 +71,7 @@ public class PrimaryKeyDAOTest {
 		// now, as countfile does not contain an int, inserting
 		// a primary key should fail
 		try {
-			pkd.insertPrimaryKey();
+			pkd.insert();
 			fail("Inserting a primary key should have failed, " +
 			"as the count file does not contain an int");
 		} catch (RuntimeException e ) {
@@ -85,7 +85,7 @@ public class PrimaryKeyDAOTest {
 		File countFile = new File(storageRoot, PrimaryKeyDAO.KEY_COUNT_FILENAME);
 		PrimaryKeyDAO pkd = new PrimaryKeyDAO(storageRoot);
 		for (int i = 0; i < 9; i++) {
-			pkd.insertPrimaryKey();
+			pkd.insert();
 		}
 		// assert that 10 key folders now exist
 		for (int i = 1; i < 11; i++) {
@@ -108,7 +108,7 @@ public class PrimaryKeyDAOTest {
 		File storageRoot = new File(fixturesRoot, "storage_root_with_countfile_at_13");
 		File countFile = new File(storageRoot, PrimaryKeyDAO.KEY_COUNT_FILENAME);
 		PrimaryKeyDAO pkd = new PrimaryKeyDAO(storageRoot);
-		pkd.insertPrimaryKey();
+		pkd.insert();
 		// count should now be at '14' and folder for '13' should have
 		// been added to storageRoot
 		String count2 = FileUtils.readFileToString(countFile);
@@ -126,7 +126,7 @@ public class PrimaryKeyDAOTest {
 		File storageRoot = new File(fixturesRoot, "storage_root_with_no_countfile_but_3keys");
 		File countFile = new File(storageRoot, PrimaryKeyDAO.KEY_COUNT_FILENAME);
 		PrimaryKeyDAO pkd = new PrimaryKeyDAO(storageRoot);
-		pkd.insertPrimaryKey();
+		pkd.insert();
 		// assert that countfile has been created
 		assertTrue(countFile.exists());
 		// assert that next primary key will be 5
@@ -151,7 +151,7 @@ public class PrimaryKeyDAOTest {
 		// countfile should not exist
 		assertTrue(!countFile.exists());
 		PrimaryKeyDAO pkd = new PrimaryKeyDAO(storageRoot);
-		pkd.insertPrimaryKey();
+		pkd.insert();
 		// countfile should now exist with a value of 2
 		// (as 1 has just been inserted.
 		assertTrue(countFile.exists());

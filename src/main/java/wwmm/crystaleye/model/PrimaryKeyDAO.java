@@ -48,7 +48,7 @@ public class PrimaryKeyDAO {
 	 * 
 	 * @return File where the contents of the primary key are stored.
 	 */
-	public File getFileFromKey(int key) {
+	public File getFolderFromKey(int key) {
 		File f = new File(storageRoot, ""+key);
 		if (!f.exists()) {
 			return null;
@@ -65,7 +65,7 @@ public class PrimaryKeyDAO {
 	 * @return int corresponding to the key that has 
 	 * been inserted.
 	 */
-	public int insertPrimaryKey() {
+	public int insert() {
 		int key = getNextAvailableKey();
 		File keyFolder = new File(storageRoot, ""+key);
 		keyFolder.mkdir();

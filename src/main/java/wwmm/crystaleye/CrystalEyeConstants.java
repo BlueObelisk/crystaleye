@@ -5,6 +5,8 @@ import nu.xom.XPathContext;
 public interface CrystalEyeConstants {
 	
 	// general namespaces and prefixes
+	public static final String CRYSTALEYE_NS = "http://wwmm.ch.cam.ac.uk/crystaleye/";
+	public static final String CRYSTALEYE_PREFIX = "ce";
 	public static final String XHTML_NS = "http://www.w3.org/1999/xhtml";
 	public static final String ATOM_1_NS = "http://www.w3.org/2005/Atom";
 	public static final String DC_NS = "http://purl.org/dc/elements/1.1/";

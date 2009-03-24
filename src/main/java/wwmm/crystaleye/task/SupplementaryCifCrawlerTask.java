@@ -54,7 +54,7 @@ public class SupplementaryCifCrawlerTask {
 	 * 
 	 */
 	public static void main(String[] args) throws IOException {
-		String root = "e:/crystaleye1.2-data";
+		String root = "c:/Users/ned24/workspace/crystaleye-data";
 		File storageRoot = new File(root);
 		RscIssueCrawler rscCrawler = new RscIssueCrawler(RscJournal.DALTON_TRANSACTIONS);
 		CifIssueCrawler crawler = new RscCifIssueCrawler(rscCrawler);
