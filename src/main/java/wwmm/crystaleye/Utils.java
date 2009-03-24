@@ -3,6 +3,7 @@ package wwmm.crystaleye;
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,6 +11,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -36,9 +38,9 @@ import org.xmlcml.cml.base.CMLBuilder;
  * @version 1.1
  */
 public class Utils {
-	
+
 	private static final Logger LOG = Logger.getLogger(Utils.class);
-	
+
 	/**
 	 * <p>
 	 * The <code>sleep</code> method is called by all methods in this class which 
@@ -204,6 +206,50 @@ public class Utils {
 		} finally {
 			IOUtils.closeQuietly(fos);
 		}
+	}
+
+	/**
+	 * <p>
+	 * Writes the provided XML out to the provided OutputStream complete 
+	 * with indentations to make the XML more human readable.
+	 * </p>
+	 * 
+	 * @param doc to be written to the OutputStream.
+	 * @param out - the OutputStream to be written to.
+	 * 
+	 * @throws IOException if there is a problem writing the XML to the
+	 * OutputStream. 
+	 */
+	public static void writePrettyXML(Document doc, OutputStream out) throws IOException {
+		Serializer serializer = null;
+		serializer = new Serializer(out);
+		serializer.setIndent(2);
+		serializer.write(doc);
+	}
+	
+	/**
+	 * <p>
+	 * Converts an XML document to a pretty XML String.
+	 * </p>
+	 * 
+	 * @param doc to be converted.
+	 * 
+	 * @return String form of the provided XML document.
+	 */
+	public static String toPrettyXMLString(Document doc) {
+		OutputStream baos = null;
+		Serializer serializer = null;
+		try {
+			baos = new ByteArrayOutputStream();
+			serializer = new Serializer(baos);
+			serializer.setIndent(2);
+			serializer.write(doc);
+		} catch (IOException e) {
+			throw new RuntimeException("Could not write XML file to ByteArrayOutputStream.");
+		} finally {
+			IOUtils.closeQuietly(baos);
+		}
+		return baos.toString();
 	}
 
 	/**

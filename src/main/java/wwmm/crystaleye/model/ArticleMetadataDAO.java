@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  */
 public class ArticleMetadataDAO extends NonPrimaryFileDAO {
 
-	public static final String ARTICLE_METADATA_MIME = ".mets.xml";
+	public static final String ARTICLE_METADATA_MIME = ".bibliontology.xml";
 
 	private static final Logger LOG = Logger.getLogger(ArticleMetadataDAO.class);
 
