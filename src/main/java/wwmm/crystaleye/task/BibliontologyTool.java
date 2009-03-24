@@ -9,8 +9,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.DC_PREFIX;
 import static wwmm.crystaleye.CrystalEyeConstants.RDF_NS;
 import static wwmm.crystaleye.CrystalEyeConstants.RDF_PREFIX;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,6 +45,9 @@ public class BibliontologyTool {
 
 	public BibliontologyTool(ArticleDetails ad) {
 		this.ad = ad;
+		if (ad == null) {
+			throw new IllegalStateException("ArticleDetails passed to the constructor is null.");
+		}
 	}
 
 	/**
@@ -104,10 +105,12 @@ public class BibliontologyTool {
 		journalRdf.appendChild(rdfType);
 
 		ArticleReference ref = ad.getReference();
-		String journalTitle = ref.getJournalTitle();
-		if (journalTitle != null) {
-			Element titleEl = createBiboElement("shortTitle", journalTitle);
-			journalRdf.appendChild(titleEl);
+		if (ref != null) {
+			String journalTitle = ref.getJournalTitle();
+			if (journalTitle != null) {
+				Element titleEl = createBiboElement("shortTitle", journalTitle);
+				journalRdf.appendChild(titleEl);
+			}
 		}
 		return journalRdf;
 	}
@@ -125,7 +128,13 @@ public class BibliontologyTool {
 	 * the article.
 	 */
 	private Element createArticleRdf(String uuidStr) {
-		Element articleRdf = createRdfDescription(ad.getDoi().toString());
+		LOG.debug("DOI: "+ad.getDoi());
+		DOI doi = ad.getDoi();
+		if (doi == null) {
+			throw new IllegalStateException("The ArticleDetails must have " +
+			"a DOI set to create the XML.");
+		}
+		Element articleRdf = createRdfDescription(doi.toString());
 
 		Element rdfType = createDcElement("type", BIBO_PREFIX+":Article");
 		articleRdf.appendChild(rdfType);
@@ -153,30 +162,32 @@ public class BibliontologyTool {
 			}
 		}
 
+
 		ArticleReference ref = ad.getReference();
+		if (ref != null) {
+			String year = ref.getYear();
+			if (year != null) {
+				Element yearEl = createDcElement("date", year);
+				articleRdf.appendChild(yearEl);
+			}
 
-		String year = ref.getYear();
-		if (year != null) {
-			Element yearEl = createDcElement("date", year);
-			articleRdf.appendChild(yearEl);
-		}
+			String volume = ref.getVolume();
+			if (volume != null) {
+				Element volEl = createBiboElement("volume", volume);
+				articleRdf.appendChild(volEl);
+			}
 
-		String volume = ref.getVolume();
-		if (volume != null) {
-			Element volEl = createBiboElement("volume", volume);
-			articleRdf.appendChild(volEl);
-		}
+			String number = ref.getNumber();
+			if (number != null) {
+				Element issueEl = createBiboElement("issue", number);
+				articleRdf.appendChild(issueEl);
+			}
 
-		String number = ref.getNumber();
-		if (number != null) {
-			Element issueEl = createBiboElement("issue", number);
-			articleRdf.appendChild(issueEl);
-		}
-
-		String pages = ref.getPages();
-		if (pages != null) {
-			Element pagesEl = createBiboElement("pages", pages);
-			articleRdf.appendChild(pagesEl);
+			String pages = ref.getPages();
+			if (pages != null) {
+				Element pagesEl = createBiboElement("pages", pages);
+				articleRdf.appendChild(pagesEl);
+			}
 		}
 
 		Element isPartOfEl = createDcElement("isPartOf", uuidStr);
@@ -204,7 +215,23 @@ public class BibliontologyTool {
 
 	/**
 	 * <p>
-	 * Creates an XML element using the CrystalEye namespace and prefix.
+	 * Creates an XML element representing an RDF Description. 
+	 * </p>
+	 * 
+	 * @param value to be contained in the element.
+	 * 
+	 * @return the RDF Description XML.
+	 */
+	private Element createRdfDescription(String value) {
+		Element desc = createRdfElement("Description", null); 
+		Attribute about = new Attribute(RDF_PREFIX+":about", RDF_NS, value);
+		desc.addAttribute(about);
+		return desc;
+	}
+
+	/**
+	 * <p>
+	 * Creates an XML element with the CrystalEye namespace and prefix.
 	 * </p>
 	 * 
 	 * @param name - the name of the created element.
@@ -220,7 +247,7 @@ public class BibliontologyTool {
 
 	/**
 	 * <p>
-	 * Creates an XML element using the Bibliontoloy namespace and prefix.
+	 * Creates an XML element with the Bibliontoloy namespace and prefix.
 	 * </p>
 	 * 
 	 * @param name - the name of the created element.
@@ -236,7 +263,7 @@ public class BibliontologyTool {
 
 	/**
 	 * <p>
-	 * Creates an XML element using the RDF namespace and prefix.
+	 * Creates an XML element with the RDF namespace and prefix.
 	 * </p>
 	 * 
 	 * @param name - the name of the created element.
@@ -244,16 +271,17 @@ public class BibliontologyTool {
 	 * 
 	 * @return the created element.
 	 */
-	private Element createRdfDescription(String uriString) {
-		Element desc = new Element(RDF_PREFIX+":Description", RDF_NS);
-		Attribute about = new Attribute(RDF_PREFIX+":about", RDF_NS, uriString);
-		desc.addAttribute(about);
-		return desc;
+	private Element createRdfElement(String name, String value) {
+		Element el = new Element(RDF_PREFIX+":"+name, RDF_NS);
+		if (value != null) {
+			el.appendChild(new Text(value));
+		}
+		return el;
 	}
 
 	/**
 	 * <p>
-	 * Creates an XML element using the Dublin Core namespace and prefix.
+	 * Creates an XML element with the Dublin Core namespace and prefix.
 	 * </p>
 	 * 
 	 * @param name - the name of the created element.
@@ -265,42 +293,6 @@ public class BibliontologyTool {
 		Element el = new Element(DC_PREFIX+":"+name, DC_NS);
 		el.appendChild(new Text(value));
 		return el;
-	}
-
-	/**
-	 * <p>
-	 * Main method for demonstration of use only.  No args required.
-	 * </p>
-	 */
-	public static void main(String[] args) throws URIException, NullPointerException {
-		ArticleDetails ad = new ArticleDetails();
-		String authors = "A. N. Other";
-		ad.setAuthors(authors);
-		DOI doi = new DOI("http://dx.doi.org/article/10.1039/asdflk7");
-		ad.setDoi(doi);
-		URI fullTextHtmlLink = new URI("http://the.articles.url/here", false);
-		ad.setFullTextLink(fullTextHtmlLink);
-		ArticleReference ar = new ArticleReference();
-		ar.setJournalTitle("The journal title");
-		ar.setNumber("10");
-		ar.setPages("1--10");
-		ar.setVolume("1");
-		ar.setYear("2009");
-		ad.setReference(ar);
-		String title = "The article's title";
-		ad.setTitle(title);
-		List<SupplementaryFileDetails> sfdList = new ArrayList<SupplementaryFileDetails>();
-		SupplementaryFileDetails sfd = new SupplementaryFileDetails(new URI("http://supp.file.com/file.txt", false),
-				"file.txt", "Link text", "text/plain");
-		sfdList.add(sfd);
-		ad.setSuppFiles(sfdList);
-		BibliontologyTool bt = new BibliontologyTool(ad);
-		Document doc = bt.getDocument();
-		try {
-			Utils.writePrettyXML(doc, System.out);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not write XML file to System.out");
-		}
 	}
 
 }

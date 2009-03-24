@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:bibo="http://purl.org/ontology/bibo/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ce="http://wwmm.ch.cam.ac.uk/crystaleye/">
+  <rdf:Description rdf:about="http://supp.file.com/file.txt">
+    <dc:format>text/plain</dc:format>
+    <dc:type>ce:supplementaryFile</dc:type>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://dx.doi.org/article/10.1039/asdflk7">
+    <dc:type>bibo:Article</dc:type>
+    <dc:title>The article's title</dc:title>
+    <bibo:authorList>A. N. Other</bibo:authorList>
+    <bibo:uri>http://the.articles.url/here</bibo:uri>
+    <dc:date>2009</dc:date>
+    <bibo:volume>1</bibo:volume>
+    <bibo:issue>10</bibo:issue>
+    <bibo:pages>1--10</bibo:pages>
+    <dc:isPartOf>urn:uuid:ce7a4458-508a-4673-8e0a-9bf26a3d5d71</dc:isPartOf>
+    <ce:hasSupplementaryFile>http://supp.file.com/file.txt</ce:hasSupplementaryFile>
+  </rdf:Description>
+  <rdf:Description rdf:about="urn:uuid:ce7a4458-508a-4673-8e0a-9bf26a3d5d71">
+    <dc:type>bibo:Journal</dc:type>
+    <bibo:shortTitle>The journal title</bibo:shortTitle>
+  </rdf:Description>
+</rdf:RDF>
