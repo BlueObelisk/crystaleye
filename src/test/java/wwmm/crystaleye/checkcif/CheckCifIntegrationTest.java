@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class CheckCifIntegrationTest {
 	
-	static String checkCifStr;
+	private static String checkCifStr;
 	
 	@BeforeClass
 	public static void before() {
@@ -45,7 +45,8 @@ public class CheckCifIntegrationTest {
 		assertEquals(5, alerts.size());
 		Element secondAlert = (Element)alerts.get(2);
 		String secondAlertText = secondAlert.getValue();
-		assertEquals("Hirshfeld Test Diff for    C5     --  C6      ..       6.87 su", secondAlertText);
+		assertEquals("Hirshfeld Test Diff for    C5     --  C6      " +
+				"..       6.87 su", secondAlertText);
 		Nodes properties = parsedDoc.query(".//c:property", X_CC);
 		assertEquals(15, properties.size());
 		Nodes platonLink = parsedDoc.query(".//c:platon/c:link", X_CC);

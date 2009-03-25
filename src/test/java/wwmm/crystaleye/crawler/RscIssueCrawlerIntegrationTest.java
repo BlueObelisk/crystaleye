@@ -1,8 +1,11 @@
 package wwmm.crystaleye.crawler;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 import java.util.List;
+
+import nu.xom.Document;
 
 import org.junit.Test;
 
@@ -20,6 +23,7 @@ public class RscIssueCrawlerIntegrationTest {
 		RscIssueCrawler crawler = new RscIssueCrawler(RscJournal.DALTON_TRANSACTIONS);
 		List<DOI> doiList = crawler.getDOIs(details);
 		assertEquals(20, doiList.size());
+		assertEquals(new DOI(DOI.DOI_SITE_URL+"/10.1039/b810767j"), doiList.get(9));
 	}
 
 	/**
@@ -31,7 +35,8 @@ public class RscIssueCrawlerIntegrationTest {
 	@Test
 	public void testGetCurrentIssueHtml() {
 		RscIssueCrawler crawler = new RscIssueCrawler(RscJournal.CHEMCOMM);
-		crawler.getCurrentIssueHtml();
+		Document doc = crawler.getCurrentIssueHtml();
+		assertNotNull(doc);
 	}
 	
 }

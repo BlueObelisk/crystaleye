@@ -10,7 +10,7 @@ import wwmm.crystaleye.crawler.RscIssueCrawler;
 import wwmm.crystaleye.crawler.RscJournal;
 import wwmm.crystaleye.crawler.cif.CifIssueCrawler;
 import wwmm.crystaleye.crawler.cif.RscCifIssueCrawler;
-import wwmm.crystaleye.model.SupplementaryCifDAO;
+import wwmm.crystaleye.model.crystaleye.SupplementaryCifDAO;
 
 /**
  * <p>
@@ -35,8 +35,10 @@ public class SupplementaryCifCrawlerTask {
 
 	/**
 	 * <p>
-	 * Starts off the crawler, which finds CIFs and then writes the
-	 * scraped data out to the database.
+	 * Starts off the crawler, which finds articles with CIFs as
+	 * supplementary data.  The ArticleDetails are passed to a
+	 * data-access object, which will then get the CIFs and write 
+	 * them out to the database.
 	 * </p> 
 	 * 
 	 */

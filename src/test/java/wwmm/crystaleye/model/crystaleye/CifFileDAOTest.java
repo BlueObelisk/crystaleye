@@ -1,7 +1,6 @@
-package wwmm.crystaleye.model;
+package wwmm.crystaleye.model.crystaleye;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import java.io.File;
@@ -13,12 +12,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ArticleMetadataDAOTest {
-	
+import wwmm.crystaleye.model.crystaleye.CifFileDAO;
+
+public class CifFileDAOTest {
+
 	private static File fixturesRoot;
-	private static String foldername = "articlemetadatadao";
+	private static String foldername = "cifdao";
 	
-	private static final Logger LOG = Logger.getLogger(ArticleMetadataDAOTest.class);
+	private static final Logger LOG = Logger.getLogger(CifFileDAOTest.class);
 
 	/**
 	 * <p>
@@ -52,31 +53,17 @@ public class ArticleMetadataDAOTest {
 	}
 	
 	@Test
-	public void testInsertMetadataToExistingPrimaryKey() throws IOException {
+	public void testInsertCif() throws IOException {
 		File storageRoot = new File(fixturesRoot, "storage_root");
-		ArticleMetadataDAO metadataDao = new ArticleMetadataDAO(storageRoot);
-		// assert that the key folder already exists
-		File expectedPKeyLocation = new File(storageRoot, "1");
-		assertTrue(expectedPKeyLocation.exists());
-		String metadata = "this cif is AWESOME";
-		boolean success = metadataDao.insert(1, metadata);
-		assertTrue(success);
-		File expectedMetadataLocation = new File(expectedPKeyLocation, "1"+ArticleMetadataDAO.ARTICLE_METADATA_MIME);
-		// assert file has been created at expected location
-		assertTrue(expectedMetadataLocation.exists());
-		// assert the contents are exactly as in original data string
-		String contents = FileUtils.readFileToString(expectedMetadataLocation);
-		assertEquals(metadata, contents);
-	}
-	
-	@Test
-	public void testInsertMetadataToNonExistingPrimaryKey() {
-		File storageRoot = new File(fixturesRoot, "storage_root");
-		ArticleMetadataDAO metadataDao = new ArticleMetadataDAO(storageRoot);
-		String metadata = "some metadata";
-		boolean success = metadataDao.insert(99, metadata);
-		// primary key 99 does not exists, so insertion should be false.
-		assertFalse(success);
+		CifFileDAO cifDao = new CifFileDAO(storageRoot);
+		String cifContents = "data_1\ncell_measurement_temperature 298\n";
+		File key1File = new File(storageRoot, "1");
+		assertTrue(!key1File.exists());
+		cifDao.insert(cifContents);
+		assertTrue(key1File.exists());
+		File key1Cif = new File(key1File, "1"+CifFileDAO.getFileExtension());
+		assertTrue(key1Cif.exists());
+		assertEquals(cifContents, FileUtils.readFileToString(key1Cif));
 	}
 
 }
