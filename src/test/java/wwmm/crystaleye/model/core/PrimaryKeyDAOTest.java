@@ -1,4 +1,4 @@
-package wwmm.crystaleye.model;
+package wwmm.crystaleye.model.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -12,6 +12,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import wwmm.crystaleye.model.core.PrimaryKeyDAO;
 
 public class PrimaryKeyDAOTest {
 	

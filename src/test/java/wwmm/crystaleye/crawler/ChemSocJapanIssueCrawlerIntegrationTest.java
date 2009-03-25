@@ -1,8 +1,11 @@
 package wwmm.crystaleye.crawler;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 import java.util.List;
+
+import nu.xom.Document;
 
 import org.junit.Test;
 
@@ -20,6 +23,7 @@ public class ChemSocJapanIssueCrawlerIntegrationTest {
 		ChemSocJapanIssueCrawler crawler = new ChemSocJapanIssueCrawler(ChemSocJapanJournal.CHEMISTRY_LETTERS);
 		List<DOI> doiList = crawler.getDOIs(details);
 		assertEquals(42, doiList.size());
+		assertEquals(new DOI(DOI.DOI_SITE_URL+"/10.1246/cl.2009.126"), doiList.get(9));
 	}
 
 	/**
@@ -31,7 +35,8 @@ public class ChemSocJapanIssueCrawlerIntegrationTest {
 	@Test
 	public void testGetCurrentIssueHtml() {
 		ChemSocJapanIssueCrawler crawler = new ChemSocJapanIssueCrawler(ChemSocJapanJournal.CHEMISTRY_LETTERS);
-		crawler.getCurrentIssueHtml();
+		Document doc = crawler.getCurrentIssueHtml();
+		assertNotNull(doc);
 	}
 	
 }

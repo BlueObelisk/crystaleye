@@ -1,9 +1,11 @@
-package wwmm.crystaleye.model;
+package wwmm.crystaleye.model.crystaleye;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+
+import wwmm.crystaleye.model.core.PrimaryFileDAO;
 
 /**
  * <p>
@@ -15,7 +17,13 @@ import org.apache.log4j.Logger;
  */
 public class CifFileDAO extends PrimaryFileDAO {
 
-	public static final String CIF_MIME = ".cif";
+	/**
+	 * The implementing subclass of PrimaryFileDAO needs to set the
+	 * file extension to be used by the primary file of the database.
+	 */
+	static {
+		fileExtension = ".cif";
+	}
 
 	private static final Logger LOG = Logger.getLogger(CifFileDAO.class);
 	
@@ -37,11 +45,25 @@ public class CifFileDAO extends PrimaryFileDAO {
 	public int insert(String cifContents) {
 		int key = -1;
 		try {
-			key = insert(cifContents, CIF_MIME);
+			key = insert(cifContents, fileExtension);
 		} catch (IOException e) {
 			LOG.warn("Exception try to insert CIF to the database.");
 		}
 		return key;
+	}
+	
+	/**
+	 * <p>
+	 * Gets the CIF <code>File</code> associated with the provided
+	 * primary key.
+	 * </p>
+	 * 
+	 * @param primaryKey of the CIF file you wish to retrieve.
+	 * 
+	 * @return the CIF file at the primary key provided.
+	 */
+	public File getCifFileFromKey(int primaryKey) {
+		return getPrimaryFileFromKey(primaryKey);
 	}
 
 }

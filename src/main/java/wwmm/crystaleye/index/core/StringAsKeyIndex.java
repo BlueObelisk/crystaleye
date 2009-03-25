@@ -1,4 +1,4 @@
-package wwmm.crystaleye.index;
+package wwmm.crystaleye.index.core;
 
 import java.io.File;
 import java.util.List;
@@ -18,7 +18,7 @@ public class StringAsKeyIndex extends Index {
 
 	private static final Logger LOG = Logger.getLogger(StringAsKeyIndex.class);
 
-	StringAsKeyIndex(File storageRoot, String indexFilename) {
+	protected StringAsKeyIndex(File storageRoot, String indexFilename) {
 		super(storageRoot, indexFilename);
 	}
 

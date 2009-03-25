@@ -1,4 +1,4 @@
-package wwmm.crystaleye.model;
+package wwmm.crystaleye.model.core;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,16 +40,18 @@ public class PrimaryKeyDAO {
 	}
 	
 	/**
+	 * <p>
 	 * Returns the folder in the database which represents the primary 
 	 * key provided as a parameter. If the folder for the key does not 
 	 * yet exist, then NULL is returned.
+	 * </p>
 	 * 
 	 * @param key - primary key you wish to find the storage folder for.
 	 * 
 	 * @return File where the contents of the primary key are stored.
 	 */
 	public File getFolderFromKey(int key) {
-		File f = new File(storageRoot, ""+key);
+		File f = new File(storageRoot, String.valueOf(key));
 		if (!f.exists()) {
 			return null;
 		}
@@ -67,7 +69,7 @@ public class PrimaryKeyDAO {
 	 */
 	public int insert() {
 		int key = getNextAvailableKey();
-		File keyFolder = new File(storageRoot, ""+key);
+		File keyFolder = new File(storageRoot, String.valueOf(key));
 		keyFolder.mkdir();
 		updateKeyCountFile(key+1);
 		return key;
@@ -126,7 +128,7 @@ public class PrimaryKeyDAO {
 	 */
 	private void updateKeyCountFile(int key) {
 		try {
-			FileUtils.writeStringToFile(keyCountFile, ""+key);
+			FileUtils.writeStringToFile(keyCountFile, String.valueOf(key));
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing to the keyCountFile: "+
 					keyCountFile.getAbsolutePath(), e);

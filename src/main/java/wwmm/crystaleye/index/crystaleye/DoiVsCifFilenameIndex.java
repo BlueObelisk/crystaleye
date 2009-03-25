@@ -1,10 +1,11 @@
-package wwmm.crystaleye.index;
+package wwmm.crystaleye.index.crystaleye;
 
 import java.io.File;
 
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.crawler.DOI;
+import wwmm.crystaleye.index.core.StringAsKeyIndex;
 
 /**
  * <p>

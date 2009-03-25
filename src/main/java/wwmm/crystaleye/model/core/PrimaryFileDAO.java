@@ -1,10 +1,11 @@
-package wwmm.crystaleye.model;
+package wwmm.crystaleye.model.core;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+
 
 /**
  * <p>
@@ -20,7 +21,8 @@ import org.apache.log4j.Logger;
  * @version 0.1
  */
 public abstract class PrimaryFileDAO {
-
+	
+	protected static String fileExtension;
 	private PrimaryKeyDAO keyDao;
 
 	private static final Logger LOG = Logger.getLogger(PrimaryFileDAO.class);
@@ -63,6 +65,45 @@ public abstract class PrimaryFileDAO {
 		LOG.info("Inserting file to: "+primaryFile.getAbsolutePath());
 		FileUtils.writeStringToFile(primaryFile, fileContents);
 		return key;
+	}
+	
+	/**
+	 * <p>
+	 * Returns the primary file associated with the primary key 
+	 * provided. 
+	 * </p>
+	 *  
+	 * @param primaryKey of the primary file you wish returned.
+	 * 
+	 * @return File of the primary file at the provided primary 
+	 * key. If it does not exist, then null is returned.
+	 */
+	protected File getPrimaryFileFromKey(int primaryKey) {
+		if (fileExtension == null) {
+			throw new IllegalStateException("fileExtension field has not " +
+					"been set in the implementing subclass of PrimaryFileDAO.");
+		}
+		File keyFolder = keyDao.getFolderFromKey(primaryKey);
+		if (keyFolder == null) {
+			return null;
+		}
+		File file = new File(keyFolder, primaryKey+fileExtension);
+		if (file.exists()) {
+			return file;
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * <p>
+	 * Get the file extension of the primary file.
+	 * </p>
+	 * 
+	 * @return the file extension of the primary file.
+	 */
+	public static String getFileExtension() {
+		return fileExtension;
 	}
 
 }

@@ -1,9 +1,11 @@
-package wwmm.crystaleye.model;
+package wwmm.crystaleye.model.crystaleye;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+
+import wwmm.crystaleye.model.core.NonPrimaryFileDAO;
 
 /**
  * <p>
