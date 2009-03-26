@@ -63,7 +63,7 @@ public class ArticleMetadataDAOTest {
 		String metadata = "this cif is AWESOME";
 		boolean success = metadataDao.insert(1, metadata);
 		assertTrue(success);
-		File expectedMetadataLocation = new File(expectedPKeyLocation, "1"+ArticleMetadataDAO.ARTICLE_METADATA_MIME);
+		File expectedMetadataLocation = new File(expectedPKeyLocation, "1"+ArticleMetadataDAO.getFileExtension());
 		// assert file has been created at expected location
 		assertTrue(expectedMetadataLocation.exists());
 		// assert the contents are exactly as in original data string

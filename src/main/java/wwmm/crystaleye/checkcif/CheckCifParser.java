@@ -186,7 +186,6 @@ public class CheckCifParser {
 	 */
 	public Document parseService() {
 		setDocument();
-		LOG.debug(doc.toXML());
 		setBlockStartPositions();
 		// this is the XML doc that will eventually be returned.
 		Document checkcifXml = new Document(new Element("checkCif", CC_NS));
@@ -360,7 +359,6 @@ public class CheckCifParser {
 		if (syntaxError.size() == 0) {
 			Nodes dataStartPos = doc.query("./x:html/x:body/x:font[@size='+2']/x:b[contains(text(),'Datablock:')]/parent::x:*", X_XHTML);
 			dbPos = new Integer[dataStartPos.size()];
-			LOG.debug(dbPos.length);
 			if (dataStartPos.size() != 0) {
 				for (int i = 0; i < dataStartPos.size();i++) {
 					containsDataBlocks = true;

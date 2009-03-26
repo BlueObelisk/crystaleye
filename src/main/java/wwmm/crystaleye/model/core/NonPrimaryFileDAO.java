@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 public abstract class NonPrimaryFileDAO {
 
 	private PrimaryKeyDAO keyDao;
+	protected static String fileExtension;
 
 	private static final Logger LOG = Logger.getLogger(NonPrimaryFileDAO.class);
 
@@ -60,16 +61,36 @@ public abstract class NonPrimaryFileDAO {
 	 * @throws IOException if there is a problem writing the file
 	 * to the database. 
 	 */
-	public boolean insert(int primaryKey, String fileContents, String fileMime) throws IOException {
+	public boolean insert(int primaryKey, String fileContents) {
+		if (fileExtension == null) {
+			throw new IllegalStateException("fileExtension field has not " +
+					"been set in the implementing subclass of PrimaryFileDAO.");
+		}
 		File keyFolder = keyDao.getFolderFromKey(primaryKey);
 		if (keyFolder == null) {
 			LOG.warn("The primary key provided ("+primaryKey+") does not exist in the database.");
 			return false;
 		}
-		File nonPrimaryFile = new File(keyFolder, primaryKey+fileMime);
+		File nonPrimaryFile = new File(keyFolder, primaryKey+fileExtension);
 		LOG.info("Inserting article metadata to: "+nonPrimaryFile.getAbsolutePath());
-		FileUtils.writeStringToFile(nonPrimaryFile, fileContents);
+		try {
+			FileUtils.writeStringToFile(nonPrimaryFile, fileContents);
+		} catch (IOException e) {
+			LOG.warn("Problem inserting file to: "+nonPrimaryFile.getAbsolutePath()+"\n" +
+					e.getMessage());
+		}
 		return true;
+	}
+	
+	/**
+	 * <p>
+	 * Get the file extension of the primary file.
+	 * </p>
+	 * 
+	 * @return the file extension of the primary file.
+	 */
+	public static String getFileExtension() {
+		return fileExtension;
 	}
 
 }

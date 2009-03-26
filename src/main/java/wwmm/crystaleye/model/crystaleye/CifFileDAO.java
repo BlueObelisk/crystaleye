@@ -30,40 +30,5 @@ public class CifFileDAO extends PrimaryFileDAO {
 	public CifFileDAO(File storageRoot) {
 		super(storageRoot);
 	}
-	
-	/**
-	 * <p>
-	 * Inserts a CIF into the database.  Returns the primary key
-	 * that the CIF was assigned when it was written.
-	 * </p>
-	 * 
-	 * @param cifContents - a <code>String</code> containing the
-	 * contents of the CIF to be written.
-	 * 
-	 * @return the database primary key assigned to the inserted CIF.
-	 */
-	public int insert(String cifContents) {
-		int key = -1;
-		try {
-			key = insert(cifContents, fileExtension);
-		} catch (IOException e) {
-			LOG.warn("Exception try to insert CIF to the database.");
-		}
-		return key;
-	}
-	
-	/**
-	 * <p>
-	 * Gets the CIF <code>File</code> associated with the provided
-	 * primary key.
-	 * </p>
-	 * 
-	 * @param primaryKey of the CIF file you wish to retrieve.
-	 * 
-	 * @return the CIF file at the primary key provided.
-	 */
-	public File getCifFileFromKey(int primaryKey) {
-		return getPrimaryFileFromKey(primaryKey);
-	}
 
 }

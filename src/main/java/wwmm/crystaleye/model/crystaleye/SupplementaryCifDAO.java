@@ -6,13 +6,13 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
+import wwmm.crystaleye.BibliontologyTool;
 import wwmm.crystaleye.crawler.ArticleDetails;
 import wwmm.crystaleye.crawler.CrawlerHttpClient;
 import wwmm.crystaleye.crawler.DOI;
 import wwmm.crystaleye.crawler.SupplementaryFileDetails;
 import wwmm.crystaleye.index.crystaleye.DoiVsCifFilenameIndex;
 import wwmm.crystaleye.index.crystaleye.PrimaryKeyVsDoiIndex;
-import wwmm.crystaleye.task.BibliontologyTool;
 
 /**
  * <p>

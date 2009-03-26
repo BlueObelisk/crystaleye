@@ -22,8 +22,8 @@ import org.apache.log4j.Logger;
  */
 public abstract class PrimaryFileDAO {
 	
-	protected static String fileExtension;
 	private PrimaryKeyDAO keyDao;
+	protected static String fileExtension;
 
 	private static final Logger LOG = Logger.getLogger(PrimaryFileDAO.class);
 
@@ -58,12 +58,21 @@ public abstract class PrimaryFileDAO {
 	 * @throws IOException if there is a problem writing the file
 	 * to the database.  
 	 */
-	protected int insert(String fileContents, String fileMime) throws IOException {
+	public int insert(String fileContents) {
+		if (fileExtension == null) {
+			throw new IllegalStateException("fileExtension field has not " +
+					"been set in the implementing subclass of PrimaryFileDAO.");
+		}
 		int key = keyDao.insert();
 		File keyFolder = keyDao.getFolderFromKey(key);
-		File primaryFile = new File(keyFolder, key+fileMime);
+		File primaryFile = new File(keyFolder, key+fileExtension);
 		LOG.info("Inserting file to: "+primaryFile.getAbsolutePath());
-		FileUtils.writeStringToFile(primaryFile, fileContents);
+		try {
+			FileUtils.writeStringToFile(primaryFile, fileContents);
+		} catch (IOException e) {
+			LOG.warn("Problem trying to insert primary file to: "+primaryFile.getAbsolutePath()+"\n" +
+					e.getMessage());
+		}
 		return key;
 	}
 	
@@ -78,7 +87,7 @@ public abstract class PrimaryFileDAO {
 	 * @return File of the primary file at the provided primary 
 	 * key. If it does not exist, then null is returned.
 	 */
-	protected File getPrimaryFileFromKey(int primaryKey) {
+	public File getFileFromKey(int primaryKey) {
 		if (fileExtension == null) {
 			throw new IllegalStateException("fileExtension field has not " +
 					"been set in the implementing subclass of PrimaryFileDAO.");

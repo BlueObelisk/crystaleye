@@ -94,7 +94,8 @@ public abstract class Index {
 			FileUtils.writeLines(indexFile, lines);
 		} catch (IOException e) {
 			LOG.warn("Exception occurred whilst trying to " +
-					"write index file: "+indexFile.getAbsolutePath());
+					"write index file: "+indexFile.getAbsolutePath()+"\n" +
+							e.getMessage());
 		}
 	}
 	
