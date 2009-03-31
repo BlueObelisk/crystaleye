@@ -1,4 +1,4 @@
-package wwmm.crystaleye.index;
+package wwmm.crystaleye.index.crystaleye;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,7 +13,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.DOI;
+import wwmm.crystaleye.crawler.core.DOI;
 import wwmm.crystaleye.index.crystaleye.DoiVsCifFilenameIndex;
 
 public class DoiVsCifFilenameIndexTest {

@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawler;
+package wwmm.crystaleye.crawler.core;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -8,6 +8,11 @@ import java.util.List;
 import nu.xom.Document;
 
 import org.junit.Test;
+
+import wwmm.crystaleye.crawler.core.DOI;
+import wwmm.crystaleye.crawler.core.IssueDetails;
+import wwmm.crystaleye.crawler.core.RscIssueCrawler;
+import wwmm.crystaleye.crawler.core.RscJournal;
 
 public class RscIssueCrawlerIntegrationTest {
 	

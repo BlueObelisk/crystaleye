@@ -1,10 +1,11 @@
-package wwmm.crystaleye.task;
+package wwmm.crystaleye;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static wwmm.crystaleye.CrystalEyeConstants.*;
+import static wwmm.crystaleye.CrystalEyeConstants.X_DC;
+import static wwmm.crystaleye.CrystalEyeConstants.X_RDF;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +23,10 @@ import org.junit.Test;
 
 import wwmm.crystaleye.BibliontologyTool;
 import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.crawler.ArticleDetails;
-import wwmm.crystaleye.crawler.ArticleReference;
-import wwmm.crystaleye.crawler.DOI;
-import wwmm.crystaleye.crawler.SupplementaryFileDetails;
+import wwmm.crystaleye.crawler.core.ArticleDetails;
+import wwmm.crystaleye.crawler.core.ArticleReference;
+import wwmm.crystaleye.crawler.core.DOI;
+import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
 
 public class BibliontologyToolTest {
 
