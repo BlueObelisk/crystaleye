@@ -1,0 +1,1096 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cif>
+  <comment>############################################################################# ### ### ### Electronic paper (Acta Crystallographica Section E) ### ### ### ############################################################################## # # # This CIF contains the data in a paper accepted for publication in Acta # # Crystallographica Section E. It conforms to the requirements of Notes # # for Authors for Section E, and has been peer reviewed under the auspices # # of the IUCr Commission on Journals. # # # # Full details of the Crystallographic Information File format # # are given in the paper "The Crystallographic Information File (CIF): # # a New Standard Archive File for Crystallography" by S. R. Hall, F. H. # # Allen and I. D. Brown [Acta Cryst. (1991), A47, 655-685]. # # # # The current version of the core CIF dictionary is obtainable from # # ftp://ftp.iucr.org/pub/cif_core.dic. The current version number is 2.4. # # # # Software is freely available for graphical display of the structure(s) in # # this CIF. For information consult the CIF home page http://www.iucr.org/ # # cif/home.html # # # # This file may be used for bona fide research purposes within the # # scientific community so long as proper attribution is given to the journal # # article from which it was obtained. # # # ############################################################################## </comment>
+  <datablock id="global">
+    <item name="_audit_creation_method">APEX2 v2008.55-0</item>
+    <item name="_journal_date_recd_electronic">2009-02-06</item>
+    <item name="_journal_date_accepted">2009-02-26</item>
+    <item name="_journal_name_full">Acta Crystallographica, Section E</item>
+    <item name="_journal_year">2009</item>
+    <item name="_journal_volume">65</item>
+    <item name="_journal_issue">4</item>
+    <item name="_journal_page_first">i22</item>
+    <item name="_journal_page_last">i22</item>
+    <item name="_journal_paper_category">QI</item>
+    <item name="_journal_coeditor_code">WM2221</item>
+    <item name="_publ_contact_author_name">Malika El-Ghozzi</item>
+    <item name="_publ_contact_author_address"> Laboratoire des Mat\'eriaux Inorganiques, UMR CNRS 6002, Universit\'e Blaise Pascal, 24 Avenue des Landais, 63177 Aubi\`ere France </item>
+    <item name="_publ_contact_author_email">malika.el-ghozzi@univ-bpclermont.fr</item>
+    <item name="_publ_contact_author_fax">(33) 4 73 40 71 08</item>
+    <item name="_publ_contact_author_phone">(33) 4 73 40 71 09</item>
+    <item name="_publ_section_title"> An orthorhombic polymorph of the ultraphosphate YP~5~O~14~ </item>
+    <loop names="_publ_author_name _publ_author_address">
+      <row>
+        <cell>Mbarek, A\"icha</cell>
+        <cell> Laboratoire de Chimie Industrielle, D\'epartement de G\'enie des Mat\'eriaux, Ecole Nationale d'Ing\'enieurs de Sfax, Universit\'e de Sfax, BP W 3038, Sfax Tunisia </cell>
+      </row>
+      <row>
+        <cell>Oudahmane, Abdelghani</cell>
+        <cell> Laboratoire de Chimie du Solide Min\'eral, D\'epartement de Chimie, Facult\'e des Sciences Semlalia, Universit\'e Cadi Ayyad, Marrakech Morocco </cell>
+      </row>
+      <row>
+        <cell>El-Ghozzi, Malika</cell>
+        <cell> Laboratoire des Mat\'eriaux Inorganiques, UMR CNRS 6002, Universit\'e Blaise Pascal, 24 Avenue des Landais, 63177 Aubi\`ere France </cell>
+      </row>
+      <row>
+        <cell>Avignant, Daniel</cell>
+        <cell> Laboratoire des Mat\'eriaux Inorganiques, UMR CNRS 6002, Universit\'e Blaise Pascal, 24 Avenue des Landais, 63177 Aubi\`ere France </cell>
+      </row>
+    </loop>
+  </datablock>
+  <datablock id="I">
+    <item name="_audit_creation_method">APEX2 v2008.55-0</item>
+    <item name="_chemical_name_systematic"> yttrium pentaphosphate(V) </item>
+    <item name="_chemical_name_common">?</item>
+    <item name="_chemical_formula_moiety">?</item>
+    <item name="_chemical_formula_sum">O14 P5 Y</item>
+    <item name="_chemical_formula_structural">Y P5 O14</item>
+    <item name="_chemical_formula_iupac">Y P5 O14</item>
+    <item name="_chemical_formula_weight">467.76</item>
+    <item name="_symmetry_cell_setting">orthorhombic</item>
+    <item name="_symmetry_space_group_name_h-m">P n m a</item>
+    <item name="_symmetry_space_group_name_hall">-P 2ac 2n</item>
+    <loop names="_symmetry_equiv_pos_as_xyz">
+      <row>
+        <cell>x, y, z</cell>
+      </row>
+      <row>
+        <cell>-x+1/2, -y, z+1/2</cell>
+      </row>
+      <row>
+        <cell>-x, y+1/2, -z</cell>
+      </row>
+      <row>
+        <cell>x+1/2, -y+1/2, -z+1/2</cell>
+      </row>
+      <row>
+        <cell>-x, -y, -z</cell>
+      </row>
+      <row>
+        <cell>x-1/2, y, -z-1/2</cell>
+      </row>
+      <row>
+        <cell>x, -y-1/2, z</cell>
+      </row>
+      <row>
+        <cell>-x-1/2, y-1/2, z-1/2</cell>
+      </row>
+    </loop>
+    <item name="_cell_length_a">8.7128(2)</item>
+    <item name="_cell_length_b">12.7218(4)</item>
+    <item name="_cell_length_c">8.9377(3)</item>
+    <item name="_cell_angle_alpha">90.00</item>
+    <item name="_cell_angle_beta">90.00</item>
+    <item name="_cell_angle_gamma">90.00</item>
+    <item name="_cell_volume">990.68(5)</item>
+    <item name="_cell_formula_units_z">4</item>
+    <item name="_cell_measurement_reflns_used">3391</item>
+    <item name="_cell_measurement_theta_min">3.64</item>
+    <item name="_cell_measurement_theta_max">27.48</item>
+    <item name="_cell_measurement_temperature">296(2)</item>
+    <item name="_exptl_crystal_description">platelet</item>
+    <item name="_exptl_crystal_colour">colourless</item>
+    <item name="_exptl_crystal_size_max">0.224</item>
+    <item name="_exptl_crystal_size_mid">0.153</item>
+    <item name="_exptl_crystal_size_min">0.110</item>
+    <item name="_exptl_crystal_density_diffrn">3.136</item>
+    <item name="_exptl_crystal_density_meas">?</item>
+    <item name="_exptl_crystal_density_method">not measured</item>
+    <item name="_exptl_crystal_f_000">904</item>
+    <item name="_exptl_absorpt_coefficient_mu">6.785</item>
+    <item name="_exptl_absorpt_correction_type">multi-scan</item>
+    <item name="_exptl_absorpt_process_details">(SADABS; Sheldrick, 2008a)</item>
+    <item name="_exptl_absorpt_correction_t_min">0.3300</item>
+    <item name="_exptl_absorpt_correction_t_max">0.4598</item>
+    <item name="_exptl_special_details"> </item>
+    <item name="_diffrn_ambient_temperature">293(2)</item>
+    <item name="_diffrn_radiation_type">MoK\a</item>
+    <item name="_diffrn_radiation_wavelength">0.71073</item>
+    <item name="_diffrn_radiation_source">fine-focus sealed tube</item>
+    <item name="_diffrn_radiation_monochromator">graphite</item>
+    <item name="_diffrn_measurement_device_type">Bruker APEXII CCD area-detector</item>
+    <item name="_diffrn_measurement_method">\f and \w</item>
+    <item name="_diffrn_detector_area_resol_mean">8.3333</item>
+    <item name="_diffrn_reflns_number">5338</item>
+    <item name="_diffrn_reflns_av_r_equivalents">0.0194</item>
+    <item name="_diffrn_reflns_av_sigmai/neti">0.0162</item>
+    <item name="_diffrn_reflns_theta_min">2.79</item>
+    <item name="_diffrn_reflns_theta_max">27.60</item>
+    <item name="_diffrn_reflns_theta_full">1.00</item>
+    <item name="_diffrn_measured_fraction_theta_max">0.994</item>
+    <item name="_diffrn_measured_fraction_theta_full">0.000</item>
+    <item name="_diffrn_reflns_limit_h_min">-7</item>
+    <item name="_diffrn_reflns_limit_h_max">11</item>
+    <item name="_diffrn_reflns_limit_k_min">-16</item>
+    <item name="_diffrn_reflns_limit_k_max">16</item>
+    <item name="_diffrn_reflns_limit_l_min">-11</item>
+    <item name="_diffrn_reflns_limit_l_max">7</item>
+    <item name="_refine_special_details"> Refinement of &lt;i&gt;F&lt;/i&gt;^2^ against ALL reflections. The weighted &lt;i&gt;R&lt;/i&gt;-factor &lt;i&gt;wR&lt;/i&gt; and goodness of fit &lt;i&gt;S&lt;/i&gt; are based on &lt;i&gt;F&lt;/i&gt;^2^, conventional &lt;i&gt;R&lt;/i&gt;-factors &lt;i&gt;R&lt;/i&gt; are based on &lt;i&gt;F&lt;/i&gt;, with &lt;i&gt;F&lt;/i&gt; set to zero for negative &lt;i&gt;F&lt;/i&gt;^2^. The threshold expression of &lt;i&gt;F&lt;/i&gt;^2^ &gt; \s(&lt;i&gt;F&lt;/i&gt;^2^) is used only for calculating &lt;i&gt;R&lt;/i&gt;-factors(gt) &lt;i&gt;etc&lt;/i&gt;. and is not relevant to the choice of reflections for refinement. &lt;i&gt;R&lt;/i&gt;-factors based on &lt;i&gt;F&lt;/i&gt;^2^ are statistically about twice as large as those based on &lt;i&gt;F&lt;/i&gt;, and &lt;i&gt;R&lt;/i&gt;- factors based on ALL data will be even larger. </item>
+    <item name="_reflns_number_total">1194</item>
+    <item name="_reflns_number_gt">1136</item>
+    <item name="_reflns_threshold_expression">I&gt;2\s(I)</item>
+    <item name="_refine_ls_structure_factor_coef">Fsqd</item>
+    <item name="_refine_ls_matrix_type">full</item>
+    <item name="_refine_ls_r_factor_all">0.0343</item>
+    <item name="_refine_ls_r_factor_gt">0.0303</item>
+    <item name="_refine_ls_wr_factor_gt">0.0867</item>
+    <item name="_refine_ls_wr_factor_ref">0.1103</item>
+    <item name="_refine_ls_goodness_of_fit_ref">1.215</item>
+    <item name="_refine_ls_restrained_s_all">1.215</item>
+    <item name="_refine_ls_number_reflns">1194</item>
+    <item name="_refine_ls_number_parameters">97</item>
+    <item name="_refine_ls_number_restraints">0</item>
+    <item name="_refine_ls_number_constraints">0</item>
+    <item name="_refine_ls_weighting_scheme">calc</item>
+    <item name="_refine_ls_weighting_details">w=1/[\s^2^(Fo^2^)+(0.0553P)^2^+6.1916P] where P=(Fo^2^+2Fc^2^)/3</item>
+    <item name="_atom_sites_solution_primary">direct</item>
+    <item name="_atom_sites_solution_secondary">difmap</item>
+    <item name="_refine_ls_shift/su_max">0.000</item>
+    <item name="_refine_ls_shift/su_mean">0.000</item>
+    <item name="_refine_diff_density_max">1.601</item>
+    <item name="_refine_diff_density_min">-1.107</item>
+    <item name="_refine_ls_extinction_method">none</item>
+    <item name="_refine_ls_extinction_coef">?</item>
+    <loop names="_atom_type_symbol _atom_type_description _atom_type_scat_dispersion_real _atom_type_scat_dispersion_imag _atom_type_scat_source">
+      <row>
+        <cell>O</cell>
+        <cell>O</cell>
+        <cell>0.0106</cell>
+        <cell>0.0060</cell>
+        <cell>International Tables Vol C Tables 4.2.6.8 and 6.1.1.4</cell>
+      </row>
+      <row>
+        <cell>P</cell>
+        <cell>P</cell>
+        <cell>0.1023</cell>
+        <cell>0.0942</cell>
+        <cell>International Tables Vol C Tables 4.2.6.8 and 6.1.1.4</cell>
+      </row>
+      <row>
+        <cell>Y</cell>
+        <cell>Y</cell>
+        <cell>-2.7962</cell>
+        <cell>3.5667</cell>
+        <cell>International Tables Vol C Tables 4.2.6.8 and 6.1.1.4</cell>
+      </row>
+    </loop>
+    <item name="_computing_data_collection">APEX2 (Bruker, 2008)</item>
+    <item name="_computing_cell_refinement">SAINT (Bruker, 2008)</item>
+    <item name="_computing_data_reduction">SAINT (Bruker, 2008)</item>
+    <item name="_computing_structure_solution">SHELXS97 (Sheldrick, 2008b)</item>
+    <item name="_computing_structure_refinement">SHELXL97 (Sheldrick, 2008b)</item>
+    <item name="_computing_molecular_graphics">CaRIne (Boudias &amp; Monceau, 1998)</item>
+    <item name="_computing_publication_material">SHELXTL (Sheldrick, 2008b)</item>
+    <loop names="_atom_site_type_symbol _atom_site_label _atom_site_fract_x _atom_site_fract_y _atom_site_fract_z _atom_site_U_iso_or_equiv _atom_site_adp_type _atom_site_calc_flag _atom_site_refinement_flags _atom_site_occupancy _atom_site_disorder_assembly _atom_site_disorder_group">
+      <row>
+        <cell>Y</cell>
+        <cell>Y1</cell>
+        <cell>0.01824(6)</cell>
+        <cell>0.2500</cell>
+        <cell>0.05695(6)</cell>
+        <cell>0.0042(2)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>S</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+      <row>
+        <cell>P</cell>
+        <cell>P1</cell>
+        <cell>0.49261(13)</cell>
+        <cell>0.41750(10)</cell>
+        <cell>-0.20198(13)</cell>
+        <cell>0.0101(3)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>.</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+      <row>
+        <cell>P</cell>
+        <cell>P2</cell>
+        <cell>0.4300(2)</cell>
+        <cell>0.2500</cell>
+        <cell>0.00645(18)</cell>
+        <cell>0.0117(4)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>S</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+      <row>
+        <cell>P</cell>
+        <cell>P3</cell>
+        <cell>-0.24466(12)</cell>
+        <cell>0.43269(9)</cell>
+        <cell>0.22692(13)</cell>
+        <cell>0.0104(3)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>.</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+      <row>
+        <cell>O</cell>
+        <cell>O1</cell>
+        <cell>0.2739(6)</cell>
+        <cell>0.2500</cell>
+        <cell>-0.0586(5)</cell>
+        <cell>0.0164(10)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>S</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+      <row>
+        <cell>O</cell>
+        <cell>O2</cell>
+        <cell>0.5265(4)</cell>
+        <cell>0.3470(3)</cell>
+        <cell>-0.0646(4)</cell>
+        <cell>0.0148(7)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>.</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+      <row>
+        <cell>O</cell>
+        <cell>O3</cell>
+        <cell>-0.0382(6)</cell>
+        <cell>0.2500</cell>
+        <cell>0.3332(6)</cell>
+        <cell>0.0193(11)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>S</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+      <row>
+        <cell>O</cell>
+        <cell>O4</cell>
+        <cell>-0.1756(4)</cell>
+        <cell>0.3732(3)</cell>
+        <cell>0.1035(4)</cell>
+        <cell>0.0166(7)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>.</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+      <row>
+        <cell>O</cell>
+        <cell>O5</cell>
+        <cell>0.6146(4)</cell>
+        <cell>0.5051(3)</cell>
+        <cell>-0.1804(4)</cell>
+        <cell>0.0146(7)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>.</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+      <row>
+        <cell>O</cell>
+        <cell>O6</cell>
+        <cell>0.1567(4)</cell>
+        <cell>0.3836(3)</cell>
+        <cell>0.1598(4)</cell>
+        <cell>0.0172(7)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>.</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+      <row>
+        <cell>O</cell>
+        <cell>O7</cell>
+        <cell>0.3374(4)</cell>
+        <cell>0.4704(3)</cell>
+        <cell>-0.1552(4)</cell>
+        <cell>0.0150(7)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>.</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+      <row>
+        <cell>O</cell>
+        <cell>O8</cell>
+        <cell>-0.0066(4)</cell>
+        <cell>0.3649(3)</cell>
+        <cell>-0.1534(4)</cell>
+        <cell>0.0191(8)</cell>
+        <cell>Uani</cell>
+        <cell>d</cell>
+        <cell>.</cell>
+        <cell>1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+      </row>
+    </loop>
+    <loop names="_atom_site_aniso_label _atom_site_aniso_U_11 _atom_site_aniso_U_22 _atom_site_aniso_U_33 _atom_site_aniso_U_12 _atom_site_aniso_U_13 _atom_site_aniso_U_23">
+      <row>
+        <cell>Y1</cell>
+        <cell>0.0044(3)</cell>
+        <cell>0.0036(3)</cell>
+        <cell>0.0045(3)</cell>
+        <cell>0.000</cell>
+        <cell>-0.00084(18)</cell>
+        <cell>0.000</cell>
+      </row>
+      <row>
+        <cell>P1</cell>
+        <cell>0.0105(6)</cell>
+        <cell>0.0099(6)</cell>
+        <cell>0.0101(5)</cell>
+        <cell>-0.0001(4)</cell>
+        <cell>0.0002(4)</cell>
+        <cell>0.0000(4)</cell>
+      </row>
+      <row>
+        <cell>P2</cell>
+        <cell>0.0129(8)</cell>
+        <cell>0.0116(8)</cell>
+        <cell>0.0107(8)</cell>
+        <cell>0.000</cell>
+        <cell>0.0003(6)</cell>
+        <cell>0.000</cell>
+      </row>
+      <row>
+        <cell>P3</cell>
+        <cell>0.0089(5)</cell>
+        <cell>0.0100(5)</cell>
+        <cell>0.0123(5)</cell>
+        <cell>-0.0004(4)</cell>
+        <cell>0.0002(4)</cell>
+        <cell>-0.0001(4)</cell>
+      </row>
+      <row>
+        <cell>O1</cell>
+        <cell>0.012(2)</cell>
+        <cell>0.020(2)</cell>
+        <cell>0.016(2)</cell>
+        <cell>0.000</cell>
+        <cell>0.0002(18)</cell>
+        <cell>0.000</cell>
+      </row>
+      <row>
+        <cell>O2</cell>
+        <cell>0.0141(16)</cell>
+        <cell>0.0138(17)</cell>
+        <cell>0.0165(17)</cell>
+        <cell>-0.0023(13)</cell>
+        <cell>-0.0028(12)</cell>
+        <cell>0.0050(13)</cell>
+      </row>
+      <row>
+        <cell>O3</cell>
+        <cell>0.020(3)</cell>
+        <cell>0.022(3)</cell>
+        <cell>0.015(2)</cell>
+        <cell>0.000</cell>
+        <cell>0.001(2)</cell>
+        <cell>0.000</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>0.0158(16)</cell>
+        <cell>0.0187(17)</cell>
+        <cell>0.0154(15)</cell>
+        <cell>0.0041(14)</cell>
+        <cell>0.0008(13)</cell>
+        <cell>-0.0021(13)</cell>
+      </row>
+      <row>
+        <cell>O5</cell>
+        <cell>0.0139(16)</cell>
+        <cell>0.0146(15)</cell>
+        <cell>0.0153(15)</cell>
+        <cell>-0.0052(13)</cell>
+        <cell>0.0019(13)</cell>
+        <cell>0.0009(13)</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>0.0153(17)</cell>
+        <cell>0.0166(16)</cell>
+        <cell>0.0196(16)</cell>
+        <cell>-0.0025(13)</cell>
+        <cell>-0.0035(14)</cell>
+        <cell>-0.0032(13)</cell>
+      </row>
+      <row>
+        <cell>O7</cell>
+        <cell>0.0125(15)</cell>
+        <cell>0.0154(15)</cell>
+        <cell>0.0172(16)</cell>
+        <cell>0.0037(13)</cell>
+        <cell>0.0021(13)</cell>
+        <cell>0.0038(13)</cell>
+      </row>
+      <row>
+        <cell>O8</cell>
+        <cell>0.0207(19)</cell>
+        <cell>0.0215(19)</cell>
+        <cell>0.0150(16)</cell>
+        <cell>0.0009(14)</cell>
+        <cell>0.0014(13)</cell>
+        <cell>0.0058(16)</cell>
+      </row>
+    </loop>
+    <item name="_geom_special_details"> All e.s.d.'s (except the e.s.d. in the dihedral angle between two l.s. planes) are estimated using the full covariance matrix. The cell e.s.d.'s are taken into account individually in the estimation of e.s.d.'s in distances, angles and torsion angles; correlations between e.s.d.'s in cell parameters are only used when they are defined by crystal symmetry. An approximate (isotropic) treatment of cell e.s.d.'s is used for estimating e.s.d.'s involving l.s. planes. </item>
+    <loop names="_geom_bond_atom_site_label_1 _geom_bond_atom_site_label_2 _geom_bond_site_symmetry_2 _geom_bond_distance _geom_bond_publ_flag">
+      <row>
+        <cell>Y1</cell>
+        <cell>O6</cell>
+        <cell>.</cell>
+        <cell>2.278(3)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>Y1</cell>
+        <cell>O6</cell>
+        <cell>7_565</cell>
+        <cell>2.278(3)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>Y1</cell>
+        <cell>O4</cell>
+        <cell>7_565</cell>
+        <cell>2.341(3)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>Y1</cell>
+        <cell>O4</cell>
+        <cell>.</cell>
+        <cell>2.341(3)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>Y1</cell>
+        <cell>O8</cell>
+        <cell>7_565</cell>
+        <cell>2.391(4)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>Y1</cell>
+        <cell>O8</cell>
+        <cell>.</cell>
+        <cell>2.391(4)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>Y1</cell>
+        <cell>O1</cell>
+        <cell>.</cell>
+        <cell>2.455(5)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>Y1</cell>
+        <cell>O3</cell>
+        <cell>.</cell>
+        <cell>2.518(5)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P1</cell>
+        <cell>O8</cell>
+        <cell>6_655</cell>
+        <cell>1.455(4)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P1</cell>
+        <cell>O2</cell>
+        <cell>.</cell>
+        <cell>1.549(4)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P1</cell>
+        <cell>O5</cell>
+        <cell>.</cell>
+        <cell>1.553(3)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P1</cell>
+        <cell>O7</cell>
+        <cell>.</cell>
+        <cell>1.567(3)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P2</cell>
+        <cell>O3</cell>
+        <cell>6_656</cell>
+        <cell>1.460(5)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P2</cell>
+        <cell>O1</cell>
+        <cell>.</cell>
+        <cell>1.479(5)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P2</cell>
+        <cell>O2</cell>
+        <cell>.</cell>
+        <cell>1.623(4)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P2</cell>
+        <cell>O2</cell>
+        <cell>7_565</cell>
+        <cell>1.623(4)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P3</cell>
+        <cell>O4</cell>
+        <cell>.</cell>
+        <cell>1.467(3)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P3</cell>
+        <cell>O6</cell>
+        <cell>6_556</cell>
+        <cell>1.468(3)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P3</cell>
+        <cell>O7</cell>
+        <cell>5_565</cell>
+        <cell>1.607(3)</cell>
+        <cell>y</cell>
+      </row>
+      <row>
+        <cell>P3</cell>
+        <cell>O5</cell>
+        <cell>2_565</cell>
+        <cell>1.611(3)</cell>
+        <cell>y</cell>
+      </row>
+    </loop>
+    <loop names="_geom_angle_atom_site_label_1 _geom_angle_atom_site_label_2 _geom_angle_atom_site_label_3 _geom_angle_site_symmetry_1 _geom_angle_site_symmetry_3 _geom_angle _geom_angle_publ_flag">
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O6</cell>
+        <cell>.</cell>
+        <cell>7_565</cell>
+        <cell>96.52(18)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O4</cell>
+        <cell>.</cell>
+        <cell>7_565</cell>
+        <cell>144.08(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O4</cell>
+        <cell>7_565</cell>
+        <cell>7_565</cell>
+        <cell>79.10(13)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O4</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>79.10(13)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O4</cell>
+        <cell>7_565</cell>
+        <cell>.</cell>
+        <cell>144.08(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>Y1</cell>
+        <cell>O4</cell>
+        <cell>7_565</cell>
+        <cell>.</cell>
+        <cell>84.04(18)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O8</cell>
+        <cell>.</cell>
+        <cell>7_565</cell>
+        <cell>145.21(13)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O8</cell>
+        <cell>7_565</cell>
+        <cell>7_565</cell>
+        <cell>84.77(13)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>Y1</cell>
+        <cell>O8</cell>
+        <cell>7_565</cell>
+        <cell>7_565</cell>
+        <cell>70.44(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>Y1</cell>
+        <cell>O8</cell>
+        <cell>.</cell>
+        <cell>7_565</cell>
+        <cell>118.93(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O8</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>84.77(13)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O8</cell>
+        <cell>7_565</cell>
+        <cell>.</cell>
+        <cell>145.21(13)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>Y1</cell>
+        <cell>O8</cell>
+        <cell>7_565</cell>
+        <cell>.</cell>
+        <cell>118.93(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>Y1</cell>
+        <cell>O8</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>70.44(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O8</cell>
+        <cell>Y1</cell>
+        <cell>O8</cell>
+        <cell>7_565</cell>
+        <cell>.</cell>
+        <cell>75.38(19)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>71.89(11)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O1</cell>
+        <cell>7_565</cell>
+        <cell>.</cell>
+        <cell>71.89(11)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>Y1</cell>
+        <cell>O1</cell>
+        <cell>7_565</cell>
+        <cell>.</cell>
+        <cell>136.82(9)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>Y1</cell>
+        <cell>O1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>136.82(9)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O8</cell>
+        <cell>Y1</cell>
+        <cell>O1</cell>
+        <cell>7_565</cell>
+        <cell>.</cell>
+        <cell>75.61(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O8</cell>
+        <cell>Y1</cell>
+        <cell>O1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>75.61(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O3</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>73.01(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>O3</cell>
+        <cell>7_565</cell>
+        <cell>.</cell>
+        <cell>73.01(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>Y1</cell>
+        <cell>O3</cell>
+        <cell>7_565</cell>
+        <cell>.</cell>
+        <cell>71.63(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>Y1</cell>
+        <cell>O3</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>71.63(12)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O8</cell>
+        <cell>Y1</cell>
+        <cell>O3</cell>
+        <cell>7_565</cell>
+        <cell>.</cell>
+        <cell>138.88(10)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O8</cell>
+        <cell>Y1</cell>
+        <cell>O3</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>138.88(10)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O1</cell>
+        <cell>Y1</cell>
+        <cell>O3</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>126.14(16)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O8</cell>
+        <cell>P1</cell>
+        <cell>O2</cell>
+        <cell>6_655</cell>
+        <cell>.</cell>
+        <cell>115.9(2)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O8</cell>
+        <cell>P1</cell>
+        <cell>O5</cell>
+        <cell>6_655</cell>
+        <cell>.</cell>
+        <cell>115.9(2)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O2</cell>
+        <cell>P1</cell>
+        <cell>O5</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>100.76(19)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O8</cell>
+        <cell>P1</cell>
+        <cell>O7</cell>
+        <cell>6_655</cell>
+        <cell>.</cell>
+        <cell>116.0(2)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O2</cell>
+        <cell>P1</cell>
+        <cell>O7</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>101.63(19)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O5</cell>
+        <cell>P1</cell>
+        <cell>O7</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>104.42(19)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O3</cell>
+        <cell>P2</cell>
+        <cell>O1</cell>
+        <cell>6_656</cell>
+        <cell>.</cell>
+        <cell>124.1(3)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O3</cell>
+        <cell>P2</cell>
+        <cell>O2</cell>
+        <cell>6_656</cell>
+        <cell>.</cell>
+        <cell>106.61(19)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O1</cell>
+        <cell>P2</cell>
+        <cell>O2</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>108.82(17)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O3</cell>
+        <cell>P2</cell>
+        <cell>O2</cell>
+        <cell>6_656</cell>
+        <cell>7_565</cell>
+        <cell>106.61(19)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O1</cell>
+        <cell>P2</cell>
+        <cell>O2</cell>
+        <cell>.</cell>
+        <cell>7_565</cell>
+        <cell>108.82(17)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O2</cell>
+        <cell>P2</cell>
+        <cell>O2</cell>
+        <cell>.</cell>
+        <cell>7_565</cell>
+        <cell>99.0(3)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>P3</cell>
+        <cell>O6</cell>
+        <cell>.</cell>
+        <cell>6_556</cell>
+        <cell>122.6(2)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>P3</cell>
+        <cell>O7</cell>
+        <cell>.</cell>
+        <cell>5_565</cell>
+        <cell>107.59(18)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>P3</cell>
+        <cell>O7</cell>
+        <cell>6_556</cell>
+        <cell>5_565</cell>
+        <cell>107.87(19)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O4</cell>
+        <cell>P3</cell>
+        <cell>O5</cell>
+        <cell>.</cell>
+        <cell>2_565</cell>
+        <cell>110.6(2)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O6</cell>
+        <cell>P3</cell>
+        <cell>O5</cell>
+        <cell>6_556</cell>
+        <cell>2_565</cell>
+        <cell>105.42(19)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>O7</cell>
+        <cell>P3</cell>
+        <cell>O5</cell>
+        <cell>5_565</cell>
+        <cell>2_565</cell>
+        <cell>100.51(18)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>P2</cell>
+        <cell>O1</cell>
+        <cell>Y1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>132.0(3)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>P1</cell>
+        <cell>O2</cell>
+        <cell>P2</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>130.7(2)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>P2</cell>
+        <cell>O3</cell>
+        <cell>Y1</cell>
+        <cell>6_556</cell>
+        <cell>.</cell>
+        <cell>179.7(3)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>P3</cell>
+        <cell>O4</cell>
+        <cell>Y1</cell>
+        <cell>.</cell>
+        <cell>.</cell>
+        <cell>140.8(2)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>P1</cell>
+        <cell>O5</cell>
+        <cell>P3</cell>
+        <cell>.</cell>
+        <cell>2_564</cell>
+        <cell>140.4(2)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>P3</cell>
+        <cell>O6</cell>
+        <cell>Y1</cell>
+        <cell>6_656</cell>
+        <cell>.</cell>
+        <cell>155.0(2)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>P1</cell>
+        <cell>O7</cell>
+        <cell>P3</cell>
+        <cell>.</cell>
+        <cell>5_565</cell>
+        <cell>131.1(2)</cell>
+        <cell>?</cell>
+      </row>
+      <row>
+        <cell>P1</cell>
+        <cell>O8</cell>
+        <cell>Y1</cell>
+        <cell>6</cell>
+        <cell>.</cell>
+        <cell>168.4(3)</cell>
+        <cell>?</cell>
+      </row>
+    </loop>
+  </datablock>
+</cif>
