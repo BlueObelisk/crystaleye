@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -22,6 +23,8 @@ public class PrimaryKeyDAO {
 	private File storageRoot;
 	public static final String KEY_COUNT_FILENAME = "primarykey_count.txt";
 	private File keyCountFile;
+	
+	private static final Logger LOG = Logger.getLogger(PrimaryKeyDAO.class);
 	
 	public PrimaryKeyDAO(File storageRoot) {
 		init(storageRoot);
@@ -61,16 +64,24 @@ public class PrimaryKeyDAO {
 	/**
 	 * <p>
 	 * Adds a folder corresponding to the next available
-	 * primary key for the database.  Returns the key.
+	 * primary key for the database.  If the insertion is
+	 * successful the key will be returned, if not then -1
+	 * will be returned.
 	 * </p>
 	 * 
 	 * @return int corresponding to the key that has 
-	 * been inserted.
+	 * been inserted. Returns -1 if there was a problem
+	 * inserting the key.
 	 */
 	public int insert() {
 		int key = getNextAvailableKey();
 		File keyFolder = new File(storageRoot, String.valueOf(key));
-		keyFolder.mkdir();
+		boolean success = keyFolder.mkdir();
+		if (!success) {
+			LOG.warn("Problem inserting primary key: "+key);
+			return -1;
+			
+		}
 		updateKeyCountFile(key+1);
 		return key;
 	}
@@ -82,7 +93,6 @@ public class PrimaryKeyDAO {
 	 */
 	private int getNextAvailableKey() {
 		int nextAvailableKey = 1;
-		keyCountFile = new File(storageRoot, KEY_COUNT_FILENAME);
 		String keyStr = "";
 		// read the contents of the key count file.  If it doesn't 
 		// exist, then create it.
@@ -125,14 +135,47 @@ public class PrimaryKeyDAO {
 	 * each time a CIF is inserted into the database.
 	 * </p>
 	 * 
+	 * @param the key to be written to the key count file.
+	 * 
+	 * @return true if the key count file was successfully updated, 
+	 * false if not.
+	 * 
 	 */
-	private void updateKeyCountFile(int key) {
+	private boolean updateKeyCountFile(int key) {
 		try {
 			FileUtils.writeStringToFile(keyCountFile, String.valueOf(key));
 		} catch (IOException e) {
-			throw new RuntimeException("Error writing to the keyCountFile: "+
-					keyCountFile.getAbsolutePath(), e);
+			LOG.warn("Problem writing to the key-count file: "+keyCountFile.getAbsolutePath()+"\n"
+					+e.getMessage());
+			return false;
 		}
+		return true;
+	}
+	
+	/**
+	 * <p>
+	 * Remove the folder associated with the provided primary
+	 * key.
+	 * </p>
+	 * 
+	 * @param key that you wish removed.
+	 * 
+	 * @return true if the key folder was successfully removed, 
+	 * false if not, or if the key folder does not exist.
+	 */
+	public boolean remove(int key) {
+		File primaryKeyFolder = getFolderFromKey(key);
+		if (primaryKeyFolder == null) {
+			return false;
+		}
+		try {
+			FileUtils.forceDelete(primaryKeyFolder);
+		} catch (IOException e) {
+			LOG.warn("Problem deleting child key folder: "+primaryKeyFolder.getAbsolutePath()+"\n" +
+					e.getMessage());
+			return false;
+		}
+		return true;
 	}
 
 }
