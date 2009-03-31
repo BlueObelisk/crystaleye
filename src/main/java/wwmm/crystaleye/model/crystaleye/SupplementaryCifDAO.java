@@ -7,10 +7,10 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.BibliontologyTool;
-import wwmm.crystaleye.crawler.ArticleDetails;
-import wwmm.crystaleye.crawler.CrawlerHttpClient;
-import wwmm.crystaleye.crawler.DOI;
-import wwmm.crystaleye.crawler.SupplementaryFileDetails;
+import wwmm.crystaleye.crawler.core.ArticleDetails;
+import wwmm.crystaleye.crawler.core.CrawlerHttpClient;
+import wwmm.crystaleye.crawler.core.DOI;
+import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
 import wwmm.crystaleye.index.crystaleye.DoiVsCifFilenameIndex;
 import wwmm.crystaleye.index.crystaleye.PrimaryKeyVsDoiIndex;
 
@@ -28,8 +28,8 @@ import wwmm.crystaleye.index.crystaleye.PrimaryKeyVsDoiIndex;
  */
 public class SupplementaryCifDAO {
 	
-	private CifFileDAO cifDao;
-	private ArticleMetadataDAO articleMetadataDao;
+	private ParentCifFileDAO cifDao;
+	private SupplementaryCifMetadataDAO articleMetadataDao;
 	private DoiVsCifFilenameIndex doiVsCifFilenameIndex;
 	private PrimaryKeyVsDoiIndex pKeyVsDoiIndex;
 	
@@ -48,8 +48,8 @@ public class SupplementaryCifDAO {
 	 * @param storageRoot - the root folder of the database.
 	 */
 	private void init(File storageRoot) {
-		cifDao = new CifFileDAO(storageRoot);
-		articleMetadataDao = new ArticleMetadataDAO(storageRoot);
+		cifDao = new ParentCifFileDAO(storageRoot);
+		articleMetadataDao = new SupplementaryCifMetadataDAO(storageRoot);
 		doiVsCifFilenameIndex = new DoiVsCifFilenameIndex(storageRoot);
 		pKeyVsDoiIndex = new PrimaryKeyVsDoiIndex(storageRoot);
 	}
@@ -66,6 +66,9 @@ public class SupplementaryCifDAO {
 	 * supplemental data.
 	 */
 	public void insert(ArticleDetails ad) {
+		// FIXME - need to do cleanup if later file writing fails when
+		// some has already been written?
+		
 		for (SupplementaryFileDetails sfd : ad.getSuppFiles()) {
 			if (!isCifFile(sfd)) {
 				continue;

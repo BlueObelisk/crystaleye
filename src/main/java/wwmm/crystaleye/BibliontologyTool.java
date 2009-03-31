@@ -21,10 +21,10 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.crawler.ArticleDetails;
-import wwmm.crystaleye.crawler.ArticleReference;
-import wwmm.crystaleye.crawler.DOI;
-import wwmm.crystaleye.crawler.SupplementaryFileDetails;
+import wwmm.crystaleye.crawler.core.ArticleDetails;
+import wwmm.crystaleye.crawler.core.ArticleReference;
+import wwmm.crystaleye.crawler.core.DOI;
+import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
 
 /**
  * <p>

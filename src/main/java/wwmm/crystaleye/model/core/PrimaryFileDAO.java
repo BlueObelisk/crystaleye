@@ -45,12 +45,13 @@ public abstract class PrimaryFileDAO {
 
 	/**
 	 * <p>
-	 * Adds the CIF in the provided <code>InputStream</code> 
-	 * into the CIF database.  Returns the primary key that the
-	 * inserted CIF has been assigned.
+	 * Adds the contents in the provided String into the database.
+	 * Returns the primary key that the inserted content has been 
+	 * assigned.
 	 * </p>
 	 * 
-	 * @param in - InputStream containing the CIF to be inserted.
+	 * @param String containing the contents to be written to the
+	 * database.
 	 * 
 	 * @return the primary key that the written CIF has been 
 	 * assigned.
@@ -88,6 +89,8 @@ public abstract class PrimaryFileDAO {
 	 * key. If it does not exist, then null is returned.
 	 */
 	public File getFileFromKey(int primaryKey) {
+		// TODO - note that this is the same method used in SecondaryFileDAO
+		// perhaps extract into superclass?
 		if (fileExtension == null) {
 			throw new IllegalStateException("fileExtension field has not " +
 					"been set in the implementing subclass of PrimaryFileDAO.");
@@ -102,17 +105,6 @@ public abstract class PrimaryFileDAO {
 		} else {
 			return null;
 		}
-	}
-	
-	/**
-	 * <p>
-	 * Get the file extension of the primary file.
-	 * </p>
-	 * 
-	 * @return the file extension of the primary file.
-	 */
-	public static String getFileExtension() {
-		return fileExtension;
 	}
 
 }
