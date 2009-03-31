@@ -1,6 +1,7 @@
 package wwmm.crystaleye.model.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -12,8 +13,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import wwmm.crystaleye.model.core.PrimaryKeyDAO;
 
 public class PrimaryKeyDAOTest {
 	
@@ -42,6 +41,30 @@ public class PrimaryKeyDAOTest {
 	@AfterClass
 	public static void removeTestStorageRoot() throws IOException {
 		FileUtils.deleteDirectory(fixturesRoot);
+	}
+	
+	@Test
+	public void testDeleteEmptyKeyFolder() {
+		File storageRoot = new File(fixturesRoot, "storage_root_for_delete_keys");
+		PrimaryKeyDAO pkd = new PrimaryKeyDAO(storageRoot);
+		boolean success = pkd.remove(1);
+		assertTrue(success);
+	}
+	
+	@Test
+	public void testDeleteNonEmptyKeyFolder() {
+		File storageRoot = new File(fixturesRoot, "storage_root_for_delete_keys");
+		PrimaryKeyDAO pkd = new PrimaryKeyDAO(storageRoot);
+		boolean success = pkd.remove(2);
+		assertTrue(success);
+	}
+	
+	@Test
+	public void testDeleteKeyThatDoesNotExist() {
+		File storageRoot = new File(fixturesRoot, "storage_root_for_delete_keys");
+		PrimaryKeyDAO pkd = new PrimaryKeyDAO(storageRoot);
+		boolean success = pkd.remove(99);
+		assertFalse(success);
 	}
 
 	@Test

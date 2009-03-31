@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawler;
+package wwmm.crystaleye.crawler.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -10,6 +10,9 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+
+import wwmm.crystaleye.crawler.core.ArticleReference;
+import wwmm.crystaleye.crawler.core.BibtexTool;
 
 public class BibtexToolTest {
 

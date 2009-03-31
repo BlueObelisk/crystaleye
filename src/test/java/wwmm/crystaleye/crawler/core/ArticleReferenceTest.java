@@ -1,9 +1,11 @@
-package wwmm.crystaleye.crawler;
+package wwmm.crystaleye.crawler.core;
 
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertSame;
 
 import org.junit.Test;
+
+import wwmm.crystaleye.crawler.core.ArticleReference;
 
 public class ArticleReferenceTest {
 	

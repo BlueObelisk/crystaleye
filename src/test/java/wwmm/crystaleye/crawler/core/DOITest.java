@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawler;
+package wwmm.crystaleye.crawler.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -9,6 +9,8 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.junit.Before;
 import org.junit.Test;
+
+import wwmm.crystaleye.crawler.core.DOI;
 
 public class DOITest {
 

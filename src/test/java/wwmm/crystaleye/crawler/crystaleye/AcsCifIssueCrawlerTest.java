@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawler.cif;
+package wwmm.crystaleye.crawler.crystaleye;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -6,13 +6,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import junitx.util.PrivateAccessor;
 
-import org.apache.commons.httpclient.URI;
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.ActaIssueCrawler;
-import wwmm.crystaleye.crawler.SupplementaryFileDetails;
+import wwmm.crystaleye.crawler.core.AcsIssueCrawler;
+import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
+import wwmm.crystaleye.crawler.crystaleye.AcsCifIssueCrawler;
 
-public class ActaCifIssueCrawlerTest {
+public class AcsCifIssueCrawlerTest {
 	
 	/**
 	 * Test makes sure that files that are CIFs are recognised as such
@@ -20,17 +20,17 @@ public class ActaCifIssueCrawlerTest {
 	 */
 	@Test
 	public void testIsCifFile() throws Throwable {
-		ActaCifIssueCrawler crawler = new ActaCifIssueCrawler(mock(ActaIssueCrawler.class));
+		AcsCifIssueCrawler crawler = new AcsCifIssueCrawler(mock(AcsIssueCrawler.class));
 		SupplementaryFileDetails sfd1 = mock(SupplementaryFileDetails.class);
-		URI cifUri = new URI("http://scripts.iucr.org/cgi-bin/sendcif?lg3009sup1", false);
-		when(sfd1.getURI()).thenReturn(cifUri);
+		String cifFileId = "this-is-a-cif-file.cif";
+		when(sfd1.getFileId()).thenReturn(cifFileId);
 		// use reflection to access private isCifFile method for testing
 		boolean isCif1 = (Boolean) PrivateAccessor.invoke(crawler, "isCifFile", 
 				new Class[]{SupplementaryFileDetails.class}, new Object[]{sfd1});
 		assertTrue(isCif1);
 		
-		URI notCifUri = new URI("http://journals.iucr.org/c/issues/2009/04/00/sq3182/sq3182Isup2.hkl", false);
-		when(sfd1.getURI()).thenReturn(notCifUri);
+		String notCifFileId = "not-a-cif.txt";
+		when(sfd1.getFileId()).thenReturn(notCifFileId);
 		// use reflection to access private isCifFile method for testing
 		boolean isCif2 = (Boolean) PrivateAccessor.invoke(crawler, "isCifFile", 
 				new Class[]{SupplementaryFileDetails.class}, new Object[]{sfd1});

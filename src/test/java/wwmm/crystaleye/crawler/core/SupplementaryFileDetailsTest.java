@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawler;
+package wwmm.crystaleye.crawler.core;
 
 import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.assertTrue;
@@ -8,6 +8,8 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.junit.Before;
 import org.junit.Test;
+
+import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
 
 public class SupplementaryFileDetailsTest {
 

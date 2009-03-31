@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawler.cif;
+package wwmm.crystaleye.crawler.crystaleye;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -8,8 +8,9 @@ import junitx.util.PrivateAccessor;
 
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.ChemSocJapanIssueCrawler;
-import wwmm.crystaleye.crawler.SupplementaryFileDetails;
+import wwmm.crystaleye.crawler.core.ChemSocJapanIssueCrawler;
+import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
+import wwmm.crystaleye.crawler.crystaleye.ChemSocJapanCifIssueCrawler;
 
 public class ChemSocJapanCifIssueCrawlerTest {
 	

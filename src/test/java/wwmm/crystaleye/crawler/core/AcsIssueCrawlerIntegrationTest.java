@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawler;
+package wwmm.crystaleye.crawler.core;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -9,10 +9,15 @@ import nu.xom.Document;
 
 import org.junit.Test;
 
-public class ChemSocJapanIssueCrawlerIntegrationTest {
+import wwmm.crystaleye.crawler.core.AcsIssueCrawler;
+import wwmm.crystaleye.crawler.core.AcsJournal;
+import wwmm.crystaleye.crawler.core.DOI;
+import wwmm.crystaleye.crawler.core.IssueDetails;
+
+public class AcsIssueCrawlerIntegrationTest {
 	
 	/**
-	 * Goes out to the CSJ site to check that the correct number
+	 * Goes out to the ACS site to check that the correct number
 	 * of DOIs are scraped from a particular issue.  Basically a 
 	 * check that the table of contents HTML structure hasn't 
 	 * been changed.
@@ -20,10 +25,10 @@ public class ChemSocJapanIssueCrawlerIntegrationTest {
 	@Test
 	public void testGetIssueDois() {
 		IssueDetails details = new IssueDetails("2009", "2");
-		ChemSocJapanIssueCrawler crawler = new ChemSocJapanIssueCrawler(ChemSocJapanJournal.CHEMISTRY_LETTERS);
+		AcsIssueCrawler crawler = new AcsIssueCrawler(AcsJournal.THE_JOURNAL_OF_ORGANIC_CHEMISTRY);
 		List<DOI> doiList = crawler.getDOIs(details);
-		assertEquals(42, doiList.size());
-		assertEquals(new DOI(DOI.DOI_SITE_URL+"/10.1246/cl.2009.126"), doiList.get(9));
+		assertEquals(66, doiList.size());
+		assertEquals(new DOI(DOI.DOI_SITE_URL+"/10.1021/jo8019237"), doiList.get(9));
 	}
 
 	/**
@@ -34,9 +39,9 @@ public class ChemSocJapanIssueCrawlerIntegrationTest {
 	 */
 	@Test
 	public void testGetCurrentIssueHtml() {
-		ChemSocJapanIssueCrawler crawler = new ChemSocJapanIssueCrawler(ChemSocJapanJournal.CHEMISTRY_LETTERS);
+		AcsIssueCrawler crawler = new AcsIssueCrawler(AcsJournal.JOURNAL_OF_THE_AMERICAN_CHEMICAL_SOCIETY);
 		Document doc = crawler.getCurrentIssueHtml();
 		assertNotNull(doc);
 	}
-	
+
 }
