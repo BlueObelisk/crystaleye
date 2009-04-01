@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nu.xom.Document;
-import nu.xom.Element;
 
 import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIF;
@@ -86,12 +85,15 @@ public class SplitParentCifXmlTask {
 	 * @return true if the conversion was successful, false if not.
 	 */
 	public boolean runTask() {
-		CIF parentCifXml;
+		CIF parentCifXml = null;
 		try {
 			parentCifXml = getParentCIFXML();
 		} catch (CIFException e) {
 			LOG.warn("Problem getting parent CIFXML file for primary key: "+primaryKey+"\n"+
 					e.getMessage());
+			return false;
+		} catch (Exception e) {
+			LOG.warn(e.getMessage());
 			return false;
 		}
 		// split the datablocks into two lists, those containing metadata (global) and 
@@ -101,12 +103,10 @@ public class SplitParentCifXmlTask {
 		List<CIFDataBlock> structBlockList = new ArrayList<CIFDataBlock>(1);
 		for (CIFDataBlock datablock : datablockList) {
 			if (isStructureBlock(datablock)) {
-				datablock.detach();
 				structBlockList.add(datablock);
 			} else {
 				// assume that if the datablock is not a structure block, then it must
 				// be a global block.
-				datablock.detach();
 				globalBlockList.add(datablock);
 			}
 		}
@@ -127,7 +127,7 @@ public class SplitParentCifXmlTask {
 
 		return true;
 	}
-	
+
 	/**
 	 * <p>
 	 * Writes a child CIFXML document out to the database.
@@ -142,7 +142,7 @@ public class SplitParentCifXmlTask {
 		Document doc = new Document(childCifXml);
 		childPrimaryFileDao.insert(primaryKey, Utils.toPrettyXMLString(doc));
 	}
-	
+
 	/**
 	 * <p>
 	 * Takes a structural datablock and a list of global datablocks and creates a
@@ -157,9 +157,10 @@ public class SplitParentCifXmlTask {
 	 */
 	private CIF createChildCifXml(CIFDataBlock datablock, List<CIFDataBlock> globalBlockList) throws CIFException {
 		CIF cif = new CIF();
+		datablock.detach();
 		cif.add(datablock);
 		for (CIFDataBlock globalBlock : globalBlockList) {
-			cif.add(globalBlock);
+			cif.appendChild(globalBlock.copy());
 		}
 		return cif;
 	}
@@ -198,7 +199,15 @@ public class SplitParentCifXmlTask {
 	private CIF getParentCIFXML() throws CIFException {
 		ParentCifXmlFileDAO parentCifXmlFileDao = new ParentCifXmlFileDAO(storageRoot);
 		File parentCifXmlFile = parentCifXmlFileDao.getFileFromKey(primaryKey);
-		Document parentCifXmlDoc = Utils.parseXml(parentCifXmlFile);
+		if (parentCifXmlFile == null) {
+			throw new IllegalStateException("Parent CIFXML file does not exist for primary key: "+primaryKey);
+		}
+		Document parentCifXmlDoc = null;
+		try {
+			parentCifXmlDoc = Utils.parseXml(parentCifXmlFile);
+		} catch (Exception e) {
+			throw new RuntimeException("Problem parsing XML for: "+parentCifXmlFile);
+		}
 		return new CIF(parentCifXmlDoc, true);
 	}
 
