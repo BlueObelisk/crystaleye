@@ -27,13 +27,6 @@ public class SplitParentCifXmlTaskTest {
 	private static File fixturesRoot;
 	private static String foldername = "splitparentcifxml";
 
-	/**
-	 * The tests in subclasses will create various folders and files.  
-	 * We don't want to alter the fixtures in ./src/main/resources, 
-	 * so the folder is copied over to the ./target directory and 
-	 * the tests are run on that.  The directory is removed by the 
-	 * method tagged with @AfterClass.
-	 */
 	@BeforeClass
 	public static void setUpTestStorageRoot() throws IOException {
 		File target = new File("./target");
@@ -48,8 +41,7 @@ public class SplitParentCifXmlTaskTest {
 	 */
 	@AfterClass
 	public static void removeTestStorageRoot() throws IOException {
-		// FIXME - uncomment this.
-		//FileUtils.forceDelete(fixturesRoot);
+		FileUtils.forceDelete(fixturesRoot);
 	}
 
 	@Test
@@ -76,7 +68,6 @@ public class SplitParentCifXmlTaskTest {
 		int primaryKey = 4;
 		SplitParentCifXmlTask task = new SplitParentCifXmlTask(storageRoot, primaryKey);
 		File primaryKeyFile = new File(storageRoot, ""+primaryKey);
-		assertEquals(1, primaryKeyFile.listFiles().length);
 		boolean success = task.runTask();
 		assertTrue(success);
 		int folderCount = getChildFolderCount(primaryKeyFile);
@@ -100,7 +91,8 @@ public class SplitParentCifXmlTaskTest {
 	private int getChildFolderCount(File file) {
 		int count = 0;
 		for (File f : file.listFiles()) {
-			if (f.isDirectory()) {
+			System.out.println(f);
+			if (f.isDirectory() && !f.getName().contains("svn")) {
 				count++;
 			}
 		}

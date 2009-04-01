@@ -1,6 +1,7 @@
 package wwmm.crystaleye.task;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,10 +89,6 @@ public class SplitParentCifXmlTask {
 		CIF parentCifXml = null;
 		try {
 			parentCifXml = getParentCIFXML();
-		} catch (CIFException e) {
-			LOG.warn("Problem getting parent CIFXML file for primary key: "+primaryKey+"\n"+
-					e.getMessage());
-			return false;
 		} catch (Exception e) {
 			LOG.warn(e.getMessage());
 			return false;
@@ -196,7 +193,7 @@ public class SplitParentCifXmlTask {
 	 * 
 	 * @throws CIFException if the parent CIFXML file is not valid CIFXML.
 	 */
-	private CIF getParentCIFXML() throws CIFException {
+	private CIF getParentCIFXML() {
 		ParentCifXmlFileDAO parentCifXmlFileDao = new ParentCifXmlFileDAO(storageRoot);
 		File parentCifXmlFile = parentCifXmlFileDao.getFileFromKey(primaryKey);
 		if (parentCifXmlFile == null) {
@@ -208,7 +205,25 @@ public class SplitParentCifXmlTask {
 		} catch (Exception e) {
 			throw new RuntimeException("Problem parsing XML for: "+parentCifXmlFile);
 		}
-		return new CIF(parentCifXmlDoc, true);
+		CIF cif = null;
+		try {
+			cif = new CIF(parentCifXmlDoc, true);
+		} catch (CIFException e) {
+			throw new RuntimeException("Problem creating CIFXML CIF object: "+parentCifXmlFile);
+		}
+		return cif;
 	}
 
+	/**
+	 * <p>
+	 * Main method meant for demonstration purposes only, does not
+	 * require any arguments.
+	 * </p>
+	 */
+	public static void main(String[] args) throws CIFException, IOException {
+		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
+		int primaryKey = 3;
+		SplitParentCifXmlTask task = new SplitParentCifXmlTask(storageRoot, primaryKey);
+		task.runTask();
+	}
 }

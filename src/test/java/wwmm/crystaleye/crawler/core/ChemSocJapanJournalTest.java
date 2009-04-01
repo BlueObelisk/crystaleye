@@ -4,8 +4,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.core.ChemSocJapanJournal;
-
 public class ChemSocJapanJournalTest {
 	
 	@Test

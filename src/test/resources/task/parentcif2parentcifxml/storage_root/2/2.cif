@@ -1,1 +1,2 @@
-I am clearly an invalid CIF.
+data_global
+I am an invalid CIF.

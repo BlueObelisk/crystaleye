@@ -22,14 +22,14 @@ import wwmm.crystaleye.model.crystaleye.ParentCifXmlFileDAO;
  * @author Nick Day
  * @version 0.1
  */
-public class ParentCif2ParentCifXmlTask {
+public class ParentCif2CifXmlTask {
 	
 	private File storageRoot;
 	private int primaryKey;
 	
-	private static final Logger LOG = Logger.getLogger(ParentCif2ParentCifXmlTask.class);
+	private static final Logger LOG = Logger.getLogger(ParentCif2CifXmlTask.class);
 	
-	public ParentCif2ParentCifXmlTask(File storageRoot, int primaryKey) {
+	public ParentCif2CifXmlTask(File storageRoot, int primaryKey) {
 		this.storageRoot = storageRoot;
 		this.primaryKey = primaryKey;
 	}
@@ -95,6 +95,8 @@ public class ParentCif2ParentCifXmlTask {
 	 */
 	private String getCifXmlString(File cifFile) throws CIFException, IOException {
 		CIFParser parser = new CIFParser();
+		parser.setSkipHeader(true);
+		parser.setCheckDuplicates(true);
 		Document cifXml = parser.parse(cifFile);
 		return Utils.toPrettyXMLString(cifXml);
 	}
@@ -108,7 +110,7 @@ public class ParentCif2ParentCifXmlTask {
 	public static void main(String[] args) throws CIFException, IOException {
 		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
 		int primaryKey = 3;
-		ParentCif2ParentCifXmlTask task = new ParentCif2ParentCifXmlTask(storageRoot, primaryKey);
+		ParentCif2CifXmlTask task = new ParentCif2CifXmlTask(storageRoot, primaryKey);
 		task.runTask();
 	}
 
