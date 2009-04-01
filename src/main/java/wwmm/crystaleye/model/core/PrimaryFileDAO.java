@@ -23,6 +23,9 @@ import org.apache.log4j.Logger;
 public abstract class PrimaryFileDAO {
 	
 	private PrimaryKeyDAO keyDao;
+	// FIXME - there should really be a FileDAO superclass 
+	// containing fileExtension and maybe some other parts of 
+	// the DAOs
 	protected static String fileExtension;
 
 	private static final Logger LOG = Logger.getLogger(PrimaryFileDAO.class);

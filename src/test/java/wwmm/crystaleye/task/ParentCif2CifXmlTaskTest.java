@@ -19,18 +19,11 @@ import org.xmlcml.cif.CIFException;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.model.crystaleye.ParentCifXmlFileDAO;
 
-public class ParentCif2ParentCifXmlTaskTest {
+public class ParentCif2CifXmlTaskTest {
 	
 	private static File fixturesRoot;
 	private static String foldername = "parentcif2parentcifxml";
 	
-	/**
-	 * The tests in subclasses will create various folders and files.  
-	 * We don't want to alter the fixtures in ./src/main/resources, 
-	 * so the folder is copied over to the ./target directory and 
-	 * the tests are run on that.  The directory is removed by the 
-	 * method tagged with @AfterClass.
-	 */
 	@BeforeClass
 	public static void setUpTestStorageRoot() throws IOException {
 		File target = new File("./target");
@@ -52,7 +45,7 @@ public class ParentCif2ParentCifXmlTaskTest {
 	public void testRunTask() {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 1;
-		ParentCif2ParentCifXmlTask task = new ParentCif2ParentCifXmlTask(storageRoot, primaryKey);
+		ParentCif2CifXmlTask task = new ParentCif2CifXmlTask(storageRoot, primaryKey);
 		File expectedCifXmlFile = new File(new File(storageRoot, ""+primaryKey), primaryKey+ParentCifXmlFileDAO.getFileExtension());
 		assertTrue(!expectedCifXmlFile.exists());
 		boolean success = task.runTask();
@@ -71,7 +64,7 @@ public class ParentCif2ParentCifXmlTaskTest {
 	public void testRunTaskForNonExistantKey() {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 99;
-		ParentCif2ParentCifXmlTask task = new ParentCif2ParentCifXmlTask(storageRoot, primaryKey);
+		ParentCif2CifXmlTask task = new ParentCif2CifXmlTask(storageRoot, primaryKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}
@@ -80,7 +73,7 @@ public class ParentCif2ParentCifXmlTaskTest {
 	public void testRunTaskForExisingKeyButNonExistantCIF() {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 3;
-		ParentCif2ParentCifXmlTask task = new ParentCif2ParentCifXmlTask(storageRoot, primaryKey);
+		ParentCif2CifXmlTask task = new ParentCif2CifXmlTask(storageRoot, primaryKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}
@@ -89,7 +82,7 @@ public class ParentCif2ParentCifXmlTaskTest {
 	public void testRunTaskForInvalidCif() {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 2;
-		ParentCif2ParentCifXmlTask task = new ParentCif2ParentCifXmlTask(storageRoot, primaryKey);
+		ParentCif2CifXmlTask task = new ParentCif2CifXmlTask(storageRoot, primaryKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}

@@ -10,12 +10,6 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.core.ArticleDetails;
-import wwmm.crystaleye.crawler.core.ArticleReference;
-import wwmm.crystaleye.crawler.core.DOI;
-import wwmm.crystaleye.crawler.core.RscArticleCrawler;
-import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
-
 public class RscArticleCrawlerIntegrationTest {
 
 	/**

@@ -12,11 +12,6 @@ import java.util.List;
 import org.apache.commons.httpclient.URI;
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.core.ArticleDetails;
-import wwmm.crystaleye.crawler.core.ArticleReference;
-import wwmm.crystaleye.crawler.core.DOI;
-import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
-
 public class ArticleDetailsTest {
 	
 	@Test

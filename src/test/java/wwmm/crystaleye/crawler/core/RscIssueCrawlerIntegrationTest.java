@@ -9,11 +9,6 @@ import nu.xom.Document;
 
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.core.DOI;
-import wwmm.crystaleye.crawler.core.IssueDetails;
-import wwmm.crystaleye.crawler.core.RscIssueCrawler;
-import wwmm.crystaleye.crawler.core.RscJournal;
-
 public class RscIssueCrawlerIntegrationTest {
 	
 	/**

@@ -9,8 +9,6 @@ import org.apache.commons.httpclient.URIException;
 import org.junit.Before;
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
-
 public class SupplementaryFileDetailsTest {
 
 	SupplementaryFileDetails sfd;
