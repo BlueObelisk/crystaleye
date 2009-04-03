@@ -42,16 +42,17 @@
 	</repositories>
 	<dependencies>
 		<dependency>
+			<groupId>cdk</groupId>
+			<artifactId>cdk</artifactId>
+			<version>20071025</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>cml</groupId>
 			<artifactId>cifxml</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-cli</artifactId>
-			<version>2.0-SNAPSHOT</version>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
@@ -61,9 +62,24 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.4</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>jgrapht</groupId>
+			<artifactId>jgrapht</artifactId>
+			<version>0.6.0</version>
+			<scope>compile</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>cml</groupId>
@@ -108,11 +124,11 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.4</version>
-			<type>jar</type>
+			<groupId>javax</groupId>
+			<artifactId>vecmath</artifactId>
+			<version>1.2</version>
 			<scope>compile</scope>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
