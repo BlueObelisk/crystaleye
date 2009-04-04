@@ -13,6 +13,15 @@ import org.xmlcml.cml.converters.cif.RawCML2CompleteCMLConverter;
 import wwmm.crystaleye.model.crystaleye.ChildCmlFileDAO;
 import wwmm.crystaleye.model.crystaleye.ChildDerivedCmlFileDAO;
 
+/**
+ * <p>
+ * Manages the creation and insertion of 'derived' CML files into
+ * the database from 'child' CML files.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 0.1
+ */
 public class ChildCml2ChildDerivedCmlTask {
 	
 	private File storageRoot;
@@ -27,6 +36,16 @@ public class ChildCml2ChildDerivedCmlTask {
 		this.childKey = childKey;
 	}
 
+	/**
+	 * <p>
+	 * Gets the 'child' CML file for this objects primary and
+	 * child key, creates a 'derived' CML from it and then writes
+	 * it out to the database.
+	 * </p>
+	 * 
+	 * @return true if the 'derived' CML was successfully created
+	 * and written to the db.  False if not.
+	 */
 	public boolean runTask() {
 		File cmlFile = getCmlFile();
 		if (cmlFile == null) {
@@ -61,11 +80,11 @@ public class ChildCml2ChildDerivedCmlTask {
 	
 	/**
 	 * <p>
-	 * Gets the child CIFXML File for the provided primary key and
+	 * Gets the child CML File for the provided primary key and
 	 * child key.
 	 * </p>
 	 * 
-	 * @return the CIFXML File for the provided primary and
+	 * @return the CML File for the provided primary and
 	 * child keys.  Returns null if the file does not exist
 	 * for the provided keys.
 	 */

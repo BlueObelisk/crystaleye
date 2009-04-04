@@ -15,6 +15,15 @@ import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.model.crystaleye.ChildCifFileDAO;
 import wwmm.crystaleye.model.crystaleye.ChildCifXmlFileDAO;
 
+/**
+ * <p>
+ * Manages the creation and inserting into the database of 
+ * 'child' CIF files from 'child' CIFXML files.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 0.1
+ */
 public class ChildCifXml2CifTask {
 
 	private File storageRoot;
@@ -29,6 +38,15 @@ public class ChildCifXml2CifTask {
 		this.childKey = childKey;
 	}
 
+	/**
+	 * <p>
+	 * Reads in a 'child' CIFXML file, converts it into CIF format
+	 * and then writes out a 'child' CIF file.
+	 * </p>
+	 * 
+	 * @return true if the CIF file was created and written 
+	 * successfully, false if not.
+	 */
 	public boolean runTask() {
 		CIF childCifXml = null;
 		try {
@@ -58,11 +76,11 @@ public class ChildCifXml2CifTask {
 
 	/**
 	 * <p>
-	 * Gets the chlid CIFXML document for the provided primary key and
+	 * Gets the child CIFXML document for this objects primary key and
 	 * child key.
 	 * </p>
 	 * 
-	 * @return the parent CIF XML document for the provided primary and
+	 * @return the parent CIF XML document for this objects primary and
 	 * child keys. 
 	 * 
 	 * @throws CIFException if the child CIFXML file is not valid CIFXML.

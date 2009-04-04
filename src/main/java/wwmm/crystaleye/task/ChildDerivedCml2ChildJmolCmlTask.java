@@ -8,14 +8,23 @@ import nu.xom.Document;
 import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
-import org.xmlcml.cml.converters.cif.IOUtils;
-import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.model.crystaleye.ChildDerivedCmlFileDAO;
 import wwmm.crystaleye.model.crystaleye.ChildJmolCmlFileDAO;
 
+/**
+ * <p>
+ * Manages the creation of a Jmol CML file from a 'derived' CML
+ * file.  Reads a 'derived' CML file from the database, gets the
+ * structure from within, creates a minimal CML molecule for display
+ * in Jmol and then writes the resulting CML back out to the db.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 0.1
+ */
 public class ChildDerivedCml2ChildJmolCmlTask {
 
 	private File storageRoot;
@@ -30,33 +39,26 @@ public class ChildDerivedCml2ChildJmolCmlTask {
 		this.childKey = childKey;
 	}
 
+	/**
+	 * <p>
+	 * For the provided primary and child key, reads a 'derived' CML 
+	 * file from the database, gets the structure from within, 
+	 * creates a minimal CML molecule for display in Jmol and then 
+	 * writes the resulting CML back out to the db.
+	 * </p>
+	 * 
+	 * @return true if the Jmol CML was successfully created and 
+	 * written to the database, false if not.
+	 */
 	public boolean runTask() {
-		File cmlFile = getCmlFile();
-		if (cmlFile == null) {
-			LOG.warn("CML file does not exist for the provided primary and " +
-					"child keys: "+primaryKey+"/"+childKey);
+		ChildDerivedCmlFileDAO cmlDao = new ChildDerivedCmlFileDAO(storageRoot);
+		CMLMolecule containerMol = cmlDao.getContainerMolecule(primaryKey, childKey);
+		if (containerMol == null) {
 			return false;
 		}
-		Document cmlDoc = null;
-		try {
-			cmlDoc = IOUtils.parseCmlFile(cmlFile);
-		} catch (Exception e) {
-			LOG.warn("Problem parsing CML file: "+cmlFile+
-					"\n"+e.getMessage());
-			return false;
-		}
-		CMLMolecule molecule = null;
-		try {
-			CMLCml cml = (CMLCml)cmlDoc.getRootElement();
-			molecule = getMolecule(cml);
-		} catch (Exception e) {
-			LOG.warn("Problem obtaining container molecule from: "+cmlFile+
-					"\n"+e.getMessage());
-			return false;
-		}
-		Document jmolDoc = getJmolMolecule(molecule);
-		ChildJmolCmlFileDAO dao = new ChildJmolCmlFileDAO(storageRoot);
-		boolean success = dao.insert(primaryKey, childKey, Utils.toPrettyXMLString(jmolDoc));
+		Document jmolDoc = createJmolMolecule(containerMol);
+		ChildJmolCmlFileDAO jmolCmlDao = new ChildJmolCmlFileDAO(storageRoot);
+		boolean success = jmolCmlDao.insert(primaryKey, childKey, Utils.toPrettyXMLString(jmolDoc));
 		if (success) {
 			return true;
 		} else {
@@ -64,21 +66,47 @@ public class ChildDerivedCml2ChildJmolCmlTask {
 		}
 	}
 
-	private Document getJmolMolecule(CMLMolecule molecule) {
-		CMLMolecule molCopy = (CMLMolecule)molecule.copy();
-		detachCrystalChildren(molCopy);
-		detachFormulaNodes(molCopy);
-		detachAtomChildren(molCopy);
-		detachBondChildren(molCopy);
-		return new Document(molCopy);
+	/**
+	 * <p>
+	 * From a provided molecule, all those elements superfluous
+	 * to display in Jmol are stripped out to make display as
+	 * fast as possible.
+	 * </p>
+	 * 
+	 * @param molecule to be stripped..
+	 * 
+	 * @return a Document containing the stripped molecule.
+	 */
+	private Document createJmolMolecule(CMLMolecule molecule) {
+		detachCrystalChildren(molecule);
+		detachFormulaNodes(molecule);
+		detachAtomChildren(molecule);
+		detachBondChildren(molecule);
+		return new Document(molecule);
 	}
 	
+	/**
+	 * <p>
+	 * For a given <code>Nodes</nodes>, iterates through each 
+	 * <code>Node</code> detaching it from its parent element.
+	 * </p>
+	 * 
+	 * @param nds - the <code>Nodes</code> to be detached.
+	 */
 	private void detachNodes(Nodes nds) {
 		for (int i = 0; i < nds.size(); i++) {
 			nds.get(i).detach();
 		}
 	}
 	
+	/**
+	 * <p>
+	 * Detaches all those elements in a crystal element that
+	 * are superfluous to display in Jmol.
+	 * </p>
+	 * 
+	 * @param molecule to be stripped.
+	 */
 	private void detachCrystalChildren(CMLMolecule molecule) {
 		String[] attsToRemove = {"dataType", "errorValue"};
 		for (String att : attsToRemove) {
@@ -87,6 +115,14 @@ public class ChildDerivedCml2ChildJmolCmlTask {
 		detachNodes(molecule.query("./cml:crystal/cml:symmetry/cml:transform3", X_CML));
 	}
 	
+	/**
+	 * <p>
+	 * Detaches all those elements in a bond element that
+	 * are superfluous to display in Jmol.
+	 * </p>
+	 * 
+	 * @param molecule to be stripped.
+	 */
 	private void detachBondChildren(CMLMolecule molecule) {
 		String[] attsToRemove = {"atomRefs", "id", "userCyclic"};
 		for (String att : attsToRemove) {
@@ -94,6 +130,14 @@ public class ChildDerivedCml2ChildJmolCmlTask {
 		}
 	}
 	
+	/**
+	 * <p>
+	 * Detaches all those elements in a atom element that
+	 * are superfluous to display in Jmol.
+	 * </p>
+	 * 
+	 * @param molecule to be stripped.
+	 */
 	private void detachAtomChildren(CMLMolecule molecule) {
 		detachNodes(molecule.query("./cml:atomArray/cml:atom/child::cml:*", X_CML));
 		String[] attsToRemove = {"xFract", "yFract", "zFract", "x2", "y2"};
@@ -102,33 +146,17 @@ public class ChildDerivedCml2ChildJmolCmlTask {
 		}
 	}
 	
+	/**
+	 * <p>
+	 * Detaches all formula elements in the provided molecule.
+	 * </p>
+	 * 
+	 * @param molecule to be stripped.
+	 */
 	private void detachFormulaNodes(CMLMolecule molecule) {
 		detachNodes(molecule.query(".//cml:formula", X_CML));
 	}
-
-	private CMLMolecule getMolecule(CMLCml cml) {
-		Nodes molNds = cml.query("./cml:molecule", X_CML);
-		if (molNds.size() != 1) {
-			return null;
-		}
-		return (CMLMolecule)molNds.get(0);
-	}
-
-	/**
-	 * <p>
-	 * Gets the child CIFXML File for the provided primary key and
-	 * child key.
-	 * </p>
-	 * 
-	 * @return the CIFXML File for the provided primary and
-	 * child keys.  Returns null if the file does not exist
-	 * for the provided keys.
-	 */
-	private File getCmlFile() {
-		ChildDerivedCmlFileDAO dao = new ChildDerivedCmlFileDAO(storageRoot);
-		return dao.getFileFromKeys(primaryKey, childKey);
-	}
-
+	
 	/**
 	 * <p>
 	 * Main method meant for demonstration purposes only, does not
