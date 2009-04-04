@@ -30,7 +30,6 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
- * 
  * <p>
  * NOTE: this parser currently does not work correctly for 
  * CheckCIFs containing information for more than one datablock 
@@ -50,13 +49,13 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * <p>
  * Also note that the structure of CheckCIF HTML is horrible, with
  * virtually no nesting and no semantic naming going on.  This is
- * why the code looks rather labyrinthine.  In fact, I can't even 
- * remember what half of it does.  But it works.  For now.  I hope
- * Jim doesn't read this.
+ * why the code looks rather labyrinthine.  In fact, I wrote this 
+ * back in 2005 (now early 2009) and I can't even remember what half of 
+ * it does.  But it works.  For now.  I hope Jim doesn't read this.
  * </p>
  * 
  * @author Nick Day
- * @version 1.1
+ * @version 0.2
  */
 public class CheckCifParser {
 	
@@ -197,7 +196,6 @@ public class CheckCifParser {
 				data = new Element("dataBlock", CC_NS);
 				Nodes nodes = d.query("/x:datablock/x:font[@size=\"+2\"]/x:b", X_XHTML);
 				String blockId = (nodes.get(0).getValue()).substring(11);
-				Element root = d.getRootElement();
 				Element alerts = new Element("alerts", CC_NS);
 				data.appendChild(alerts);
 

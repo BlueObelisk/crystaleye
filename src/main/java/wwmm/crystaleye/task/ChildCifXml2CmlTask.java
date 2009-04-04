@@ -14,6 +14,15 @@ import org.xmlcml.cml.converters.cif.CIFXML2CMLConverter;
 import wwmm.crystaleye.model.crystaleye.ChildCifXmlFileDAO;
 import wwmm.crystaleye.model.crystaleye.ChildCmlFileDAO;
 
+/**
+ * <p>
+ * Manages the creation and insertion into the database of
+ * 'child' CML files from 'child CIFXML files.
+ * </p>
+ * 
+ * @author Nick Day
+ * @version 0.1
+ */
 public class ChildCifXml2CmlTask {
 
 	private File storageRoot;
@@ -28,6 +37,16 @@ public class ChildCifXml2CmlTask {
 		this.childKey = childKey;
 	}
 
+	/**
+	 * <p>
+	 * Gets the 'child' CIFXML file for this objects primary
+	 * and child key, converts it into CIF format, and then
+	 * writes it out to the database.
+	 * </p>
+	 * 
+	 * @return true if the 'child' CML was successfully created
+	 * and written to the db.  False if not.
+	 */
 	public boolean runTask() {
 		File cifXmlFile = getChildCifXmlFile();
 		if (cifXmlFile == null) {

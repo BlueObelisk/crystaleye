@@ -35,6 +35,14 @@ public abstract class Index {
 	 * index is stored.
 	 */
 	public Index(File storageRoot, String indexFilename) {
+		if (storageRoot == null) {
+			throw new IllegalArgumentException("Provided storage " +
+					"root is null.");
+		}
+		if (indexFilename == null) {
+			throw new IllegalArgumentException("Provided index " +
+					"filename is null.");
+		}
 		init(storageRoot, indexFilename);
 	}
 	
