@@ -32,16 +32,16 @@ public class ChildCifXml2CmlTaskTest {
 	 */
 	@AfterClass
 	public static void removeTestStorageRoot() throws IOException {
-		//FileUtils.forceDelete(fixturesRoot);
+		FileUtils.forceDelete(fixturesRoot);
 	}
 
 	@Test
 	public void testRunTask() {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 1;
-		int childKey = 2;
+		int childKey = 15;
 		ChildCifXml2CmlTask task = new ChildCifXml2CmlTask(storageRoot, primaryKey, childKey);
-		File expectedFile = new File(storageRoot, "/1/2/2.cml");
+		File expectedFile = new File(storageRoot, "1/15/15.cml");
 		assertFalse(expectedFile.exists());
 		boolean success = task.runTask();
 		assertTrue(success);

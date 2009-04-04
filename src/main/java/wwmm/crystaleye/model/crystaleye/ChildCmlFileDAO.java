@@ -15,27 +15,10 @@ import wwmm.crystaleye.model.core.ChildSecondaryFileDAO;
  */
 public class ChildCmlFileDAO extends ChildSecondaryFileDAO {
 	
-	/**
-	 * An implementing subclass of ChildSecondaryFileDAO needs to set the
-	 * file extension to be used by the primary file of the database.
-	 */
-	static {
-		fileExtension = ".cml";
-	}
+	public static final String CHILD_CML_MIME = ".cml";
 
 	public ChildCmlFileDAO(File storageRoot) {
-		super(storageRoot);
-	}
-	
-	/**
-	 * <p>
-	 * Gets the file extension used for this file.
-	 * </p>
-	 * 
-	 * @return the file extension used for this file.
-	 */
-	public static String getFileExtension() {
-		return fileExtension;
+		super(storageRoot, CHILD_CML_MIME);
 	}
 
 }

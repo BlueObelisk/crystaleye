@@ -59,7 +59,7 @@ public class ParentCifFileDAOTest {
 		assertTrue(!key1File.exists());
 		cifDao.insert(cifContents);
 		assertTrue(key1File.exists());
-		File key1Cif = new File(key1File, "1"+ParentCifFileDAO.getFileExtension());
+		File key1Cif = new File(key1File, "1"+ParentCifFileDAO.PARENT_CIF_MIME);
 		assertTrue(key1Cif.exists());
 		assertEquals(cifContents, FileUtils.readFileToString(key1Cif));
 	}

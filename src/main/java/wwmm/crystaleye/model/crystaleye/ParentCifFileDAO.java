@@ -17,27 +17,10 @@ import wwmm.crystaleye.model.core.PrimaryFileDAO;
  */
 public class ParentCifFileDAO extends PrimaryFileDAO {
 
-	/**
-	 * The implementing subclass of PrimaryFileDAO needs to set the
-	 * file extension to be used by the primary file of the database.
-	 */
-	static {
-		fileExtension = ".cif";
-	}
-	
+	public static final String PARENT_CIF_MIME = ".cif";
+
 	public ParentCifFileDAO(File storageRoot) {
-		super(storageRoot);
-	}
-	
-	/**
-	 * <p>
-	 * Gets the file extension used for this file.
-	 * </p>
-	 * 
-	 * @return the file extension used for this file.
-	 */
-	public static String getFileExtension() {
-		return fileExtension;
+		super(storageRoot, PARENT_CIF_MIME);
 	}
 
 }

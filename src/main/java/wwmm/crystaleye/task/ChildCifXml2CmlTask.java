@@ -1,6 +1,5 @@
 package wwmm.crystaleye.task;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -39,21 +38,20 @@ public class ChildCifXml2CmlTask {
 		CIFXML2CMLConverter converter = new CIFXML2CMLConverter();
 		converter.setCommand(new ConverterCommand());
 		OutputStream out = null;
-		BufferedOutputStream bout = null;
+		String contents = null;
 		try {
 			out = new ByteArrayOutputStream();
-			bout = new BufferedOutputStream(out);
-			converter.convert(cifXmlFile, bout);
+			converter.convert(cifXmlFile, out);
+			contents = out.toString();
 		} catch (Exception e) {
 			LOG.warn("Problem converting from CIFXML to CML: "+cifXmlFile+
 					"\n"+e.getMessage());
 			return false;
 		} finally {
-			IOUtils.closeQuietly(bout);
 			IOUtils.closeQuietly(out);
 		}
 		ChildCmlFileDAO childCmlDao = new ChildCmlFileDAO(storageRoot);
-		boolean success = childCmlDao.insert(primaryKey, childKey, out.toString());
+		boolean success = childCmlDao.insert(primaryKey, childKey, contents);
 		if (success) {
 			return true;
 		} else {
