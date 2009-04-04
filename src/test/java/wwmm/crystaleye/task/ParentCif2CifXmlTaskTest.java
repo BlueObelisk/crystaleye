@@ -61,7 +61,7 @@ public class ParentCif2CifXmlTaskTest {
 	}
 	
 	@Test
-	public void testRunTaskForNonExistantKey() {
+	public void testRunTaskForNonExistingKey() {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 99;
 		ParentCif2CifXmlTask task = new ParentCif2CifXmlTask(storageRoot, primaryKey);
@@ -70,7 +70,7 @@ public class ParentCif2CifXmlTaskTest {
 	}
 	
 	@Test
-	public void testRunTaskForExisingKeyButNonExistantCIF() {
+	public void testRunTaskForNonExistingCif() {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 3;
 		ParentCif2CifXmlTask task = new ParentCif2CifXmlTask(storageRoot, primaryKey);

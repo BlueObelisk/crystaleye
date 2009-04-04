@@ -82,6 +82,7 @@ public class ChildDerivedCml2ChildJmolCmlTask {
 		detachFormulaNodes(molecule);
 		detachAtomChildren(molecule);
 		detachBondChildren(molecule);
+		molecule.detach();
 		return new Document(molecule);
 	}
 	
