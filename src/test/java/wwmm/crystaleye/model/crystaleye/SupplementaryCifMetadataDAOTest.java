@@ -61,7 +61,7 @@ public class SupplementaryCifMetadataDAOTest {
 		String metadata = "this cif is AWESOME";
 		boolean success = metadataDao.insert(1, metadata);
 		assertTrue(success);
-		File expectedMetadataLocation = new File(expectedPKeyLocation, "1"+SupplementaryCifMetadataDAO.getFileExtension());
+		File expectedMetadataLocation = new File(expectedPKeyLocation, "1"+SupplementaryCifMetadataDAO.SUPPLEMENTARY_CIF_METADATA_MIME);
 		// assert file has been created at expected location
 		assertTrue(expectedMetadataLocation.exists());
 		// assert the contents are exactly as in original data string

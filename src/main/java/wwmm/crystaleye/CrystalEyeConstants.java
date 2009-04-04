@@ -15,12 +15,16 @@ public interface CrystalEyeConstants {
 	public static final String RDF_PREFIX = "rdf";
 	public static final String BIBO_NS = "http://purl.org/ontology/bibo/";
 	public static final String BIBO_PREFIX = "bibo";
+	public static final String CML_PREFIX = "cml";
+	public static final String CML_NS = "http://www.xml-cml.org/schema";
+	
 	
 	// contexts for use in XPath queries
 	public static final XPathContext X_XHTML = new XPathContext("x", XHTML_NS);
 	public static final XPathContext X_ATOM1 = new XPathContext("atom1", ATOM_1_NS);
 	public static final XPathContext X_DC = new XPathContext(DC_PREFIX, DC_NS);
 	public static final XPathContext X_RDF = new XPathContext(RDF_PREFIX, RDF_NS);
+	public static final XPathContext X_CML = new XPathContext(CML_PREFIX, CML_NS);
 	
 	public static final String CIF_CONTENT_TYPE = "chemical/x-cif";
 	

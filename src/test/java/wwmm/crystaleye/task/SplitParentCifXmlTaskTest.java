@@ -49,7 +49,7 @@ public class SplitParentCifXmlTaskTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 1;
 		SplitParentCifXmlTask task = new SplitParentCifXmlTask(storageRoot, primaryKey);
-		File expectedFile = new File(storageRoot, "1/1/1"+ChildCifXmlFileDAO.getFileExtension());
+		File expectedFile = new File(storageRoot, "1/1/1"+ChildCifXmlFileDAO.CHILD_CIFXML_MIME);
 		assertTrue(!expectedFile.exists());
 		boolean success = task.runTask();
 		assertTrue(success);

@@ -23,12 +23,13 @@ import org.apache.log4j.Logger;
 public abstract class SecondaryFileDAO {
 
 	private PrimaryKeyDAO keyDao;
-	protected static String fileExtension;
+	protected String fileExtension;
 
 	private static final Logger LOG = Logger.getLogger(SecondaryFileDAO.class);
 
-	protected SecondaryFileDAO(File storageRoot) {
+	protected SecondaryFileDAO(File storageRoot, String fileExtension) {
 		init(storageRoot);
+		this.fileExtension = fileExtension;
 	}
 
 	/**

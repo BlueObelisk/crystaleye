@@ -13,7 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xmlcml.cml.base.CMLBuilder;
 
-public class Cml2DerivedCmlTaskTest {
+public class ChildCml2ChildDerivedCmlTaskTest {
 	
 	private static File fixturesRoot;
 	private static String foldername = "cml2derivedcml";
@@ -32,7 +32,7 @@ public class Cml2DerivedCmlTaskTest {
 	 */
 	@AfterClass
 	public static void removeTestStorageRoot() throws IOException {
-		//FileUtils.forceDelete(fixturesRoot);
+		FileUtils.forceDelete(fixturesRoot);
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class Cml2DerivedCmlTaskTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 1;
 		int childKey = 2;
-		Cml2DerivedCmlTask task = new Cml2DerivedCmlTask(storageRoot, primaryKey, childKey);
+		ChildCml2ChildDerivedCmlTask task = new ChildCml2ChildDerivedCmlTask(storageRoot, primaryKey, childKey);
 		File expectedFile = new File(storageRoot, "/1/2/2.derived.cml");
 		assertFalse(expectedFile.exists());
 		boolean success = task.runTask();
@@ -59,7 +59,7 @@ public class Cml2DerivedCmlTaskTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 99;
 		int childKey = 1;
-		Cml2DerivedCmlTask task = new Cml2DerivedCmlTask(storageRoot, primaryKey, childKey);
+		ChildCml2ChildDerivedCmlTask task = new ChildCml2ChildDerivedCmlTask(storageRoot, primaryKey, childKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}
@@ -69,7 +69,7 @@ public class Cml2DerivedCmlTaskTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 1;
 		int childKey = 99;
-		Cml2DerivedCmlTask task = new Cml2DerivedCmlTask(storageRoot, primaryKey, childKey);
+		ChildCml2ChildDerivedCmlTask task = new ChildCml2ChildDerivedCmlTask(storageRoot, primaryKey, childKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}
@@ -79,7 +79,7 @@ public class Cml2DerivedCmlTaskTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 1;
 		int childKey = 3;
-		Cml2DerivedCmlTask task = new Cml2DerivedCmlTask(storageRoot, primaryKey, childKey);
+		ChildCml2ChildDerivedCmlTask task = new ChildCml2ChildDerivedCmlTask(storageRoot, primaryKey, childKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}
@@ -89,7 +89,7 @@ public class Cml2DerivedCmlTaskTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 1;
 		int childKey = 4;
-		Cml2DerivedCmlTask task = new Cml2DerivedCmlTask(storageRoot, primaryKey, childKey);
+		ChildCml2ChildDerivedCmlTask task = new ChildCml2ChildDerivedCmlTask(storageRoot, primaryKey, childKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}

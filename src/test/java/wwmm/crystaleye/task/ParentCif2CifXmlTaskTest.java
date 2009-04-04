@@ -46,7 +46,7 @@ public class ParentCif2CifXmlTaskTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 1;
 		ParentCif2CifXmlTask task = new ParentCif2CifXmlTask(storageRoot, primaryKey);
-		File expectedCifXmlFile = new File(new File(storageRoot, ""+primaryKey), primaryKey+ParentCifXmlFileDAO.getFileExtension());
+		File expectedCifXmlFile = new File(new File(storageRoot, ""+primaryKey), primaryKey+ParentCifXmlFileDAO.PARENT_CIFXML_MIME);
 		assertTrue(!expectedCifXmlFile.exists());
 		boolean success = task.runTask();
 		assertTrue(success);

@@ -15,27 +15,10 @@ import wwmm.crystaleye.model.core.SecondaryFileDAO;
  */
 public class SupplementaryCifMetadataDAO extends SecondaryFileDAO {
 	
-	/**
-	 * An implementing subclass of SecondaryFileDAO needs to set the
-	 * file extension to be used by the primary file of the database.
-	 */
-	static {
-		fileExtension = ".bibliontology.xml";
-	}
+	public static final String SUPPLEMENTARY_CIF_METADATA_MIME = ".bibliontology.xml";
 
 	public SupplementaryCifMetadataDAO(File storageRoot) {
-		super(storageRoot);
-	}
-	
-	/**
-	 * <p>
-	 * Gets the file extension used for this file.
-	 * </p>
-	 * 
-	 * @return the file extension used for this file.
-	 */
-	public static String getFileExtension() {
-		return fileExtension;
+		super(storageRoot, SUPPLEMENTARY_CIF_METADATA_MIME);
 	}
 
 }

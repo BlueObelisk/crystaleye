@@ -21,12 +21,13 @@ import org.apache.log4j.Logger;
 public abstract class ChildPrimaryFileDAO {
 	
 	private ChildKeyDAO keyDao;
-	protected static String fileExtension;
+	protected String fileExtension;
 
 	private static final Logger LOG = Logger.getLogger(ChildPrimaryFileDAO.class);
 
-	protected ChildPrimaryFileDAO(File storageRoot) {
+	protected ChildPrimaryFileDAO(File storageRoot, String fileExtension) {
 		init(storageRoot);
+		this.fileExtension = fileExtension;
 	}
 	
 	/**

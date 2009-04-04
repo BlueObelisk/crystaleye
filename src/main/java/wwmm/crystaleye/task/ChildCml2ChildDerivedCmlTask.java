@@ -11,17 +11,17 @@ import org.xmlcml.cml.converters.ConverterCommand;
 import org.xmlcml.cml.converters.cif.RawCML2CompleteCMLConverter;
 
 import wwmm.crystaleye.model.crystaleye.ChildCmlFileDAO;
-import wwmm.crystaleye.model.crystaleye.DerivedChildCmlFileDAO;
+import wwmm.crystaleye.model.crystaleye.ChildDerivedCmlFileDAO;
 
-public class Cml2DerivedCmlTask {
+public class ChildCml2ChildDerivedCmlTask {
 	
 	private File storageRoot;
 	private int primaryKey;
 	private int childKey;
 
-	private static final Logger LOG = Logger.getLogger(Cml2DerivedCmlTask.class);
+	private static final Logger LOG = Logger.getLogger(ChildCml2ChildDerivedCmlTask.class);
 
-	public Cml2DerivedCmlTask(File storageRoot, int primaryKey, int childKey) {
+	public ChildCml2ChildDerivedCmlTask(File storageRoot, int primaryKey, int childKey) {
 		this.storageRoot = storageRoot;
 		this.primaryKey = primaryKey;
 		this.childKey = childKey;
@@ -50,7 +50,7 @@ public class Cml2DerivedCmlTask {
 			IOUtils.closeQuietly(bout);
 			IOUtils.closeQuietly(out);
 		}
-		DerivedChildCmlFileDAO childCmlDao = new DerivedChildCmlFileDAO(storageRoot);
+		ChildDerivedCmlFileDAO childCmlDao = new ChildDerivedCmlFileDAO(storageRoot);
 		boolean success = childCmlDao.insert(primaryKey, childKey, out.toString());
 		if (success) {
 			return true;
@@ -84,7 +84,7 @@ public class Cml2DerivedCmlTask {
 		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
 		int primaryKey = 3;
 		int childKey = 1;
-		Cml2DerivedCmlTask task = new Cml2DerivedCmlTask(storageRoot, primaryKey, childKey);
+		ChildCml2ChildDerivedCmlTask task = new ChildCml2ChildDerivedCmlTask(storageRoot, primaryKey, childKey);
 		task.runTask();
 	}
 
