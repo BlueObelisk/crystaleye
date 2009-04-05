@@ -80,4 +80,18 @@ public class InchiTask {
 		return tool.generateInchi(options);
 	}
 	
+	/**
+	 * <p>
+	 * Main method meant for demonstration purposes only, does not
+	 * require any arguments.
+	 * </p>
+	 */
+	public static void main(String[] args) {
+		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
+		int primaryKey = 3;
+		int childKey = 1;
+		InchiTask task = new InchiTask(storageRoot, primaryKey, childKey);
+		task.runTask();
+	}
+	
 }
