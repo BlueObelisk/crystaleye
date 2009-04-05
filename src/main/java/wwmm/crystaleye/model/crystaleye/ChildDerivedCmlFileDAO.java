@@ -6,10 +6,13 @@ import java.io.File;
 import java.util.List;
 
 import nu.xom.Document;
+import nu.xom.Element;
 import nu.xom.Nodes;
+import nu.xom.Text;
 
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.element.CMLCml;
+import org.xmlcml.cml.element.CMLIdentifier;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.Utils;
@@ -26,12 +29,12 @@ import wwmm.crystaleye.model.core.ChildSecondaryFileDAO;
  */
 public class ChildDerivedCmlFileDAO extends ChildSecondaryFileDAO {
 
-	public static final String DERIVED_CHILD_CML_MIME = ".derived.cml";
+	public static final String CHILD_DERIVED_CML_MIME = ".derived.cml";
 
 	private static final Logger LOG = Logger.getLogger(ChildDerivedCmlFileDAO.class);
 
 	public ChildDerivedCmlFileDAO(File storageRoot) {
-		super(storageRoot, DERIVED_CHILD_CML_MIME);
+		super(storageRoot, CHILD_DERIVED_CML_MIME);
 	}
 
 	/**
@@ -137,6 +140,64 @@ public class ChildDerivedCmlFileDAO extends ChildSecondaryFileDAO {
 			return null;
 		}
 		return molecule.getDescendantsOrMolecule();
+	}
+	
+	/**
+	 * <p>
+	 * Inserts an InChI into a CML molecule identified by the provided
+	 * primary/child keys and molecule ID.
+	 * </p>
+	 * 
+	 * @param primaryKey of the CML file that the InChI will be inserted to.
+	 * @param childKey of the CML file that the InChI will be inserted to.
+	 * @param moleculeId of the CML molecule that the InChI will be inserted to.
+	 * @param inchi to be inserted.
+	 * 
+	 * @return true if the InChI was successfully added to the CML, false
+	 * if not.
+	 */
+	public boolean insertInchi(int primaryKey, int childKey, String moleculeId, String inchi) {
+		CMLCml cml = getCml(primaryKey, childKey);
+		Nodes nds = cml.query("./cml:molecule[@id='"+moleculeId+"'] | " +
+				"./cml:molecule/cml:molecule[@id='"+moleculeId+"']", X_CML);
+		if (nds.size() > 1) {
+			LOG.warn("Found more than one InChI for the molecule with ID "+
+					moleculeId+" at the primary/child keys: "+primaryKey+"/"+
+					childKey+".  The first will be used.");
+		} else if (nds.size() == 0) {
+			LOG.warn("Could not find InChI for the molecule with ID "+
+					moleculeId+" at the primary/child keys: "+primaryKey+"/"+
+					childKey);
+			return false;
+		}
+		CMLMolecule molecule = (CMLMolecule)nds.get(0);
+		CMLIdentifier inchiElement = (CMLIdentifier)createInchiElement(inchi);
+		molecule.appendChild(inchiElement);
+		// TODO - need to alter the DAOs so that XML can be provided and
+		// is written using a Stream.
+		boolean success = update(primaryKey, childKey, Utils.toPrettyXMLString(molecule.getDocument()));
+		if (success) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * <p>
+	 * From a given InChI string, creates a CML element used to hold
+	 * the InChI.
+	 * </p>
+	 * 
+	 * @param inchi to be used to create the element.
+	 * 
+	 * @return CML Element representing the provided InChI. 
+	 */
+	private Element createInchiElement(String inchi) {
+		CMLIdentifier identifier = new CMLIdentifier();
+		identifier.setConvention("iupac:inchi");
+		identifier.appendChild(new Text(inchi));
+		return identifier;
 	}
 
 }

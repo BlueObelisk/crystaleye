@@ -82,15 +82,34 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>net.sf</groupId>
+			<artifactId>jniinchi</artifactId>
+			<version>0.5</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>cml</groupId>
 			<artifactId>jumbo</artifactId>
 			<version>5.5.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>cml</groupId>
+			<artifactId>jumbo-converters</artifactId>
+			<version>0.2-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit-addons</groupId>
+			<artifactId>junit-addons</artifactId>
+			<version>1.4</version>
+			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -105,30 +124,17 @@
 			<version>1.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>xom</groupId>
-			<artifactId>xom</artifactId>
-			<version>1.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit-addons</groupId>
-			<artifactId>junit-addons</artifactId>
-			<version>1.4</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>cml</groupId>
-			<artifactId>jumbo-converters</artifactId>
-			<version>0.2-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>vecmath</artifactId>
 			<version>1.2</version>
 			<scope>compile</scope>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>xom</groupId>
+			<artifactId>xom</artifactId>
+			<version>1.1</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

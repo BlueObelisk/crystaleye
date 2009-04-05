@@ -54,10 +54,7 @@ public abstract class ChildPrimaryFileDAO {
 	 * written to the database.
 	 * 
 	 * @return the primary key that the written CIF has been 
-	 * assigned.
-	 * 
-	 * @throws IOException if there is a problem writing the file
-	 * to the database.  
+	 * assigned or -1 if there was a problem during insertion.
 	 */
 	public int insert(int primaryKey, String fileContents) {
 		if (fileExtension == null) {
@@ -67,12 +64,17 @@ public abstract class ChildPrimaryFileDAO {
 		int childKey = keyDao.insert(primaryKey);
 		File childKeyFolder = keyDao.getFolderFromKeys(primaryKey, childKey);
 		File childPrimaryFile = new File(childKeyFolder, childKey+fileExtension);
+		if (childPrimaryFile.exists()) {
+			LOG.warn("Cannot insert file as it already exists: "+childPrimaryFile);
+			return -1;
+		}
 		LOG.info("Inserting file to: "+childPrimaryFile.getAbsolutePath());
 		try {
 			FileUtils.writeStringToFile(childPrimaryFile, fileContents);
 		} catch (IOException e) {
 			LOG.warn("Problem trying to insert primary file to: "+childPrimaryFile.getAbsolutePath()+"\n" +
 					e.getMessage());
+			return -1;
 		}
 		return childKey;
 	}

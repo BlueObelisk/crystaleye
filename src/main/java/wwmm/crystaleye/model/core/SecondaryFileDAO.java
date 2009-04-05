@@ -73,6 +73,10 @@ public abstract class SecondaryFileDAO {
 			return false;
 		}
 		File secondaryFile = new File(keyFolder, primaryKey+fileExtension);
+		if (secondaryFile.exists()) {
+			LOG.warn("Cannot insert secondary file as it already exists: "+secondaryFile);
+			return false;
+		}
 		LOG.info("Inserting secondary file to: "+secondaryFile.getAbsolutePath());
 		try {
 			FileUtils.writeStringToFile(secondaryFile, fileContents);
