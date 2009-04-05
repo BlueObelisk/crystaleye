@@ -136,7 +136,6 @@ public class ChildDerivedCmlFileDAOTest {
 			"    <identifier convention=\"iupac:inchi\">inchi=1/C6H6/c1-2-4-6-5-3-1/h1-6H</identifier>\n"+
 			"  </molecule>\n"+
 			"</cml>\n";
-		System.out.println(cmlStr);
 		assertEquals(expectedCmlStr, cmlStr);
 	}
 
