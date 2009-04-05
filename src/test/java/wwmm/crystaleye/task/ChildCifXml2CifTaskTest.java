@@ -1,5 +1,9 @@
 package wwmm.crystaleye.task;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -8,8 +12,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xmlcml.cif.CIFParser;
-
-import static org.junit.Assert.*;
 
 public class ChildCifXml2CifTaskTest {
 

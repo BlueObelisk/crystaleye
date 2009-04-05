@@ -76,9 +76,13 @@ public class PrimaryKeyDAO {
 	public int insert() {
 		int key = getNextAvailableKey();
 		File keyFolder = new File(storageRoot, String.valueOf(key));
+		if (keyFolder.exists()) {
+			LOG.warn("Cannot insert primary key, folder already exists: "+keyFolder);
+			return -1;
+		}
 		boolean success = keyFolder.mkdir();
 		if (!success) {
-			LOG.warn("Problem inserting primary key: "+key);
+			LOG.warn("Problem inserting primary key to: "+keyFolder);
 			return -1;
 			
 		}
@@ -166,6 +170,7 @@ public class PrimaryKeyDAO {
 	public boolean remove(int key) {
 		File primaryKeyFolder = getFolderFromKey(key);
 		if (primaryKeyFolder == null) {
+			LOG.warn("Could not remove primary key folder as it doesn't exist: "+primaryKeyFolder);
 			return false;
 		}
 		try {

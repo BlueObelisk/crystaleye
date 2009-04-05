@@ -57,9 +57,6 @@ public class ChildSecondaryFileDAO {
 	 * 
 	 * @return true if the file was successfully added to the 
 	 * database, false if not.
-	 * 
-	 * @throws IOException if there is a problem writing the file
-	 * to the database. 
 	 */
 	public boolean insert(int primaryKey, int childKey, String fileContents) {
 		if (fileExtension == null) {
@@ -72,7 +69,47 @@ public class ChildSecondaryFileDAO {
 			return false;
 		}
 		File childSecondaryFile = new File(childKeyFolder, childKey+fileExtension);
-		LOG.info("Inserting child secondary file to: "+childSecondaryFile.getAbsolutePath());
+		if (childSecondaryFile.exists()) {
+			LOG.warn("Cannot insert file as it already exists: "+childSecondaryFile);
+			return false;
+		}
+		try {
+			FileUtils.writeStringToFile(childSecondaryFile, fileContents);
+		} catch (IOException e) {
+			LOG.warn("Problem inserting file to: "+childSecondaryFile.getAbsolutePath()+"\n" +
+					e.getMessage());
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * <p>
+	 * Updates the file at the provided primary and child keys with
+	 * the <code>fileContents</code> parameter.
+	 * </p>
+	 * 
+	 * @param primaryKey of the file that is to be updated.
+	 * @param fileContents - contains the contents of the file to be 
+	 * updated.
+	 * 
+	 * @return true if the file was successfully updated, false if not.
+	 */
+	public boolean update(int primaryKey, int childKey, String fileContents) {
+		if (fileExtension == null) {
+			throw new IllegalStateException("fileExtension field has not " +
+					"been set in the implementing subclass of ChildPrimaryFileDAO.");
+		}
+		File childKeyFolder = childKeyDao.getFolderFromKeys(primaryKey, childKey);
+		if (childKeyFolder == null) {
+			LOG.warn("The combination of primary and child key provided ("+primaryKey+"/"+childKey+") does not exist in the database.");
+			return false;
+		}
+		File childSecondaryFile = new File(childKeyFolder, childKey+fileExtension);
+		if (!childSecondaryFile.exists()) {
+			LOG.warn("Cannot update file as it does not exist: "+childSecondaryFile);
+			return false;
+		}
 		try {
 			FileUtils.writeStringToFile(childSecondaryFile, fileContents);
 		} catch (IOException e) {

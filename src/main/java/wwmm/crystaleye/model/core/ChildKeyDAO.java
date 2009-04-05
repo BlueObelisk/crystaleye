@@ -44,6 +44,10 @@ public class ChildKeyDAO {
 		}
 		int childKey = getNextAvailableKey(primaryKey);
 		File childKeyFolder = new File(primaryKeyFolder, String.valueOf(childKey));
+		if (childKeyFolder.exists()) {
+			LOG.warn("Cannot insert folder as it already exists: "+childKeyFolder);
+			return -1;
+		}
 		childKeyFolder.mkdir();
 		return childKey;
 	}

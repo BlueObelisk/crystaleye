@@ -1,4 +1,4 @@
-package wwmm.crystaleye;
+package wwmm.crystaleye.tools;
 
 import static wwmm.crystaleye.CrystalEyeConstants.BIBO_NS;
 import static wwmm.crystaleye.CrystalEyeConstants.BIBO_PREFIX;
@@ -21,6 +21,7 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
 
+import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.crawler.core.ArticleDetails;
 import wwmm.crystaleye.crawler.core.ArticleReference;
 import wwmm.crystaleye.crawler.core.DOI;
