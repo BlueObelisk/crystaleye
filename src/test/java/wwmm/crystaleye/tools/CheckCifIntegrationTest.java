@@ -14,9 +14,6 @@ import nu.xom.Nodes;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import wwmm.crystaleye.tools.CheckCifParser;
-import wwmm.crystaleye.tools.CheckCifTool;
-
 public class CheckCifIntegrationTest {
 	
 	private static String checkCifStr;

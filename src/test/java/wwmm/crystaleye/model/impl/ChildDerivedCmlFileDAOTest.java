@@ -19,7 +19,6 @@ import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.model.impl.ChildDerivedCmlFileDAO;
 
 public class ChildDerivedCmlFileDAOTest {
 	

@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import wwmm.crystaleye.crawler.core.RscIssueCrawler;
 import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
-import wwmm.crystaleye.crawler.impl.RscCifIssueCrawler;
 
 public class RscCifIssueCrawlerTest {
 	

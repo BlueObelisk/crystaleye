@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import wwmm.crystaleye.crawler.core.AcsIssueCrawler;
 import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
-import wwmm.crystaleye.crawler.impl.AcsCifIssueCrawler;
 
 public class AcsCifIssueCrawlerTest {
 	
