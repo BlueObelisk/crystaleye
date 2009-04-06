@@ -138,5 +138,26 @@ public class ChildDerivedCmlFileDAOTest {
 			"</cml>\n";
 		assertEquals(expectedCmlStr, cmlStr);
 	}
+	
+	@Test
+	public void testInsertSmiles() {
+		File storageRoot = new File(fixturesRoot, "storage_root");
+		ChildDerivedCmlFileDAO dao = new ChildDerivedCmlFileDAO(storageRoot);
+		int primaryKey = 1;
+		int childKey = 4;
+		String inchi = "c1ccccc1";
+		String moleculeId = "this_is_an_id";
+		boolean success = dao.insertSmiles(primaryKey, childKey, moleculeId, inchi);
+		assertTrue(success);
+		File cmlFile = new File(storageRoot, "1/4/4.derived.cml");
+		String cmlStr = Utils.parseCml(cmlFile).toXML();
+		String expectedCmlStr = "<?xml version=\"1.0\"?>\n"+ 
+			"<cml xmlns=\"http://www.xml-cml.org/schema\" id=\"theCmlId\">\n"+
+			"  <molecule id=\"this_is_an_id\">\n"+
+			"    <identifier convention=\"openbabel:smiles\">c1ccccc1</identifier>\n"+
+			"  </molecule>\n"+
+			"</cml>\n";
+		assertEquals(expectedCmlStr, cmlStr);
+	}
 
 }

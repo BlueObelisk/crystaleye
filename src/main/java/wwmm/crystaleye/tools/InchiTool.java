@@ -59,7 +59,10 @@ public class InchiTool {
 	/**
 	 * <p>
 	 * Creates a complete <code>JniInchiInput</code> object representing
-	 * the structure in the object CML molecule.
+	 * the structure in the object CML molecule.  NOTE that this method
+	 * assumes that the provided CMLMolecule has 3D coordinates for all 
+	 * atoms, and allows the InChI tool to calculate the stereochemical
+	 * flags instead of having to input them explicitly.
 	 * </p>
 	 * 
 	 * @param options - the InChI program options to be used in creating

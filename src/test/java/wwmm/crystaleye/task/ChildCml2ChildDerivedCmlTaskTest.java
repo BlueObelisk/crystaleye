@@ -1,17 +1,21 @@
 package wwmm.crystaleye.task;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xmlcml.cml.base.CMLBuilder;
+import org.xmlcml.cml.element.CMLCml;
+import org.xmlcml.cml.element.CMLMolecule;
 
 public class ChildCml2ChildDerivedCmlTaskTest {
 	
@@ -48,7 +52,13 @@ public class ChildCml2ChildDerivedCmlTaskTest {
 		assertTrue(expectedFile.exists());
 		try {
 			CMLBuilder builder = new CMLBuilder();
-			builder.build(expectedFile);
+			CMLCml cml = (CMLCml)builder.build(expectedFile).getRootElement();
+			CMLMolecule container = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
+			assertEquals("container", container.getId());
+			List<CMLMolecule> molList = container.getDescendantsOrMolecule();
+			assertEquals(2, molList.size());
+			assertEquals("moiety_1", molList.get(0).getId());
+			assertEquals("moiety_2", molList.get(1).getId());
 		} catch (Exception e) {
 			fail("CML file should have been parsed correctly: "+expectedFile);
 		}
