@@ -1,4 +1,4 @@
-package wwmm.crystaleye.checkcif;
+package wwmm.crystaleye.tools;
 
 import static wwmm.crystaleye.CrystalEyeConstants.XHTML_NS;
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;

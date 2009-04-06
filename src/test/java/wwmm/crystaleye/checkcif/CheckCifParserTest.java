@@ -1,7 +1,7 @@
 package wwmm.crystaleye.checkcif;
 
 import static org.junit.Assert.assertEquals;
-import static wwmm.crystaleye.checkcif.CheckCifParser.X_CC;
+import static wwmm.crystaleye.tools.CheckCifParser.X_CC;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +11,8 @@ import nu.xom.Element;
 import nu.xom.Nodes;
 
 import org.junit.Test;
+
+import wwmm.crystaleye.tools.CheckCifParser;
 
 public class CheckCifParserTest {
 	

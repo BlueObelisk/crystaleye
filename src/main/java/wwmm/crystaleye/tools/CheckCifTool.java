@@ -1,4 +1,4 @@
-package wwmm.crystaleye.checkcif;
+package wwmm.crystaleye.tools;
 
 import java.io.File;
 import java.io.IOException;
