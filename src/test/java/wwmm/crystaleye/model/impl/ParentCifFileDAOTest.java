@@ -1,4 +1,4 @@
-package wwmm.crystaleye.model.crystaleye;
+package wwmm.crystaleye.model.impl;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;

@@ -1,0 +1,2 @@
+data_global
+this is not valid cif text.
