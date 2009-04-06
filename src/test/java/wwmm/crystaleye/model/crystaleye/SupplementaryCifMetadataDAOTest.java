@@ -13,6 +13,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import wwmm.crystaleye.model.impl.SupplementaryCifMetadataDAO;
+
 public class SupplementaryCifMetadataDAOTest {
 	
 	private static File fixturesRoot;

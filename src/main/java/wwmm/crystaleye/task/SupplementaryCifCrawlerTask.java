@@ -8,9 +8,9 @@ import org.apache.log4j.Logger;
 import wwmm.crystaleye.crawler.core.ArticleDetails;
 import wwmm.crystaleye.crawler.core.RscIssueCrawler;
 import wwmm.crystaleye.crawler.core.RscJournal;
-import wwmm.crystaleye.crawler.crystaleye.CifIssueCrawler;
-import wwmm.crystaleye.crawler.crystaleye.RscCifIssueCrawler;
-import wwmm.crystaleye.model.crystaleye.SupplementaryCifDAO;
+import wwmm.crystaleye.crawler.impl.CifIssueCrawler;
+import wwmm.crystaleye.crawler.impl.RscCifIssueCrawler;
+import wwmm.crystaleye.model.impl.SupplementaryCifDAO;
 
 /**
  * <p>

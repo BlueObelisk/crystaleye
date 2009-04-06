@@ -11,8 +11,8 @@ import org.xmlcml.cif.CIFException;
 import org.xmlcml.cml.converters.ConverterCommand;
 import org.xmlcml.cml.converters.cif.CIFXML2CMLConverter;
 
-import wwmm.crystaleye.model.crystaleye.ChildCifXmlFileDAO;
-import wwmm.crystaleye.model.crystaleye.ChildCmlFileDAO;
+import wwmm.crystaleye.model.impl.ChildCifXmlFileDAO;
+import wwmm.crystaleye.model.impl.ChildCmlFileDAO;
 
 /**
  * <p>

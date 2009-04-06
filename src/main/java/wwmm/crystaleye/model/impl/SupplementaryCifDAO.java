@@ -1,4 +1,4 @@
-package wwmm.crystaleye.model.crystaleye;
+package wwmm.crystaleye.model.impl;
 
 import static wwmm.crystaleye.CrystalEyeConstants.CIF_CONTENT_TYPE;
 
@@ -10,8 +10,8 @@ import wwmm.crystaleye.crawler.core.ArticleDetails;
 import wwmm.crystaleye.crawler.core.CrawlerHttpClient;
 import wwmm.crystaleye.crawler.core.DOI;
 import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
-import wwmm.crystaleye.index.crystaleye.DoiVsCifFilenameIndex;
-import wwmm.crystaleye.index.crystaleye.PrimaryKeyVsDoiIndex;
+import wwmm.crystaleye.index.impl.DoiVsCifFilenameIndex;
+import wwmm.crystaleye.index.impl.PrimaryKeyVsDoiIndex;
 import wwmm.crystaleye.tools.BibliontologyTool;
 
 /**

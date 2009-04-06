@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import wwmm.crystaleye.crawler.core.DOI;
+import wwmm.crystaleye.index.impl.PrimaryKeyVsDoiIndex;
 
 public class PrimaryKeyVsDoiIndexTest {
 

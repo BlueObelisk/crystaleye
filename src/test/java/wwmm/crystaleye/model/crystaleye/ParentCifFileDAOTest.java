@@ -12,6 +12,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import wwmm.crystaleye.model.impl.ParentCifFileDAO;
+
 public class ParentCifFileDAOTest {
 
 	private static File fixturesRoot;

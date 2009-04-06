@@ -10,8 +10,8 @@ import org.apache.log4j.Logger;
 import org.xmlcml.cml.converters.ConverterCommand;
 import org.xmlcml.cml.converters.cif.RawCML2CompleteCMLConverter;
 
-import wwmm.crystaleye.model.crystaleye.ChildCmlFileDAO;
-import wwmm.crystaleye.model.crystaleye.ChildDerivedCmlFileDAO;
+import wwmm.crystaleye.model.impl.ChildCmlFileDAO;
+import wwmm.crystaleye.model.impl.ChildDerivedCmlFileDAO;
 
 /**
  * <p>

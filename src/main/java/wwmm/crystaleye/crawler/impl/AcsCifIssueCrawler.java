@@ -1,27 +1,27 @@
-package wwmm.crystaleye.crawler.crystaleye;
+package wwmm.crystaleye.crawler.impl;
 
-import wwmm.crystaleye.crawler.core.ChemSocJapanIssueCrawler;
+import wwmm.crystaleye.crawler.core.AcsIssueCrawler;
 import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
 
 /**
  * <p>
  * Provides a method of crawling an issue of a journal published
- * by the Chemical Society of Japan, and only returning the details for
+ * by the American Chemical Society, and only returning the details for
  * those articles that have a CIF as supplementary data.
  * </p>
  * 
  * @author Nick Day
  * @version 0.1;
  */
-public class ChemSocJapanCifIssueCrawler extends CifIssueCrawler {
-	
-	public ChemSocJapanCifIssueCrawler(ChemSocJapanIssueCrawler crawler) {
+public class AcsCifIssueCrawler extends CifIssueCrawler {
+
+	public AcsCifIssueCrawler(AcsIssueCrawler crawler) {
 		super(crawler);
 	}
 	
 	/**
 	 * <p>
-	 * A Chemical Society of Japan specific method of determining 
+	 * An American Chemical Society specific method of determining 
 	 * whether a supplementary file refers to a CIF.
 	 * </p>
 	 * 
@@ -30,13 +30,12 @@ public class ChemSocJapanCifIssueCrawler extends CifIssueCrawler {
 	 */
 	@Override
 	protected boolean isCifFile(SupplementaryFileDetails sfd) {
-		String linkText = sfd.getLinkText();
-		if (linkText.contains("CIF")) {
+		String filename = sfd.getFileId();
+		if (filename.endsWith(".cif")) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-
-
+	
 }

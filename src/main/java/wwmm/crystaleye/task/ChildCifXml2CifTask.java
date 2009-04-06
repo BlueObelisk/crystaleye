@@ -12,8 +12,8 @@ import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFException;
 
 import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.model.crystaleye.ChildCifFileDAO;
-import wwmm.crystaleye.model.crystaleye.ChildCifXmlFileDAO;
+import wwmm.crystaleye.model.impl.ChildCifFileDAO;
+import wwmm.crystaleye.model.impl.ChildCifXmlFileDAO;
 
 /**
  * <p>

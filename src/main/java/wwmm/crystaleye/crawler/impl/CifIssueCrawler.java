@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawler.crystaleye;
+package wwmm.crystaleye.crawler.impl;
 
 import static wwmm.crystaleye.CrystalEyeConstants.CIF_CONTENT_TYPE;
 
