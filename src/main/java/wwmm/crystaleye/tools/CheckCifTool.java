@@ -53,7 +53,7 @@ public class CheckCifTool {
 	 */
 	public String getCheckcifString(File cifFile) {
 		InputStream in = getCheckcifStream(cifFile);
-		String checkcif;
+		String checkcif = null;
 		try {
 			checkcif = IOUtils.toString(in);
 		} catch (IOException e) {
@@ -127,6 +127,20 @@ public class CheckCifTool {
 			throw new RuntimeException("Error calculating checkcif.", e);
 		}
 		return in;
+	}
+	
+	/**
+	 * <p>
+	 * Main method is meant for demonstration purposes only. Does not
+	 * require any arguments.
+	 * </p>
+	 * 
+	 */
+	public static void main(String[] args) {
+		CheckCifTool tool = new CheckCifTool();
+		File cifFile = new File("c:/Users/ned24/Desktop/2.cif");
+		Document doc = tool.getCheckcifHtml(cifFile);
+		System.out.println(doc.toXML());
 	}
 
 }

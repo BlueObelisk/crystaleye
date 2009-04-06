@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawler.crystaleye;
+package wwmm.crystaleye.crawler.impl;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -8,11 +8,11 @@ import junitx.util.PrivateAccessor;
 
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.core.ChemSocJapanIssueCrawler;
+import wwmm.crystaleye.crawler.core.AcsIssueCrawler;
 import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
-import wwmm.crystaleye.crawler.impl.ChemSocJapanCifIssueCrawler;
+import wwmm.crystaleye.crawler.impl.AcsCifIssueCrawler;
 
-public class ChemSocJapanCifIssueCrawlerTest {
+public class AcsCifIssueCrawlerTest {
 	
 	/**
 	 * Test makes sure that files that are CIFs are recognised as such
@@ -20,17 +20,17 @@ public class ChemSocJapanCifIssueCrawlerTest {
 	 */
 	@Test
 	public void testIsCifFile() throws Throwable {
-		ChemSocJapanCifIssueCrawler crawler = new ChemSocJapanCifIssueCrawler(mock(ChemSocJapanIssueCrawler.class));
+		AcsCifIssueCrawler crawler = new AcsCifIssueCrawler(mock(AcsIssueCrawler.class));
 		SupplementaryFileDetails sfd1 = mock(SupplementaryFileDetails.class);
-		String cifLinkText = "CIF";
-		when(sfd1.getLinkText()).thenReturn(cifLinkText);
+		String cifFileId = "this-is-a-cif-file.cif";
+		when(sfd1.getFileId()).thenReturn(cifFileId);
 		// use reflection to access private isCifFile method for testing
 		boolean isCif1 = (Boolean) PrivateAccessor.invoke(crawler, "isCifFile", 
 				new Class[]{SupplementaryFileDetails.class}, new Object[]{sfd1});
 		assertTrue(isCif1);
 		
-		String notCifLinkText = "Supplementary Details";
-		when(sfd1.getLinkText()).thenReturn(notCifLinkText);
+		String notCifFileId = "not-a-cif.txt";
+		when(sfd1.getFileId()).thenReturn(notCifFileId);
 		// use reflection to access private isCifFile method for testing
 		boolean isCif2 = (Boolean) PrivateAccessor.invoke(crawler, "isCifFile", 
 				new Class[]{SupplementaryFileDetails.class}, new Object[]{sfd1});

@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawler.crystaleye;
+package wwmm.crystaleye.crawler.impl;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
