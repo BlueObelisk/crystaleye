@@ -161,11 +161,11 @@ public class ChildDerivedCmlFileDAO extends ChildSecondaryFileDAO {
 		Nodes nds = cml.query("./cml:molecule[@id='"+moleculeId+"'] | " +
 				"./cml:molecule/cml:molecule[@id='"+moleculeId+"']", X_CML);
 		if (nds.size() > 1) {
-			LOG.warn("Found more than one InChI for the molecule with ID "+
+			LOG.warn("Found more than one molecule with ID "+
 					moleculeId+" at the primary/child keys: "+primaryKey+"/"+
 					childKey+".  The first will be used.");
 		} else if (nds.size() == 0) {
-			LOG.warn("Could not find InChI for the molecule with ID "+
+			LOG.warn("Could not find molecule with ID "+
 					moleculeId+" at the primary/child keys: "+primaryKey+"/"+
 					childKey);
 			return false;
@@ -181,6 +181,64 @@ public class ChildDerivedCmlFileDAO extends ChildSecondaryFileDAO {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * <p>
+	 * Inserts an SMILES into a CML molecule identified by the provided
+	 * primary/child keys and molecule ID.
+	 * </p>
+	 * 
+	 * @param primaryKey of the CML file that the SMILES will be inserted to.
+	 * @param childKey of the CML file that the SMILES will be inserted to.
+	 * @param moleculeId of the CML molecule that the SMILES will be inserted to.
+	 * @param inchi to be inserted.
+	 * 
+	 * @return true if the SMILES was successfully added to the CML, false
+	 * if not.
+	 */
+	public boolean insertSmiles(int primaryKey, int childKey, String moleculeId, String smiles) {
+		CMLCml cml = getCml(primaryKey, childKey);
+		Nodes nds = cml.query("./cml:molecule[@id='"+moleculeId+"'] | " +
+				"./cml:molecule/cml:molecule[@id='"+moleculeId+"']", X_CML);
+		if (nds.size() > 1) {
+			LOG.warn("Found more than one molecule with ID "+
+					moleculeId+" at the primary/child keys: "+primaryKey+"/"+
+					childKey+".  The first will be used.");
+		} else if (nds.size() == 0) {
+			LOG.warn("Could not find molecule with ID "+
+					moleculeId+" at the primary/child keys: "+primaryKey+"/"+
+					childKey);
+			return false;
+		}
+		CMLMolecule molecule = (CMLMolecule)nds.get(0);
+		CMLIdentifier smilesElement = (CMLIdentifier)createSmilesElement(smiles);
+		molecule.appendChild(smilesElement);
+		// TODO - need to alter the DAOs so that XML can be provided and
+		// is written using a Stream.
+		boolean success = update(primaryKey, childKey, Utils.toPrettyXMLString(molecule.getDocument()));
+		if (success) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * <p>
+	 * From a given SMILES string, creates a CML element used to hold
+	 * the SMILES.
+	 * </p>
+	 * 
+	 * @param inchi to be used to create the element.
+	 * 
+	 * @return CML Element representing the provided SMILES. 
+	 */
+	private Element createSmilesElement(String smiles) {
+		CMLIdentifier identifier = new CMLIdentifier();
+		identifier.setConvention("openbabel:smiles");
+		identifier.appendChild(new Text(smiles));
+		return identifier;
 	}
 	
 	/**
