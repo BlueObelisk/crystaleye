@@ -26,7 +26,6 @@ import wwmm.crystaleye.crawler.core.ArticleDetails;
 import wwmm.crystaleye.crawler.core.ArticleReference;
 import wwmm.crystaleye.crawler.core.DOI;
 import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
-import wwmm.crystaleye.tools.BibliontologyTool;
 
 public class BibliontologyToolTest {
 

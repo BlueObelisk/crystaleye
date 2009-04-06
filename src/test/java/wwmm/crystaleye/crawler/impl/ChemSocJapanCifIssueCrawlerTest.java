@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import wwmm.crystaleye.crawler.core.ChemSocJapanIssueCrawler;
 import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
-import wwmm.crystaleye.crawler.impl.ChemSocJapanCifIssueCrawler;
 
 public class ChemSocJapanCifIssueCrawlerTest {
 	
