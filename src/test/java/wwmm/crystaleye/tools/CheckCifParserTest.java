@@ -18,7 +18,7 @@ public class CheckCifParserTest {
 	
 	@Test
 	public void testParseServiceCifWithSingleDatablock() throws IOException {
-		File ccFile = new File("./src/test/resources/checkcif/av3132sup1_I.checkcif.html");
+		File ccFile = new File("./src/test/resources/tools/checkcif/av3132sup1_I.checkcif.html");
 		CheckCifParser ccp = new CheckCifParser(ccFile);
 		Document parsedDoc = ccp.parseService();
 		// run through checking various elements of the parsed doc

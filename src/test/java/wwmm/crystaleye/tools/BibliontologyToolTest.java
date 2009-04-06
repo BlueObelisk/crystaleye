@@ -1,4 +1,4 @@
-package wwmm.crystaleye;
+package wwmm.crystaleye.tools;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,6 +21,7 @@ import org.apache.commons.httpclient.URIException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.crawler.core.ArticleDetails;
 import wwmm.crystaleye.crawler.core.ArticleReference;
 import wwmm.crystaleye.crawler.core.DOI;
