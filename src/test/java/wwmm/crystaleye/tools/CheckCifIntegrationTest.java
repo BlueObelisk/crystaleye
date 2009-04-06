@@ -23,7 +23,7 @@ public class CheckCifIntegrationTest {
 	
 	@BeforeClass
 	public static void before() {
-		File cifFile = new File("./src/test/resources/checkcif/av3132sup1_I.cif");
+		File cifFile = new File("./src/test/resources/tools/checkcif/av3132sup1_I.cif");
 		CheckCifTool cct = new CheckCifTool();
 		checkCifStr = cct.getCheckcifString(cifFile);
 	}
