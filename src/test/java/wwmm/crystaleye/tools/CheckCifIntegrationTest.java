@@ -1,4 +1,4 @@
-package wwmm.crystaleye.checkcif;
+package wwmm.crystaleye.tools;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
