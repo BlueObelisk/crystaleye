@@ -19,15 +19,15 @@ import wwmm.crystaleye.tools.InchiTool;
  * @author Nick Day
  * @version 0.1
  */
-public class InchiTask {
+public class AddInchi2ChildDerivedCmlTask {
 
 	private File storageRoot;
 	private int primaryKey;
 	private int childKey;
 
-	private static final Logger LOG = Logger.getLogger(InchiTask.class);
+	private static final Logger LOG = Logger.getLogger(AddInchi2ChildDerivedCmlTask.class);
 
-	public InchiTask(File storageRoot, int primaryKey, int childKey) {
+	public AddInchi2ChildDerivedCmlTask(File storageRoot, int primaryKey, int childKey) {
 		this.storageRoot = storageRoot;
 		this.primaryKey = primaryKey;
 		this.childKey = childKey;
@@ -90,7 +90,7 @@ public class InchiTask {
 		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
 		int primaryKey = 3;
 		int childKey = 1;
-		InchiTask task = new InchiTask(storageRoot, primaryKey, childKey);
+		AddInchi2ChildDerivedCmlTask task = new AddInchi2ChildDerivedCmlTask(storageRoot, primaryKey, childKey);
 		task.runTask();
 	}
 	

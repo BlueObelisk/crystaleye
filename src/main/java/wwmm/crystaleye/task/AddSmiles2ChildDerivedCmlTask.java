@@ -18,15 +18,15 @@ import wwmm.crystaleye.tools.SmilesTool;
  * @author Nick Day
  * @version 0.1
  */
-public class SmilesTask {
+public class AddSmiles2ChildDerivedCmlTask {
 	
 	private File storageRoot;
 	private int primaryKey;
 	private int childKey;
 
-	private static final Logger LOG = Logger.getLogger(SmilesTask.class);
+	private static final Logger LOG = Logger.getLogger(AddSmiles2ChildDerivedCmlTask.class);
 
-	public SmilesTask(File storageRoot, int primaryKey, int childKey) {
+	public AddSmiles2ChildDerivedCmlTask(File storageRoot, int primaryKey, int childKey) {
 		this.storageRoot = storageRoot;
 		this.primaryKey = primaryKey;
 		this.childKey = childKey;
@@ -90,7 +90,7 @@ public class SmilesTask {
 		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
 		int primaryKey = 3;
 		int childKey = 1;
-		SmilesTask task = new SmilesTask(storageRoot, primaryKey, childKey);
+		AddSmiles2ChildDerivedCmlTask task = new AddSmiles2ChildDerivedCmlTask(storageRoot, primaryKey, childKey);
 		task.runTask();
 	}
 

@@ -7,16 +7,19 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 
+import nu.xom.Document;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.xmlcml.cif.CIFParser;
 
-public class ChildCifXml2CifTaskTest {
+import wwmm.crystaleye.Utils;
+
+public class ChildCheckcif2ChildCheckcifXmlTaskTest {
 
 	private static File fixturesRoot;
-	private static String foldername = "childcifxml2childcif";
+	private static String foldername = "childcheckcif2checkcifxml";
 
 	@BeforeClass
 	public static void setUpTestStorageRoot() throws IOException {
@@ -40,18 +43,18 @@ public class ChildCifXml2CifTaskTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 1;
 		int childKey = 2;
-		ChildCifXml2CifTask task = new ChildCifXml2CifTask(storageRoot, primaryKey, childKey);
-		File expectedFile = new File(storageRoot, "/1/2/2.cif");
+		ChildCheckcif2ChildCheckcifXmlTask task = new ChildCheckcif2ChildCheckcifXmlTask(storageRoot, primaryKey, childKey);
+		File expectedFile = new File(storageRoot, "/1/2/2.checkcif.xml");
 		assertFalse(expectedFile.exists());
 		boolean success = task.runTask();
 		assertTrue(success);
 		assertTrue(expectedFile.exists());
-		CIFParser parser = new CIFParser();
 		try {
-			parser.parse(expectedFile);
+			Document doc = Utils.parseXml(expectedFile);
 			assertTrue(true);
+			assertTrue(doc.toXML().contains("PLAT340_ALERT_3_C"));
 		} catch (Exception e) {
-			fail("Should not fail upon parsing the created CIF file: "+e.getMessage());
+			fail("Should have created valid XML, but hasn't in file at: "+expectedFile);
 		}
 	}
 
@@ -60,7 +63,7 @@ public class ChildCifXml2CifTaskTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 99;
 		int childKey = 1;
-		ChildCifXml2CifTask task = new ChildCifXml2CifTask(storageRoot, primaryKey, childKey);
+		ChildCheckcif2ChildCheckcifXmlTask task = new ChildCheckcif2ChildCheckcifXmlTask(storageRoot, primaryKey, childKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}
@@ -71,7 +74,7 @@ public class ChildCifXml2CifTaskTest {
 		int primaryKey = 1;
 		int childKey = 
 			99;
-		ChildCifXml2CifTask task = new ChildCifXml2CifTask(storageRoot, primaryKey, childKey);
+		ChildCheckcif2ChildCheckcifXmlTask task = new ChildCheckcif2ChildCheckcifXmlTask(storageRoot, primaryKey, childKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}
@@ -81,7 +84,7 @@ public class ChildCifXml2CifTaskTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 1;
 		int childKey = 3;
-		ChildCifXml2CifTask task = new ChildCifXml2CifTask(storageRoot, primaryKey, childKey);
+		ChildCheckcif2ChildCheckcifXmlTask task = new ChildCheckcif2ChildCheckcifXmlTask(storageRoot, primaryKey, childKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}
@@ -91,7 +94,7 @@ public class ChildCifXml2CifTaskTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 99;
 		int childKey = 4;
-		ChildCifXml2CifTask task = new ChildCifXml2CifTask(storageRoot, primaryKey, childKey);
+		ChildCheckcif2ChildCheckcifXmlTask task = new ChildCheckcif2ChildCheckcifXmlTask(storageRoot, primaryKey, childKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}
