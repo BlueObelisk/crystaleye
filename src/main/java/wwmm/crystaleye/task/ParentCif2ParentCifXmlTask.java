@@ -22,14 +22,14 @@ import wwmm.crystaleye.model.impl.ParentCifXmlFileDAO;
  * @author Nick Day
  * @version 0.1
  */
-public class ParentCif2CifXmlTask {
+public class ParentCif2ParentCifXmlTask {
 	
 	private File storageRoot;
 	private int primaryKey;
 	
-	private static final Logger LOG = Logger.getLogger(ParentCif2CifXmlTask.class);
+	private static final Logger LOG = Logger.getLogger(ParentCif2ParentCifXmlTask.class);
 	
-	public ParentCif2CifXmlTask(File storageRoot, int primaryKey) {
+	public ParentCif2ParentCifXmlTask(File storageRoot, int primaryKey) {
 		this.storageRoot = storageRoot;
 		this.primaryKey = primaryKey;
 	}
@@ -110,7 +110,7 @@ public class ParentCif2CifXmlTask {
 	public static void main(String[] args) throws CIFException, IOException {
 		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
 		int primaryKey = 3;
-		ParentCif2CifXmlTask task = new ParentCif2CifXmlTask(storageRoot, primaryKey);
+		ParentCif2ParentCifXmlTask task = new ParentCif2ParentCifXmlTask(storageRoot, primaryKey);
 		task.runTask();
 	}
 

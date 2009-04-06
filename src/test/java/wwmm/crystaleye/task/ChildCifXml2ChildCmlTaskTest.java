@@ -7,23 +7,17 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 
-import nu.xom.Document;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.xmlcml.cif.CIF;
-import org.xmlcml.cif.CIFException;
+import org.xmlcml.cml.base.CMLBuilder;
 
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.model.impl.ParentCifXmlFileDAO;
+public class ChildCifXml2ChildCmlTaskTest {
 
-public class ParentCif2CifXmlTaskTest {
-	
 	private static File fixturesRoot;
-	private static String foldername = "parentcif2parentcifxml";
-	
+	private static String foldername = "childcifxml2cml";
+
 	@BeforeClass
 	public static void setUpTestStorageRoot() throws IOException {
 		File target = new File("./target");
@@ -32,7 +26,7 @@ public class ParentCif2CifXmlTaskTest {
 		FileUtils.deleteDirectory(fixturesRoot);
 		FileUtils.copyDirectory(fixturesSrc, fixturesRoot);
 	}
-	
+
 	/**
 	 * Remove the directory that was copied over to the ./target folder
 	 */
@@ -40,49 +34,62 @@ public class ParentCif2CifXmlTaskTest {
 	public static void removeTestStorageRoot() throws IOException {
 		FileUtils.forceDelete(fixturesRoot);
 	}
-	
+
 	@Test
 	public void testRunTask() {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 1;
-		ParentCif2ParentCifXmlTask task = new ParentCif2ParentCifXmlTask(storageRoot, primaryKey);
-		File expectedCifXmlFile = new File(new File(storageRoot, ""+primaryKey), primaryKey+ParentCifXmlFileDAO.PARENT_CIFXML_MIME);
-		assertTrue(!expectedCifXmlFile.exists());
+		int childKey = 15;
+		ChildCifXml2ChildCmlTask task = new ChildCifXml2ChildCmlTask(storageRoot, primaryKey, childKey);
+		File expectedFile = new File(storageRoot, "1/15/15.cml");
+		assertFalse(expectedFile.exists());
 		boolean success = task.runTask();
 		assertTrue(success);
-		assertTrue(expectedCifXmlFile.exists());
-		// parse just to check it has right contents
-		Document doc = Utils.parseXml(expectedCifXmlFile);
+		assertTrue(expectedFile.exists());
 		try {
-			new CIF(doc, true);
-		} catch (CIFException e) {
-			fail("Parsing the CIF file should not fail: "+expectedCifXmlFile);
+			CMLBuilder builder = new CMLBuilder();
+			builder.build(expectedFile);
+		} catch (Exception e) {
+			fail("CML file should have been parsed correctly: "+expectedFile);
 		}
 	}
 	
 	@Test
-	public void testRunTaskForNonExistingKey() {
+	public void testRunTaskForNonExisingPrimaryKey() {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		int primaryKey = 99;
-		ParentCif2ParentCifXmlTask task = new ParentCif2ParentCifXmlTask(storageRoot, primaryKey);
+		int childKey = 1;
+		ChildCifXml2ChildCmlTask task = new ChildCifXml2ChildCmlTask(storageRoot, primaryKey, childKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}
 	
 	@Test
-	public void testRunTaskForNonExistingCif() {
+	public void testRunTaskForNonExistingChildKey() {
 		File storageRoot = new File(fixturesRoot, "storage_root");
-		int primaryKey = 3;
-		ParentCif2ParentCifXmlTask task = new ParentCif2ParentCifXmlTask(storageRoot, primaryKey);
+		int primaryKey = 1;
+		int childKey = 99;
+		ChildCifXml2ChildCmlTask task = new ChildCifXml2ChildCmlTask(storageRoot, primaryKey, childKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}
 	
 	@Test
-	public void testRunTaskForInvalidCif() {
+	public void testRunTaskForNonExistingChildCifXml() {
 		File storageRoot = new File(fixturesRoot, "storage_root");
-		int primaryKey = 2;
-		ParentCif2ParentCifXmlTask task = new ParentCif2ParentCifXmlTask(storageRoot, primaryKey);
+		int primaryKey = 1;
+		int childKey = 3;
+		ChildCifXml2ChildCmlTask task = new ChildCifXml2ChildCmlTask(storageRoot, primaryKey, childKey);
+		boolean success = task.runTask();
+		assertFalse(success);
+	}
+	
+	@Test
+	public void testRunTaskForInvalidCifXml() {
+		File storageRoot = new File(fixturesRoot, "storage_root");
+		int primaryKey = 1;
+		int childKey = 4;
+		ChildCifXml2ChildCmlTask task = new ChildCifXml2ChildCmlTask(storageRoot, primaryKey, childKey);
 		boolean success = task.runTask();
 		assertFalse(success);
 	}

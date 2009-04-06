@@ -23,15 +23,15 @@ import wwmm.crystaleye.model.impl.ChildCmlFileDAO;
  * @author Nick Day
  * @version 0.1
  */
-public class ChildCifXml2CmlTask {
+public class ChildCifXml2ChildCmlTask {
 
 	private File storageRoot;
 	private int primaryKey;
 	private int childKey;
 
-	private static final Logger LOG = Logger.getLogger(ChildCifXml2CmlTask.class);
+	private static final Logger LOG = Logger.getLogger(ChildCifXml2ChildCmlTask.class);
 
-	public ChildCifXml2CmlTask(File storageRoot, int primaryKey, int childKey) {
+	public ChildCifXml2ChildCmlTask(File storageRoot, int primaryKey, int childKey) {
 		this.storageRoot = storageRoot;
 		this.primaryKey = primaryKey;
 		this.childKey = childKey;
@@ -103,7 +103,7 @@ public class ChildCifXml2CmlTask {
 		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
 		int primaryKey = 3;
 		int childKey = 1;
-		ChildCifXml2CmlTask task = new ChildCifXml2CmlTask(storageRoot, primaryKey, childKey);
+		ChildCifXml2ChildCmlTask task = new ChildCifXml2ChildCmlTask(storageRoot, primaryKey, childKey);
 		task.runTask();
 	}
 
