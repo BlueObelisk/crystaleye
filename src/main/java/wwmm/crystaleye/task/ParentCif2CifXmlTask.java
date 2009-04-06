@@ -10,8 +10,8 @@ import org.xmlcml.cif.CIFException;
 import org.xmlcml.cif.CIFParser;
 
 import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.model.crystaleye.ParentCifFileDAO;
-import wwmm.crystaleye.model.crystaleye.ParentCifXmlFileDAO;
+import wwmm.crystaleye.model.impl.ParentCifFileDAO;
+import wwmm.crystaleye.model.impl.ParentCifXmlFileDAO;
 
 /**
  * <p>

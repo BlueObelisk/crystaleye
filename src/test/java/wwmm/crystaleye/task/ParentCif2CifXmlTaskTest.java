@@ -17,7 +17,7 @@ import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFException;
 
 import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.model.crystaleye.ParentCifXmlFileDAO;
+import wwmm.crystaleye.model.impl.ParentCifXmlFileDAO;
 
 public class ParentCif2CifXmlTaskTest {
 	

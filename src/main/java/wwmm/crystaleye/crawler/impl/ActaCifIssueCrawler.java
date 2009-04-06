@@ -1,4 +1,4 @@
-package wwmm.crystaleye.crawler.crystaleye;
+package wwmm.crystaleye.crawler.impl;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

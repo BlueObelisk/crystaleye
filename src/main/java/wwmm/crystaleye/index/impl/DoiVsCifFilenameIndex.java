@@ -1,4 +1,4 @@
-package wwmm.crystaleye.index.crystaleye;
+package wwmm.crystaleye.index.impl;
 
 import java.io.File;
 

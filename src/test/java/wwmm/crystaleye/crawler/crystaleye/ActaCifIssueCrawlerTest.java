@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import wwmm.crystaleye.crawler.core.ActaIssueCrawler;
 import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
+import wwmm.crystaleye.crawler.impl.ActaCifIssueCrawler;
 
 public class ActaCifIssueCrawlerTest {
 	
