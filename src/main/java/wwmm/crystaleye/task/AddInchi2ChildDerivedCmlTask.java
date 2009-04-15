@@ -48,6 +48,11 @@ public class AddInchi2ChildDerivedCmlTask {
 		boolean overallSuccess = true;
 		ChildDerivedCmlFileDAO dao = new ChildDerivedCmlFileDAO(storageRoot);
 		List<CMLMolecule> molList = dao.getChildMolecules(primaryKey, childKey);
+		if (molList == null) {
+			LOG.warn("Problem getting molecule list for 'derived' CML file with " +
+					"primary/child keys: "+primaryKey+"/"+childKey);
+			return false;
+		}
 		String inchiOptions = "";
 		for (CMLMolecule mol : molList) {
 			String moleculeId = mol.getId();
