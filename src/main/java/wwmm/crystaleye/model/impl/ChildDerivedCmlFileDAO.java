@@ -158,6 +158,11 @@ public class ChildDerivedCmlFileDAO extends ChildSecondaryFileDAO {
 	 */
 	public boolean insertInchi(int primaryKey, int childKey, String moleculeId, String inchi) {
 		CMLCml cml = getCml(primaryKey, childKey);
+		if (cml == null) {
+			LOG.warn("Problem getting CMLCml for " +
+					"primary/child keys: "+primaryKey+"/"+childKey);
+			return false;
+		}
 		Nodes nds = cml.query("./cml:molecule[@id='"+moleculeId+"'] | " +
 				"./cml:molecule/cml:molecule[@id='"+moleculeId+"']", X_CML);
 		if (nds.size() > 1) {
@@ -199,6 +204,11 @@ public class ChildDerivedCmlFileDAO extends ChildSecondaryFileDAO {
 	 */
 	public boolean insertSmiles(int primaryKey, int childKey, String moleculeId, String smiles) {
 		CMLCml cml = getCml(primaryKey, childKey);
+		if (cml == null) {
+			LOG.warn("Problem getting CMLCml for " +
+					"primary/child keys: "+primaryKey+"/"+childKey);
+			return false;
+		}
 		Nodes nds = cml.query("./cml:molecule[@id='"+moleculeId+"'] | " +
 				"./cml:molecule/cml:molecule[@id='"+moleculeId+"']", X_CML);
 		if (nds.size() > 1) {
@@ -256,6 +266,35 @@ public class ChildDerivedCmlFileDAO extends ChildSecondaryFileDAO {
 		identifier.setConvention("iupac:inchi");
 		identifier.appendChild(new Text(inchi));
 		return identifier;
+	}
+	
+	/**
+	 * <p>
+	 * Inserts CheckCIF XML into a the 'derived' CML associated with the 
+	 * primary/child keys provided.
+	 * </p>
+	 * 
+	 * @param primaryKey of the CML file that the CheckCIF XML will be inserted to.
+	 * @param childKey of the CML file that the CheckCIF XML will be inserted to.
+	 * @param CheckCIF XML to be inserted.
+	 * 
+	 * @return true if the CheckCIF XML was successfully added to the CML, false
+	 * if not.
+	 */
+	public boolean insertCheckcifXml(int primaryKey, int childKey, Element checkcifXmlRoot) {
+		CMLCml cml = getCml(primaryKey, childKey);
+		if (cml == null) {
+			LOG.warn("Problem getting CMLCml for " +
+					"primary/child keys: "+primaryKey+"/"+childKey);
+			return false;
+		}
+		cml.appendChild(checkcifXmlRoot);
+		boolean success = update(primaryKey, childKey, Utils.toPrettyXMLString(cml.getDocument()));
+		if (success) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

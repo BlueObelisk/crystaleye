@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 import nu.xom.Document;
+import nu.xom.Element;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -123,12 +124,12 @@ public class ChildDerivedCmlFileDAOTest {
 		File storageRoot = new File(fixturesRoot, "storage_root");
 		ChildDerivedCmlFileDAO dao = new ChildDerivedCmlFileDAO(storageRoot);
 		int primaryKey = 1;
-		int childKey = 4;
+		int childKey = 6;
 		String inchi = "inchi=1/C6H6/c1-2-4-6-5-3-1/h1-6H";
 		String moleculeId = "this_is_an_id";
 		boolean success = dao.insertInchi(primaryKey, childKey, moleculeId, inchi);
 		assertTrue(success);
-		File cmlFile = new File(storageRoot, "1/4/4.derived.cml");
+		File cmlFile = new File(storageRoot, "1/6/6.derived.cml");
 		String cmlStr = Utils.parseCml(cmlFile).toXML();
 		String expectedCmlStr = "<?xml version=\"1.0\"?>\n"+ 
 			"<cml xmlns=\"http://www.xml-cml.org/schema\" id=\"theCmlId\">\n"+
@@ -156,6 +157,24 @@ public class ChildDerivedCmlFileDAOTest {
 			"  <molecule id=\"this_is_an_id\">\n"+
 			"    <identifier convention=\"openbabel:smiles\">c1ccccc1</identifier>\n"+
 			"  </molecule>\n"+
+			"</cml>\n";
+		assertEquals(expectedCmlStr, cmlStr);
+	}
+	
+	@Test
+	public void testInsertCheckcifXml() {
+		File storageRoot = new File(fixturesRoot, "storage_root");
+		ChildDerivedCmlFileDAO dao = new ChildDerivedCmlFileDAO(storageRoot);
+		int primaryKey = 1;
+		int childKey = 5;
+		Element checkcifXmlRoot = new Element("checkcif");
+		boolean success = dao.insertCheckcifXml(primaryKey, childKey, checkcifXmlRoot);
+		assertTrue(success);
+		File cmlFile = new File(storageRoot, "1/5/5.derived.cml");
+		String cmlStr = Utils.parseCml(cmlFile).toXML();
+		String expectedCmlStr = "<?xml version=\"1.0\"?>\n"+
+			"<cml xmlns=\"http://www.xml-cml.org/schema\" id=\"this_is_an_id\">\n"+
+			"  <checkcif xmlns=\"\" />\n"+
 			"</cml>\n";
 		assertEquals(expectedCmlStr, cmlStr);
 	}
