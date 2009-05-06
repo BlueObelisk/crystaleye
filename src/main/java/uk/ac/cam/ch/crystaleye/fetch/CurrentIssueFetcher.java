@@ -1,11 +1,13 @@
 package uk.ac.cam.ch.crystaleye.fetch;
 
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.ATOMPUB;
+
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.BONDLENGTHS;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CELLPARAMS;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CIF2CML;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CIF_MIME;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CML2FOO;
+import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.CML2RDF;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.DATE_MIME;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.DOILIST;
 import static uk.ac.cam.ch.crystaleye.CrystalEyeConstants.DOI_MIME;
@@ -125,7 +127,10 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 		cif2Cml.addAttribute(new Attribute("value", "false"));			
 		Element cml2Foo = new Element(CML2FOO);
 		cml2Foo.addAttribute(new Attribute("value", "false"));
-		issue.appendChild(cml2Foo);			
+		issue.appendChild(cml2Foo);	
+		Element cml2rdfElement = new Element(CML2RDF);
+		cml2rdfElement.addAttribute(new Attribute("value", "false"));
+		issue.appendChild(cml2rdfElement);	
 		Element webpage = new Element(WEBPAGE);
 		webpage.addAttribute(new Attribute("value", "false"));
 		issue.appendChild(webpage);
