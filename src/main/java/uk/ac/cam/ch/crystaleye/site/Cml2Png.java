@@ -25,7 +25,6 @@ import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.renderer.Renderer2D;
 import org.openscience.cdk.renderer.Renderer2DModel;
 import org.xmlcml.cml.base.CMLConstants;
-import org.xmlcml.cml.base.CMLRuntimeException;
 import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.tools.MoleculeTool;
@@ -65,7 +64,7 @@ public class Cml2Png implements CMLConstants {
 		MoleculeTool mt = new MoleculeTool(this.cmlMol);
 		mt.contractExplicitHydrogens(CMLMolecule.HydrogenControl.REPLACE_HYDROGEN_COUNT, false);
 		if (molecule.getDescendantsOrMolecule().size() > 1) {
-			throw new CMLRuntimeException("CMLMolecule must not have any child molecules");
+			throw new RuntimeException("CMLMolecule must not have any child molecules");
 		}
 	}
 	
@@ -73,7 +72,7 @@ public class Cml2Png implements CMLConstants {
 		try {
 			renderMolecule(new FileOutputStream(new File(path)));
 		} catch (FileNotFoundException e) {
-			throw new CMLRuntimeException("Error writing 2D image to: "+path);
+			throw new RuntimeException("Error writing 2D image to: "+path);
 		}
 	}
 
@@ -81,7 +80,7 @@ public class Cml2Png implements CMLConstants {
 		try {
 			renderMolecule(new FileOutputStream(file));
 		} catch (FileNotFoundException e) {
-			throw new CMLRuntimeException("Error writing 2D image to: "+file.getAbsolutePath());
+			throw new RuntimeException("Error writing 2D image to: "+file.getAbsolutePath());
 		}
 	}
 
@@ -117,7 +116,7 @@ public class Cml2Png implements CMLConstants {
 		try {
 			sdg.generateCoordinates(new Vector2d(0, 1));
 		} catch (Exception e) {
-			throw new CMLRuntimeException("Error generating molecule coordinates: "+e.getMessage());
+			throw new RuntimeException("Error generating molecule coordinates: "+e.getMessage());
 		}
 		cdkMol = sdg.getMolecule();
 		*/
@@ -140,7 +139,7 @@ public class Cml2Png implements CMLConstants {
 		try {
 			ImageIO.write(img, format, out);
 		} catch (IOException e) {
-			throw new CMLRuntimeException("Error writing image: "+e.getMessage());
+			throw new RuntimeException("Error writing image: "+e.getMessage());
 		}
 	}
 	

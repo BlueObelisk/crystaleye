@@ -31,8 +31,6 @@ import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.xmlcml.cml.base.CMLConstants;
-import org.xmlcml.cml.base.CMLException;
-import org.xmlcml.cml.base.CMLRuntimeException;
 import org.xmlcml.cml.base.CMLUtil;
 import org.xmlcml.cml.element.CMLAngle;
 import org.xmlcml.cml.element.CMLAtom;
@@ -43,16 +41,16 @@ import org.xmlcml.cml.element.CMLBondSet;
 import org.xmlcml.cml.element.CMLBondStereo;
 import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLCrystal;
+import org.xmlcml.cml.element.CMLIdentifier;
 import org.xmlcml.cml.element.CMLLength;
 import org.xmlcml.cml.element.CMLMetadata;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLTorsion;
-import org.xmlcml.cml.inchi.InChIGenerator;
-import org.xmlcml.cml.inchi.InChIGeneratorFactory;
 import org.xmlcml.cml.tools.ConnectionTableTool;
 import org.xmlcml.cml.tools.DisorderTool;
 import org.xmlcml.cml.tools.GeometryTool;
 import org.xmlcml.cml.tools.MoleculeTool;
+import org.xmlcml.cml.tools.ValencyTool;
 import org.xmlcml.molutil.ChemicalElement;
 import org.xmlcml.molutil.ChemicalElement.Type;
 
@@ -60,6 +58,7 @@ import uk.ac.cam.ch.crystaleye.AbstractManager;
 import uk.ac.cam.ch.crystaleye.CDKUtils;
 import uk.ac.cam.ch.crystaleye.CrystalEyeUtils;
 import uk.ac.cam.ch.crystaleye.IOUtils;
+import uk.ac.cam.ch.crystaleye.InchiTool;
 import uk.ac.cam.ch.crystaleye.IssueDate;
 import uk.ac.cam.ch.crystaleye.Utils;
 import uk.ac.cam.ch.crystaleye.CrystalEyeUtils.CompoundClass;
@@ -146,7 +145,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 									if (classNodes.size() > 0) {
 										compClass = ((Element)classNodes.get(0)).getValue();
 									} else {
-										throw new CMLRuntimeException("Molecule should have a compoundClass scalar set.");
+										throw new RuntimeException("Molecule should have a compoundClass scalar set.");
 									}
 									boolean isPolymeric = false;
 									Nodes polymericNodes = cml.query(".//"+CMLMetadata.NS+"[@dictRef='"+
@@ -220,7 +219,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			}
 			molecule.serialize(new FileOutputStream(file), 1);
 		} catch (IOException e) {
-			throw new CMLRuntimeException("ERROR "+e);
+			throw new RuntimeException("ERROR "+e);
 		}
 	}
 
@@ -270,7 +269,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 	private void write2dImage(String path, CMLMolecule molecule, int width, int height, boolean showH) {
 		try {
 			if (molecule.isMoleculeContainer()) {
-				throw new CMLRuntimeException("Molecule should not contain molecule children.");
+				throw new RuntimeException("Molecule should not contain molecule children.");
 			}
 			File file = new File(path).getParentFile();
 			if (!file.exists()) {
@@ -313,7 +312,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			content = sw.toString();
 			sw.close();
 		} catch (IOException e) {
-			throw new CMLRuntimeException("ERROR "+e);
+			throw new RuntimeException("ERROR "+e);
 		} finally {
 			if (sw != null)
 				try {
@@ -379,7 +378,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 	}
 
 	private void addAtomSequenceNumbers(CMLMolecule mol) {
-		if (mol.isMoleculeContainer()) throw new CMLRuntimeException("Molecule should be a molecule container.");
+		if (mol.isMoleculeContainer()) throw new RuntimeException("Molecule should be a molecule container.");
 		int i = 0;
 		for (CMLAtom atom : mol.getAtoms()) {
 			Attribute sequenceNumber = new Attribute("sequenceNumber", String.valueOf(i+1));
@@ -405,7 +404,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			}
 		}
 		CMLBondSet newBS = new MoleculeTool(mol).getBondSet(newAS);
-		CMLMolecule newMol = new CMLMolecule(newAS, newBS);
+		CMLMolecule newMol = MoleculeTool.createMolecule(newAS, newBS);
 		List<CMLBond> removeList = new ArrayList<CMLBond>();
 		for (String id : rGroupIds) {
 			CMLAtom at = newMol.getAtomById(id);
@@ -443,7 +442,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			if ("chain-nuc".equals(fragType)) {
 				molecule = new CMLMolecule(molecule);
 				subMolecule = new CMLMolecule(subMolecule);
-				MoleculeTool.removeMetalAtomsAndBonds(subMolecule, false);
+				ValencyTool.removeMetalAtomsAndBonds(subMolecule);
 				new ConnectionTableTool(subMolecule).partitionIntoMolecules();
 				for (CMLMolecule subSubMol : subMolecule.getDescendantsOrMolecule()) {
 					fragmentList.addAll(new MoleculeTool(subSubMol).getChainMolecules());
@@ -451,7 +450,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			} else if ("ring-nuc".equals(fragType)) {
 				molecule = new CMLMolecule(molecule);
 				subMolecule = new CMLMolecule(subMolecule);
-				MoleculeTool.removeMetalAtomsAndBonds(subMolecule, false);
+				ValencyTool.removeMetalAtomsAndBonds(subMolecule);
 				new ConnectionTableTool(subMolecule).partitionIntoMolecules();
 				for (CMLMolecule subSubMol : subMolecule.getDescendantsOrMolecule()) {
 					fragmentList.addAll(new MoleculeTool(subSubMol).getRingNucleiMolecules());
@@ -473,7 +472,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			int count = 0;
 			for (CMLMolecule fragment : fragmentList) {
 				count++;
-				CMLAtomSet atomSet = new CMLAtomSet(subMolecule, fragment.getAtomSet().getAtomIDs());
+				CMLAtomSet atomSet = new CMLAtomSet(subMolecule, new MoleculeTool(fragment).getAtomSet().getAtomIDs());
 				writeFragmentFiles(molecule, subMolecule, compoundClass, fragment, fragType, subMolCount, count, 
 						dir, id, depth);
 				if (sprout) {
@@ -483,7 +482,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 					if (nucCount < spCount) {
 						writeFragmentFiles(molecule, subMolecule, compoundClass, sproutMol, fragType+"-sprout-1", subMolCount, count, 
 								dir, id, depth);
-						CMLAtomSet spAtomSet = new CMLAtomSet(subMolecule, sproutMol.getAtomSet().getAtomIDs());
+						CMLAtomSet spAtomSet = new CMLAtomSet(subMolecule, new MoleculeTool(sproutMol).getAtomSet().getAtomIDs());
 						CMLMolecule sprout2Mol = mt.sprout(spAtomSet);
 						int sp2Count = sprout2Mol.getAtomCount();
 						if (spCount < sp2Count && sp2Count < molecule.getAtomCount()) {
@@ -512,7 +511,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 			File dir, String id, int depth) {
 		CMLMolecule subMolCopy = new CMLMolecule(subMolecule);
 		CMLMolecule fragCopy = new CMLMolecule(fragment);
-		CMLAtomSet atomSet = new CMLAtomSet(subMolCopy, fragCopy.getAtomSet().getAtomIDs());
+		CMLAtomSet atomSet = new CMLAtomSet(subMolCopy, new MoleculeTool(fragCopy).getAtomSet().getAtomIDs());
 		CMLMolecule molR = addAndMarkFragmentRAtoms(subMolCopy, atomSet);
 
 		addInChIToRGroupMolecule(molR);
@@ -633,7 +632,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 
 					//sprout once
 					CMLMolecule sprout = subMoleculeTool.sprout(singleAtomSet);
-					CMLAtomSet spAtomSet = new CMLAtomSet(subMolecule, sprout.getAtomSet().getAtomIDs());
+					CMLAtomSet spAtomSet = new CMLAtomSet(subMolecule, new MoleculeTool(sprout).getAtomSet().getAtomIDs());
 
 					CMLMolecule sproutR = addAndMarkFragmentRAtoms(subMolCopy, spAtomSet);
 					if (sproutR.getAtomCount() == sprout.getAtomCount()) {
@@ -669,7 +668,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 					int sp2Count = sprout2.getAtomCount();
 					int spCount = sprout.getAtomCount();
 					if (spCount < sp2Count) {
-						CMLAtomSet sp2AtomSet = new CMLAtomSet(subMolecule, sprout2.getAtomSet().getAtomIDs());
+						CMLAtomSet sp2AtomSet = new CMLAtomSet(subMolecule, new MoleculeTool(sprout2).getAtomSet().getAtomIDs());
 						CMLMolecule sprout2R = addAndMarkFragmentRAtoms(subMolCopy, sp2AtomSet);
 						if (sprout2R.getAtomCount() == sprout2.getAtomCount()) {
 							continue;
@@ -883,17 +882,12 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 		for (CMLBond bond : detachBondList) {
 			bond.detach();
 		}
-		try {
-			InChIGeneratorFactory factory = new InChIGeneratorFactory();
-			InChIGenerator gen = factory.getInChIGenerator(copy);
-			String inchi = gen.getInchi();
-			Element identifier = new Element("identifier", CML_NS);
-			identifier.addAttribute(new Attribute("convention", "iupac:inchi"));
-			identifier.appendChild(new Text(inchi));
-			molecule.appendChild(identifier);
-		} catch (CMLException e) {
-			System.err.println("Error creating InChI: "+e.getMessage());
-		}
+		InchiTool tool = new InchiTool(molecule);
+		String inchi = tool.generateInchi("");
+		CMLIdentifier identifier = new CMLIdentifier();
+		identifier.setConvention("iupac:inchi");
+		identifier.appendChild(new Text(inchi));
+		molecule.appendChild(identifier);
 	}
 
 	private void writeGeometryHtmlFiles(CMLMolecule molecule, String pathMinusMime, int depth) {
@@ -915,7 +909,7 @@ public class CML2FooManager extends AbstractManager implements CMLConstants {
 
 	public static void main(String[] args) {
 		//CML2FooManager acta = new CML2FooManager("e:/crystaleye-test/docs/cif-flow-props.txt");
-		CML2FooManager acta = new CML2FooManager("e:/data-test/docs/cif-flow-props.txt");
+		CML2FooManager acta = new CML2FooManager("E:\\crystaleye-new\\docs\\cif-flow-props.txt");
 		acta.execute();
 	}
 }
