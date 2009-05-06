@@ -46,6 +46,7 @@ import org.xmlcml.cml.element.CMLTable;
 import org.xmlcml.cml.element.CMLMolecule.HydrogenControl;
 import org.xmlcml.cml.element.CMLTable.TableType;
 import org.xmlcml.cml.tools.DisorderTool;
+import org.xmlcml.cml.tools.MoleculeTool;
 
 import uk.ac.cam.ch.crystaleye.AbstractManager;
 import uk.ac.cam.ch.crystaleye.CrystalEyeRuntimeException;
@@ -947,7 +948,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		StringWriter sw = new StringWriter();
 		String formula = "";
 		try {
-			CMLFormula form = mol.calculateFormula(HydrogenControl.USE_EXPLICIT_HYDROGENS);
+			CMLFormula form = new MoleculeTool(mol).calculateFormula(HydrogenControl.USE_EXPLICIT_HYDROGENS);
 			form.writeHTML(sw);
 			formula = sw.toString();
 		} catch (IOException e) {
@@ -994,7 +995,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 		StringWriter sw = new StringWriter();
 		String formula = "";
 		try {
-			CMLFormula form = mol.calculateFormula(HydrogenControl.USE_EXPLICIT_HYDROGENS);
+			CMLFormula form = new MoleculeTool(mol).calculateFormula(HydrogenControl.USE_EXPLICIT_HYDROGENS);
 			form.writeHTML(sw);
 			formula = sw.toString();
 		} catch (IOException e) {
