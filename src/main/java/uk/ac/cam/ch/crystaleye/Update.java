@@ -10,6 +10,7 @@ import org.xmlcml.cml.base.CMLConstants;
 import uk.ac.cam.ch.crystaleye.fetch.FetchManager;
 import uk.ac.cam.ch.crystaleye.process.CML2FooManager;
 import uk.ac.cam.ch.crystaleye.process.Cif2CmlManager;
+import uk.ac.cam.ch.crystaleye.process.Cml2RdfManager;
 import uk.ac.cam.ch.crystaleye.site.CellParamsManager;
 import uk.ac.cam.ch.crystaleye.site.DoiListManager;
 import uk.ac.cam.ch.crystaleye.site.SmilesListManager;
@@ -31,6 +32,7 @@ public class Update implements CMLConstants {
 		options.addOption("fetch", false, "Run fetch manager");
 		options.addOption("cif2cml", false, "Run cif2cml manager");
 		options.addOption("cml2foo", false, "Run cml2foo manager");
+		options.addOption("cml2rdf", false, "Run cml2rdf manager");
 		options.addOption("webpage", false, "Run webpage manager");
 		options.addOption("doilist", false, "Run doilist manager");
 		options.addOption("cellparams", false, "Run cellparams manager");
@@ -69,6 +71,10 @@ public class Update implements CMLConstants {
 			if (cl.hasOption("cml2foo")) {
 				CML2FooManager cml2Foo = new CML2FooManager(propsPath);
 				cml2Foo.execute();
+			}
+			if (cl.hasOption("cml2rdf")) {
+				Cml2RdfManager cml2rdf = new Cml2RdfManager(propsPath);
+				cml2rdf.execute();
 			}
 			if (cl.hasOption("webpage")) {
 				WebpageManager webpage = new WebpageManager(propsPath);
@@ -110,6 +116,8 @@ public class Update implements CMLConstants {
 		cif2Cml.execute();
 		CML2FooManager cml2Foo = new CML2FooManager(propsPath);
 		cml2Foo.execute();
+		Cml2RdfManager cml2rdf = new Cml2RdfManager(propsPath);
+		cml2rdf.execute();
 		WebpageManager webpage = new WebpageManager(propsPath);
 		webpage.execute();
 		DoiListManager dois = new DoiListManager(propsPath);
