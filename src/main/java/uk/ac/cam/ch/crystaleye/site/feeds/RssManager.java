@@ -46,7 +46,6 @@ import nux.xom.io.StaxUtil;
 import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.base.CMLConstants;
-import org.xmlcml.cml.base.CMLRuntimeException;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLBond;
 import org.xmlcml.cml.element.CMLCml;
@@ -187,7 +186,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new CMLRuntimeException("Problem parsing feed.");
+			throw new RuntimeException("Problem parsing feed.");
 		}
 		IOUtils.writeXML(feedDoc, cmlRssWritePath);
 
@@ -303,9 +302,9 @@ public class RssManager extends AbstractManager implements CMLConstants {
 			if (classNodes.size() == 1) {
 				className = classNodes.get(0).getValue();
 			} else if (classNodes.size() > 1) {
-				throw new CMLRuntimeException("Structure should only have one class node: "+cmlFile.getAbsolutePath());
+				throw new RuntimeException("Structure should only have one class node: "+cmlFile.getAbsolutePath());
 			} else if (classNodes.size() == 0) {
-				throw new CMLRuntimeException("Structure should have a class node: "+cmlFile.getAbsolutePath());
+				throw new RuntimeException("Structure should have a class node: "+cmlFile.getAbsolutePath());
 			}
 			if (classMap.containsKey(className)) {
 				List<File> list = classMap.get(className);
@@ -439,7 +438,7 @@ public class RssManager extends AbstractManager implements CMLConstants {
 		} else if ("atom_1.0".equals(feedType)) {
 			return FeedType.ATOM_1;
 		} else {
-			throw new CMLRuntimeException("RSS type "+feedType+" not supported.");
+			throw new RuntimeException("RSS type "+feedType+" not supported.");
 		}
 	}
 

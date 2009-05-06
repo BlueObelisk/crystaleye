@@ -13,6 +13,7 @@ public interface CrystalEyeConstants {
 	 */
 	public static final String CIF2CML = "cif2Cml";
 	public static final String CML2FOO = "cml2Foo";
+	public static final String CML2RDF = "cml2rdf";
 	public static final String WEBPAGE = "webpage";
 	public static final String RSS = "rss";
 	public static final String DOILIST = "doilist";
