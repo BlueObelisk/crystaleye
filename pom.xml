@@ -41,12 +41,20 @@
 		</repository>
 	</repositories>
 	<dependencies>
+		<!--
 		<dependency>
 			<groupId>cdk</groupId>
 			<artifactId>cdk</artifactId>
 			<version>20071025</version>
 			<scope>compile</scope>
 			<optional>true</optional>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>cdk</groupId>
+			<artifactId>cdk-pure</artifactId>
+			<version>1.1.4.20090105</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>cml</groupId>
@@ -123,6 +131,12 @@
 			<artifactId>mockito-all</artifactId>
 			<version>1.7</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>wwmm</groupId>
+			<artifactId>pub-crawler</artifactId>
+			<version>0.1</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ccil.cowan.tagsoup</groupId>

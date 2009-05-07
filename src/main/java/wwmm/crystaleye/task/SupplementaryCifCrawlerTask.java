@@ -5,11 +5,11 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.crawler.core.ArticleDetails;
-import wwmm.crystaleye.crawler.core.RscIssueCrawler;
-import wwmm.crystaleye.crawler.core.RscJournal;
-import wwmm.crystaleye.crawler.impl.CifIssueCrawler;
-import wwmm.crystaleye.crawler.impl.RscCifIssueCrawler;
+import wwmm.crawler.core.ArticleDetails;
+import wwmm.crawler.core.RscIssueCrawler;
+import wwmm.crawler.core.RscJournal;
+import wwmm.crawler.impl.CifIssueCrawler;
+import wwmm.crawler.impl.RscCifIssueCrawler;
 import wwmm.crystaleye.model.impl.SupplementaryCifDAO;
 
 /**

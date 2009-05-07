@@ -10,6 +10,8 @@ import org.apache.commons.httpclient.URIException;
 import org.junit.Before;
 import org.junit.Test;
 
+import wwmm.crawler.core.DOI;
+
 public class DOITest {
 
 	String invalidUriUrl;

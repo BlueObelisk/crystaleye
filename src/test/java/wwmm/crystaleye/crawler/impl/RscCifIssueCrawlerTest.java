@@ -8,8 +8,9 @@ import junitx.util.PrivateAccessor;
 
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.core.RscIssueCrawler;
-import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
+import wwmm.crawler.core.RscIssueCrawler;
+import wwmm.crawler.core.SupplementaryFileDetails;
+import wwmm.crawler.impl.RscCifIssueCrawler;
 
 public class RscCifIssueCrawlerTest {
 	

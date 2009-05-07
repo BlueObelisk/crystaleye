@@ -9,8 +9,9 @@ import junitx.util.PrivateAccessor;
 import org.apache.commons.httpclient.URI;
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.core.ActaIssueCrawler;
-import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
+import wwmm.crawler.core.ActaIssueCrawler;
+import wwmm.crawler.core.SupplementaryFileDetails;
+import wwmm.crawler.impl.ActaCifIssueCrawler;
 
 public class ActaCifIssueCrawlerTest {
 	

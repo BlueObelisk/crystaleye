@@ -19,7 +19,7 @@ import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFDataBlock;
 import org.xmlcml.cif.CIFException;
 
-import wwmm.crystaleye.Utils;
+import wwmm.crawler.Utils;
 import wwmm.crystaleye.model.impl.ChildCifXmlFileDAO;
 
 public class SplitParentCifXmlTaskTest {

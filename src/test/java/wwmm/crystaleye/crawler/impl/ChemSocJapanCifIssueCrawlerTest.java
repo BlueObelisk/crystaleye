@@ -8,8 +8,9 @@ import junitx.util.PrivateAccessor;
 
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.core.ChemSocJapanIssueCrawler;
-import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
+import wwmm.crawler.core.ChemSocJapanIssueCrawler;
+import wwmm.crawler.core.SupplementaryFileDetails;
+import wwmm.crawler.impl.ChemSocJapanCifIssueCrawler;
 
 public class ChemSocJapanCifIssueCrawlerTest {
 	

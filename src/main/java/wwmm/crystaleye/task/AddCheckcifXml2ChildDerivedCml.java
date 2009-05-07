@@ -8,7 +8,7 @@ import nu.xom.Element;
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.element.CMLCml;
 
-import wwmm.crystaleye.Utils;
+import wwmm.crawler.Utils;
 import wwmm.crystaleye.model.impl.ChildCheckcifXmlFileDAO;
 import wwmm.crystaleye.model.impl.ChildDerivedCmlFileDAO;
 

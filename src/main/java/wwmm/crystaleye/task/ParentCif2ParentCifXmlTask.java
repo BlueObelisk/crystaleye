@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIFException;
 import org.xmlcml.cif.CIFParser;
 
-import wwmm.crystaleye.Utils;
+import wwmm.crawler.Utils;
 import wwmm.crystaleye.model.impl.ParentCifFileDAO;
 import wwmm.crystaleye.model.impl.ParentCifXmlFileDAO;
 

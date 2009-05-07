@@ -13,7 +13,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.core.DOI;
+import wwmm.crawler.core.DOI;
 
 public class DoiVsCifFilenameIndexTest {
 	

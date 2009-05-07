@@ -8,8 +8,9 @@ import junitx.util.PrivateAccessor;
 
 import org.junit.Test;
 
-import wwmm.crystaleye.crawler.core.AcsIssueCrawler;
-import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
+import wwmm.crawler.core.AcsIssueCrawler;
+import wwmm.crawler.core.SupplementaryFileDetails;
+import wwmm.crawler.impl.AcsCifIssueCrawler;
 
 public class AcsCifIssueCrawlerTest {
 	

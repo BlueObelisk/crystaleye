@@ -9,6 +9,11 @@ import nu.xom.Document;
 
 import org.junit.Test;
 
+import wwmm.crawler.core.AcsIssueCrawler;
+import wwmm.crawler.core.AcsJournal;
+import wwmm.crawler.core.DOI;
+import wwmm.crawler.core.IssueDetails;
+
 public class AcsIssueCrawlerIntegrationTest {
 	
 	/**

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.crawler.core.DOI;
+import wwmm.crawler.core.DOI;
 import wwmm.crystaleye.index.core.PrimaryKeyIndex;
 
 /**
