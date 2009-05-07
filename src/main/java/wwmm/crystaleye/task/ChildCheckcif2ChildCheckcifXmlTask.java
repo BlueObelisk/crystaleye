@@ -7,7 +7,7 @@ import nu.xom.Document;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.Utils;
+import wwmm.crawler.Utils;
 import wwmm.crystaleye.model.impl.ChildCheckcifFileDAO;
 import wwmm.crystaleye.model.impl.ChildCheckcifXmlFileDAO;
 import wwmm.crystaleye.tools.CheckCifParser;

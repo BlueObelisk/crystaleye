@@ -19,8 +19,8 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.BasicHttpClient;
-import wwmm.crystaleye.Utils;
+import wwmm.crawler.BasicHttpClient;
+import wwmm.crawler.Utils;
 
 /**
  * <p>

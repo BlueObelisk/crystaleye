@@ -1,6 +1,6 @@
 package wwmm.crystaleye;
 
-import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
+import static wwmm.crawler.CrystalEyeConstants.X_XHTML;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

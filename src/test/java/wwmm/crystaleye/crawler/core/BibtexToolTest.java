@@ -11,6 +11,9 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import wwmm.crawler.core.ArticleReference;
+import wwmm.crawler.core.BibtexTool;
+
 public class BibtexToolTest {
 
 	@Test

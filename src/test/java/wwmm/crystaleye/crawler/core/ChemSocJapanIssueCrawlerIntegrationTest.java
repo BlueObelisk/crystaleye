@@ -9,6 +9,11 @@ import nu.xom.Document;
 
 import org.junit.Test;
 
+import wwmm.crawler.core.ChemSocJapanIssueCrawler;
+import wwmm.crawler.core.ChemSocJapanJournal;
+import wwmm.crawler.core.DOI;
+import wwmm.crawler.core.IssueDetails;
+
 public class ChemSocJapanIssueCrawlerIntegrationTest {
 	
 	/**

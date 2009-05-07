@@ -1,13 +1,13 @@
 package wwmm.crystaleye.tools;
 
-import static wwmm.crystaleye.CrystalEyeConstants.BIBO_NS;
-import static wwmm.crystaleye.CrystalEyeConstants.BIBO_PREFIX;
-import static wwmm.crystaleye.CrystalEyeConstants.CRYSTALEYE_NS;
-import static wwmm.crystaleye.CrystalEyeConstants.CRYSTALEYE_PREFIX;
-import static wwmm.crystaleye.CrystalEyeConstants.DC_NS;
-import static wwmm.crystaleye.CrystalEyeConstants.DC_PREFIX;
-import static wwmm.crystaleye.CrystalEyeConstants.RDF_NS;
-import static wwmm.crystaleye.CrystalEyeConstants.RDF_PREFIX;
+import static wwmm.crawler.CrystalEyeConstants.BIBO_NS;
+import static wwmm.crawler.CrystalEyeConstants.BIBO_PREFIX;
+import static wwmm.crawler.CrystalEyeConstants.CRYSTALEYE_NS;
+import static wwmm.crawler.CrystalEyeConstants.CRYSTALEYE_PREFIX;
+import static wwmm.crawler.CrystalEyeConstants.DC_NS;
+import static wwmm.crawler.CrystalEyeConstants.DC_PREFIX;
+import static wwmm.crawler.CrystalEyeConstants.RDF_NS;
+import static wwmm.crawler.CrystalEyeConstants.RDF_PREFIX;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,11 +21,11 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.crawler.core.ArticleDetails;
-import wwmm.crystaleye.crawler.core.ArticleReference;
-import wwmm.crystaleye.crawler.core.DOI;
-import wwmm.crystaleye.crawler.core.SupplementaryFileDetails;
+import wwmm.crawler.Utils;
+import wwmm.crawler.core.ArticleDetails;
+import wwmm.crawler.core.ArticleReference;
+import wwmm.crawler.core.DOI;
+import wwmm.crawler.core.SupplementaryFileDetails;
 
 /**
  * <p>
