@@ -1,18 +1,18 @@
 package wwmm.crystaleye.model.impl;
 
-import static wwmm.crawler.CrystalEyeConstants.CIF_CONTENT_TYPE;
+import static wwmm.pubcrawler.CrawlerConstants.CIF_CONTENT_TYPE;
 
 import java.io.File;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crawler.core.ArticleDetails;
-import wwmm.crawler.core.CrawlerHttpClient;
-import wwmm.crawler.core.DOI;
-import wwmm.crawler.core.SupplementaryFileDetails;
 import wwmm.crystaleye.index.impl.DoiVsCifFilenameIndex;
 import wwmm.crystaleye.index.impl.PrimaryKeyVsDoiIndex;
 import wwmm.crystaleye.tools.BibliontologyTool;
+import wwmm.pubcrawler.core.ArticleDetails;
+import wwmm.pubcrawler.core.CrawlerHttpClient;
+import wwmm.pubcrawler.core.DOI;
+import wwmm.pubcrawler.core.SupplementaryFileDetails;
 
 /**
  * <p>

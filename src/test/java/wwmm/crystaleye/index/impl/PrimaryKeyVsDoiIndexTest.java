@@ -14,7 +14,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import wwmm.crawler.core.DOI;
+import wwmm.pubcrawler.core.DOI;
 
 public class PrimaryKeyVsDoiIndexTest {
 

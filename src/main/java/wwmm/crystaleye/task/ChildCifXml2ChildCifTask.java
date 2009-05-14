@@ -11,9 +11,9 @@ import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFException;
 
-import wwmm.crawler.Utils;
 import wwmm.crystaleye.model.impl.ChildCifFileDAO;
 import wwmm.crystaleye.model.impl.ChildCifXmlFileDAO;
+import wwmm.pubcrawler.Utils;
 
 /**
  * <p>

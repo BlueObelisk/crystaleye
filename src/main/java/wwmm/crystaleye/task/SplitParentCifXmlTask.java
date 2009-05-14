@@ -12,7 +12,7 @@ import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFDataBlock;
 import org.xmlcml.cif.CIFException;
 
-import wwmm.crawler.Utils;
+import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.model.impl.ChildCifXmlFileDAO;
 import wwmm.crystaleye.model.impl.ParentCifXmlFileDAO;
 

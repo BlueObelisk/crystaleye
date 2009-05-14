@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crawler.core.DOI;
 import wwmm.crystaleye.index.core.PrimaryKeyIndex;
+import wwmm.pubcrawler.core.DOI;
 
 /**
  * <p>
