@@ -1,6 +1,6 @@
 package wwmm.crystaleye.task;
 
-import static wwmm.crawler.CrystalEyeConstants.X_CML;
+import static wwmm.crystaleye.CrystalEyeConstants.X_CML;
 
 import java.io.File;
 
@@ -10,7 +10,7 @@ import nu.xom.Nodes;
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.element.CMLMolecule;
 
-import wwmm.crawler.Utils;
+import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.model.impl.ChildDerivedCmlFileDAO;
 import wwmm.crystaleye.model.impl.ChildJmolCmlFileDAO;
 

@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import wwmm.crawler.Utils;
+import wwmm.pubcrawler.Utils;
 
 
 /**

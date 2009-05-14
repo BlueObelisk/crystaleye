@@ -16,8 +16,8 @@ import org.junit.Test;
 import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFException;
 
-import wwmm.crawler.Utils;
 import wwmm.crystaleye.model.impl.ParentCifXmlFileDAO;
+import wwmm.pubcrawler.Utils;
 
 public class ParentCif2CifXmlTaskTest {
 	

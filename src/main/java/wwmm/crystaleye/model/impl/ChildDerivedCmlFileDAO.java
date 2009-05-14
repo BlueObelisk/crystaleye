@@ -1,6 +1,6 @@
 package wwmm.crystaleye.model.impl;
 
-import static wwmm.crawler.CrystalEyeConstants.X_CML;
+import static wwmm.crystaleye.CrystalEyeConstants.X_CML;
 
 import java.io.File;
 import java.util.List;

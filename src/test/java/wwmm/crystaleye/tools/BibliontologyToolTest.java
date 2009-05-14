@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static wwmm.crawler.CrystalEyeConstants.X_DC;
-import static wwmm.crawler.CrystalEyeConstants.X_RDF;
+import static wwmm.crystaleye.CrystalEyeConstants.X_DC;
+import static wwmm.crystaleye.CrystalEyeConstants.X_RDF;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,11 +21,11 @@ import org.apache.commons.httpclient.URIException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import wwmm.crawler.Utils;
-import wwmm.crawler.core.ArticleDetails;
-import wwmm.crawler.core.ArticleReference;
-import wwmm.crawler.core.DOI;
-import wwmm.crawler.core.SupplementaryFileDetails;
+import wwmm.crystaleye.Utils;
+import wwmm.pubcrawler.core.ArticleDetails;
+import wwmm.pubcrawler.core.ArticleReference;
+import wwmm.pubcrawler.core.DOI;
+import wwmm.pubcrawler.core.SupplementaryFileDetails;
 
 public class BibliontologyToolTest {
 

@@ -19,8 +19,8 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
-import wwmm.crawler.BasicHttpClient;
-import wwmm.crawler.Utils;
+import wwmm.pubcrawler.BasicHttpClient;
+import wwmm.pubcrawler.Utils;
 
 /**
  * <p>

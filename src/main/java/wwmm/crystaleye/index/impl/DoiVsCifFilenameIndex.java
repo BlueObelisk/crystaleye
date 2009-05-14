@@ -4,8 +4,8 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crawler.core.DOI;
 import wwmm.crystaleye.index.core.StringAsKeyIndex;
+import wwmm.pubcrawler.core.DOI;
 
 /**
  * <p>
