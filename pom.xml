@@ -163,8 +163,9 @@
 	</dependencyManagement>
 	<distributionManagement>
 		<repository>
-			<id>wwmm</id>
-			<url>scp://wwmm.ch.cam.ac.uk/var/www/maven2</url>
+			<id>wwmm-dav</id>
+			<name>WWMM</name>
+			<url>dav:http://wwmm.ch.cam.ac.uk/maven2</url>
 		</repository>
 	</distributionManagement>
 </project>

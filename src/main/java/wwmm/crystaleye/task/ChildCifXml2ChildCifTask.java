@@ -88,7 +88,7 @@ public class ChildCifXml2ChildCifTask {
 	private CIF getChildCifXml() {
 		ChildCifXmlFileDAO childCifXmlFileDao = new ChildCifXmlFileDAO(storageRoot);
 		File childCifXmlFile = childCifXmlFileDao.getFileFromKeys(primaryKey, childKey);
-		if (childCifXmlFile == null) {
+		if (!childCifXmlFile.exists()) {
 			throw new IllegalStateException("Parent CIFXML file does not exist for primary key: "+primaryKey);
 		}
 		Document childCifXmlDoc = null;

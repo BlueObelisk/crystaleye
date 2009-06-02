@@ -82,15 +82,15 @@ public abstract class ChildPrimaryFileDAO {
 	/**
 	 * <p>
 	 * Returns the child primary file associated with the primary 
-	 * key and child key provided. 
+	 * key and child key provided. NOTE that this does not confirm
+	 * whether or not the file actually exists on the file-system.
 	 * </p>
 	 *  
 	 * @param primaryKey of the primary file you wish returned.
 	 * @param childKey of the primary file you wish returned.
 	 * 
 	 * @return File of the child primary file at the provided 
-	 * primary and child keys. If it does not exist, then null is 
-	 * returned.
+	 * primary and child keys.
 	 */
 	public File getFileFromKeys(int primaryKey, int childKey) {
 		// TODO - note that this is the same method used in ChildSecondaryFileDAO
@@ -100,15 +100,7 @@ public abstract class ChildPrimaryFileDAO {
 					"been set in the implementing subclass of ChildPrimaryFileDAO.");
 		}
 		File childKeyFolder = keyDao.getFolderFromKeys(primaryKey, childKey);
-		if (childKeyFolder == null) {
-			return null;
-		}
-		File file = new File(childKeyFolder, childKey+fileExtension);
-		if (file.exists()) {
-			return file;
-		} else {
-			return null;
-		}
+		return new File(childKeyFolder, childKey+fileExtension);
 	}
 
 }

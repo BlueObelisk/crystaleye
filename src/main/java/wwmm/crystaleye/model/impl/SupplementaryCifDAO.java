@@ -1,6 +1,6 @@
 package wwmm.crystaleye.model.impl;
 
-import static wwmm.pubcrawler.CrawlerConstants.CIF_CONTENT_TYPE;
+import static wwmm.pubcrawler.core.CrawlerConstants.CIF_CONTENT_TYPE;
 
 import java.io.File;
 
@@ -12,7 +12,7 @@ import wwmm.crystaleye.tools.BibliontologyTool;
 import wwmm.pubcrawler.core.ArticleDetails;
 import wwmm.pubcrawler.core.CrawlerHttpClient;
 import wwmm.pubcrawler.core.DOI;
-import wwmm.pubcrawler.core.SupplementaryFileDetails;
+import wwmm.pubcrawler.core.SupplementaryResourceDetails;
 
 /**
  * <p>
@@ -69,7 +69,7 @@ public class SupplementaryCifDAO {
 		// FIXME - need to do cleanup if later file writing fails when
 		// some has already been written?
 		
-		for (SupplementaryFileDetails sfd : ad.getSuppFiles()) {
+		for (SupplementaryResourceDetails sfd : ad.getSupplementaryResources()) {
 			if (!isCifFile(sfd)) {
 				continue;
 			}
@@ -105,7 +105,7 @@ public class SupplementaryCifDAO {
 	 * @return true if the instance is a CifFileDetails, false
 	 * if not.
 	 */
-	private boolean isCifFile(SupplementaryFileDetails sfd) {
+	private boolean isCifFile(SupplementaryResourceDetails sfd) {
 		String contentType = sfd.getContentType();
 		if (contentType.contains(CIF_CONTENT_TYPE)) {
 			return true;

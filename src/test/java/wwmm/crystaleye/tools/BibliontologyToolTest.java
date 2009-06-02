@@ -25,7 +25,7 @@ import wwmm.crystaleye.Utils;
 import wwmm.pubcrawler.core.ArticleDetails;
 import wwmm.pubcrawler.core.ArticleReference;
 import wwmm.pubcrawler.core.DOI;
-import wwmm.pubcrawler.core.SupplementaryFileDetails;
+import wwmm.pubcrawler.core.SupplementaryResourceDetails;
 
 public class BibliontologyToolTest {
 
@@ -157,10 +157,10 @@ public class BibliontologyToolTest {
 		ad.setReference(ar);
 		String title = "The article's title";
 		ad.setTitle(title);
-		List<SupplementaryFileDetails> sfdList = new ArrayList<SupplementaryFileDetails>();
-		SupplementaryFileDetails sfd = new SupplementaryFileDetails(new URI("http://supp.file.com/file.txt", false),
+		List<SupplementaryResourceDetails> sfdList = new ArrayList<SupplementaryResourceDetails>();
+		SupplementaryResourceDetails sfd = new SupplementaryResourceDetails(new URI("http://supp.file.com/file.txt", false),
 				"file.txt", "Link text", "text/plain");
 		sfdList.add(sfd);
-		ad.setSuppFiles(sfdList);
+		ad.setSupplementaryResources(sfdList);
 	}
 }

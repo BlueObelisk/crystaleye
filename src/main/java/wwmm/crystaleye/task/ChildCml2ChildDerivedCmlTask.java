@@ -48,7 +48,7 @@ public class ChildCml2ChildDerivedCmlTask {
 	 */
 	public boolean runTask() {
 		File cmlFile = getCmlFile();
-		if (cmlFile == null) {
+		if (!cmlFile.exists()) {
 			LOG.warn("CML file does not exist for the provided primary and " +
 					"child keys: "+primaryKey+"/"+childKey);
 			return false;

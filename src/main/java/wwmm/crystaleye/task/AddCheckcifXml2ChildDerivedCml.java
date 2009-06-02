@@ -39,7 +39,7 @@ public class AddCheckcifXml2ChildDerivedCml {
 	public boolean runTask() {
 		ChildCheckcifXmlFileDAO checkcifXmlDao = new ChildCheckcifXmlFileDAO(storageRoot);
 		File checkcifXmlFile = checkcifXmlDao.getFileFromKeys(primaryKey, childKey);
-		if (checkcifXmlFile == null) {
+		if (!checkcifXmlFile.exists()) {
 			LOG.warn("CheckCIF XML file does not exist for primary/child keys: "+
 					primaryKey+"/"+childKey);
 			return false;

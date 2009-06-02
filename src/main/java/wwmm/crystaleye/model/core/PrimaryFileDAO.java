@@ -84,13 +84,14 @@ public abstract class PrimaryFileDAO {
 	/**
 	 * <p>
 	 * Returns the primary file associated with the primary key 
-	 * provided. 
+	 * provided. NOTE that this does not confirm whether or not
+	 * the file actually exists in the file-system.
 	 * </p>
 	 *  
 	 * @param primaryKey of the primary file you wish returned.
 	 * 
 	 * @return File of the primary file at the provided primary 
-	 * key. If it does not exist, then null is returned.
+	 * key.
 	 */
 	public File getFileFromKey(int primaryKey) {
 		// TODO - note that this is the same method used in SecondaryFileDAO
@@ -100,15 +101,7 @@ public abstract class PrimaryFileDAO {
 					"been set in the implementing subclass of PrimaryFileDAO.");
 		}
 		File keyFolder = keyDao.getFolderFromKey(primaryKey);
-		if (keyFolder == null) {
-			return null;
-		}
-		File file = new File(keyFolder, primaryKey+fileExtension);
-		if (file.exists()) {
-			return file;
-		} else {
-			return null;
-		}
+		return new File(keyFolder, primaryKey+fileExtension);
 	}
 
 }

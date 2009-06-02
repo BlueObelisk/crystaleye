@@ -49,7 +49,7 @@ public class ChildCifXml2ChildCmlTask {
 	 */
 	public boolean runTask() {
 		File cifXmlFile = getChildCifXmlFile();
-		if (cifXmlFile == null) {
+		if (!cifXmlFile.exists()) {
 			LOG.warn("CIFXML file does not exist for the provided primary and " +
 					"child keys: "+primaryKey+"/"+childKey);
 			return false;
