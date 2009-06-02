@@ -47,7 +47,7 @@ public class ChildCheckcif2ChildCheckcifXmlTask {
 	public boolean runTask() {
 		ChildCheckcifFileDAO checkcifDao = new ChildCheckcifFileDAO(storageRoot);
 		File checkcifFile = checkcifDao.getFileFromKeys(primaryKey, childKey);
-		if (checkcifFile == null) {
+		if (!checkcifFile.exists()) {
 			LOG.warn("CheckCIF file does not exist for primary/child keys: "+
 					primaryKey+"/"+childKey);
 			return false;

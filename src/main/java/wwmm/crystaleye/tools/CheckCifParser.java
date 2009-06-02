@@ -1,7 +1,7 @@
 package wwmm.crystaleye.tools;
 
-import static wwmm.pubcrawler.CrawlerConstants.XHTML_NS;
-import static wwmm.pubcrawler.CrawlerConstants.X_XHTML;
+import static wwmm.pubcrawler.core.CrawlerConstants.XHTML_NS;
+import static wwmm.pubcrawler.core.CrawlerConstants.X_XHTML;
 
 import java.io.BufferedReader;
 import java.io.File;

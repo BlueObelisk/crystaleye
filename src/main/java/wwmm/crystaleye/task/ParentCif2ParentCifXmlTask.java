@@ -52,7 +52,7 @@ public class ParentCif2ParentCifXmlTask {
 	public boolean runTask() {
 		ParentCifFileDAO cifFileDao = new ParentCifFileDAO(storageRoot);
 		File cifFile = cifFileDao.getFileFromKey(primaryKey);
-		if (cifFile == null) {
+		if (!cifFile.exists()) {
 			LOG.warn("Parent CIF file for provided primary key does not exist: "+primaryKey);
 			return false;
 		}

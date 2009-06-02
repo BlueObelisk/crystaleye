@@ -83,7 +83,7 @@ public class PrimaryKeyDAOTest {
 		PrimaryKeyDAO pkd = new PrimaryKeyDAO(storageRoot);
 		int key = 999;
 		File file = pkd.getFolderFromKey(key);
-		assertEquals(null, file);
+		assertEquals(new File(storageRoot, ""+key), file);
 	}
 	
 	@Test

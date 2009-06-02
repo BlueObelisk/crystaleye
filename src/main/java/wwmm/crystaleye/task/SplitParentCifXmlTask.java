@@ -196,7 +196,7 @@ public class SplitParentCifXmlTask {
 	private CIF getParentCIFXML() {
 		ParentCifXmlFileDAO parentCifXmlFileDao = new ParentCifXmlFileDAO(storageRoot);
 		File parentCifXmlFile = parentCifXmlFileDao.getFileFromKey(primaryKey);
-		if (parentCifXmlFile == null) {
+		if (!parentCifXmlFile.exists()) {
 			throw new IllegalStateException("Parent CIFXML file does not exist for primary key: "+primaryKey);
 		}
 		Document parentCifXmlDoc = null;

@@ -51,6 +51,10 @@ public class ChildDerivedCmlFileDAO extends ChildSecondaryFileDAO {
 	 */
 	public Document getDocument(int primaryKey, int childKey) {
 		File cmlFile = getFileFromKeys(primaryKey, childKey);
+		if (!cmlFile.exists()) {
+			LOG.warn("Child derived CML file does not exist for primary/child keys: "+primaryKey+"/"+childKey);
+			return null;
+		}
 		Document cmlDoc = null;
 		try {
 			cmlDoc = Utils.parseCml(cmlFile);

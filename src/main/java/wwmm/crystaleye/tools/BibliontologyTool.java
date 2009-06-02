@@ -25,7 +25,7 @@ import wwmm.crystaleye.Utils;
 import wwmm.pubcrawler.core.ArticleDetails;
 import wwmm.pubcrawler.core.ArticleReference;
 import wwmm.pubcrawler.core.DOI;
-import wwmm.pubcrawler.core.SupplementaryFileDetails;
+import wwmm.pubcrawler.core.SupplementaryResourceDetails;
 
 /**
  * <p>
@@ -193,9 +193,9 @@ public class BibliontologyTool {
 		Element isPartOfEl = createDcElement("isPartOf", uuidStr);
 		articleRdf.appendChild(isPartOfEl);
 
-		List<SupplementaryFileDetails> suppFiles = ad.getSuppFiles();
+		List<SupplementaryResourceDetails> suppFiles = ad.getSupplementaryResources();
 		if (suppFiles != null) {
-			for (SupplementaryFileDetails sfd : suppFiles) {
+			for (SupplementaryResourceDetails sfd : suppFiles) {
 				String suppUrl = sfd.getUriString();
 				Element suppEl = createCrystalEyeElement("hasSupplementaryFile", suppUrl);
 				articleRdf.appendChild(suppEl);

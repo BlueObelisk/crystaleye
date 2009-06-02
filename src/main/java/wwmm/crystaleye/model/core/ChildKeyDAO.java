@@ -38,7 +38,7 @@ public class ChildKeyDAO {
 	 */
 	public int insert(int primaryKey) {
 		File primaryKeyFolder = primaryKeyDao.getFolderFromKey(primaryKey);
-		if (primaryKeyFolder == null) {
+		if (!primaryKeyFolder.exists()) {
 			LOG.warn("Primary key doesn't exist: "+primaryKey);
 			return -1;
 		}
@@ -70,15 +70,7 @@ public class ChildKeyDAO {
 	 */
 	public File getFolderFromKeys(int primaryKey, int childKey) {
 		File primaryKeyFolder = primaryKeyDao.getFolderFromKey(primaryKey);
-		if (primaryKeyFolder == null) {
-			return null;
-		}
-		File childFile = new File(primaryKeyFolder, String.valueOf(childKey));
-		if (!childFile.exists()) {
-			return null;
-		} else {
-			return childFile;
-		}
+		return new File(primaryKeyFolder, String.valueOf(childKey));
 	}
 
 	/**

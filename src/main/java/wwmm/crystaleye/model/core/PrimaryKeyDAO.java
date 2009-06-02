@@ -54,11 +54,7 @@ public class PrimaryKeyDAO {
 	 * @return File where the contents of the primary key are stored.
 	 */
 	public File getFolderFromKey(int key) {
-		File f = new File(storageRoot, String.valueOf(key));
-		if (!f.exists()) {
-			return null;
-		}
-		return f;
+		return new File(storageRoot, String.valueOf(key));
 	}
 
 	/**

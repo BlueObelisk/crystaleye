@@ -44,7 +44,7 @@ public class ChildCif2ChildCheckcifTask {
 	public boolean runTask() {
 		ChildCifFileDAO childCifDao = new ChildCifFileDAO(storageRoot);
 		File childCifFile = childCifDao.getFileFromKeys(primaryKey, childKey);
-		if (childCifFile == null) {
+		if (!childCifFile.exists()) {
 			LOG.warn("Child CIF does not exist for the primary/child keys: "+
 					primaryKey+"/"+childKey);
 			return false;
