@@ -109,7 +109,7 @@ public class ParentCif2ParentCifXmlTask {
 	 */
 	public static void main(String[] args) throws CIFException, IOException {
 		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
-		int primaryKey = 3;
+		int primaryKey = 2;
 		ParentCif2ParentCifXmlTask task = new ParentCif2ParentCifXmlTask(storageRoot, primaryKey);
 		task.runTask();
 	}

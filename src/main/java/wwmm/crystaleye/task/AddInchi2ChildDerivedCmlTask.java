@@ -93,7 +93,7 @@ public class AddInchi2ChildDerivedCmlTask {
 	 */
 	public static void main(String[] args) {
 		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
-		int primaryKey = 3;
+		int primaryKey = 2;
 		int childKey = 1;
 		AddInchi2ChildDerivedCmlTask task = new AddInchi2ChildDerivedCmlTask(storageRoot, primaryKey, childKey);
 		task.runTask();

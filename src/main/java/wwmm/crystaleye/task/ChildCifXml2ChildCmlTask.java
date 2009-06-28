@@ -101,7 +101,7 @@ public class ChildCifXml2ChildCmlTask {
 	 */
 	public static void main(String[] args) throws CIFException, IOException {
 		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
-		int primaryKey = 3;
+		int primaryKey = 2;
 		int childKey = 1;
 		ChildCifXml2ChildCmlTask task = new ChildCifXml2ChildCmlTask(storageRoot, primaryKey, childKey);
 		task.runTask();

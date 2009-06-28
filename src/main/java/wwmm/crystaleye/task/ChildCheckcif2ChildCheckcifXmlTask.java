@@ -6,6 +6,7 @@ import java.io.IOException;
 import nu.xom.Document;
 
 import org.apache.log4j.Logger;
+import org.xmlcml.cif.CIFException;
 
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.model.impl.ChildCheckcifFileDAO;
@@ -67,6 +68,20 @@ public class ChildCheckcif2ChildCheckcifXmlTask {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * <p>
+	 * Main method meant for demonstration purposes only, does not
+	 * require any arguments.
+	 * </p>
+	 */
+	public static void main(String[] args) throws CIFException, IOException {
+		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
+		int primaryKey = 2;
+		int childKey = 1;
+		ChildCheckcif2ChildCheckcifXmlTask task = new ChildCheckcif2ChildCheckcifXmlTask(storageRoot, primaryKey, childKey);
+		task.runTask();
 	}
 
 }

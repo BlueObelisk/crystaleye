@@ -25,6 +25,7 @@ import nu.xom.ParsingException;
 import nu.xom.Serializer;
 import nu.xom.ValidityException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
@@ -40,6 +41,28 @@ import org.xmlcml.cml.base.CMLBuilder;
 public class Utils {
 
 	private static final Logger LOG = Logger.getLogger(Utils.class);
+	
+	/**
+	 * <p>
+	 * Helper for converting file paths into HTTP URIs.  For 
+	 * instance, if you have a file at the path c:/file/is/here.txt
+	 * and you want to convert the c:/file/is/ part to 
+	 * http://www.here.com, then you can use this method. 
+	 * </p>
+	 * 
+	 * @param file - the file you want to create the URI for. 
+	 * @param filePrefix - the part of the file's path that you
+	 * want to change to a HTTP URI.
+	 * @param urlPrefix - the HTTP URI to use in the replacement.
+	 * 
+	 * @return a URI representing the <code>file</code> after part
+	 * of its path has been replaced.
+	 */
+	public static String convertFileUri2Http(File file, String filePrefix, String urlPrefix) {
+		String filepath = FilenameUtils.separatorsToUnix(file.getAbsolutePath());
+		String outDirPath = FilenameUtils.separatorsToUnix(filePrefix);
+		return filepath.replaceAll(outDirPath, urlPrefix);
+	}
 
 	/**
 	 * <p>

@@ -19,7 +19,7 @@ import wwmm.pubcrawler.core.DOI;
  */
 public class PrimaryKeyVsDoiIndex extends PrimaryKeyIndex {
 	
-	public static final String INDEX_FILENAME = "primarykey-doi_index.txt";
+	public static final String INDEX_FILENAME = "primarykey-vs-doi_index.txt";
 	
 	private static final Logger LOG = Logger.getLogger(PrimaryKeyVsDoiIndex.class);
 	

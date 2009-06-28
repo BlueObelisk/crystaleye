@@ -6,12 +6,13 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
+import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.index.impl.DoiVsCifFilenameIndex;
 import wwmm.crystaleye.index.impl.PrimaryKeyVsDoiIndex;
-import wwmm.crystaleye.tools.BibliontologyTool;
 import wwmm.pubcrawler.core.ArticleDetails;
 import wwmm.pubcrawler.core.CrawlerHttpClient;
 import wwmm.pubcrawler.core.DOI;
+import wwmm.pubcrawler.core.OreTool;
 import wwmm.pubcrawler.core.SupplementaryResourceDetails;
 
 /**
@@ -32,11 +33,13 @@ public class SupplementaryCifDAO {
 	private SupplementaryCifMetadataDAO articleMetadataDao;
 	private DoiVsCifFilenameIndex doiVsCifFilenameIndex;
 	private PrimaryKeyVsDoiIndex pKeyVsDoiIndex;
+	private File storageRoot;
+	private String crystaleyeSiteUrl;
 	
 	private static final Logger LOG = Logger.getLogger(SupplementaryCifDAO.class);
 	
-	public SupplementaryCifDAO(File storageRoot) {
-		init(storageRoot);
+	public SupplementaryCifDAO(File storageRoot, String crystaleyeSiteUrl) {
+		init(storageRoot, crystaleyeSiteUrl);
 	}
 	
 	/**
@@ -46,12 +49,18 @@ public class SupplementaryCifDAO {
 	 * </p>
 	 * 
 	 * @param storageRoot - the root folder of the database.
+	 * @param crystaleyeSiteUrl - the URL of the CrystalEye site (e.g.
+	 * at present it is http://wwmm.ch.cam.ac.uk/crystaleye).  This is
+	 * needed to generate ORE (Object Reuse and Exchange) descriptions
+	 * of the articles that the CIFs were attached to.
 	 */
-	private void init(File storageRoot) {
+	private void init(File storageRoot, String crystaleyeSiteUrl) {
 		cifDao = new ParentCifFileDAO(storageRoot);
 		articleMetadataDao = new SupplementaryCifMetadataDAO(storageRoot);
 		doiVsCifFilenameIndex = new DoiVsCifFilenameIndex(storageRoot);
 		pKeyVsDoiIndex = new PrimaryKeyVsDoiIndex(storageRoot);
+		this.crystaleyeSiteUrl = crystaleyeSiteUrl;
+		this.storageRoot = storageRoot;
 	}
 	
 	/**
@@ -81,7 +90,9 @@ public class SupplementaryCifDAO {
 			}
 			String cifContents = new CrawlerHttpClient().getResourceString(sfd.getURI());
 			int primaryKey = cifDao.insert(cifContents);
-			String articleMetadata = new BibliontologyTool(ad).toString();
+			File articleMetadataFile = articleMetadataDao.getFileFromKey(primaryKey);
+			String articleMetadataUrl = Utils.convertFileUri2Http(articleMetadataFile, storageRoot.getAbsolutePath(), crystaleyeSiteUrl);
+			String articleMetadata = new OreTool(articleMetadataUrl, ad).getORE();
 			if (!articleMetadataDao.insert(primaryKey, articleMetadata)) {
 				LOG.warn("Problem inserting article metadata.");
 			}

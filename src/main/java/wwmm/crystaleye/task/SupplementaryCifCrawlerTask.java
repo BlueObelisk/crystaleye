@@ -28,9 +28,9 @@ public class SupplementaryCifCrawlerTask {
 
 	private static final Logger LOG = Logger.getLogger(SupplementaryCifCrawlerTask.class);
 
-	public SupplementaryCifCrawlerTask(CifIssueCrawler crawler, File storageRoot) {
+	public SupplementaryCifCrawlerTask(CifIssueCrawler crawler, File storageRoot, String crystaleyeSiteUrl) {
 		this.crawler = crawler;
-		supplementaryCifDAO = new SupplementaryCifDAO(storageRoot);
+		supplementaryCifDAO = new SupplementaryCifDAO(storageRoot, crystaleyeSiteUrl);
 	}	
 
 	/**
@@ -56,11 +56,12 @@ public class SupplementaryCifCrawlerTask {
 	 * 
 	 */
 	public static void main(String[] args) throws IOException {
+		String crystaleyeSiteUrl = "http://wwmm.ch.cam.ac.uk/crystaleye";
 		String root = "c:/Users/ned24/workspace/crystaleye-data";
 		File storageRoot = new File(root);
 		RscIssueCrawler rscCrawler = new RscIssueCrawler(RscJournal.DALTON_TRANSACTIONS);
 		CifIssueCrawler crawler = new RscCifIssueCrawler(rscCrawler);
-		SupplementaryCifCrawlerTask ct = new SupplementaryCifCrawlerTask(crawler, storageRoot);
+		SupplementaryCifCrawlerTask ct = new SupplementaryCifCrawlerTask(crawler, storageRoot, crystaleyeSiteUrl);
 		ct.crawl();
 	}
 }
