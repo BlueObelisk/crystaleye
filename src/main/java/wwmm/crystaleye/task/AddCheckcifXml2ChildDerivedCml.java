@@ -1,11 +1,13 @@
 package wwmm.crystaleye.task;
 
 import java.io.File;
+import java.io.IOException;
 
 import nu.xom.Document;
 import nu.xom.Element;
 
 import org.apache.log4j.Logger;
+import org.xmlcml.cif.CIFException;
 import org.xmlcml.cml.element.CMLCml;
 
 import wwmm.crystaleye.model.impl.ChildCheckcifXmlFileDAO;
@@ -48,7 +50,6 @@ public class AddCheckcifXml2ChildDerivedCml {
 		try {
 			Document checkcifXmlDoc = Utils.parseXml(checkcifXmlFile);
 			checkcifXmlRootElement = checkcifXmlDoc.getRootElement();
-			checkcifXmlRootElement.detach();
 		} catch (Exception e) {
 			LOG.warn("Problem getting CheckCIF XML root element for file: "+checkcifXmlFile+
 					"\n"+e.getMessage());
@@ -61,12 +62,26 @@ public class AddCheckcifXml2ChildDerivedCml {
 					"keys: "+primaryKey+"/"+childKey);
 			return false;
 		}
-		boolean success = derivedCmlFileDao.insertCheckcifXml(primaryKey, childKey, checkcifXmlRootElement);
+		boolean success = derivedCmlFileDao.insertElementAtRoot(primaryKey, childKey, (Element)checkcifXmlRootElement.copy());
 		if (success) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * <p>
+	 * Main method meant for demonstration purposes only, does not
+	 * require any arguments.
+	 * </p>
+	 */
+	public static void main(String[] args) throws CIFException, IOException {
+		File storageRoot = new File("c:/Users/ned24/workspace/crystaleye-data");
+		int primaryKey = 2;
+		int childKey = 1;
+		AddCheckcifXml2ChildDerivedCml task = new AddCheckcifXml2ChildDerivedCml(storageRoot, primaryKey, childKey);
+		task.runTask();
 	}
 
 }

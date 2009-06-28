@@ -15,7 +15,7 @@ import wwmm.crystaleye.model.core.SecondaryFileDAO;
  */
 public class SupplementaryCifMetadataDAO extends SecondaryFileDAO {
 	
-	public static final String SUPPLEMENTARY_CIF_METADATA_MIME = ".bibliontology.xml";
+	public static final String SUPPLEMENTARY_CIF_METADATA_MIME = ".ore.rdf";
 
 	public SupplementaryCifMetadataDAO(File storageRoot) {
 		super(storageRoot, SUPPLEMENTARY_CIF_METADATA_MIME);

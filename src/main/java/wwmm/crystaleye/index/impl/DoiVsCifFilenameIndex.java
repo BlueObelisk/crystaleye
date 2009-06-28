@@ -19,7 +19,7 @@ import wwmm.pubcrawler.core.DOI;
  */
 public class DoiVsCifFilenameIndex extends StringAsKeyIndex {
 
-	public static final String INDEX_FILENAME = "doi-ciffilename_index.txt";
+	public static final String INDEX_FILENAME = "doi-vs-ciffilename_index.txt";
 
 	private static final Logger LOG = Logger.getLogger(DoiVsCifFilenameIndex.class);
 

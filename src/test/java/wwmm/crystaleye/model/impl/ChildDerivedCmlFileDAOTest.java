@@ -168,7 +168,7 @@ public class ChildDerivedCmlFileDAOTest {
 		int primaryKey = 1;
 		int childKey = 5;
 		Element checkcifXmlRoot = new Element("checkcif");
-		boolean success = dao.insertCheckcifXml(primaryKey, childKey, checkcifXmlRoot);
+		boolean success = dao.insertElementAtRoot(primaryKey, childKey, checkcifXmlRoot);
 		assertTrue(success);
 		File cmlFile = new File(storageRoot, "1/5/5.derived.cml");
 		String cmlStr = Utils.parseCml(cmlFile).toXML();

@@ -274,25 +274,25 @@ public class ChildDerivedCmlFileDAO extends ChildSecondaryFileDAO {
 	
 	/**
 	 * <p>
-	 * Inserts CheckCIF XML into a the 'derived' CML associated with the 
-	 * primary/child keys provided.
+	 * Inserts an XML Element into the root element of the 'derived' 
+	 * CML associated with the primary/child keys provided.
 	 * </p>
 	 * 
-	 * @param primaryKey of the CML file that the CheckCIF XML will be inserted to.
-	 * @param childKey of the CML file that the CheckCIF XML will be inserted to.
-	 * @param CheckCIF XML to be inserted.
+	 * @param primaryKey of the CML file that the Element will be inserted to.
+	 * @param childKey of the CML file that the Element will be inserted to.
+	 * @param element to be inserted.
 	 * 
-	 * @return true if the CheckCIF XML was successfully added to the CML, false
+	 * @return true if the Element was successfully added to the CML, false
 	 * if not.
 	 */
-	public boolean insertCheckcifXml(int primaryKey, int childKey, Element checkcifXmlRoot) {
+	public boolean insertElementAtRoot(int primaryKey, int childKey, Element element) {
 		CMLCml cml = getCml(primaryKey, childKey);
 		if (cml == null) {
 			LOG.warn("Problem getting CMLCml for " +
 					"primary/child keys: "+primaryKey+"/"+childKey);
 			return false;
 		}
-		cml.appendChild(checkcifXmlRoot);
+		cml.appendChild(element);
 		boolean success = update(primaryKey, childKey, Utils.toPrettyXMLString(cml.getDocument()));
 		if (success) {
 			return true;
