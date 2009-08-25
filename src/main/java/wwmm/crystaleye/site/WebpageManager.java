@@ -49,7 +49,6 @@ import org.xmlcml.cml.tools.DisorderTool;
 import org.xmlcml.cml.tools.MoleculeTool;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
@@ -952,7 +951,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			form.writeHTML(sw);
 			formula = sw.toString();
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Unable to write formula HTML", e);
+			throw new RuntimeException("Unable to write formula HTML", e);
 		}
 
 		// check for disorder in the structure, if so then need to indicate this on the page
@@ -999,7 +998,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			form.writeHTML(sw);
 			formula = sw.toString();
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Unable to write formula HTML", e);
+			throw new RuntimeException("Unable to write formula HTML", e);
 		}
 
 		fragCount++;
@@ -1150,7 +1149,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 				}
 				sw.close();
 			} catch (IOException e) {
-				throw new CrystalEyeRuntimeException("Problem writing HTML of formula.", e);
+				throw new RuntimeException("Problem writing HTML of formula.", e);
 			}
 		}
 		moietyS = (moietyS == ".") ? sumS : moietyS;
@@ -1268,7 +1267,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			Utils.getFileFromURL("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/fragsummary.css", displayDir+File.separator+"fragsummary.css");
 			Utils.getFileFromURL("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/placeholder.bmp", displayDir+File.separator+"placeholder.bmp");
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Could not retrieve files for CIF summary display.", e);
+			throw new RuntimeException("Could not retrieve files for CIF summary display.", e);
 		}
 
 		// retrieve data files from issueWriteDir
@@ -1279,7 +1278,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			try {
 				copyDirectory(articleFile, destFile);
 			} catch (IOException e) {
-				throw new CrystalEyeRuntimeException("Error copying directory: "+articleFile.getAbsolutePath()+" to: "+destFile.getAbsolutePath(), e);
+				throw new RuntimeException("Error copying directory: "+articleFile.getAbsolutePath()+" to: "+destFile.getAbsolutePath(), e);
 			}
 		}
 	}
@@ -1304,7 +1303,7 @@ public class WebpageManager extends AbstractManager implements CMLConstants {
 			try {
 				copy(srcDir, dstDir);
 			} catch (Exception e) {
-				throw new CrystalEyeRuntimeException("Problem copying file from "+srcDir.getAbsolutePath()
+				throw new RuntimeException("Problem copying file from "+srcDir.getAbsolutePath()
 						+" to "+dstDir.getAbsolutePath(), e);
 			}
 		}

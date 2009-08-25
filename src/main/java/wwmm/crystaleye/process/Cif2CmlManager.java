@@ -88,7 +88,6 @@ import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CDKUtils;
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
@@ -584,7 +583,7 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 					"contains(.,'_atom_site.id')]");
 					if (mmCifNodes.size() > 0) {
 						System.err.println("CIF is an mmCIF, cannot process: "+file.getAbsolutePath());
-						throw new CrystalEyeRuntimeException("CIF is an mmCIF, cannot process: "+file.getAbsolutePath());
+						throw new RuntimeException("CIF is an mmCIF, cannot process: "+file.getAbsolutePath());
 					}
 				}
 			}
@@ -650,11 +649,11 @@ public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			throw new CrystalEyeRuntimeException("Could not find file "+fileName, e);
+			throw new RuntimeException("Could not find file "+fileName, e);
 		} catch (CIFException e) {
-			throw new CrystalEyeRuntimeException("Could not parse CIF in file "+fileName, e);
+			throw new RuntimeException("Could not parse CIF in file "+fileName, e);
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Could not read file "+fileName, e);
+			throw new RuntimeException("Could not read file "+fileName, e);
 		}
 		return splitCifList;
 	}

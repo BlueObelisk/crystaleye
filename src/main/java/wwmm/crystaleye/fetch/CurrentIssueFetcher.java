@@ -24,7 +24,6 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
@@ -87,14 +86,14 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 					Element yearEl = (Element)years.get(0);
 					yearEl.appendChild(getNewIssueElement(issueNum));
 				} else if (years.size() > 1) {
-					throw new CrystalEyeRuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+".  Cannot continue.");
+					throw new RuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+".  Cannot continue.");
 				} else if (years.size() == 0) {
 					Element yearEl = getNewYearElement(year);
 					journalEl.appendChild(yearEl);
 					yearEl.appendChild(getNewIssueElement(issueNum));
 				}
 			} else if (journals.size() > 1) {
-				throw new CrystalEyeRuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+".  Cannot continue.");
+				throw new RuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+".  Cannot continue.");
 			} else if (journals.size() == 0) {
 				Element journalEl = getNewJournalElement(journalAbbreviation);
 				publisherEl.appendChild(journalEl);
@@ -103,7 +102,7 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 				yearEl.appendChild(getNewIssueElement(issueNum));
 			}
 		} else if (publishers.size() > 1) {
-			throw new CrystalEyeRuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+".  Cannot continue.");
+			throw new RuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+".  Cannot continue.");
 		} else if (publishers.size() == 0) {
 			Element publisherEl = getNewPublisherElement(PUBLISHER_ABBREVIATION);
 			logEl.appendChild(publisherEl);

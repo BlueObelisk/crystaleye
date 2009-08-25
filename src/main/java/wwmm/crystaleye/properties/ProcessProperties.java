@@ -6,8 +6,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.SPLITCIF_REGEX;
 
 import java.io.File;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-
 public class ProcessProperties extends ManyPublisherProperties{
 		
 	// dictionaries
@@ -26,18 +24,18 @@ public class ProcessProperties extends ManyPublisherProperties{
 		// path to cif dictionary
 		this.cifDict=properties.getProperty(CIF_DICT);
 		if (cifDict == null) {
-			throw new CrystalEyeRuntimeException("Could not find entry for "+CIF_DICT+" in properties file.");
+			throw new RuntimeException("Could not find entry for "+CIF_DICT+" in properties file.");
 		}
 		
 		// regex to find CIFs that have been split by CrystalEye
 		this.splitCifRegex = properties.getProperty(SPLITCIF_REGEX);
 		if (splitCifRegex == null) {
-			throw new CrystalEyeRuntimeException("Could not find entry for "+SPLITCIF_REGEX+" in properties file.");
+			throw new RuntimeException("Could not find entry for "+SPLITCIF_REGEX+" in properties file.");
 		}
 		
 		this.spaceGroupXml = properties.getProperty(SPACEGROUP_XML);
 		if (spaceGroupXml == null) {
-			throw new CrystalEyeRuntimeException("Could not find entry for "+SPACEGROUP_XML+" in properties file.");
+			throw new RuntimeException("Could not find entry for "+SPACEGROUP_XML+" in properties file.");
 		}
 	}
 

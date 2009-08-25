@@ -4,8 +4,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.PUBLISHER_ABBREVIATIONS;
 
 import java.io.File;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-
 public class ManyPublisherProperties extends StandardProperties {
 	
 	// publisher information
@@ -21,7 +19,7 @@ public class ManyPublisherProperties extends StandardProperties {
 		// abbreviations of the names of the publishers which we are fetching cifs from
 		this.publisherAbbreviations = properties.getProperty(PUBLISHER_ABBREVIATIONS).split(",");
 		if (publisherAbbreviations == null) {
-			throw new CrystalEyeRuntimeException("Could not find entry for "+publisherAbbreviations+" in properties file.");
+			throw new RuntimeException("Could not find entry for "+publisherAbbreviations+" in properties file.");
 		}
 	}
 

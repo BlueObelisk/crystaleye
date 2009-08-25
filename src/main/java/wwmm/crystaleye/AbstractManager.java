@@ -28,7 +28,7 @@ public abstract class AbstractManager {
 			IOUtils.writePrettyXML(doc, propsPath.getAbsolutePath());
 			LOG.info("Updated "+downloadLogPath+" - "+managerTag+"=true ("+issueCode+")");
 		} else {
-			throw new CrystalEyeRuntimeException("Attempted to update "+downloadLogPath+" but could not locate element ("+issueCode+")");
+			throw new RuntimeException("Attempted to update "+downloadLogPath+" but could not locate element ("+issueCode+")");
 		}
 	}
 
@@ -47,7 +47,7 @@ public abstract class AbstractManager {
 					String issue = issueElement.getAttributeValue("id");
 					Element yearNode = (Element)issueElement.getParent();
 					String year = yearNode.getAttributeValue("id");
-					throw new CrystalEyeRuntimeException("No '"+managerTag+"' element found for "+publisherAbbreviation+" journal "+journalAbbreviation.toUpperCase()+" year "+year+", issue "+issue);
+					throw new RuntimeException("No '"+managerTag+"' element found for "+publisherAbbreviation+" journal "+journalAbbreviation.toUpperCase()+" year "+year+", issue "+issue);
 				} else if (managerElements.size() == 1) {
 					String value = managerElements.get(0).getAttributeValue(VALUE);
 					if ("true".equalsIgnoreCase(value)) {

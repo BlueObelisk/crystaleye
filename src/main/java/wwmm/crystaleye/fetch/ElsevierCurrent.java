@@ -14,7 +14,6 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
@@ -42,7 +41,7 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 		if ("polyhedron".equals(journalAbbreviation)) {
 			currentIssueUrl += "02775387";
 		} else {
-			throw new CrystalEyeRuntimeException("Unrecognised "+publisherAbbreviation+" journal: "+journalAbbreviation);
+			throw new RuntimeException("Unrecognised "+publisherAbbreviation+" journal: "+journalAbbreviation);
 		}
 		Document currentIssueDoc = IOUtils.parseWebPageMinusComments(currentIssueUrl);
 		Nodes titleNodes = currentIssueDoc.query(".//x:title", X_XHTML);

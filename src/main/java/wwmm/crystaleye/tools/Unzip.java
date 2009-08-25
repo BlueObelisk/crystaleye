@@ -12,9 +12,7 @@ import java.util.zip.ZipFile;
 
 public class Unzip {
 
-	public static final void copyInputStream(InputStream in, OutputStream out)
-	throws IOException
-	{
+	public static final void copyInputStream(InputStream in, OutputStream out) throws IOException {
 		byte[] buffer = new byte[1024];
 		int len;
 
