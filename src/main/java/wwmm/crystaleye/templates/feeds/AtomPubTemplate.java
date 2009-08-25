@@ -8,7 +8,7 @@ import java.util.Date;
 
 import nu.xom.Document;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.site.feeds.AtomPubFeed;
+import wwmm.crystaleye.site.feeds.AtomArchiveFeed;
 
 public class AtomPubTemplate {
 
@@ -25,7 +25,7 @@ public class AtomPubTemplate {
 		this.link = link;
 	}
 
-	public AtomPubFeed getFeedSkeleton() {
+	public AtomArchiveFeed getFeedSkeleton() {
 		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat(CRYSTALEYE_DATE_FORMAT);
 		String dNow = formatter.format(date);
@@ -40,6 +40,6 @@ public class AtomPubTemplate {
 		sb.append("<id>"+link+"</id>");
 		sb.append("</feed>");
 		Document feed = IOUtils.parseXmlFile(new StringReader(sb.toString()));
-		return new AtomPubFeed(feed);
+		return new AtomArchiveFeed(feed);
 	}
 }

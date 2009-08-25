@@ -33,9 +33,9 @@ import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.templates.feeds.AtomPubTemplate;
 
-public class AtomPubManager extends AbstractManager implements CMLConstants {
+public class AtomArchiveManager extends AbstractManager implements CMLConstants {
 	
-	private static final Logger LOG = Logger.getLogger(AtomPubManager.class);
+	private static final Logger LOG = Logger.getLogger(AtomArchiveManager.class);
 
 	public static final String CURRENT_FEED_NAME = "feed.xml";
 	public static final String FEED_TITLE = "CrystalEye:  All Structures";
@@ -45,11 +45,11 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 
 	private SiteProperties properties;
 
-	public AtomPubManager(File propertiesFile) {
+	public AtomArchiveManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
 	}
 
-	public AtomPubManager(String propertiesPath) {
+	public AtomArchiveManager(String propertiesPath) {
 		this(new File(propertiesPath));
 	}
 
@@ -104,9 +104,9 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 
 		String currentFeedPath = properties.getAtomPubRootDir()+File.separator+CURRENT_FEED_NAME;
 		File currentFile = new File(currentFeedPath);
-		AtomPubFeed a = null;
+		AtomArchiveFeed a = null;
 		if (currentFile.exists()) {
-			a = new AtomPubFeed(currentFile);
+			a = new AtomArchiveFeed(currentFile);
 		} else {
 			AtomPubTemplate tp = new AtomPubTemplate(FEED_TITLE, FEED_SUBTITLE, FEED_AUTHOR, FEED_LINK);
 			a = tp.getFeedSkeleton();
@@ -114,7 +114,7 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 		updateFeeds(a, fileList, 0); 
 	}
 
-	public void updateFeeds(AtomPubFeed currentFeed, List<File> fileList, int position) {		
+	public void updateFeeds(AtomArchiveFeed currentFeed, List<File> fileList, int position) {		
 		Map<UUID, File> uuidMap = new HashMap<UUID, File>();
 		int MAX_ENTRIES = properties.getAtomPubFeedMaxEntries();
 		int entriesLeft = -1;
@@ -218,9 +218,9 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 			writePath = properties.getAtomPubRootDir()+File.separator+CURRENT_FEED_NAME;
 			String currentFeedUrl = properties.getAtomPubRootUrl()+CURRENT_FEED_NAME;
 			currentFeed.setId(currentFeedUrl);
-			currentFeed.setLinkElement(AtomPubFeed.SELF_REL, currentFeedUrl);
+			currentFeed.setLinkElement(AtomArchiveFeed.SELF_REL, currentFeedUrl);
 		} else {
-			currentFeed.setLinkElement(AtomPubFeed.SELF_REL, properties.getAtomPubRootUrl()+getArchiveFeedName(penultimateNum+1));
+			currentFeed.setLinkElement(AtomArchiveFeed.SELF_REL, properties.getAtomPubRootUrl()+getArchiveFeedName(penultimateNum+1));
 			currentFeed.setId(properties.getAtomPubRootUrl()+getArchiveFeedName(penultimateNum+1));
 			writePath = getArchiveFeedPath(penultimateNum+1);
 		}
@@ -263,8 +263,8 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 	public void addNextArchiveElementFeed(int num) {
 		// get last archived feed and add a 'next-archive' link
 		String lastArchivePath = getArchiveFeedPath(num);
-		AtomPubFeed a = new AtomPubFeed(new File(lastArchivePath));
-		a.setLinkElement(AtomPubFeed.NEXT_ARCHIVE_REL, getArchiveFeedUrl(num+1));
+		AtomArchiveFeed a = new AtomArchiveFeed(new File(lastArchivePath));
+		a.setLinkElement(AtomArchiveFeed.NEXT_ARCHIVE_REL, getArchiveFeedUrl(num+1));
 		IOUtils.writePrettyXML(a.getFeed(), lastArchivePath);
 	}
 
@@ -307,7 +307,7 @@ public class AtomPubManager extends AbstractManager implements CMLConstants {
 	}
 
 	public static void main(String[] args) {
-		AtomPubManager d = new AtomPubManager("e:/data-test/docs/cif-flow-props.txt");
+		AtomArchiveManager d = new AtomArchiveManager("e:/data-test/docs/cif-flow-props.txt");
 		d.execute();
 	}
 }
