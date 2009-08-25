@@ -31,7 +31,7 @@ import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
-import wwmm.crystaleye.templates.feeds.AtomPubTemplate;
+import wwmm.crystaleye.templates.feeds.AtomArchiveTemplate;
 
 public class AtomArchiveManager extends AbstractManager implements CMLConstants {
 	
@@ -108,7 +108,7 @@ public class AtomArchiveManager extends AbstractManager implements CMLConstants 
 		if (currentFile.exists()) {
 			a = new AtomArchiveFeed(currentFile);
 		} else {
-			AtomPubTemplate tp = new AtomPubTemplate(FEED_TITLE, FEED_SUBTITLE, FEED_AUTHOR, FEED_LINK);
+			AtomArchiveTemplate tp = new AtomArchiveTemplate(FEED_TITLE, FEED_SUBTITLE, FEED_AUTHOR, FEED_LINK);
 			a = tp.getFeedSkeleton();
 		}
 		updateFeeds(a, fileList, 0); 
@@ -120,7 +120,7 @@ public class AtomArchiveManager extends AbstractManager implements CMLConstants 
 		int entriesLeft = -1;
 		if (currentFeed == null) {
 			entriesLeft = MAX_ENTRIES;
-			AtomPubTemplate tp = new AtomPubTemplate(FEED_TITLE, FEED_SUBTITLE, FEED_AUTHOR, FEED_LINK);
+			AtomArchiveTemplate tp = new AtomArchiveTemplate(FEED_TITLE, FEED_SUBTITLE, FEED_AUTHOR, FEED_LINK);
 			currentFeed = tp.getFeedSkeleton();
 		} else {
 			entriesLeft = MAX_ENTRIES-currentFeed.getEntries().size();

@@ -10,14 +10,14 @@ import nu.xom.Document;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.site.feeds.AtomArchiveFeed;
 
-public class AtomPubTemplate {
+public class AtomArchiveTemplate {
 
 	String title;
 	String subTitle;
 	String author;
 	String link;
 
-	public AtomPubTemplate(String title, String subTitle, String author, String link) {
+	public AtomArchiveTemplate(String title, String subTitle, String author, String link) {
 		super();
 		this.title = title;
 		this.subTitle = subTitle;
