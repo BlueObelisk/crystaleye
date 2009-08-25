@@ -1,4 +1,4 @@
-package wwmm.crystaleye.templates.webpages;
+package wwmm.crystaleye.site.templates;
 
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
 import static wwmm.crystaleye.CrystalEyeConstants.RAW_CML_MIME;

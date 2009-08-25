@@ -1,4 +1,4 @@
-package wwmm.crystaleye.templates.webpages;
+package wwmm.crystaleye.site.templates;
 
 import java.io.File;
 import java.util.ArrayList;

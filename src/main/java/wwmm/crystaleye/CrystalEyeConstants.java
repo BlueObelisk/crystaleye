@@ -108,7 +108,7 @@ public interface CrystalEyeConstants {
 	public static final String NO_BONDS_OR_CHARGES_FLAG_DICTREF = "ned24:noBondsOrChargesSet";
 	
 	/*
-	 * RSS/CMLRSS constants
+	 * RSS constants
 	 */
 	public static final String RSS_ALL_DIR_NAME = "all";
 	public static final String RSS_JOURNAL_DIR_NAME = "journal";
@@ -117,9 +117,6 @@ public interface CrystalEyeConstants {
 	public static final String RSS_CLASS_DIR_NAME = "class";
 	
 	public static final String RSS_DESC_VALUE_PREFIX = "CrystalEye summary of ";
-	public static final String CMLRSS_DESC_VALUE_PREFIX = "CrystalEye CMLRSS summary of ";
-	public static final String RSS_DIR_NAME = "rss";
-	public static final String CMLRSS_DIR_NAME = "cmlrss";
 	
 	public static final String FEED_FILE_NAME = "feed.xml";
 	
