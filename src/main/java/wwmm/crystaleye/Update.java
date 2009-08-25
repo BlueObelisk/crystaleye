@@ -132,8 +132,6 @@ public class Update implements CMLConstants {
 		smi.execute();
 		AtomArchiveManager ap = new AtomArchiveManager(propsPath);
 		ap.execute();
-		// before updating the RSS feeds, go through them all and delete any entries over x days old
-		// new RSSArchiver().deleteOldFeedEntries("xml", properties.getRssWriteDir(), 14);
 		RSSManager rss = new RSSManager(propsPath);
 		rss.execute();
 	}
