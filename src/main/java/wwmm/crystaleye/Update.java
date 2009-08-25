@@ -13,10 +13,9 @@ import wwmm.crystaleye.process.Cif2CmlManager;
 import wwmm.crystaleye.process.Cml2RdfManager;
 import wwmm.crystaleye.site.CellParamsManager;
 import wwmm.crystaleye.site.DoiListManager;
+import wwmm.crystaleye.site.RSSManager;
 import wwmm.crystaleye.site.SmilesListManager;
 import wwmm.crystaleye.site.WebpageManager;
-import wwmm.crystaleye.site.feeds.AtomArchiveManager;
-import wwmm.crystaleye.site.feeds.RSSManager;
 
 public class Update implements CMLConstants {
 
@@ -98,10 +97,6 @@ public class Update implements CMLConstants {
 				SmilesListManager smi = new SmilesListManager(propsPath);
 				smi.execute();
 			}
-			if (cl.hasOption("atompub")) {
-				AtomArchiveManager ap = new AtomArchiveManager(propsPath);
-				ap.execute();
-			}
 			if (cl.hasOption("rss")) {
 				RSSManager rss = new RSSManager(propsPath);
 				rss.execute();
@@ -130,8 +125,6 @@ public class Update implements CMLConstants {
 		*/
 		SmilesListManager smi = new SmilesListManager(propsPath);
 		smi.execute();
-		AtomArchiveManager ap = new AtomArchiveManager(propsPath);
-		ap.execute();
 		RSSManager rss = new RSSManager(propsPath);
 		rss.execute();
 	}

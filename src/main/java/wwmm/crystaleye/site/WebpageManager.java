@@ -59,11 +59,11 @@ import wwmm.crystaleye.CrystalEyeUtils.DisorderType;
 import wwmm.crystaleye.CrystalEyeUtils.FragmentType;
 import wwmm.crystaleye.process.Cif2CmlManager;
 import wwmm.crystaleye.properties.SiteProperties;
-import wwmm.crystaleye.templates.webpages.CifSummaryToc;
-import wwmm.crystaleye.templates.webpages.FragmentSummaryToc;
-import wwmm.crystaleye.templates.webpages.MoietySummaryToc;
-import wwmm.crystaleye.templates.webpages.SingleCifSummary;
-import wwmm.crystaleye.templates.webpages.SingleStructureSummary;
+import wwmm.crystaleye.site.templates.CifSummaryToc;
+import wwmm.crystaleye.site.templates.FragmentSummaryToc;
+import wwmm.crystaleye.site.templates.MoietySummaryToc;
+import wwmm.crystaleye.site.templates.SingleCifSummary;
+import wwmm.crystaleye.site.templates.SingleStructureSummary;
 
 public class WebpageManager extends AbstractManager implements CMLConstants {
 	

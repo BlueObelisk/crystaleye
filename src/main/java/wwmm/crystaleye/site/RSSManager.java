@@ -1,5 +1,6 @@
-package wwmm.crystaleye.site.feeds;
+package wwmm.crystaleye.site;
 
+import static wwmm.crystaleye.CrystalEyeConstants.ATOM_1_NS;
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
 import static wwmm.crystaleye.CrystalEyeConstants.FEED_FILE_NAME;
@@ -9,9 +10,10 @@ import static wwmm.crystaleye.CrystalEyeConstants.RSS_ATOMS_DIR_NAME;
 import static wwmm.crystaleye.CrystalEyeConstants.RSS_BOND_DIR_NAME;
 import static wwmm.crystaleye.CrystalEyeConstants.RSS_CLASS_DIR_NAME;
 import static wwmm.crystaleye.CrystalEyeConstants.RSS_DESC_VALUE_PREFIX;
-import static wwmm.crystaleye.CrystalEyeConstants.RSS_DIR_NAME;
 import static wwmm.crystaleye.CrystalEyeConstants.RSS_JOURNAL_DIR_NAME;
+import static wwmm.crystaleye.CrystalEyeConstants.SMALL_PNG_MIME;
 import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
+import static wwmm.crystaleye.CrystalEyeConstants.XHTML_NS;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,8 +26,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import nu.xom.Attribute;
+import nu.xom.Element;
 import nu.xom.Nodes;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.base.CMLConstants;
@@ -35,6 +40,7 @@ import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.molutil.ChemicalElement;
 
+import wwmm.atomarchiver.AtomArchiveFeed;
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
@@ -43,38 +49,25 @@ import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.properties.SiteProperties;
 
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndLinkImpl;
-
 public class RSSManager extends AbstractManager implements CMLConstants {
-	
-	public enum FeedType {
-		ATOM_1,
-		RSS_1,
-		RSS_2;
-	}
-	
+
 	private static final Logger LOG = Logger.getLogger(RSSManager.class);
 
 	private SiteProperties properties;
 
-	String publisherAbbreviation;
-	String publisherTitle;
-	String journalAbbreviation;
-	String journalTitle;
-	String year;
-	String issueNum;
+	private String publisherAbbreviation;
+	private String publisherTitle;
+	private String journalAbbreviation;
+	private String journalTitle;
+	private String year;
+	private String issueNum;
 
-	String rootFeedsDir;
-	String rootWebFeedsDir;
-	String[] feedTypes;
-	String[] urlSafeFeedTypes;
-	String summaryWriteDir;
-	String webSummaryWriteDir;
-
-	String webJournalDirPath;
-
-	String author = "Chris Talbot";
+	private String rootFeedsDir;
+	private String rootWebFeedsDir;
+	private String summaryWriteDir;
+	private String webSummaryWriteDir;
+	private String webJournalDirPath;
+	private String author = "Chris Talbot";
 
 	public RSSManager() {
 		;
@@ -93,8 +86,6 @@ public class RSSManager extends AbstractManager implements CMLConstants {
 
 		rootFeedsDir = properties.getRssWriteDir();
 		rootWebFeedsDir = properties.getRootWebFeedsDir();
-		feedTypes = properties.getFeedTypes();
-		urlSafeFeedTypes = properties.getUrlSafeFeedTypes();
 		summaryWriteDir = properties.getSummaryWriteDir();
 		webSummaryWriteDir = properties.getWebSummaryWriteDir();		
 	}
@@ -136,12 +127,12 @@ public class RSSManager extends AbstractManager implements CMLConstants {
 			fileList = CrystalEyeUtils.getSummaryDirFileList(issueWriteDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
 			if (fileList.size() > 0) {
 				webJournalDirPath = webSummaryWriteDir+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+issueNum;
-				updateAllOtherRSSFeeds(fileList);
+				updateRSSFeeds(fileList);
 			}
 		}
 	}	
 
-	private void updateAllOtherRSSFeeds(List<File> fileList) {
+	private void updateRSSFeeds(List<File> fileList) {
 		Map<String, List<File>> allMap = new HashMap<String, List<File>>();
 		Map<String, List<File>> atomMap = new HashMap<String, List<File>>();
 		Map<String, List<File>> bondMap = new HashMap<String, List<File>>();
@@ -207,7 +198,7 @@ public class RSSManager extends AbstractManager implements CMLConstants {
 			}
 
 			// process classes
-			Nodes classNodes = cml.query(".//cml:scalar[@dictRef='iucr:compoundClass']", X_CML);
+			Nodes classNodes = cml.query(".//cml:scalar[@dictRef='iucr:compoundClass']", CML_XPATH);
 			String className = null;
 			if (classNodes.size() == 1) {
 				className = classNodes.get(0).getValue();
@@ -255,7 +246,7 @@ public class RSSManager extends AbstractManager implements CMLConstants {
 
 	private void updateOtherFeeds(Map<String, List<File>> map) {
 		for (Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
-			List<SyndEntry> entryList = new ArrayList<SyndEntry>(map.size());
+			List<wwmm.atomarchiver.AtomEntry> entryList = new ArrayList<wwmm.atomarchiver.AtomEntry>(map.size());
 			Map.Entry mapEntry = (Map.Entry)it.next();
 			String id = (String)mapEntry.getKey();
 			List<File> cmlFileList = (List<File>)mapEntry.getValue();
@@ -274,12 +265,12 @@ public class RSSManager extends AbstractManager implements CMLConstants {
 				cifName = cifName.replaceAll("sup[\\d*]", "");	
 				String articleId = cmlFile.getParentFile().getParentFile().getName();
 
-				Nodes nodes = cml.query(".//cml:scalar[@dictRef=\"idf:doi\"]", X_CML);
+				Nodes nodes = cml.query(".//cml:scalar[@dictRef=\"idf:doi\"]", CML_XPATH);
 				String doi = "";
 				if (nodes.size() != 0) {
 					doi = nodes.get(0).getValue();
 				}						
-				Nodes titleNodes = cml.query(".//cml:scalar[@dictRef='iucr:_publ_section_title']", X_CML);
+				Nodes titleNodes = cml.query(".//cml:scalar[@dictRef='iucr:_publ_section_title']", CML_XPATH);
 				String title = "";
 				if (titleNodes.size() != 0) {
 					title = titleNodes.get(0).getValue();
@@ -290,53 +281,117 @@ public class RSSManager extends AbstractManager implements CMLConstants {
 				String entryLink = webJournalDirPath+"/data/"+articleId+"/"+cifId+"/"+cifId+".cif.summary.html";
 				String cmlLink = webJournalDirPath+"/data/"+articleId+"/"+cifId+"/"+cifId+COMPLETE_CML_MIME;
 
-				List<SyndLinkImpl> otherLinks = new ArrayList<SyndLinkImpl>(2);
-				SyndLinkImpl cmlLinkImpl = new SyndLinkImpl();
-				cmlLinkImpl.setHref(cmlLink);
-				cmlLinkImpl.setHreflang("en");
-				cmlLinkImpl.setRel("enclosure");
-				otherLinks.add(cmlLinkImpl);
-				if ("".equals(title)) { 
-					title = "No title supplied";
+				wwmm.atomarchiver.AtomEntry entry = new wwmm.atomarchiver.AtomEntry();
+				entry.setTitle(title);
+				entry.setLinkUrl(entryLink);
+				entry.setIdWithRandomUUID();
+				entry.setSummary(rssDescValue);
+				entry.setAuthor(author);
+				wwmm.atomarchiver.AtomEnclosure cmlEnc = new wwmm.atomarchiver.AtomEnclosure();
+				List<wwmm.atomarchiver.AtomEnclosure> encList = new ArrayList<wwmm.atomarchiver.AtomEnclosure>(1);
+				cmlEnc.setUrl(cmlLink);
+				cmlEnc.setLength((int)cmlFile.length());
+				cmlEnc.setType("chemical/x-cml");
+				cmlEnc.setTitle("Crystal structure data in CML");
+				encList.add(cmlEnc);
+				
+				List<String> pngPathList = new ArrayList<String>();
+				for (File f : cmlFile.getParentFile().listFiles()) {
+					String pngPath = f.getAbsolutePath();
+					if (pngPath.endsWith(SMALL_PNG_MIME)) {
+						pngPathList.add(pngPath);
+					}
 				}
-				SyndEntry entry = RSSHandler.createEntry(title, entryLink, otherLinks, rssDescValue, author);
+				if (pngPathList.size() > 0) {
+					List<Element> cs = new ArrayList<Element>(1);
+					Element content = createEntryHtmlContent(pngPathList);
+					cs.add(content);
+					entry.setOtherContent(cs);
+				}
+				for (String pngPath : pngPathList) {
+					wwmm.atomarchiver.AtomEnclosure pngEnc = new wwmm.atomarchiver.AtomEnclosure();
+					pngEnc.setUrl(dataPathToUrl(pngPath));
+					pngEnc.setTitle("Moiety 2D structure diagram");
+					pngEnc.setLength((int)new File(pngPath).length());
+					pngEnc.setType("image/png");
+					encList.add(pngEnc);
+				}
+				entry.setEnclosures(encList);
 				entryList.add(entry);
 			}
-			for (int i = 0; i < feedTypes.length; i++) {
-				String feedType = urlSafeFeedTypes[i];
-				FeedType type = getFeedType(feedTypes[i]);
-				String rssFeedPostfix = "";
-				if (id.length() <= 2) {
-					rssFeedPostfix = "/"+RSS_ATOMS_DIR_NAME+"/"+id+"/"+RSS_DIR_NAME+"/"+feedType+"/"+FEED_FILE_NAME;
-				} else if (id.contains("-")) {
-					rssFeedPostfix = "/"+RSS_BOND_DIR_NAME+"/"+id+"/"+RSS_DIR_NAME+"/"+feedType+"/"+FEED_FILE_NAME;
-				} else if (id.equals(CompoundClass.ORGANIC.toString()) || id.equals(CompoundClass.INORGANIC.toString()) || 
-						id.equals(CompoundClass.ORGANOMETALLIC.toString())) {
-					rssFeedPostfix = "/"+RSS_CLASS_DIR_NAME+"/"+id+"/"+RSS_DIR_NAME+"/"+feedType+"/"+FEED_FILE_NAME;
-				} else if ("journal".equals(id)) {
-					rssFeedPostfix = "/"+RSS_JOURNAL_DIR_NAME+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+RSS_DIR_NAME+"/"+feedType+"/"+FEED_FILE_NAME;
-				} else if ("all".equals(id)) {
-					rssFeedPostfix = "/"+RSS_ALL_DIR_NAME+"/"+RSS_DIR_NAME+"/"+feedType+"/"+FEED_FILE_NAME;
-				} else {
-					throw new RuntimeException("Should never reach here.");
-				}	
-				String rssPath = rootFeedsDir+rssFeedPostfix;
-				new RSSHandler(rssPath, entryList).addEntries();
-			}
+			
+			String rssFeedPostfix = "";
+			String feedTitle = "";
+			String feedSubtitle = "CrystalEye: summarizing recently published crystallography.";
+			if (id.length() <= 2) {
+				rssFeedPostfix = "/"+RSS_ATOMS_DIR_NAME+"/"+id+"/"+FEED_FILE_NAME;
+				feedTitle = getElementFeedTitle(id);
+			} else if (id.contains("-")) {
+				rssFeedPostfix = "/"+RSS_BOND_DIR_NAME+"/"+id+"/"+FEED_FILE_NAME;
+				feedTitle = getBondFeedTitle(id);
+			} else if (id.equals(CompoundClass.ORGANIC.toString()) || id.equals(CompoundClass.INORGANIC.toString()) || 
+					id.equals(CompoundClass.ORGANOMETALLIC.toString())) {
+				rssFeedPostfix = "/"+RSS_CLASS_DIR_NAME+"/"+id+"/"+FEED_FILE_NAME;
+				feedTitle = getCompoundClassFeedTitle(id);
+			} else if ("journal".equals(id)) {
+				rssFeedPostfix = "/"+RSS_JOURNAL_DIR_NAME+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+FEED_FILE_NAME;
+				feedTitle = getJournalFeedTitle(publisherTitle, journalTitle);
+			} else if ("all".equals(id)) {
+				rssFeedPostfix = "/"+RSS_ALL_DIR_NAME+"/"+FEED_FILE_NAME;
+				feedTitle = getAllFeedTitle();
+			} else {
+				throw new RuntimeException("BUG: should never reach here.");
+			}	
+			String feedFilepath = rootFeedsDir+rssFeedPostfix;
+			File feedFile = new File(feedFilepath);
+			String feedUrl = rootWebFeedsDir+rssFeedPostfix;
+			AtomArchiveFeed archiveFeed = new AtomArchiveFeed();
+			archiveFeed.initFeedWithRandomUuidAsId(feedFile, feedUrl, feedTitle, feedSubtitle, author);
+			archiveFeed.addEntries(feedFile, entryList);
 		}
 
 	}
-
-	private FeedType getFeedType(String feedType) {
-		if ("rss_1.0".equals(feedType)) {
-			return FeedType.RSS_1;
-		} else if ("rss_2.0".equals(feedType)) {
-			return FeedType.RSS_2;
-		} else if ("atom_1.0".equals(feedType)) {
-			return FeedType.ATOM_1;
-		} else {
-			throw new RuntimeException("RSS type "+feedType+" not supported.");
+	
+	private Element createEntryHtmlContent(List<String> pngPathList) {
+		Element content = new Element("content", ATOM_1_NS);
+		content.addAttribute(new Attribute("type", "xhtml"));	
+		Element div = new Element("div", XHTML_NS);
+		content.appendChild(div);
+		for (String s : pngPathList) {
+			Element img = new Element("img", XHTML_NS);
+			div.appendChild(img);
+			img.addAttribute(new Attribute("src", dataPathToUrl(s)));
 		}
+		return content;
+	}
+	
+	private String dataPathToUrl(String path) {
+		String dir = properties.getSummaryWriteDir();
+		String webDir = properties.getWebSummaryWriteDir();
+		dir = FilenameUtils.separatorsToUnix(dir);
+		webDir = FilenameUtils.separatorsToUnix(webDir);
+		path = FilenameUtils.separatorsToUnix(path);
+		return path.replaceAll(dir, webDir);
+	}
+	
+	private String getAllFeedTitle() {
+		return "CrystalEye: all structures";
+	}
+	
+	private String getJournalFeedTitle(String publisher, String journal) {
+		return "CrystalEye: structures from "+publisher+", "+journal;
+	}
+	
+	private String getCompoundClassFeedTitle(String clazz) {
+		return "CrystalEye: "+clazz+" structures";
+	}
+	
+	private String getElementFeedTitle(String element) {
+		return "CrystalEye: structures containing "+element; 
+	}
+	
+	private String getBondFeedTitle(String bond) {
+		return "CrystalEye: Structures containing bonds of "+bond;
 	}
 
 	private String cifTitle2String(String title) {
@@ -352,8 +407,7 @@ public class RSSManager extends AbstractManager implements CMLConstants {
 	}
 
 	public static void main(String[] args) {
-		//RssManager rss = new RssManager("e:/crystaleye-test/docs/cif-flow-props.txt");
-		RSSManager rss = new RSSManager("e:/data-test/docs/cif-flow-props.txt");
+		RSSManager rss = new RSSManager("c:/Users/ned24/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
 		rss.execute();
 	}
 }

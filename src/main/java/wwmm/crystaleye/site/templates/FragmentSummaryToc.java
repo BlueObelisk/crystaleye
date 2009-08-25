@@ -1,4 +1,4 @@
-package wwmm.crystaleye.templates.webpages;
+package wwmm.crystaleye.site.templates;
 
 public class FragmentSummaryToc {
 	

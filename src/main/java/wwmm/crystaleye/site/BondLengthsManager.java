@@ -68,9 +68,9 @@ import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.process.Cif2CmlManager;
 import wwmm.crystaleye.properties.SiteProperties;
-import wwmm.crystaleye.templates.webpages.BondLengthElementIndex;
-import wwmm.crystaleye.templates.webpages.BondLengthIndex;
-import wwmm.crystaleye.templates.webpages.CifSummaryToc;
+import wwmm.crystaleye.site.templates.BondLengthElementIndex;
+import wwmm.crystaleye.site.templates.BondLengthIndex;
+import wwmm.crystaleye.site.templates.CifSummaryToc;
 
 public class BondLengthsManager extends AbstractManager implements CMLConstants {
 	

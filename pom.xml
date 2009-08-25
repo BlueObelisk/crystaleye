@@ -190,6 +190,12 @@
 			<version>2.4</version>
 			<optional>true</optional>
 		</dependency>
+        <dependency>
+        	<groupId>wwmm</groupId>
+        	<artifactId>atom-archiver</artifactId>
+        	<version>0.1</version>
+        	<scope>compile</scope>
+        </dependency>
 	</dependencies>
 	<distributionManagement>
 		<repository>
