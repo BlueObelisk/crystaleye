@@ -91,11 +91,12 @@ import wwmm.crystaleye.CDKUtils;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.InchiTool;
 import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.properties.ProcessProperties;
+import wwmm.crystaleye.tools.CheckCifParser;
+import wwmm.crystaleye.tools.InchiTool;
 
 public class Cif2CmlManager extends AbstractManager implements CMLConstants {
 

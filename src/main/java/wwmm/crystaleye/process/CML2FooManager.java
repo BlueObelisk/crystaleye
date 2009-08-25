@@ -58,12 +58,12 @@ import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CDKUtils;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.InchiTool;
 import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.properties.ProcessProperties;
-import wwmm.crystaleye.site.Cml2Png;
+import wwmm.crystaleye.tools.Cml2Png;
+import wwmm.crystaleye.tools.InchiTool;
 
 public class CML2FooManager extends AbstractManager implements CMLConstants {
 	

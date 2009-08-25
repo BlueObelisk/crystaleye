@@ -5,7 +5,7 @@
  * Peter Corbett, 9/12/2005
  */
 
-package wwmm.crystaleye.site;
+package wwmm.crystaleye.tools;
 
 import java.awt.Color;
 import java.awt.Dimension;
