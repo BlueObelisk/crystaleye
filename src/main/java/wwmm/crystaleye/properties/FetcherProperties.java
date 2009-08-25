@@ -4,8 +4,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.SLEEP_MAX;
 
 import java.io.File;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
-
 public class FetcherProperties extends StandardProperties {
 	
 	// sleeping (zzz)
@@ -20,7 +18,7 @@ public class FetcherProperties extends StandardProperties {
 		// maximum time to sleep between webpage fetches
 		this.sleepMax=properties.getProperty(SLEEP_MAX);
 		if (sleepMax == null) {
-			throw new CrystalEyeRuntimeException("Could not find entry for "+SLEEP_MAX+" in properties file.");
+			throw new RuntimeException("Could not find entry for "+SLEEP_MAX+" in properties file.");
 		}
 	}
 

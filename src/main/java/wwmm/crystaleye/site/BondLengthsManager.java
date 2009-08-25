@@ -60,7 +60,6 @@ import org.xmlcml.cml.tools.MoleculeTool;
 import org.xmlcml.euclid.Point3;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
@@ -737,7 +736,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 					processDiscreteMoleculeCrystal(c);
 				}
 			} else {
-				throw new CrystalEyeRuntimeException("Invalid compound class: "+cc);
+				throw new RuntimeException("Invalid compound class: "+cc);
 			}
 		}
 	}
@@ -787,7 +786,7 @@ public class BondLengthsManager extends AbstractManager implements CMLConstants 
 				}
 				sw.close();
 			} catch (IOException e) {
-				throw new CrystalEyeRuntimeException("Problem writing HTML of formula.", e);
+				throw new RuntimeException("Problem writing HTML of formula.", e);
 			}
 		}
 		moietyS = (moi == ".") ? sum : moi;

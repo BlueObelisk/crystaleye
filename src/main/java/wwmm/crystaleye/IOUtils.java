@@ -153,13 +153,13 @@ public class IOUtils {
 				out.write(content);
 				out.close();	
 			} catch (IOException e) {
-				throw new CrystalEyeRuntimeException("Error writing text to "+fileName, e);
+				throw new RuntimeException("Error writing text to "+fileName, e);
 			} finally {
     			try {
     				if (out != null) out.close();
     			}
     			catch (IOException e){
-    				throw new CrystalEyeRuntimeException("Cannot close writer: " + out, e);
+    				throw new RuntimeException("Cannot close writer: " + out, e);
     			}
     		}
 		}
@@ -203,13 +203,13 @@ public class IOUtils {
 			Builder builder = new Builder(tagsoup);
 			doc = builder.build(new BufferedReader(new StringReader(response)));
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Could not read webpage at "+url, e);
+			throw new RuntimeException("Could not read webpage at "+url, e);
 		} catch (ValidityException e) {
-			throw new CrystalEyeRuntimeException("Webpage at "+url+" is not valid XML.", e);
+			throw new RuntimeException("Webpage at "+url+" is not valid XML.", e);
 		} catch (ParsingException e) {
-			throw new CrystalEyeRuntimeException("Could not parse webpage at "+url, e);
+			throw new RuntimeException("Could not parse webpage at "+url, e);
 		} catch (SAXException e) {
-			throw new CrystalEyeRuntimeException("Could not create XMLReader from org.ccil.cowan.tagsoup.Parser", e);
+			throw new RuntimeException("Could not create XMLReader from org.ccil.cowan.tagsoup.Parser", e);
 		}
 		return doc;
 	}
@@ -238,13 +238,13 @@ public class IOUtils {
 			Builder builder = new Builder(tagsoup);
 			doc = builder.build(new BufferedReader(new StringReader(html)));
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Could not read webpage at "+url, e);
+			throw new RuntimeException("Could not read webpage at "+url, e);
 		} catch (ValidityException e) {
-			throw new CrystalEyeRuntimeException("Webpage at "+url+" is not valid XML.", e);
+			throw new RuntimeException("Webpage at "+url+" is not valid XML.", e);
 		} catch (ParsingException e) {
-			throw new CrystalEyeRuntimeException("Could not parse webpage at "+url, e);
+			throw new RuntimeException("Could not parse webpage at "+url, e);
 		} catch (SAXException e) {
-			throw new CrystalEyeRuntimeException("Could not create XMLReader from org.ccil.cowan.tagsoup.Parser", e);
+			throw new RuntimeException("Could not create XMLReader from org.ccil.cowan.tagsoup.Parser", e);
 		}
 		return doc;
 	}
@@ -257,7 +257,7 @@ public class IOUtils {
 		try {
 			return parseXmlFile(new FileReader(file));
 		} catch (FileNotFoundException e) {
-			throw new CrystalEyeRuntimeException("Could not find file "+file.getAbsolutePath(), e);
+			throw new RuntimeException("Could not find file "+file.getAbsolutePath(), e);
 		}
 	}
 	
@@ -266,13 +266,13 @@ public class IOUtils {
 		try {
 			doc = new Builder().build(new BufferedReader(reader));
 		} catch (ValidityException e) {
-			throw new CrystalEyeRuntimeException("Invalid XML", e);
+			throw new RuntimeException("Invalid XML", e);
 		} catch (ParsingException e) {
-			throw new CrystalEyeRuntimeException("Could not parse XML", e);
+			throw new RuntimeException("Could not parse XML", e);
 		} catch (UnsupportedEncodingException e) {
-			throw new CrystalEyeRuntimeException("Unsupported encoding", e);
+			throw new RuntimeException("Unsupported encoding", e);
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Input exception", e);
+			throw new RuntimeException("Input exception", e);
 		} 
 		return doc;
 	}
@@ -286,15 +286,15 @@ public class IOUtils {
 		try {
 			doc = new CMLBuilder().build(new BufferedReader(new FileReader(file)));
 		} catch (ValidityException e) {
-			throw new CrystalEyeRuntimeException("File at "+file.getAbsolutePath()+" is not valid XML", e);
+			throw new RuntimeException("File at "+file.getAbsolutePath()+" is not valid XML", e);
 		} catch (ParsingException e) {
-			throw new CrystalEyeRuntimeException("Could not parse file at "+file.getAbsolutePath(), e);
+			throw new RuntimeException("Could not parse file at "+file.getAbsolutePath(), e);
 		} catch (UnsupportedEncodingException e) {
-			throw new CrystalEyeRuntimeException("File at "+file.getAbsolutePath()+" is in an unsupported encoding", e);
+			throw new RuntimeException("File at "+file.getAbsolutePath()+" is in an unsupported encoding", e);
 		} catch (FileNotFoundException e) {
-			throw new CrystalEyeRuntimeException("File at "+file.getAbsolutePath()+" could not be found", e);
+			throw new RuntimeException("File at "+file.getAbsolutePath()+" could not be found", e);
 		} catch (IOException e) {
-			throw new CrystalEyeRuntimeException("Could read file at "+file.getAbsolutePath(), e);
+			throw new RuntimeException("Could read file at "+file.getAbsolutePath(), e);
 		}
 		return doc;
 	}
@@ -307,13 +307,13 @@ public class IOUtils {
 				Builder builder = new Builder(tagsoup);
 				doc = builder.build(new BufferedReader(new StringReader(html)));
 			} catch (IOException e) {
-				throw new CrystalEyeRuntimeException("Could not read html", e);
+				throw new RuntimeException("Could not read html", e);
 			} catch (ValidityException e) {
-				throw new CrystalEyeRuntimeException("HTML not valid XML.", e);
+				throw new RuntimeException("HTML not valid XML.", e);
 			} catch (ParsingException e) {
-				throw new CrystalEyeRuntimeException("Could not parse HTML", e);
+				throw new RuntimeException("Could not parse HTML", e);
 			} catch (SAXException e) {
-				throw new CrystalEyeRuntimeException("Could not create XMLReader from org.ccil.cowan.tagsoup.Parser", e);
+				throw new RuntimeException("Could not create XMLReader from org.ccil.cowan.tagsoup.Parser", e);
 			}
 			return doc;
 	}

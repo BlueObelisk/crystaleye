@@ -13,7 +13,6 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
 
@@ -46,14 +45,14 @@ public class ActaCurrent extends CurrentIssueFetcher {
 			Pattern pattern = Pattern.compile("\\.\\./issues/(\\d\\d\\d\\d)/(\\d\\d/\\d\\d)/issconts.html");
 			Matcher matcher = pattern.matcher(info);
 			if (!matcher.find()) {
-				throw new CrystalEyeRuntimeException("Could not extract the year/issue information from the 'current-issue' page "+url);
+				throw new RuntimeException("Could not extract the year/issue information from the 'current-issue' page "+url);
 			} else {
 				String year = matcher.group(1);
 				String issueNum = matcher.group(2).replaceAll("/", "-");
 				return new IssueDate(year, issueNum);
 			}
 		} else {
-			throw new CrystalEyeRuntimeException("Could not find the year/issue information from the 'current-issue' page "+url);
+			throw new RuntimeException("Could not find the year/issue information from the 'current-issue' page "+url);
 		}
 	}
 
@@ -77,7 +76,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 							cifId = matcher.group(1);
 							cifId = cifId.replaceAll("sup[\\d]*", "");
 						} else {
-							throw new CrystalEyeRuntimeException("Could not find the CIF ID.");
+							throw new RuntimeException("Could not find the CIF ID.");
 						}
 						String cif = getWebPage(cifUrl);
 						String doi = null;

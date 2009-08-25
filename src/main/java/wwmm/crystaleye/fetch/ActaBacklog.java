@@ -13,7 +13,6 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.IOUtils;
 
 public class ActaBacklog extends Fetcher {
@@ -80,7 +79,7 @@ public class ActaBacklog extends Fetcher {
 							if (matcher.find()) {
 								cifId = matcher.group(1);
 							} else {
-								throw new CrystalEyeRuntimeException("Could not find the CIF ID.");
+								throw new RuntimeException("Could not find the CIF ID.");
 							}
 							cifWriteDir = issueWriteDir+File.separator+cifId.substring(0,cifId.length()-4);
 							String result = IOUtils.fetchWebPage(cifUrl);
