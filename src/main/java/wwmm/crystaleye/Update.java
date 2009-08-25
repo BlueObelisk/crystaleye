@@ -15,7 +15,7 @@ import wwmm.crystaleye.site.CellParamsManager;
 import wwmm.crystaleye.site.DoiListManager;
 import wwmm.crystaleye.site.SmilesListManager;
 import wwmm.crystaleye.site.WebpageManager;
-import wwmm.crystaleye.site.feeds.AtomPubManager;
+import wwmm.crystaleye.site.feeds.AtomArchiveManager;
 import wwmm.crystaleye.site.feeds.RSSManager;
 
 public class Update implements CMLConstants {
@@ -99,7 +99,7 @@ public class Update implements CMLConstants {
 				smi.execute();
 			}
 			if (cl.hasOption("atompub")) {
-				AtomPubManager ap = new AtomPubManager(propsPath);
+				AtomArchiveManager ap = new AtomArchiveManager(propsPath);
 				ap.execute();
 			}
 			if (cl.hasOption("rss")) {
@@ -130,7 +130,7 @@ public class Update implements CMLConstants {
 		*/
 		SmilesListManager smi = new SmilesListManager(propsPath);
 		smi.execute();
-		AtomPubManager ap = new AtomPubManager(propsPath);
+		AtomArchiveManager ap = new AtomArchiveManager(propsPath);
 		ap.execute();
 		// before updating the RSS feeds, go through them all and delete any entries over x days old
 		// new RSSArchiver().deleteOldFeedEntries("xml", properties.getRssWriteDir(), 14);
