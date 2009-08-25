@@ -1,5 +1,6 @@
 package wwmm.crystaleye.site;
 
+import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
 import static wwmm.crystaleye.CrystalEyeConstants.CELLPARAMS;
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
 import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
@@ -11,7 +12,6 @@ import java.util.List;
 import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
-import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLMolecule;
@@ -23,7 +23,7 @@ import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
 
-public class CellParamsManager extends AbstractManager implements CMLConstants {
+public class CellParamsManager extends AbstractManager {
 	
 	private static final Logger LOG = Logger.getLogger(CellParamsManager.class);
 
@@ -85,7 +85,7 @@ public class CellParamsManager extends AbstractManager implements CMLConstants {
 					CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
 					CMLCrystal crystal = (CMLCrystal)molecule.getFirstCMLChild(CMLCrystal.TAG);
 
-					Nodes lengthANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_a']", X_CML);
+					Nodes lengthANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_a']", CML_XPATH);
 					String lengthA = "";
 					if (lengthANodes.size() == 1) {
 						lengthA  = lengthANodes.get(0).getValue();
@@ -93,7 +93,7 @@ public class CellParamsManager extends AbstractManager implements CMLConstants {
 						throw new RuntimeException("Could not find lengthA node.");
 					}
 
-					Nodes lengthBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_b']", X_CML);
+					Nodes lengthBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_b']", CML_XPATH);
 					String lengthB = "";
 					if (lengthBNodes.size() == 1) {
 						lengthB  = lengthBNodes.get(0).getValue();
@@ -101,7 +101,7 @@ public class CellParamsManager extends AbstractManager implements CMLConstants {
 						throw new RuntimeException("Could not find lengthB node.");
 					}
 
-					Nodes lengthCNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_c']", X_CML);
+					Nodes lengthCNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_length_c']", CML_XPATH);
 					String lengthC = "";
 					if (lengthCNodes.size() == 1) {
 						lengthC  = lengthCNodes.get(0).getValue();
@@ -109,7 +109,7 @@ public class CellParamsManager extends AbstractManager implements CMLConstants {
 						throw new RuntimeException("Could not find lengthC node.");
 					}
 
-					Nodes angleANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_alpha']", X_CML);
+					Nodes angleANodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_alpha']", CML_XPATH);
 					String angleA = "";
 					if (angleANodes.size() == 1) {
 						angleA  = angleANodes.get(0).getValue();
@@ -117,7 +117,7 @@ public class CellParamsManager extends AbstractManager implements CMLConstants {
 						throw new RuntimeException("Could not find angleA node.");
 					}
 
-					Nodes angleBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_beta']", X_CML);
+					Nodes angleBNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_beta']", CML_XPATH);
 					String angleB = "";
 					if (angleBNodes.size() == 1) {
 						angleB  = angleBNodes.get(0).getValue();
@@ -125,7 +125,7 @@ public class CellParamsManager extends AbstractManager implements CMLConstants {
 						throw new RuntimeException("Could not find angleB node.");
 					}
 
-					Nodes angleGNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_gamma']", X_CML);
+					Nodes angleGNodes = crystal.query(".//cml:scalar[@dictRef='iucr:_cell_angle_gamma']", CML_XPATH);
 					String angleG = "";
 					if (angleGNodes.size() == 1) {
 						angleG  = angleGNodes.get(0).getValue();

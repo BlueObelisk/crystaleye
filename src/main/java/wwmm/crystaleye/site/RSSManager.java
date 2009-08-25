@@ -1,5 +1,6 @@
 package wwmm.crystaleye.site;
 
+import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
 import static wwmm.crystaleye.CrystalEyeConstants.ATOM_1_NS;
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
@@ -33,7 +34,6 @@ import nu.xom.Nodes;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIFUtil;
-import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLBond;
 import org.xmlcml.cml.element.CMLCml;
@@ -49,7 +49,7 @@ import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.properties.SiteProperties;
 
-public class RSSManager extends AbstractManager implements CMLConstants {
+public class RSSManager extends AbstractManager {
 
 	private static final Logger LOG = Logger.getLogger(RSSManager.class);
 

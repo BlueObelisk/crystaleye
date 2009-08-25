@@ -1,5 +1,6 @@
 package wwmm.crystaleye.site;
 
+import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
 import static wwmm.crystaleye.CrystalEyeConstants.CRYSTALEYE_HOME_URL;
 import static wwmm.crystaleye.CrystalEyeConstants.DOILIST;
@@ -15,7 +16,6 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
-import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.element.CMLScalar;
 
@@ -26,7 +26,7 @@ import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
 
-public class DoiListManager extends AbstractManager implements CMLConstants {
+public class DoiListManager extends AbstractManager {
 
 	private static final Logger LOG = Logger.getLogger(DoiListManager.class);
 	
@@ -82,7 +82,7 @@ public class DoiListManager extends AbstractManager implements CMLConstants {
 				for (File cmlFile : fileList) {
 					try {
 						CMLElement cml = (CMLElement)new CMLBuilder().build(new BufferedReader(new FileReader(cmlFile))).getRootElement();
-						Nodes doiNodes = cml.query(".//"+CMLScalar.NS+"[@dictRef='idf:doi']", X_CML);
+						Nodes doiNodes = cml.query(".//"+CMLScalar.NS+"[@dictRef='idf:doi']", CML_XPATH);
 						if (doiNodes.size() > 0) {
 							String doi = doiNodes.get(0).getValue();
 							String path = cmlFile.getAbsolutePath();

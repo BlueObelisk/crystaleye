@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.converters.ConverterCommand;
 import org.xmlcml.cml.converters.rdf.cml.CML2OWLRDFConverter;
 
@@ -19,7 +18,7 @@ import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
 
-public class Cml2RdfManager extends AbstractManager implements CMLConstants  {
+public class Cml2RdfManager extends AbstractManager {
 	
 	private static final Logger LOG = Logger.getLogger(Cml2RdfManager.class);
 	private SiteProperties properties;

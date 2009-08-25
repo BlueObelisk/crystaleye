@@ -1,5 +1,6 @@
 package wwmm.crystaleye.site;
 
+import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
 import static wwmm.crystaleye.CrystalEyeConstants.SMILESLIST;
 import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
@@ -14,20 +15,19 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
-import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLIdentifier;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.Execute;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.tools.Execute;
 
-public class SmilesListManager extends AbstractManager implements CMLConstants {
+public class SmilesListManager extends AbstractManager {
 	
 	private static final Logger LOG = Logger.getLogger(SmilesListManager.class);
 
@@ -96,7 +96,7 @@ public class SmilesListManager extends AbstractManager implements CMLConstants {
 						CMLCml cml = (CMLCml)new CMLBuilder().build(new BufferedReader(new FileReader(cmlFile))).getRootElement();
 						CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
 						String cmlId = cml.getId();
-						Nodes smilesNodes = molecule.query("./"+CMLIdentifier.NS+"[@convention='daylight:smiles']", X_CML);
+						Nodes smilesNodes = molecule.query("./"+CMLIdentifier.NS+"[@convention='daylight:smiles']", CML_XPATH);
 						if (smilesNodes.size() > 0) {
 							String smiles = smilesNodes.get(0).getValue();
 							smiles = smiles.replaceAll("/", "");

@@ -1,5 +1,7 @@
 package wwmm.crystaleye;
 
+import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,7 +22,6 @@ import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.base.CMLUtil;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLBond;
@@ -30,7 +31,7 @@ import org.xmlcml.cml.element.CMLFormula;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.euclid.Real2;
 
-public class CDKUtils implements CMLConstants {
+public class CDKUtils {
 	
 	public static IMolecule getCdkMol(CMLMolecule cmlMol) {
 		ByteArrayInputStream bais = null;
@@ -99,7 +100,7 @@ public class CDKUtils implements CMLConstants {
 			}
 
 			for (CMLBond bond : cmlMol.getBonds())	 {
-				List<Node> bondStereoNodes = CMLUtil.getQueryNodes(bond, ".//cml:bondStereo", X_CML);
+				List<Node> bondStereoNodes = CMLUtil.getQueryNodes(bond, ".//cml:bondStereo", CML_XPATH);
 				if (bondStereoNodes.size() == 1) {
 					CMLBondStereo bs = ((CMLBondStereo)bondStereoNodes.get(0));
 					String stereo = bs.getValue();
