@@ -17,8 +17,8 @@ import org.apache.log4j.Logger;
 import wwmm.crystaleye.CrystalEyeRuntimeException;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Unzip;
 import wwmm.crystaleye.Utils;
+import wwmm.crystaleye.tools.Unzip;
 
 public class ElsevierCurrent extends CurrentIssueFetcher {
 	
