@@ -17,7 +17,7 @@ import wwmm.crystaleye.site.RSSManager;
 import wwmm.crystaleye.site.SmilesListManager;
 import wwmm.crystaleye.site.WebpageManager;
 
-public class Update implements CMLConstants {
+public class Update {
 
 	public static void main(String[] args) {
 		Update launcher = new Update();

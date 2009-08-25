@@ -24,7 +24,6 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.renderer.Renderer2D;
 import org.openscience.cdk.renderer.Renderer2DModel;
-import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.tools.MoleculeTool;
@@ -37,7 +36,7 @@ import wwmm.crystaleye.IOUtils;
  * @author ptc24, ned24
  *
  */
-public class Cml2Png implements CMLConstants {
+public class Cml2PngTool {
 	
 	private CMLMolecule cmlMol;
 
@@ -55,11 +54,11 @@ public class Cml2Png implements CMLConstants {
 	public int width = 500;
 	public int height = 500;
 	
-	private Cml2Png() {
+	private Cml2PngTool() {
 		;
 	}
 	
-	public Cml2Png(CMLMolecule molecule) {
+	public Cml2PngTool(CMLMolecule molecule) {
 		this.cmlMol = new CMLMolecule(molecule);
 		MoleculeTool mt = new MoleculeTool(this.cmlMol);
 		mt.contractExplicitHydrogens(CMLMolecule.HydrogenControl.REPLACE_HYDROGEN_COUNT, false);
@@ -155,7 +154,7 @@ public class Cml2Png implements CMLConstants {
 		mol = CDKUtils.add2DCoords(mol);
 		int count = 1;
 		for (CMLMolecule subMol : mol.getDescendantsOrMolecule()) {
-			Cml2Png cp = new Cml2Png(subMol);
+			Cml2PngTool cp = new Cml2PngTool(subMol);
 			try {
 				cp.renderMolecule(new FileOutputStream(cmlFile.getAbsolutePath()+"_"+count+".png"));
 			} catch (Exception e) {
