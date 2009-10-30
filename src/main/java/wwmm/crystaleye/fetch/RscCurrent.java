@@ -13,8 +13,7 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.WebUtils;
 
 public class RscCurrent extends CurrentIssueFetcher {
 	
@@ -33,7 +32,7 @@ public class RscCurrent extends CurrentIssueFetcher {
 
 	protected IssueDate getCurrentIssueId(String journalAbbreviation) {
 		String url = "http://rsc.org/Publishing/Journals/" + journalAbbreviation.toUpperCase() + "/Article.asp?Type=CurrentIssue";
-		Document doc = IOUtils.parseWebPageMinusComments(url);
+		Document doc = WebUtils.parseWebPageAndRemoveComments(url);
 		// old version of current version xpath
 		// Nodes journalInfo = doc.query("//x:img[contains(@src,'current_issue.gif')]/parent::x:p/text()[3]", XHTML);
 		Nodes journalInfo = doc.query("//x:h3[contains(text(),'Contents')]", X_XHTML);
@@ -55,20 +54,20 @@ public class RscCurrent extends CurrentIssueFetcher {
 
 	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issue) {
 		String url = "http://rsc.org/Publishing/Journals/"+journalAbbreviation+"/Article.asp?Type=CurrentIssue";
-		Document doc = IOUtils.parseWebPageMinusComments(url);
+		Document doc = WebUtils.parseWebPageAndRemoveComments(url);
 		Nodes articleLinks = doc.query("//x:a[contains(@href,'/Publishing/Journals/"+journalAbbreviation.toUpperCase()+"/article.asp?doi=') and preceding-sibling::x:strong[contains(text(),'DOI:')]]", X_XHTML);
 		sleep();
 		if (articleLinks.size() > 0) {
 			for (int i = 0; i < articleLinks.size(); i++) {
 				String articleUrl = SITE_PREFIX+((Element)articleLinks.get(i)).getAttributeValue("href");
-				doc = IOUtils.parseWebPageMinusComments(articleUrl);
+				doc = WebUtils.parseWebPageAndRemoveComments(articleUrl);
 				sleep();
 				Nodes suppLinks = doc.query("//x:a[contains(text(),'Electronic supplementary information')]", X_XHTML);
 				if (suppLinks.size() > 0) {
 					for (int j = 0; j < suppLinks.size(); j++) {
 						String link = ((Element)suppLinks.get(j)).getAttributeValue("href");
 						String suppUrl = SITE_PREFIX+link;
-						doc = IOUtils.parseWebPageMinusComments(suppUrl);
+						doc = WebUtils.parseWebPageAndRemoveComments(suppUrl);
 						sleep();
 						Nodes cifLinks = doc.query("//x:a[text()='Crystal structure data'] | //x:a[text()='Crystal Structure Data'] | //x:a[text()='Crystal Structure data'] | //x:a[text()='Crystal data'] | //x:a[text()='Crystal Data'] | //x:a[text()='Crystallographic Data'] | //x:a[text()='Crystallographic data']", X_XHTML);
 						if (cifLinks.size() > 0) {
@@ -91,7 +90,7 @@ public class RscCurrent extends CurrentIssueFetcher {
 	}
 
 	public static void main(String[] args) {
-		RscCurrent rsc = new RscCurrent("E:\\data-test\\docs\\cif-flow-props.txt");
+		RscCurrent rsc = new RscCurrent("c:\\workspace\\crystaleye-trunk-data\\docs\\cif-flow-props.txt");
 		rsc.execute();
 	}
 }

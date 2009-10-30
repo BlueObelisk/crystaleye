@@ -15,8 +15,7 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.WebUtils;
 
 public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 	
@@ -36,7 +35,7 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 	protected IssueDate getCurrentIssueId(String journalAbbreviation) {
 		String url = "http://www.csj.jp/journals/"+journalAbbreviation+"/cl-cont/newissue.html";
 		// get current issue page as a DOM
-		Document doc = IOUtils.parseWebPageMinusComments(url);
+		Document doc = WebUtils.parseWebPageAndRemoveComments(url);
 		Nodes journalInfo = doc.query("//x:span[@class='augr']", X_XHTML);
 		if (journalInfo.size() != 0) {
 			String info = journalInfo.get(0).getValue();
@@ -56,18 +55,18 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 
 	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issue) {
 		String url = "http://www.csj.jp/journals/"+journalAbbreviation+"/cl-cont/newissue.html";
-		Document doc = IOUtils.parseWebPageMinusComments(url);
+		Document doc = WebUtils.parseWebPageAndRemoveComments(url);
 		Nodes abstractPageLinks = doc.query("//x:a[contains(text(),'Supporting Information')]", X_XHTML);
 		sleep();
 		if (abstractPageLinks.size() > 0) {
 			for (int i = 0; i < abstractPageLinks.size(); i++) {
 				String abstractPageLink = ((Element)abstractPageLinks.get(i)).getAttributeValue("href");
-				Document abstractPage = IOUtils.parseWebPage(abstractPageLink);
+				Document abstractPage = WebUtils.parseWebPage(abstractPageLink);
 				Nodes suppPageLinks = abstractPage.query("//x:a[contains(text(),'Supplementary Materials')]", X_XHTML);
 				sleep();
 				if (suppPageLinks.size() > 0) {
 					String suppPageUrl = SITE_PREFIX+((Element)suppPageLinks.get(0)).getAttributeValue("href");
-					Document suppPage = IOUtils.parseWebPage(suppPageUrl);
+					Document suppPage = WebUtils.parseWebPage(suppPageUrl);
 					Nodes crystRows = suppPage.query("//x:tr[x:td[contains(text(),'cif')]] | //x:tr[x:td[contains(text(),'CIF')]]", X_XHTML);
 					sleep();
 					if (crystRows.size() > 0) {

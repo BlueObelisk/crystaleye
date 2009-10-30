@@ -13,6 +13,7 @@ import nu.xom.Nodes;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.WebUtils;
 
 public class ChemistryLettersBacklog extends Fetcher {
 	
@@ -43,19 +44,19 @@ public class ChemistryLettersBacklog extends Fetcher {
 		String writeDir = properties.getWriteDir();
 		String url = "http://www.chemistry.or.jp/journals/chem-lett/cl-cont/cl"+this.year+"-"+this.issue+".html";
 		LOG.info("Fetching CIFs from "+url);
-		Document doc = IOUtils.parseWebPage(url);
+		Document doc = WebUtils.parseWebPage(url);
 
 		Nodes abstractPageLinks = doc.query("//x:a[contains(@href ,'n=li_s')]", X_XHTML);
 		sleep();
 		if (abstractPageLinks.size() > 0) {
 			for (int i = 0; i < abstractPageLinks.size(); i++) {
 				String abstractPageLink = ((Element)abstractPageLinks.get(i)).getAttributeValue("href");
-				Document abstractPage = IOUtils.parseWebPage(abstractPageLink);
+				Document abstractPage = WebUtils.parseWebPage(abstractPageLink);
 				Nodes suppPageLinks = abstractPage.query("//x:a[contains(text(),'Supplementary Materials')]", X_XHTML);
 				sleep();
 				if (suppPageLinks.size() > 0) {
 					String suppPageUrl = SITE_PREFIX+((Element)suppPageLinks.get(0)).getAttributeValue("href");
-					Document suppPage = IOUtils.parseWebPage(suppPageUrl);
+					Document suppPage = WebUtils.parseWebPage(suppPageUrl);
 					Nodes crystRows = suppPage.query("//x:tr[x:td[contains(text(),'cif')]] | //x:tr[x:td[contains(text(),'CIF')]]", X_XHTML);
 					sleep();
 					if (crystRows.size() > 0) {
@@ -64,16 +65,16 @@ public class ChemistryLettersBacklog extends Fetcher {
 							Nodes cifLinks = crystRow.query(".//x:a[contains(@href,'appendix')]", X_XHTML);
 							if (cifLinks.size() > 0) {
 								String cifLink = SITE_PREFIX+((Element)cifLinks.get(0)).getAttributeValue("href");
-								String cif = IOUtils.fetchWebPage(cifLink);
+								String cif = WebUtils.fetchWebPage(cifLink);
 								String cifId = new File(suppPageUrl).getParentFile().getName().replaceAll("_", "-");
-								String cifWriteDir = writeDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+this.year+File.separator+this.issue+File.separator+cifId;
+								String cifWriteDir = writeDir+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+this.year+"/"+this.issue+"/"+cifId;
 								Nodes doiElements = abstractPage.query("//*[contains(text(),'doi:"+CHEMSOCJAPAN_DOI_PREFIX+"')]", X_XHTML);
 								int suppNum = j+1;
 								if (doiElements.size() > 0) {
 									String doi = ((Element)doiElements.get(0)).getValue().substring(4).trim();
-									IOUtils.writeText(doi, cifWriteDir+File.separator+cifId+"sup"+suppNum+".doi");
+									IOUtils.writeText(new File(cifWriteDir+"/"+cifId+"sup"+suppNum+".doi"), doi);
 								}
-								IOUtils.writeText(cif, cifWriteDir+File.separator+cifId+"sup"+suppNum+".cif");
+								IOUtils.writeText(new File(cifWriteDir+"/"+cifId+"sup"+suppNum+".cif"), cif);
 								sleep();
 							}
 						}

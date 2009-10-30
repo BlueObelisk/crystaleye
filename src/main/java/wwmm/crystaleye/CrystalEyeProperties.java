@@ -1,23 +1,48 @@
-package wwmm.crystaleye.properties;
+package wwmm.crystaleye;
 
 import static wwmm.crystaleye.CrystalEyeConstants.ATOM_PUB_FEED_MAX_ENTRIES;
 import static wwmm.crystaleye.CrystalEyeConstants.ATOM_PUB_ROOT_DIR;
 import static wwmm.crystaleye.CrystalEyeConstants.ATOM_PUB_ROOT_URL;
 import static wwmm.crystaleye.CrystalEyeConstants.BOND_LENGTHS_DIR;
 import static wwmm.crystaleye.CrystalEyeConstants.CELL_PARAMS_FILE;
+import static wwmm.crystaleye.CrystalEyeConstants.CIF_DICT;
 import static wwmm.crystaleye.CrystalEyeConstants.DOI_LIST_PATH;
+import static wwmm.crystaleye.CrystalEyeConstants.DOWNLOAD_LOG_PATH;
+import static wwmm.crystaleye.CrystalEyeConstants.PUBLISHER_ABBREVIATIONS;
 import static wwmm.crystaleye.CrystalEyeConstants.RSS_FEED_TYPES;
 import static wwmm.crystaleye.CrystalEyeConstants.RSS_ROOT_FEEDS_DIR;
 import static wwmm.crystaleye.CrystalEyeConstants.RSS_WRITE_DIR;
+import static wwmm.crystaleye.CrystalEyeConstants.SLEEP_MAX;
 import static wwmm.crystaleye.CrystalEyeConstants.SMILES_INDEX_PATH;
 import static wwmm.crystaleye.CrystalEyeConstants.SMILES_LIST_PATH;
+import static wwmm.crystaleye.CrystalEyeConstants.SPACEGROUP_XML;
+import static wwmm.crystaleye.CrystalEyeConstants.SPLITCIF_REGEX;
 import static wwmm.crystaleye.CrystalEyeConstants.SUMMARY_WRITE_DIR;
 import static wwmm.crystaleye.CrystalEyeConstants.UUID_TO_URL_FILE_PATH;
 import static wwmm.crystaleye.CrystalEyeConstants.WEB_SUMMARY_WRITE_DIR;
+import static wwmm.crystaleye.CrystalEyeConstants.WRITE_DIR;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
-public class SiteProperties extends ManyPublisherProperties {
+public class CrystalEyeProperties {
+
+	Properties properties;
+
+	// log paths
+	private String downloadLogPath;
+
+	// write directories
+	private String writeDir;
+	private String sleepMax;
+	private String[] publisherAbbreviations;
+	private String cifDict;
+
+	// miscellaneous
+	private String splitCifRegex;
+	private String spaceGroupXml;
 
 	// rss
 	private String rssWriteDir;
@@ -28,32 +53,83 @@ public class SiteProperties extends ManyPublisherProperties {
 	// website
 	private String summaryWriteDir;
 	private String webSummaryWriteDir;
-	
+
 	// doi list
 	private String doiListPath;
-	
+
 	// bond lengths
 	private String bondLengthsDir;
-	
+
 	// cell parameters
 	private String cellParamsFilePath;
-	
+
 	// smiles list
 	private String smilesListPath;
 	private String smilesIndexPath;
-	
+
 	// atom pub
 	private String atomPubRootDir;
 	private String atomPubRootUrl;
 	private String atomPubFeedMaxEntries;
 	private String uuidToUrlFilePath;
 
-	public SiteProperties(File propFile) {
-		super(propFile);
+	private CrystalEyeProperties() {
+		;
 	}
 
-	protected void setProperties() {
-		super.setProperties();
+	public CrystalEyeProperties(File propFile) {
+		if (propFile.exists()) {
+			properties = new Properties();
+			try {
+				properties.load(new FileInputStream(propFile));
+				setProperties();
+			} catch (IOException e) {
+				throw new RuntimeException("Could not read properties file: "+propFile.getAbsolutePath(), e);
+			}
+		} else {
+			throw new RuntimeException("Could not find file "+propFile.getAbsolutePath());
+		}
+	}
+
+	protected void setProperties() {	
+		// path to the file which keeps track of the issues that have been downloaded
+		this.downloadLogPath = properties.getProperty(DOWNLOAD_LOG_PATH);
+		if (downloadLogPath == null) {
+			throw new RuntimeException("Could not find entry for "+DOWNLOAD_LOG_PATH+" in properties file.");
+		}
+
+		// root of the directory to which all files are written
+		this.writeDir = properties.getProperty(WRITE_DIR);
+		if (writeDir == null) {
+			throw new RuntimeException("Could not find entry for "+WRITE_DIR+" in properties file.");
+		}
+
+		this.sleepMax=properties.getProperty(SLEEP_MAX);
+		if (sleepMax == null) {
+			throw new RuntimeException("Could not find entry for "+SLEEP_MAX+" in properties file.");
+		}
+
+		this.publisherAbbreviations = properties.getProperty(PUBLISHER_ABBREVIATIONS).split(",");
+		if (publisherAbbreviations == null) {
+			throw new RuntimeException("Could not find entry for "+publisherAbbreviations+" in properties file.");
+		}
+
+		this.cifDict=properties.getProperty(CIF_DICT);
+		if (cifDict == null) {
+			throw new RuntimeException("Could not find entry for "+CIF_DICT+" in properties file.");
+		}
+
+		// regex to find CIFs that have been split by CrystalEye
+		this.splitCifRegex = properties.getProperty(SPLITCIF_REGEX);
+		if (splitCifRegex == null) {
+			throw new RuntimeException("Could not find entry for "+SPLITCIF_REGEX+" in properties file.");
+		}
+
+		this.spaceGroupXml = properties.getProperty(SPACEGROUP_XML);
+		if (spaceGroupXml == null) {
+			throw new RuntimeException("Could not find entry for "+SPACEGROUP_XML+" in properties file.");
+		}
+		
 		// the types of rss feed that are to be created
 		this.feedTypes = properties.getProperty(RSS_FEED_TYPES).split(",");
 		if (feedTypes == null) {
@@ -138,6 +214,69 @@ public class SiteProperties extends ManyPublisherProperties {
 		}
 	}
 
+	public String getDownloadLogPath() {
+		return downloadLogPath;
+	}
+
+	public String getWriteDir() {
+		return writeDir;
+	}
+
+	public String getPublisherTitle(String publisherAbbreviation) {
+		String publisherTitle = properties.getProperty(publisherAbbreviation+".full.title");
+		if (publisherTitle == null) {
+			throw new RuntimeException("No entry for "+publisherAbbreviation+".full.title in properties file.");
+		}
+		return publisherTitle;
+	}
+
+	public String getJournalTitle(String publisherAbbreviation, String journalAbbreviation) {
+		int count = 0;
+		for (String s : getPublisherJournalAbbreviations(publisherAbbreviation)) {
+			if (s.equals(journalAbbreviation)) {
+				return getPublisherJournalTitles(publisherAbbreviation)[count];
+			}
+			count++;
+		}
+		return null;
+	}
+
+	public String[] getPublisherJournalTitles(String publisherAbbreviation) {
+		String[] journals = properties.getProperty(publisherAbbreviation+".journal.full.titles").split(",");
+		if (journals == null) {
+			throw new RuntimeException("No entry for "+publisherAbbreviation+".journal.full.titles in properties file.");
+		}
+		return journals;
+	}
+
+	public String[] getPublisherJournalAbbreviations(String publisherAbbreviation) {
+		String[] journalTitles = properties.getProperty(publisherAbbreviation+".journal.abbreviations").split(",");
+		if (journalTitles == null) {
+			throw new RuntimeException("No entry for "+publisherAbbreviation+".journal.abbreviations in properties file.");
+		}
+		return journalTitles;
+	}
+
+	public String getSleepMax() {
+		return sleepMax;
+	}
+
+	public String[] getPublisherAbbreviations() {
+		return publisherAbbreviations;
+	}
+
+	public String getCifDict() {
+		return cifDict;
+	}
+
+	public String getSplitCifRegex() {
+		return splitCifRegex;
+	}
+
+	public String getSpaceGroupXml() {
+		return spaceGroupXml;
+	}
+	
 	public String[] getFeedTypes() {
 		return feedTypes;
 	}
@@ -198,4 +337,3 @@ public class SiteProperties extends ManyPublisherProperties {
 		return uuidToUrlFilePath;
 	}
 }
-

@@ -5,7 +5,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.xmlcml.cml.base.CMLConstants;
 
 import wwmm.crystaleye.fetch.FetchManager;
 import wwmm.crystaleye.process.CML2FooManager;

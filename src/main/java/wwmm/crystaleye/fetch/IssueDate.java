@@ -1,4 +1,4 @@
-package wwmm.crystaleye;
+package wwmm.crystaleye.fetch;
 
 public class IssueDate {
 

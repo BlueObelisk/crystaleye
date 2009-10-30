@@ -14,7 +14,7 @@ import nu.xom.Nodes;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.WebUtils;
 
 public class ActaCurrent extends CurrentIssueFetcher {
 	
@@ -34,7 +34,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 	protected IssueDate getCurrentIssueId(String journalAbbreviation) {
 		String url = "http://journals.iucr.org/"+journalAbbreviation+"/contents/backissuesbdy.html";
 		// get current issue page as a DOM
-		Document doc = IOUtils.parseWebPage(url);
+		Document doc = WebUtils.parseWebPage(url);
 		Nodes currentIssueLink = doc.query("//x:a[contains(@target,'_parent')]", X_XHTML);
 		if (currentIssueLink.size() != 0) {
 			Node current = currentIssueLink.get(0);
@@ -59,7 +59,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issueNum) {
 		Pattern pattern = Pattern.compile("http://scripts.iucr.org/cgi-bin/sendcif\\?(.*)");
 		String url = "http://journals.iucr.org/"+journalAbbreviation+"/issues/"+year+"/"+issueNum.replaceAll("-", "/")+"/isscontsbdy.html";
-		Document doc = IOUtils.parseWebPage(url);
+		Document doc = WebUtils.parseWebPage(url);
 		Nodes tocEntries = doc.query("//x:div[@class='toc entry']", X_XHTML);
 		sleep();
 		if (tocEntries.size() > 0) {
@@ -94,7 +94,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 									Node checkCifLink = checkCifNodes.get(k);
 									String checkCifUrl = ((Element)checkCifLink).getAttributeValue("href");
 									String checkcif = getWebPage(SITE_PREFIX+checkCifUrl);
-									IOUtils.writeText(checkcif, issueWriteDir+File.separator+cifId+File.separator+cifId+"sup"+(+1)+".deposited.checkcif.html");
+									IOUtils.writeText(new File(issueWriteDir+"/"+cifId+"/"+cifId+"sup"+(+1)+".deposited.checkcif.html"), checkcif);
 									sleep();
 								}
 							}

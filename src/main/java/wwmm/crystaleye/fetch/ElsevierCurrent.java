@@ -3,6 +3,7 @@ package wwmm.crystaleye.fetch;
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -12,11 +13,10 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
+import wwmm.crystaleye.WebUtils;
 import wwmm.crystaleye.tools.Unzip;
 
 public class ElsevierCurrent extends CurrentIssueFetcher {
@@ -43,7 +43,7 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 		} else {
 			throw new RuntimeException("Unrecognised "+publisherAbbreviation+" journal: "+journalAbbreviation);
 		}
-		Document currentIssueDoc = IOUtils.parseWebPageMinusComments(currentIssueUrl);
+		Document currentIssueDoc = WebUtils.parseWebPageAndRemoveComments(currentIssueUrl);
 		Nodes titleNodes = currentIssueDoc.query(".//x:title", X_XHTML);
 		if (titleNodes.size() == 1) {
 			String title = titleNodes.get(0).getValue();
@@ -66,10 +66,10 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 	}
 
 	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issue) {
-		Document currentIssueDoc = IOUtils.parseWebPageMinusComments(currentIssueUrl);
+		Document currentIssueDoc = WebUtils.parseWebPageAndRemoveComments(currentIssueUrl);
 		List<String> fullTextUrls = getFullTextUrls(currentIssueDoc);
 		for (String fullTextUrl : fullTextUrls) {
-			Document articleDoc = IOUtils.parseWebPage(fullTextUrl);					
+			Document articleDoc = WebUtils.parseWebPage(fullTextUrl);					
 			sleep();
 			String doi = getDoi(articleDoc);				
 			File doiFile = new File(doi);
@@ -78,14 +78,14 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 			if (nodes.size() > 0) {
 				for (int i = 0; i < nodes.size(); i++) {
 					String zipUrl = ((Element)nodes.get(i)).getAttributeValue("href");
-					String outFolder = issueWriteDir+File.separator+doiName;
+					String outFolder = issueWriteDir+"/"+doiName;
 					File outFile = new File(outFolder);
 					if (!outFile.exists()) {
 						outFile.mkdirs();
 					}
-					String filename = outFolder+File.separator+doiName+"-"+String.valueOf(i+1)+".zip";
+					String filename = outFolder+"/"+doiName+"-"+String.valueOf(i+1)+".zip";
 					LOG.info("Writing zip file with DOI: "+doi);
-					IOUtils.saveFileFromUrl(zipUrl, filename);
+					WebUtils.saveFileFromUrl(zipUrl, filename);
 					
 					String[] args = new String[1];
 					args[0] = filename;
@@ -95,7 +95,12 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 					for (File file : parent.listFiles()) {
 						if (file.getAbsolutePath().endsWith(".cif") || file.getAbsolutePath().endsWith(".CIF")) {
 							cifCount++;
-							String cif = Utils.file2String(file.getAbsolutePath());
+							String cif = null;
+							try {
+								cif = FileUtils.readFileToString(file);
+							} catch (IOException e) {
+								throw new RuntimeException("Exception reading file: "+file, e);
+							}
 							writeFiles(issueWriteDir, parent.getName(), cifCount, cif, doi);							
 						}
 					}

@@ -36,7 +36,7 @@ public class BondLengthElementIndex {
 			sb.append("<li style=\"font-weight: bold;\">"+element+"-"+ligand+"</li>\n");
 			sb.append("<ul class=\"normal\">\n");
 			sb.append("<li><a href='./"+list.get(0)+"-"+list.get(1)+".svg'>All</a></li>\n");
-			if (new File(bondsFolderPath+File.separator+filename).exists()) {
+			if (new File(bondsFolderPath+"/"+filename).exists()) {
 				sb.append("<li><a href='./"+filename+"'>After protocol</a></li>\n");
 			}
 			sb.append("</ul>\n");

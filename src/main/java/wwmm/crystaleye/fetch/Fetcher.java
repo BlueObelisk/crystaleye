@@ -2,12 +2,12 @@ package wwmm.crystaleye.fetch;
 
 import java.io.File;
 
-import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.properties.FetcherProperties;
+import wwmm.crystaleye.CrystalEyeProperties;
+import wwmm.crystaleye.WebUtils;
 
 public abstract class Fetcher {
 	
-	FetcherProperties properties;
+	CrystalEyeProperties properties;
 	protected String PUBLISHER_ABBREVIATION;
 
 	private Fetcher() {
@@ -28,7 +28,7 @@ public abstract class Fetcher {
 	}
 
 	protected void setProperties(File propertiesFile) {
-		properties = new FetcherProperties(propertiesFile);
+		properties = new CrystalEyeProperties(propertiesFile);
 	}
 	
 	protected void sleep() {
@@ -42,6 +42,6 @@ public abstract class Fetcher {
 	}
 
 	protected String getWebPage(String url) {
-		return IOUtils.fetchWebPage(url);
+		return WebUtils.fetchWebPage(url);
 	}
 }

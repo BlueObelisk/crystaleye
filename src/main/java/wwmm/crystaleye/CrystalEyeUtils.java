@@ -96,7 +96,7 @@ public class CrystalEyeUtils {
 
 	public static List<File> getSummaryDirFileList(String issueDir, String regex) {
 		List<File> fileList = new ArrayList<File>();
-		issueDir += File.separator+"data"+File.separator;
+		issueDir += "/"+"data"+"/";
 		File[] parents = new File(issueDir).listFiles();
 		for (File articleParent : parents) {
 			File[] articleFiles = articleParent.listFiles();
@@ -202,6 +202,6 @@ public class CrystalEyeUtils {
 
 	public static void writeDateStamp(String path) {
 		String dNow = getDate();
-		IOUtils.writeText(dNow, path);
+		IOUtils.writeText(new File(path), dNow);
 	}
 }

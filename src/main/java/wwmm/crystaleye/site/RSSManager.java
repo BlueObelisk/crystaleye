@@ -42,18 +42,17 @@ import org.xmlcml.molutil.ChemicalElement;
 
 import wwmm.atomarchiver.AtomArchiveFeed;
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
-import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.fetch.IssueDate;
 
 public class RSSManager extends AbstractManager {
 
 	private static final Logger LOG = Logger.getLogger(RSSManager.class);
 
-	private SiteProperties properties;
+	private CrystalEyeProperties properties;
 
 	private String publisherAbbreviation;
 	private String publisherTitle;
@@ -82,7 +81,7 @@ public class RSSManager extends AbstractManager {
 	}
 
 	private void setProperties(File propertiesFile) {
-		properties = new SiteProperties(propertiesFile);
+		properties = new CrystalEyeProperties(propertiesFile);
 
 		rootFeedsDir = properties.getRssWriteDir();
 		rootWebFeedsDir = properties.getRootWebFeedsDir();
@@ -107,9 +106,9 @@ public class RSSManager extends AbstractManager {
 						this.journalAbbreviation = journalAbbreviation;
 						this.year = date.getYear();
 						this.issueNum = date.getIssue();
-						String issueSummaryWriteDir = Utils.convertFileSeparators(summaryWriteDir+File.separator+
-								this.publisherAbbreviation+File.separator+this.journalAbbreviation+
-								File.separator+year+File.separator+issueNum);
+						String issueSummaryWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
+								this.publisherAbbreviation+"/"+this.journalAbbreviation+
+								"/"+year+"/"+issueNum);
 						this.process(issueSummaryWriteDir);
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, RSS);
 					}
@@ -141,7 +140,7 @@ public class RSSManager extends AbstractManager {
 		for (File cmlFile : fileList) {		
 			CMLCml cml = null;
 			try {
-				cml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+				cml = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
 			} catch (Exception e) {
 				System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 				continue;
@@ -254,7 +253,7 @@ public class RSSManager extends AbstractManager {
 			for (File cmlFile : cmlFileList) {
 				CMLCml cml = null;
 				try {
-					cml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+					cml = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
 				} catch (Exception e) {
 					System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
 					continue;

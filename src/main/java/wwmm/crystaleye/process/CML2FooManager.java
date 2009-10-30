@@ -28,6 +28,7 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import nu.xom.Text;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IMolecule;
@@ -58,12 +59,12 @@ import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CDKUtils;
+import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
-import wwmm.crystaleye.properties.ProcessProperties;
+import wwmm.crystaleye.fetch.IssueDate;
 import wwmm.crystaleye.tools.Cml2PngTool;
 import wwmm.crystaleye.tools.InchiTool;
 
@@ -71,7 +72,7 @@ public class CML2FooManager extends AbstractManager {
 	
 	private static final Logger LOG = Logger.getLogger(CML2FooManager.class);
 
-	private ProcessProperties properties;
+	private CrystalEyeProperties properties;
 
 	private String doi;
 	static final int MAX_RINGS = 15;
@@ -89,7 +90,7 @@ public class CML2FooManager extends AbstractManager {
 	}
 
 	private void setProperties(File propertiesFile) {
-		properties = new ProcessProperties(propertiesFile);
+		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -104,9 +105,9 @@ public class CML2FooManager extends AbstractManager {
 						String writeDir = properties.getWriteDir();
 						String year = date.getYear();
 						String issueNum = date.getIssue();
-						String issueWriteDir = Utils.convertFileSeparators(writeDir+File.separator+
-								publisherAbbreviation+File.separator+journalAbbreviation+
-								File.separator+year+File.separator+issueNum);
+						String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
+								publisherAbbreviation+"/"+journalAbbreviation+
+								"/"+year+"/"+issueNum);
 						process(issueWriteDir, publisherAbbreviation, journalAbbreviation, year, issueNum);
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CML2FOO);
 					}
@@ -135,7 +136,7 @@ public class CML2FooManager extends AbstractManager {
 									articleId = articleId.replaceAll("sup[\\d]*", "");
 									CMLCml cml = null;
 									try {
-										cml = (CMLCml)(IOUtils.parseCmlFile(structureFile)).getRootElement();
+										cml = (CMLCml)(IOUtils.parseCml(structureFile)).getRootElement();
 									} catch (Exception e) {
 										System.err.println("Error parsing CML file: "+e.getMessage());
 									}
@@ -357,20 +358,20 @@ public class CML2FooManager extends AbstractManager {
 		"</body>"+
 		"</html>";
 
-		IOUtils.writeText(page, filename);					
+		IOUtils.writeText(new File(filename), page);					
 	}
 
 	private String getOutfile(File writeDir, String id, 
 			String fragType, String typePrefix, int subMol, int serial, String mime) {
 		String s = writeDir.getAbsolutePath();
-		File dir = new File(s + File.separator + fragType);
+		File dir = new File(s + "/" + fragType);
 		if (!dir.exists()) {
 			dir.mkdir();
 		}
 		if (!"".equalsIgnoreCase(typePrefix)) {
 			fragType = fragType+"-"+typePrefix;
 		}
-		s = dir + File.separator + id+"_"+fragType;
+		s = dir + "/" + id+"_"+fragType;
 		if (subMol > 0) {
 			s+= S_UNDER + subMol;
 		}
@@ -557,8 +558,8 @@ public class CML2FooManager extends AbstractManager {
 				}
 
 				String moiName = id+"_moiety_"+moiCount;
-				String moiDir = dir+File.separator+moiName;
-				String outPath = moiDir+File.separator+moiName+COMPLETE_CML_MIME;
+				String moiDir = dir+"/"+moiName;
+				String outPath = moiDir+"/"+moiName+COMPLETE_CML_MIME;
 				String pathMinusMime = outPath.substring(0,outPath.indexOf(COMPLETE_CML_MIME));
 				addDoi(mol);
 				writeXML(outPath, mol, "moiety");
@@ -910,7 +911,7 @@ public class CML2FooManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		CML2FooManager acta = new CML2FooManager("c:/Users/ned24/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		CML2FooManager acta = new CML2FooManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
 		acta.execute();
 	}
 }

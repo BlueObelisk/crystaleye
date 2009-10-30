@@ -17,6 +17,7 @@ import nu.xom.Nodes;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.WebUtils;
 
 public class ActaOldLayout extends Fetcher {
 	
@@ -61,7 +62,7 @@ public class ActaOldLayout extends Fetcher {
 		String writeDir = properties.getWriteDir();		
 		String url = "http://journals.iucr.org/"+journalAbbreviation+"/issues/"+year+"/"+issueNum+"/"+issuePart+"/isscontsbdy.html";
 		LOG.info("Fetching CIFs from "+url);
-		Document doc = IOUtils.parseWebPage(url);
+		Document doc = WebUtils.parseWebPage(url);
 		List<Element> entries = getTocEntryList(doc);
 		for (Element el : entries) {
 			String cifLink = null;
@@ -85,10 +86,10 @@ public class ActaOldLayout extends Fetcher {
 				doi = ((Element)doiLinks.get(0)).getValue().trim();
 			}
 			if (link) {
-				String cif = IOUtils.fetchWebPage(cifLink);
-				String pathMinusMime = writeDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+File.separator+year+File.separator+issueNum+"-"+issuePart+File.separator+cifId+File.separator+cifId;
-				IOUtils.writeText(cif, pathMinusMime+".cif");
-				IOUtils.writeText(doi, pathMinusMime+".doi");
+				String cif = WebUtils.fetchWebPage(cifLink);
+				String pathMinusMime = writeDir+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+"/"+issueNum+"-"+issuePart+"/"+cifId+"/"+cifId;
+				IOUtils.writeText(new File(pathMinusMime+".cif"), cif);
+				IOUtils.writeText(new File(pathMinusMime+".doi"), doi);
 			}
 		}
 		LOG.info("FINISHED FETCHING CIFS FROM "+url);

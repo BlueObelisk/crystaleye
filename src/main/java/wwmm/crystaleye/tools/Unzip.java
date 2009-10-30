@@ -63,7 +63,7 @@ public class Unzip {
 
 				System.err.println("Extracting file: " + entry.getName());
 				copyInputStream(zipFile.getInputStream(entry),
-						new BufferedOutputStream(new FileOutputStream(folder+File.separator+entry.getName())));
+						new BufferedOutputStream(new FileOutputStream(folder+"/"+entry.getName())));
 			}
 
 			zipFile.close();
