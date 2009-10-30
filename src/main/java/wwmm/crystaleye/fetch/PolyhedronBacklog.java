@@ -16,6 +16,7 @@ import nu.xom.Nodes;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.WebUtils;
 
 public class PolyhedronBacklog {
 	
@@ -35,22 +36,22 @@ public class PolyhedronBacklog {
 	public PolyhedronBacklog(String writeDir, String logPath) {
 		this.writeDir = writeDir;
 		this.logPath = logPath;
-		this.logDoc = IOUtils.parseXmlFile(logPath);
+		this.logDoc = IOUtils.parseXml(logPath);
 	}
 
 	public void fetch() {
-		Document currentIssueDoc = IOUtils.parseWebPageMinusComments(currentIssueUrl);
+		Document currentIssueDoc = WebUtils.parseWebPageAndRemoveComments(currentIssueUrl);
 		sleep();
 		Element volumesTable = getVolumesTable(currentIssueDoc);
 		List<String> volumeUrls = getVolumeUrls(volumesTable);
 		volumeUrls.add(0,currentIssueUrl);
 		for (String volumeUrl : volumeUrls) {
-			Document volumeToc = IOUtils.parseWebPageMinusComments(volumeUrl);
+			Document volumeToc = WebUtils.parseWebPageAndRemoveComments(volumeUrl);
 			sleep();
 			List<String> issueUrls = getIssueUrls(volumeToc);
 			issueUrls.add(0,volumeUrl);
 			for (String issueUrl : issueUrls) {
-				Document issueDoc = IOUtils.parseWebPageMinusComments(issueUrl);
+				Document issueDoc = WebUtils.parseWebPageAndRemoveComments(issueUrl);
 				sleep();
 				YearAndIssue yi = getYearAndIssue(issueDoc);
 				if (alreadyFinishedIssue(yi)) {
@@ -60,7 +61,7 @@ public class PolyhedronBacklog {
 				LOG.info("Downloading from year "+yi.getYear()+", issue "+yi.getIssue());
 				List<String> fullTextUrls = getFullTextUrls(issueDoc);
 				for (String fullTextUrl : fullTextUrls) {
-					Document articleDoc = IOUtils.parseWebPage(fullTextUrl);					
+					Document articleDoc = WebUtils.parseWebPage(fullTextUrl);					
 					sleep();
 					String doi = getDoi(articleDoc);				
 					File doiFile = new File(doi);
@@ -70,15 +71,15 @@ public class PolyhedronBacklog {
 						for (int i = 0; i < nodes.size(); i++) {
 							String zipUrl = ((Element)nodes.get(i)).getAttributeValue("href");
 
-							String outFolder = writeDir+File.separator+publisherAbbreviation+
-							File.separator+journalAbbreviation+File.separator+yi.getYear()+File.separator+
-							yi.getIssue()+File.separator+doiName;
+							String outFolder = writeDir+"/"+publisherAbbreviation+
+							"/"+journalAbbreviation+"/"+yi.getYear()+"/"+
+							yi.getIssue()+"/"+doiName;
 							File outFile = new File(outFolder);
 							if (!outFile.exists()) {
 								outFile.mkdirs();
 							}
-							String filename = outFolder+File.separator+doiName+"-"+String.valueOf(i+1)+".zip";
-							IOUtils.saveFileFromUrl(zipUrl, filename);
+							String filename = outFolder+"/"+doiName+"-"+String.valueOf(i+1)+".zip";
+							WebUtils.saveFileFromUrl(zipUrl, filename);
 							LOG.info("Writing zip file with DOI: "+doi);
 						}
 					}
@@ -97,7 +98,7 @@ public class PolyhedronBacklog {
 		} else {
 			throw new RuntimeException("Should have found 1 issueNode, found "+issueNodes.size());
 		}
-		IOUtils.writePrettyXML(logDoc, logPath);
+		IOUtils.writeXML(logDoc, logPath);
 	}
 
 	public boolean alreadyFinishedIssue(YearAndIssue yi) {

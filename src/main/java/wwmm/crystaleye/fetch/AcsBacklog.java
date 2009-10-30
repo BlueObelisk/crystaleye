@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.WebUtils;
 
 public class AcsBacklog extends Fetcher {
 	
@@ -42,11 +43,11 @@ public class AcsBacklog extends Fetcher {
 
 	public void fetch() {
 		String writeDir = properties.getWriteDir();
-		String issueWriteDir = writeDir+File.separator+PUBLISHER_ABBREVIATION
-		+File.separator+journal.getAbbreviation()+File.separator+year
-		+File.separator+issue;
+		String issueWriteDir = writeDir+"/"+PUBLISHER_ABBREVIATION
+		+"/"+journal.getAbbreviation()+"/"+year
+		+"/"+issue;
 		String issueUrl = "http://pubs.acs.org/toc/"+journal.getAbbreviation()+"/"+volume+"/"+issue;
-		Document doc = IOUtils.parseWebPage(issueUrl);
+		Document doc = WebUtils.parseWebPage(issueUrl);
 
 		if (doc == null) {
 			throw new RuntimeException("Couldn't find URL");
@@ -61,7 +62,7 @@ public class AcsBacklog extends Fetcher {
 				String suppUrl = "http://pubs.acs.org"+suppUrlPostfix;
 				int idx = suppUrl.lastIndexOf("/");
 				String cifId = suppUrl.substring(idx+1);
-				doc = IOUtils.parseWebPage(suppUrl);
+				doc = WebUtils.parseWebPage(suppUrl);
 				sleep();
 
 				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif')]", X_XHTML);
@@ -85,11 +86,11 @@ public class AcsBacklog extends Fetcher {
 	}
 
 	protected void writeFiles(String issueWriteDir, String cifId, int suppNum, String cif, String doi) {
-		String pathPrefix = issueWriteDir+File.separator+cifId+File.separator+cifId;
+		String pathPrefix = issueWriteDir+"/"+cifId+"/"+cifId;
 		LOG.info("Writing cif to: "+pathPrefix+"sup"+suppNum+CIF_MIME);
-		IOUtils.writeText(cif, pathPrefix+"sup"+suppNum+CIF_MIME);
+		IOUtils.writeText(new File(pathPrefix+"sup"+suppNum+CIF_MIME), cif);
 		if (doi != null) {
-			IOUtils.writeText(doi, pathPrefix+DOI_MIME);
+			IOUtils.writeText(new File(pathPrefix+DOI_MIME), doi);
 		}
 		CrystalEyeUtils.writeDateStamp(pathPrefix+DATE_MIME);
 	}

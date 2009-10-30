@@ -8,20 +8,20 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.converters.ConverterCommand;
 import org.xmlcml.cml.converters.rdf.cml.CML2OWLRDFConverter;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.fetch.IssueDate;
 
 public class Cml2RdfManager extends AbstractManager {
 	
 	private static final Logger LOG = Logger.getLogger(Cml2RdfManager.class);
-	private SiteProperties properties;
+	private CrystalEyeProperties properties;
 
 	public Cml2RdfManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
@@ -32,7 +32,7 @@ public class Cml2RdfManager extends AbstractManager {
 	}
 
 	private void setProperties(File propertiesFile) {
-		properties = new SiteProperties(propertiesFile);
+		properties = new CrystalEyeProperties(propertiesFile);
 	}
 	
 	public void execute() {
@@ -47,9 +47,9 @@ public class Cml2RdfManager extends AbstractManager {
 						String writeDir = properties.getWriteDir();
 						String year = date.getYear();
 						String issueNum = date.getIssue();
-						String issueWriteDir = Utils.convertFileSeparators(writeDir+File.separator+
-								publisherAbbreviation+File.separator+journalAbbreviation+File.separator+
-								year+File.separator+issueNum);
+						String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
+								publisherAbbreviation+"/"+journalAbbreviation+"/"+
+								year+"/"+issueNum);
 						this.process(issueWriteDir);
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CML2RDF);
 					}
@@ -81,7 +81,7 @@ public class Cml2RdfManager extends AbstractManager {
 	}
 	
 	public static void main(String[] args) {
-		String propsPath = "c:/Users/ned24/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt";
+		String propsPath = "c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt";
 		Cml2RdfManager manager = new Cml2RdfManager(propsPath);
 		manager.execute();
 	}

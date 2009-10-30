@@ -14,23 +14,23 @@ import java.util.List;
 
 import nu.xom.Nodes;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
 import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.element.CMLScalar;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.fetch.IssueDate;
 
 public class DoiListManager extends AbstractManager {
 
 	private static final Logger LOG = Logger.getLogger(DoiListManager.class);
 	
-	private SiteProperties properties;
+	private CrystalEyeProperties properties;
 
 	public DoiListManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
@@ -41,7 +41,7 @@ public class DoiListManager extends AbstractManager {
 	}
 
 	private void setProperties(File propertiesFile) {
-		properties = new SiteProperties(propertiesFile);
+		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -56,9 +56,9 @@ public class DoiListManager extends AbstractManager {
 						String summaryWriteDir = properties.getSummaryWriteDir();
 						String year = date.getYear();
 						String issueNum = date.getIssue();
-						String issueWriteDir = Utils.convertFileSeparators(summaryWriteDir+File.separator+
-								publisherAbbreviation+File.separator+journalAbbreviation+File.separator+
-								year+File.separator+issueNum);
+						String issueWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
+								publisherAbbreviation+"/"+journalAbbreviation+"/"+
+								year+"/"+issueNum);
 						this.process(issueWriteDir);
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, DOILIST);
 					}
@@ -110,7 +110,7 @@ public class DoiListManager extends AbstractManager {
 		}
 
 		if (!outFile.exists()) {
-			IOUtils.writeText(sb.toString(), doiListPath);
+			IOUtils.writeText(new File(doiListPath), sb.toString());
 		} else {
 			IOUtils.appendToFile(outFile, sb.toString());
 		}

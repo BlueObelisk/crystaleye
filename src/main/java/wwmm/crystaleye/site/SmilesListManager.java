@@ -13,6 +13,7 @@ import java.util.List;
 
 import nu.xom.Nodes;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
 import org.xmlcml.cml.element.CMLCml;
@@ -20,18 +21,17 @@ import org.xmlcml.cml.element.CMLIdentifier;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.fetch.IssueDate;
 import wwmm.crystaleye.tools.Execute;
 
 public class SmilesListManager extends AbstractManager {
 	
 	private static final Logger LOG = Logger.getLogger(SmilesListManager.class);
 
-	private SiteProperties properties;
+	private CrystalEyeProperties properties;
 
 	public SmilesListManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
@@ -42,7 +42,7 @@ public class SmilesListManager extends AbstractManager {
 	}
 
 	private void setProperties(File propertiesFile) {
-		properties = new SiteProperties(propertiesFile);
+		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -59,9 +59,9 @@ public class SmilesListManager extends AbstractManager {
 						String summaryWriteDir = properties.getSummaryWriteDir();
 						String year = date.getYear();
 						String issueNum = date.getIssue();
-						String issueWriteDir = Utils.convertFileSeparators(summaryWriteDir+File.separator+
-								publisherAbbreviation+File.separator+journalAbbreviation+File.separator+
-								year+File.separator+issueNum);
+						String issueWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
+								publisherAbbreviation+"/"+journalAbbreviation+"/"+
+								year+"/"+issueNum);
 						this.process(issueWriteDir);
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, SMILESLIST);
 					}
@@ -117,7 +117,7 @@ public class SmilesListManager extends AbstractManager {
 		}
 
 		if (!outFile.exists()) {
-			IOUtils.writeText(sb.toString(), smilesListPath);
+			IOUtils.writeText(new File(smilesListPath), sb.toString());
 		} else {
 			IOUtils.appendToFile(outFile, sb.toString());
 		}

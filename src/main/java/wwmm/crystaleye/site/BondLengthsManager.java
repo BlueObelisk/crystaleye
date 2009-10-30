@@ -38,6 +38,7 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import nu.xom.Text;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.graph.GraphException;
 import org.graph.Point;
@@ -60,13 +61,13 @@ import org.xmlcml.cml.tools.MoleculeTool;
 import org.xmlcml.euclid.Point3;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
+import wwmm.crystaleye.fetch.IssueDate;
 import wwmm.crystaleye.process.Cif2CmlManager;
-import wwmm.crystaleye.properties.SiteProperties;
 import wwmm.crystaleye.site.templates.BondLengthElementIndex;
 import wwmm.crystaleye.site.templates.BondLengthIndex;
 import wwmm.crystaleye.site.templates.CifSummaryToc;
@@ -97,7 +98,7 @@ public class BondLengthsManager extends AbstractManager {
 	private final double PROTOCOL_MAX_TEMP = 200.0;
 	private final double PROTOCOL_MAX_RF = 0.05;
 
-	private SiteProperties properties;
+	private CrystalEyeProperties properties;
 
 	private Set<String> changedBonds;
 
@@ -123,7 +124,7 @@ public class BondLengthsManager extends AbstractManager {
 	}
 
 	private void setProperties(File propertiesFile) {
-		properties = new SiteProperties(propertiesFile);
+		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -138,9 +139,9 @@ public class BondLengthsManager extends AbstractManager {
 						String summaryWriteDir = properties.getSummaryWriteDir();
 						String year = date.getYear();
 						String issueNum = date.getIssue();
-						String issueWriteDir = Utils.convertFileSeparators(summaryWriteDir+File.separator+
-								publisherAbbreviation+File.separator+journalAbbreviation+File.separator+
-								year+File.separator+issueNum);
+						String issueWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
+								publisherAbbreviation+"/"+journalAbbreviation+"/"+
+								year+"/"+issueNum);
 						this.process(issueWriteDir);
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, BONDLENGTHS);
 					}
@@ -221,8 +222,8 @@ public class BondLengthsManager extends AbstractManager {
 
 		BondLengthIndex bli = new BondLengthIndex(elements);
 		String page = bli.getWebpage();
-		String indexPath = bondFolderPath+File.separator+"index.html";
-		IOUtils.writeText(page, indexPath);
+		String indexPath = bondFolderPath+"/"+"index.html";
+		IOUtils.writeText(new File(indexPath), page);
 
 		for (Iterator it = bondElementsMap.entrySet().iterator(); it.hasNext(); ) {
 			Map.Entry entry = (Map.Entry)it.next();
@@ -230,8 +231,8 @@ public class BondLengthsManager extends AbstractManager {
 			Set<String> set = (Set<String>)entry.getValue();
 			BondLengthElementIndex bei = new BondLengthElementIndex(bondFolderPath, element, set);
 			String webpage = bei.getWebpage();
-			String elementIndexPath = bondFolderPath+File.separator+element+"-index.html";
-			IOUtils.writeText(webpage, elementIndexPath);
+			String elementIndexPath = bondFolderPath+"/"+element+"-index.html";
+			IOUtils.writeText(new File(elementIndexPath), webpage);
 		}
 	}
 
@@ -239,8 +240,8 @@ public class BondLengthsManager extends AbstractManager {
 		if (changedBonds == null) return;
 		for (String bondType : changedBonds) {
 			String bondLengthsDir = properties.getBondLengthsDir();
-			String allBondsPath = bondLengthsDir+File.separator+bondType+CSV_MIME;
-			String protocolBondsPath = bondLengthsDir+File.separator+bondType+AFTER_PROTOCOL+CSV_MIME;
+			String allBondsPath = bondLengthsDir+"/"+bondType+CSV_MIME;
+			String protocolBondsPath = bondLengthsDir+"/"+bondType+AFTER_PROTOCOL+CSV_MIME;
 			File protocolBondsFile = new File(protocolBondsPath);
 			if (protocolBondsFile.exists()) {
 				protocolBondsFile.delete();
@@ -276,7 +277,7 @@ public class BondLengthsManager extends AbstractManager {
 							if (protocolBondsFile.exists()) {
 								IOUtils.appendToFile(protocolBondsFile, sb.toString());
 							} else {
-								IOUtils.writeText(sb.toString(), protocolBondsPath);
+								IOUtils.writeText(new File(protocolBondsPath), sb.toString());
 							}
 							sb = new StringBuilder();
 							i = 0;
@@ -287,7 +288,7 @@ public class BondLengthsManager extends AbstractManager {
 					if (protocolBondsFile.exists()) {
 						IOUtils.appendToFile(protocolBondsFile, sb.toString());
 					} else {
-						IOUtils.writeText(sb.toString(), protocolBondsPath);
+						IOUtils.writeText(new File(protocolBondsPath), sb.toString());
 					}
 				}
 				input.close();
@@ -316,15 +317,15 @@ public class BondLengthsManager extends AbstractManager {
 		if (changedBonds == null) return;
 		for (String bondType : changedBonds) {	
 			String bondLengthsDir = properties.getBondLengthsDir();
-			String allBondsPath = bondLengthsDir+File.separator+bondType+CSV_MIME;
+			String allBondsPath = bondLengthsDir+"/"+bondType+CSV_MIME;
 			Document allHist = getHistogram(allBondsPath, bondType, false);
-			String allHistOutPath = bondLengthsDir+File.separator+bondType+SVG_MIME;
+			String allHistOutPath = bondLengthsDir+"/"+bondType+SVG_MIME;
 			IOUtils.writeXML(allHist, allHistOutPath);
 
-			String protocolBondsPath = bondLengthsDir+File.separator+bondType+AFTER_PROTOCOL+CSV_MIME;
+			String protocolBondsPath = bondLengthsDir+"/"+bondType+AFTER_PROTOCOL+CSV_MIME;
 			if (new File(protocolBondsPath).exists()) {
 				Document protocolHist = getHistogram(protocolBondsPath, bondType, true);
-				String protocolHistOutPath = bondLengthsDir+File.separator+bondType+AFTER_PROTOCOL+SVG_MIME;
+				String protocolHistOutPath = bondLengthsDir+"/"+bondType+AFTER_PROTOCOL+SVG_MIME;
 				IOUtils.writeXML(protocolHist, protocolHistOutPath);
 			}
 		}	
@@ -445,9 +446,9 @@ public class BondLengthsManager extends AbstractManager {
 	private void improveSVGAndCreateHTMLSummaries(Document doc, double minR, double binWidth, String bondsPath, String bondType, boolean isAfterProtocol) {
 		String bondTypeFolder = "";
 		if (isAfterProtocol) {
-			bondTypeFolder = properties.getBondLengthsDir()+File.separator+bondType+AFTER_PROTOCOL;
+			bondTypeFolder = properties.getBondLengthsDir()+"/"+bondType+AFTER_PROTOCOL;
 		} else {
-			bondTypeFolder = properties.getBondLengthsDir()+File.separator+bondType;
+			bondTypeFolder = properties.getBondLengthsDir()+"/"+bondType;
 		}
 		addSubtitle(doc, isAfterProtocol);
 		File bondTypeFile = new File(bondTypeFolder);
@@ -504,7 +505,7 @@ public class BondLengthsManager extends AbstractManager {
 			}
 
 			String href = bondType+"/"+id+HTML_MIME;
-			String htmlPath = bondTypeFolder+File.separator+id+HTML_MIME;
+			String htmlPath = bondTypeFolder+"/"+id+HTML_MIME;
 
 			String table = createOverallCifSummaryTable(lineList);
 			if (table == null) {
@@ -513,7 +514,7 @@ public class BondLengthsManager extends AbstractManager {
 			String title = "CrystalEye: Structures containing "+bondType+" bonds<br />between "+id+" &Aring;";
 			String header = "Structures containing "+bondType+" bonds<br />between "+id+" &Aring;";
 			CifSummaryToc ocs = new CifSummaryToc(title, header, table, String.valueOf(structureCount), jmolLoadForSummary, imageLoadForSummary, String.valueOf(maxImageForSummary), 2);
-			IOUtils.writeText(ocs.getWebpage(), htmlPath);
+			IOUtils.writeText(new File(htmlPath), ocs.getWebpage());
 
 			Element rect = (Element)rectNodes.get(i);
 			rect.addAttribute(new Attribute("onclick", "move('"+href+"')"));
@@ -630,8 +631,8 @@ public class BondLengthsManager extends AbstractManager {
 			String cmlId = items[ID_COL];
 			String[] a = cmlId.split("_");
 
-			String completeCmlPath = summaryDir+File.separator+a[0]+File.separator+a[1]+File.separator+a[2]+File.separator+a[3]+
-			File.separator+"data"+File.separator+a[4].replaceAll("sup[\\d]*", "")+File.separator+a[4]+"_"+a[5]+File.separator+a[4]+"_"+a[5]+COMPLETE_CML_MIME;
+			String completeCmlPath = summaryDir+"/"+a[0]+"/"+a[1]+"/"+a[2]+"/"+a[3]+
+			"/"+"data"+"/"+a[4].replaceAll("sup[\\d]*", "")+"/"+a[4]+"_"+a[5]+"/"+a[4]+"_"+a[5]+COMPLETE_CML_MIME;
 
 			String[] atomNos = items[ATOMNOS_COL].split("_");
 
@@ -687,7 +688,7 @@ public class BondLengthsManager extends AbstractManager {
 	private void addLengthsFromCmlFile(File cmlFile) {
 		CMLCml c = null;
 		try {
-			c = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+			c = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
 		} catch (Exception e) {
 			System.err.println("Error parsing CML: "+e.getMessage());
 		}
@@ -961,7 +962,7 @@ public class BondLengthsManager extends AbstractManager {
 		Collections.sort(elList);
 		String bondTypeId = elList.get(0)+"-"+elList.get(1);
 		String filename = bondTypeId+CSV_MIME;
-		File lengthsFile = new File(bondLengthsDir+File.separator+filename);
+		File lengthsFile = new File(bondLengthsDir+"/"+filename);
 
 		StringBuilder bondId = new StringBuilder();
 		bondId.append(id+"_");
@@ -1014,13 +1015,12 @@ public class BondLengthsManager extends AbstractManager {
 		if (lengthsFile.exists()) {
 			IOUtils.appendToFile(lengthsFile, newContent);
 		} else {
-			IOUtils.writeText(newContent, lengthsFile.getAbsolutePath());
+			IOUtils.writeText(new File(lengthsFile.getAbsolutePath()), newContent);
 		}
 	}
 
 	public static void main(String[] args) {
-		//BondLengthsManager d = new BondLengthsManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
-		BondLengthsManager d = new BondLengthsManager("e:/data-test/docs/cif-flow-props.txt");
+		BondLengthsManager d = new BondLengthsManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
 		d.execute();
 	}
 }

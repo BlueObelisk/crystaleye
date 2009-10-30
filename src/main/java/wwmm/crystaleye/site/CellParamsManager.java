@@ -11,23 +11,23 @@ import java.util.List;
 
 import nu.xom.Nodes;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.properties.SiteProperties;
+import wwmm.crystaleye.fetch.IssueDate;
 
 public class CellParamsManager extends AbstractManager {
 	
 	private static final Logger LOG = Logger.getLogger(CellParamsManager.class);
 
-	private SiteProperties properties;
+	private CrystalEyeProperties properties;
 
 	public CellParamsManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
@@ -38,7 +38,7 @@ public class CellParamsManager extends AbstractManager {
 	}
 
 	private void setProperties(File propertiesFile) {
-		properties = new SiteProperties(propertiesFile);
+		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -53,9 +53,9 @@ public class CellParamsManager extends AbstractManager {
 						String summaryWriteDir = properties.getSummaryWriteDir();
 						String year = date.getYear();
 						String issueNum = date.getIssue();
-						String issueWriteDir = Utils.convertFileSeparators(summaryWriteDir+File.separator+
-								publisherAbbreviation+File.separator+journalAbbreviation+File.separator+
-								year+File.separator+issueNum);
+						String issueWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
+								publisherAbbreviation+"/"+journalAbbreviation+"/"+
+								year+"/"+issueNum);
 						this.process(issueWriteDir);
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CELLPARAMS);
 					}
@@ -75,7 +75,7 @@ public class CellParamsManager extends AbstractManager {
 				for (File cmlFile : fileList ) {
 					CMLCml cml = null;
 					try {
-						cml = (CMLCml)IOUtils.parseCmlFile(cmlFile).getRootElement();
+						cml = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
 					} catch(Exception e) {
 						System.err.println("Error parsing CML: "+e.getMessage());
 					}

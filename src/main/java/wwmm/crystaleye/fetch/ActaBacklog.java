@@ -14,6 +14,7 @@ import nu.xom.Nodes;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.WebUtils;
 
 public class ActaBacklog extends Fetcher {
 	
@@ -53,8 +54,8 @@ public class ActaBacklog extends Fetcher {
 	
 	public void fetch() {
 		String writeDir = properties.getWriteDir();
-		String issueWriteDir = writeDir+File.separator+PUBLISHER_ABBREVIATION+File.separator+journalAbbreviation+
-		File.separator+year+File.separator+issueNum+"-"+issuePart;
+		String issueWriteDir = writeDir+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+
+		"/"+year+"/"+issueNum+"-"+issuePart;
 		Pattern pattern = Pattern.compile("http://scripts.iucr.org/cgi-bin/sendcif\\?(.*)");
 		if (writeDir == null || journalAbbreviation == null || year == null || issueNum == null || issuePart == null) {
             throw new IllegalStateException(
@@ -62,7 +63,7 @@ public class ActaBacklog extends Fetcher {
         } else {
 			String url = "http://journals.iucr.org/"+journalAbbreviation+"/issues/"+year+"/"+issueNum+"/"+issuePart+"/isscontsbdy.html";
 			LOG.info("Fetching CIFs from: "+url);
-			Document doc = IOUtils.parseWebPage(url);
+			Document doc = WebUtils.parseWebPage(url);
 			Nodes tocEntries = doc.query("//x:div[@class='toc entry']", X_XHTML);
 			sleep();
 			if (tocEntries.size() > 0) {
@@ -81,17 +82,17 @@ public class ActaBacklog extends Fetcher {
 							} else {
 								throw new RuntimeException("Could not find the CIF ID.");
 							}
-							cifWriteDir = issueWriteDir+File.separator+cifId.substring(0,cifId.length()-4);
-							String result = IOUtils.fetchWebPage(cifUrl);
-							String cifPath = cifWriteDir+File.separator+cifId+".cif";
+							cifWriteDir = issueWriteDir+"/"+cifId.substring(0,cifId.length()-4);
+							String result = WebUtils.fetchWebPage(cifUrl);
+							String cifPath = cifWriteDir+"/"+cifId+".cif";
 							LOG.info("Writing CIF to "+cifPath);
-							IOUtils.writeText(result, cifPath);
+							IOUtils.writeText(new File(cifPath), result);
 							sleep();
 						}
 						Nodes doiNodes = tocEntry.query(".//x:p/x:font[@size='2']", X_XHTML);
 						if (doiNodes.size() > 0) {
 							String doi = ((Element)doiNodes.get(0)).getValue().substring(4);
-							IOUtils.writeText(doi, cifWriteDir+File.separator+cifId.substring(0,cifId.length()-4)+".doi");
+							IOUtils.writeText(new File(cifWriteDir+"/"+cifId.substring(0,cifId.length()-4)+".doi"), doi);
 						} else {
 							System.err.println("Could not find the DOI for this toc entry.");
 						}
@@ -100,8 +101,8 @@ public class ActaBacklog extends Fetcher {
 							for (int j = 0; j < checkCifNodes.size(); j++) {
 								Node checkCifLink = checkCifNodes.get(j);
 								String checkCifUrl = ((Element)checkCifLink).getAttributeValue("href");
-								String result = IOUtils.fetchWebPage(SITE_PREFIX+checkCifUrl);
-								IOUtils.writeText(result.toString(), cifWriteDir+File.separator+cifId+".deposited.checkcif.html");
+								String result = WebUtils.fetchWebPage(SITE_PREFIX+checkCifUrl);
+								IOUtils.writeText(new File(cifWriteDir+"/"+cifId+".deposited.checkcif.html"), result.toString());
 								sleep();
 							}
 						}

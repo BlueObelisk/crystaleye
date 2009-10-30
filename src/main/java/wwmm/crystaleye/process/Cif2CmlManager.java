@@ -20,11 +20,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -53,6 +51,8 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IMolecule;
@@ -90,12 +90,12 @@ import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CDKUtils;
+import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
-import wwmm.crystaleye.properties.ProcessProperties;
+import wwmm.crystaleye.fetch.IssueDate;
 import wwmm.crystaleye.tools.CheckCifParser;
 import wwmm.crystaleye.tools.InchiTool;
 
@@ -103,7 +103,7 @@ public class Cif2CmlManager extends AbstractManager {
 
 	private static final Logger LOG = Logger.getLogger(Cif2CmlManager.class);
 
-	private ProcessProperties properties;
+	private CrystalEyeProperties properties;
 
 	private Cif2CmlManager() {
 		;
@@ -118,7 +118,7 @@ public class Cif2CmlManager extends AbstractManager {
 	}
 
 	private void setProperties(File propertiesFile) {
-		properties = new ProcessProperties(propertiesFile);
+		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -133,9 +133,9 @@ public class Cif2CmlManager extends AbstractManager {
 						String writeDir = properties.getWriteDir();
 						String year = date.getYear();
 						String issueNum = date.getIssue();
-						String issueWriteDir = Utils.convertFileSeparators(writeDir+File.separator+
-								publisherAbbreviation+File.separator+journalAbbreviation+File.separator+
-								year+File.separator+issueNum);
+						String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
+								publisherAbbreviation+"/"+journalAbbreviation+"/"+
+								year+"/"+issueNum);
 						this.process(issueWriteDir, publisherAbbreviation, journalAbbreviation, year, issueNum);
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CIF2CML);
 					}
@@ -151,118 +151,143 @@ public class Cif2CmlManager extends AbstractManager {
 		if (!new File(issueWriteDir).exists()) {
 			throw new IllegalStateException("Issue directory at "+issueWriteDir+" should exist.");
 		}
-		
-		
-		for (File parent : new File(issueWriteDir).listFiles()) {
-			String fileName = parent.getAbsolutePath();
-			// find CIF files and split them up so that each 'split' cif contains a 
-			// data block and a copy of the global block 
-			for (File file : parent.listFiles()) {
-				fileName = file.getName();
-				if (fileName.matches("[^\\._]*\\.cif")) {
-					// calculate number of bytes in the file - if it is too large then do not try to parse
-					if (fileTooLarge(file)) {
-						continue;
-					} else {
-						List<File> splitCifList = null;
-						try {
-							splitCifList = this.createSplitCifs(file);
-						} catch (Exception e) {
-							System.err.println("Could not split cif file: "+file.getAbsolutePath());
-							continue;
-						}
-						for (File splitCifFile : splitCifList) {
-							String splitCifPath = splitCifFile.getAbsolutePath();
+		for (File cifFile : getIssueCifFiles(issueWriteDir)) {
+			handleCif(cifFile, publisherAbbreviation, journalAbbreviation, year, issueNum);
+		}
+	}
 
-							// parse split CIF to split cmls
-							String pathMinusMime = Utils.getPathMinusMimeSet(splitCifFile);
-							String suppId = pathMinusMime.substring(pathMinusMime.lastIndexOf(File.separator)+1);
-							String articleId = suppId.substring(0,suppId.indexOf("_"));
-							articleId = articleId.replaceAll("sup[\\d]*", "");
-							String outfile = pathMinusMime+RAW_CML_MIME;
+	private void handleCif(File file, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum) {
+		// calculate number of bytes in the file - if it is too large then do not try to parse
+		if (fileTooLarge(file)) {
+			return;
+		}
 
-							// set up and run CIFConverter
-							try {
-								runCIFConverter(splitCifPath, outfile);
-							} catch (Exception e) {
-								System.out.println("Error converting cif to xml: "+splitCifPath);;
-								continue;
-							}
+		/* -- what this method should really look like.
+		File cifXmlFile = convertCifToCifxml(cifFile);
+		List<File> splitCifXmls = splitCifxml(cifXmlFile);
+		for (File splitCifxmlFile : splitCifXmls) {
+			File rawCmlFile = convertCifxmlToRawCml(splitCifxmlFile);
+			File completeCmlFile = convertRawCmlToCompleteCml(rawCmlFile);
+		}
+		 */
 
-							File rawCmlFile = new File(outfile);
-							if (!rawCmlFile.exists()) {
-								continue;
-							}
+		List<File> splitCifList = null;
+		try {
+			splitCifList = this.createSplitCifs(file);
+		} catch (Exception e) {
+			System.err.println("Could not split cif file: "+file.getAbsolutePath());
+			return;
+		}
+		for (File splitCifFile : splitCifList) {
+			String splitCifPath = splitCifFile.getAbsolutePath();
 
-							this.getCalculatedCheckCif(splitCifPath, pathMinusMime);
+			// parse split CIF to split cmls
+			String pathMinusMime = Utils.getPathMinusMimeSet(splitCifFile);
+			String suppId = pathMinusMime.substring(pathMinusMime.lastIndexOf(File.separator)+1);
+			String articleId = suppId.substring(0,suppId.indexOf("_"));
+			articleId = articleId.replaceAll("sup[\\d]*", "");
+			String outfile = pathMinusMime+RAW_CML_MIME;
 
-							// read raw CML back in and convert to 'complete' CML
-							CMLCml cml = null;
-							try { 
-								cml = (CMLCml)IOUtils.parseCmlFile(rawCmlFile).getRootElement();
-							} catch (Exception e) {
-								System.err.println("Error reading CML.");
-								continue;
-							}
+			// set up and run CIFConverter
+			try {
+				runCIFConverter(splitCifPath, outfile);
+			} catch (Exception e) {
+				LOG.warn("Error converting cif to xml: "+splitCifPath+" - "+e.getMessage());
+				continue;
+			}
 
-							// set molecule ID from issue information
-							String id = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum+"_"+suppId;
-							cml.setId(id);
-							CMLMolecule molecule = getMolecule(cml);
-							molecule.setId(id);
+			File rawCmlFile = new File(outfile);
+			if (!rawCmlFile.exists()) {
+				continue;
+			}
 
-							// don't want to do molecules that are too large, so if > 1000 atoms, then pass
-							if (molecule.getAtomCount() > 1000) {
-								continue;
-							}
+			this.getCalculatedCheckCif(splitCifPath, pathMinusMime);
 
-							CompoundClass compoundClass = CrystalEyeUtils.getCompoundClass(molecule);
-							addCompoundClass(cml, compoundClass);
-							try {
-								processDisorder(molecule, compoundClass);
-								CMLMolecule mergedMolecule = null;
-								try {
-									mergedMolecule = createFinalStructure(molecule, compoundClass);
-								} catch (Exception e) {
-									System.err.println("Could not calculate final structure.");
-									continue;
-								}
-								boolean isPolymeric = false;
-								if (!compoundClass.equals(CompoundClass.INORGANIC)) {
-									// if the structure is a polymeric organometal then we want to add 
-									// all atoms to the unit cell1
-									isPolymeric = isPolymericOrganometal(molecule, mergedMolecule, compoundClass);
-									if (!isPolymeric) {
-										isPolymeric = isSiO4(mergedMolecule);
-									}
-									if (isPolymeric) {
-										CrystalTool crystalTool = new CrystalTool(molecule);
-										mergedMolecule = crystalTool.addAllAtomsToUnitCell(true);
-										addPolymericFlag(mergedMolecule);
-									}
-									if (!isPolymeric) {
-										calculateBondsAnd3DStereo(cml, mergedMolecule);
-										rearrangeChiralAtomsInBonds(mergedMolecule);
-										add2DStereoSMILESAndInChI(mergedMolecule, compoundClass);
-									}
-								}
-								handleCheckcifs(cml, pathMinusMime);
-								addDoi(cml, pathMinusMime);
-								// need to replace the molecule created from atoms explicit in the CIF with mergedMolecule.
-								molecule.detach();
-								cml.appendChild(mergedMolecule);
-								repositionCMLCrystalElement(cml);
+			// read raw CML back in and convert to 'complete' CML
+			CMLCml cml = null;
+			try { 
+				cml = (CMLCml)IOUtils.parseCml(rawCmlFile).getRootElement();
+			} catch (Exception e) {
+				System.err.println("Error reading CML.");
+				continue;
+			}
 
-								CrystalEyeUtils.writeDateStamp(pathMinusMime+DATE_MIME);
-								IOUtils.writePrettyXML(cml.getDocument(), pathMinusMime+COMPLETE_CML_MIME);
-							} catch (RuntimeException e) {
-								System.err.println("Error creating complete CML: "+e.getMessage());
-							}
-						}
+			// set molecule ID from issue information
+			String id = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum+"_"+suppId;
+			cml.setId(id);
+			CMLMolecule molecule = getMolecule(cml);
+			molecule.setId(id);
+
+			// don't want to do molecules that are too large, so if > 1000 atoms, then pass
+			if (molecule.getAtomCount() > 1000) {
+				continue;
+			}
+
+			CompoundClass compoundClass = CrystalEyeUtils.getCompoundClass(molecule);
+			addCompoundClass(cml, compoundClass);
+			try {
+				processDisorder(molecule, compoundClass);
+				CMLMolecule mergedMolecule = null;
+				try {
+					mergedMolecule = createFinalStructure(molecule, compoundClass);
+				} catch (Exception e) {
+					System.err.println("Could not calculate final structure.");
+					continue;
+				}
+				boolean isPolymeric = false;
+				if (!compoundClass.equals(CompoundClass.INORGANIC)) {
+					// if the structure is a polymeric organometal then we want to add 
+					// all atoms to the unit cell1
+					isPolymeric = isPolymericOrganometal(molecule, mergedMolecule, compoundClass);
+					if (!isPolymeric) {
+						isPolymeric = isSiO4(mergedMolecule);
+					}
+					if (isPolymeric) {
+						CrystalTool crystalTool = new CrystalTool(molecule);
+						mergedMolecule = crystalTool.addAllAtomsToUnitCell(true);
+						addPolymericFlag(mergedMolecule);
+					}
+					if (!isPolymeric) {
+						calculateBondsAnd3DStereo(cml, mergedMolecule);
+						rearrangeChiralAtomsInBonds(mergedMolecule);
+						add2DStereoSMILESAndInChI(mergedMolecule, compoundClass);
 					}
 				}
+				handleCheckcifs(cml, pathMinusMime);
+				addDoi(cml, pathMinusMime);
+				// need to replace the molecule created from atoms explicit in the CIF with mergedMolecule.
+				molecule.detach();
+				cml.appendChild(mergedMolecule);
+				repositionCMLCrystalElement(cml);
+
+				CrystalEyeUtils.writeDateStamp(pathMinusMime+DATE_MIME);
+				IOUtils.writeXML(cml.getDocument(), pathMinusMime+COMPLETE_CML_MIME);
+			} catch (RuntimeException e) {
+				System.err.println("Error creating complete CML: "+e.getMessage());
 			}
-		}		
+		}
+	}
+
+	/**
+	 * <p>
+	 * Finds the CIF files associated with the issue directory provided
+	 * and returns them as a list.
+	 * </p>
+	 * 
+	 * @param issueDirPath - folder corresponding to a journal issue.
+	 * 
+	 * @return list of CIF files associated with the provided issue.
+	 */
+	private List<File> getIssueCifFiles(String issueDirPath) {
+		List<File> files = new ArrayList<File>();
+		for (File parent : new File(issueDirPath).listFiles()) { 
+			for (File file : parent.listFiles()) {
+				if (file.getName().matches("[^\\._]*\\.cif")) {
+					files.add(file);
+				}
+			}
+		}
+		return files;
 	}
 
 	private boolean isSiO4(CMLMolecule molecule) {
@@ -306,9 +331,8 @@ public class Cif2CmlManager extends AbstractManager {
 
 	private boolean fileTooLarge(File file) {
 		boolean tooLarge = false;
-		int total = Utils.getFileSizeInBytes(file);
-		if (total > MAX_CIF_SIZE_IN_BYTES) {
-			System.err.println("CIF file too large to parse.  Skipping: "+file.getAbsolutePath());
+		if ((int)file.length() > MAX_CIF_SIZE_IN_BYTES) {
+			LOG.warn("CIF file too large to parse.  Skipping: "+file.getAbsolutePath());
 			tooLarge = true;
 		}
 		return tooLarge;
@@ -551,13 +575,23 @@ public class Cif2CmlManager extends AbstractManager {
 		File depositedCheckcif = new File(depositedCheckcifPath);
 		File calculatedCheckcif = new File(calculatedCheckcifPath);
 		if (depositedCheckcif.exists()) {
-			String contents = Utils.file2String(depositedCheckcifPath);
-			Document deposDoc = new CheckCifParser(contents).parseDeposited();
+			String contents = null;
+			try {
+				contents = FileUtils.readFileToString(depositedCheckcif);
+			} catch (IOException e) {
+				throw new RuntimeException("Exception reading file: "+depositedCheckcif, e);
+			} 
+			Document deposDoc = new CheckCifParser(contents).parsePublished();
 			cml.appendChild(deposDoc.getRootElement().copy());
 		}
 		if (calculatedCheckcif.exists()) {
-			String contents = Utils.file2String(calculatedCheckcifPath);
-			Document calcDoc = new CheckCifParser(contents).parseCalculated();
+			String contents = null;
+			try {
+				contents = FileUtils.readFileToString(calculatedCheckcif);
+			} catch (IOException e) {
+				throw new RuntimeException("Exception reading file: "+calculatedCheckcif, e);
+			}
+			Document calcDoc = new CheckCifParser(contents).parseService();
 			cml.appendChild(calcDoc.getRootElement().copy());
 			this.getPlatonImage(calcDoc, pathMinusMime);	
 		}
@@ -634,11 +668,11 @@ public class Cif2CmlManager extends AbstractManager {
 						String cifPathMinusMime = Utils.getPathMinusMimeSet(file);
 						String cifId = cifPathMinusMime.substring(cifPathMinusMime.lastIndexOf(File.separator)+1);
 						String cifParent = cifPathMinusMime.substring(0,cifPathMinusMime.lastIndexOf(File.separator));
-						File splitCifParent = new File(cifParent+File.separator+cifId+"_"+chemBlockId);
+						File splitCifParent = new File(cifParent+"/"+cifId+"_"+chemBlockId);
 						if (!splitCifParent.exists()) {
 							splitCifParent.mkdirs();
 						}
-						File splitCifFile = new File(splitCifParent,File.separator+cifId+"_"+chemBlockId+".cif");
+						File splitCifFile = new File(splitCifParent,"/"+cifId+"_"+chemBlockId+".cif");
 						writer = new FileWriter(splitCifFile);
 						cifNew.writeCIF(writer);
 						writer.close();
@@ -648,8 +682,9 @@ public class Cif2CmlManager extends AbstractManager {
 					} catch (IOException e) {
 						e.printStackTrace();
 					} finally {
-						if (writer != null)
+						if (writer != null) {
 							writer.close();
+						}
 					}
 				}
 			}
@@ -669,8 +704,14 @@ public class Cif2CmlManager extends AbstractManager {
 		parent = new File(parent).getParent();
 		String doiPath = parent+pathMinusMime.substring(pathMinusMime.lastIndexOf(File.separator),pathMinusMime.lastIndexOf("_"));
 		doiPath = doiPath.replaceAll("sup[\\d]*", "")+".doi";
-		if (new File(doiPath).exists()) {
-			String doiString = Utils.file2String(doiPath);
+		File doiFile = new File(doiPath);
+		if (doiFile.exists()) {
+			String doiString = null;
+			try {
+				doiString = FileUtils.readFileToString(doiFile);
+			} catch (IOException e) {
+				throw new RuntimeException("Exception while reading file: "+doiFile, e);
+			}
 			Element doi = new Element("scalar", CML_NS);
 			doi.addAttribute(new Attribute("dictRef", "idf:doi"));
 			doi.appendChild(new Text(doiString));
@@ -681,7 +722,7 @@ public class Cif2CmlManager extends AbstractManager {
 	private void getCalculatedCheckCif(String cifPath, String pathMinusMime) {
 		String calculatedCheckCif = calculateCheckcif(cifPath);
 		String ccPath = pathMinusMime+".calculated.checkcif.html";
-		IOUtils.writeText(calculatedCheckCif, ccPath);
+		IOUtils.writeText(new File(ccPath), calculatedCheckCif);
 	}
 
 	private void getPlatonImage(Document doc, String pathMinusMime) {
@@ -691,12 +732,10 @@ public class Cif2CmlManager extends AbstractManager {
 			URL url = null;
 			try {
 				String imageLink = platonLinks.get(0).getValue();
-				String prefix = imageLink.substring(0, imageLink.lastIndexOf("/")+1);
-				String file = imageLink.substring(imageLink.lastIndexOf("/")+1);
-				url = new URL(prefix+URLEncoder.encode(file,"UTF-8")); 
+				String prefix = imageLink.substring(0, imageLink.lastIndexOf(File.separator)+1);
+				String file = imageLink.substring(imageLink.lastIndexOf(File.separator)+1);
+				url = new URL(prefix+file); 
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
 			BufferedImage image = null;
@@ -705,7 +744,7 @@ public class Cif2CmlManager extends AbstractManager {
 				image = image.getSubimage(14, 15, 590, 443);
 				ImageIO.write(image, "jpeg", new File(pathMinusMime+".platon.jpeg"));
 			} catch (IOException e) {
-				System.err.println("ERROR: could not read PLATON image");
+				LOG.warn("ERROR: could not read PLATON image");
 			}
 		}	
 	}
@@ -738,7 +777,7 @@ public class Cif2CmlManager extends AbstractManager {
 					continue;
 				}
 				in = filePost.getResponseBodyAsStream();
-				checkcif = IOUtils.stream2String(in);
+				checkcif = org.apache.commons.io.IOUtils.toString(in);
 				in.close();
 				if (checkcif.length() > 0) {
 					finished = true;
@@ -1002,7 +1041,7 @@ public class Cif2CmlManager extends AbstractManager {
 	}		
 
 	public static void main(String[] args) {
-		Cif2CmlManager acta = new Cif2CmlManager("c:/Users/ned24/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		Cif2CmlManager acta = new Cif2CmlManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
 		acta.execute();
 	}
 }

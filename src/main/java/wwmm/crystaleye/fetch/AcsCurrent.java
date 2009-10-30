@@ -12,8 +12,7 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.WebUtils;
 
 public class AcsCurrent extends CurrentIssueFetcher {
 	
@@ -59,7 +58,7 @@ public class AcsCurrent extends CurrentIssueFetcher {
 	 */
 	public Document getCurrentIssueHtml(String journalAbbreviation) {
 		String url = "http://pubs.acs.org/toc/"+journalAbbreviation+"/current";
-		return IOUtils.parseWebPage(url);
+		return WebUtils.parseWebPage(url);
 	}
 	
 	private String getJournalVolumeFromYear(String journalAbbreviation, String year) {
@@ -80,7 +79,7 @@ public class AcsCurrent extends CurrentIssueFetcher {
 	protected void fetch(String issueWriteDir, String journalAbbreviation, String year, String issueNum) {
 		String volume = getJournalVolumeFromYear(journalAbbreviation, year);
 		String issueUrl = "http://pubs.acs.org/toc/"+journalAbbreviation+"/"+volume+"/"+issueNum;
-		Document doc = IOUtils.parseWebPage(issueUrl);
+		Document doc = WebUtils.parseWebPage(issueUrl);
 		Nodes suppLinks = doc.query(".//x:a[contains(@href,'/doi/suppl/10.1021')]", X_XHTML);
 		sleep();
 		if (suppLinks.size() > 0) {
@@ -89,7 +88,7 @@ public class AcsCurrent extends CurrentIssueFetcher {
 				String suppUrl = "http://pubs.acs.org"+suppUrlPostfix;
 				int idx = suppUrl.lastIndexOf("/");
 				String cifId = suppUrl.substring(idx+1);
-				doc = IOUtils.parseWebPage(suppUrl);
+				doc = WebUtils.parseWebPage(suppUrl);
 				sleep();
 				
 				Nodes cifLinks = doc.query(".//x:a[contains(@href,'.cif')]", X_XHTML);
