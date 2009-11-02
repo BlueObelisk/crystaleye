@@ -1,4 +1,4 @@
-package wwmm.crystaleye.site;
+package wwmm.crystaleye.managers;
 
 import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
@@ -80,10 +80,10 @@ public class SmilesListManager extends AbstractManager {
 		String smilesListPath = properties.getSmilesListPath();
 		if (SystemUtils.IS_OS_WINDOWS) {
 			String[] command = {"cmd.exe", "/C", "babel", smilesListPath, "-ofs"};
-			Execute.run(command);
+			new Execute().run(command);
 		} else {
 			String[] command = {"babel", smilesListPath, "-ofs"};
-			Execute.run(command);
+			new Execute().run(command);
 		}
 	}
 

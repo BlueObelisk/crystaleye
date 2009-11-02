@@ -1,4 +1,4 @@
-package wwmm.crystaleye.process;
+package wwmm.crystaleye.managers;
 
 import static wwmm.crystaleye.CrystalEyeConstants.CML2FOO;
 import static wwmm.crystaleye.CrystalEyeConstants.CML2RDF;

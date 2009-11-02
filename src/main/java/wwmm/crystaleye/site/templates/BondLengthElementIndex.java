@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import wwmm.crystaleye.site.BondLengthsManager;
+import wwmm.crystaleye.managers.BondLengthsManager;
 
 public class BondLengthElementIndex {
 
