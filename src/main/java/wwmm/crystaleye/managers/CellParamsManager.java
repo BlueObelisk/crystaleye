@@ -18,9 +18,9 @@ import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class CellParamsManager extends AbstractManager {
 	
@@ -68,7 +68,7 @@ public class CellParamsManager extends AbstractManager {
 				for (File cmlFile : fileList ) {
 					CMLCml cml = null;
 					try {
-						cml = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
+						cml = (CMLCml)Utils.parseCml(cmlFile).getRootElement();
 					} catch(Exception e) {
 						LOG.warn("Error parsing CML: "+e.getMessage());
 					}
@@ -132,9 +132,9 @@ public class CellParamsManager extends AbstractManager {
 		
 		File cellParamsFile = new File(properties.getCellParamsFilePath());
 		if (!cellParamsFile.exists()) {
-			IOUtils.writeText(cellParamsFile, sb.toString());
+			Utils.writeText(cellParamsFile, sb.toString());
 		} else {
-			IOUtils.appendToFile(cellParamsFile, sb.toString());
+			Utils.appendToFile(cellParamsFile, sb.toString());
 		}
 	}
 

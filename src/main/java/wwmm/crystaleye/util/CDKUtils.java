@@ -1,10 +1,11 @@
-package wwmm.crystaleye;
+package wwmm.crystaleye.util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 
 import javax.vecmath.Point2d;
 
+import org.apache.commons.io.IOUtils;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IChemFile;
@@ -33,7 +34,7 @@ public class CDKUtils {
 		} catch (Exception e) {
 			throw new RuntimeException("Exception while creating CDK molecule: "+e.getMessage());
 		} finally {
-			org.apache.commons.io.IOUtils.closeQuietly(bis);
+			IOUtils.closeQuietly(bis);
 		}
 	}
 

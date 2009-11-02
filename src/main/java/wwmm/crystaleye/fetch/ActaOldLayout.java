@@ -16,8 +16,8 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.WebUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.WebUtils;
 
 public class ActaOldLayout extends Fetcher {
 	
@@ -88,8 +88,8 @@ public class ActaOldLayout extends Fetcher {
 			if (link) {
 				String cif = WebUtils.fetchWebPage(cifLink);
 				String pathMinusMime = writeDir+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+"/"+issueNum+"-"+issuePart+"/"+cifId+"/"+cifId;
-				IOUtils.writeText(new File(pathMinusMime+".cif"), cif);
-				IOUtils.writeText(new File(pathMinusMime+".doi"), doi);
+				Utils.writeText(new File(pathMinusMime+".cif"), cif);
+				Utils.writeText(new File(pathMinusMime+".doi"), doi);
 			}
 		}
 		LOG.info("FINISHED FETCHING CIFS FROM "+url);

@@ -22,10 +22,10 @@ import org.xmlcml.cml.element.CMLIdentifier;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.tools.Execute;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.Utils;
 
 public class SmilesListManager extends AbstractManager {
 	
@@ -116,9 +116,9 @@ public class SmilesListManager extends AbstractManager {
 		}
 
 		if (!outFile.exists()) {
-			IOUtils.writeText(new File(smilesListPath), sb.toString());
+			Utils.writeText(new File(smilesListPath), sb.toString());
 		} else {
-			IOUtils.appendToFile(outFile, sb.toString());
+			Utils.appendToFile(outFile, sb.toString());
 		}
 	}
 	

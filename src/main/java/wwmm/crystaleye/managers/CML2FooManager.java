@@ -44,15 +44,15 @@ import org.xmlcml.molutil.ChemicalElement;
 import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CDKUtils;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.tools.Cml2PngTool;
 import wwmm.crystaleye.tools.InchiTool;
 import wwmm.crystaleye.tools.SmilesTool;
+import wwmm.crystaleye.util.CDKUtils;
+import wwmm.crystaleye.util.ChemistryUtils;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 
 public class CML2FooManager extends AbstractManager {
 
@@ -60,6 +60,31 @@ public class CML2FooManager extends AbstractManager {
 
 	private String doi;
 	static final int MAX_RINGS = 15;
+	
+	public static enum FragmentType {
+		LIGAND ("ligand"),
+		CHAIN_NUC ("chain-nuc"),
+		RING_NUC ("ring-nuc"),
+		RING_NUC_SPROUT_1 ("ring-nuc-sprout-1"),
+		RING_NUC_SPROUT_2 ("ring-nuc-sprout-2"),
+		CLUSTER_NUC ("cluster-nuc"),
+		CLUSTER_NUC_SPROUT_1 ("cluster-nuc-sprout-1"),
+		CLUSTER_NUC_SPROUT_2 ("cluster-nuc-sprout-2"),
+		MOIETY ("moiety"),
+		ATOM_NUC ("atom-nuc"),
+		ATOM_NUC_SPROUT_1 ("atom-nuc-sprout-1"),
+		ATOM_NUC_SPROUT_2 ("atom-nuc-sprout-2");
+
+		private FragmentType(String name) {
+			this.name = name;
+		}
+
+		private final String name;
+
+		public String toString() {
+			return name;
+		}
+	}
 
 	private CML2FooManager() {
 		;
@@ -128,7 +153,7 @@ public class CML2FooManager extends AbstractManager {
 			articleId = articleId.replaceAll("sup[\\d]*", "");
 			CMLCml cml = null;
 			try {
-				cml = (CMLCml)(IOUtils.parseCml(cmlFile)).getRootElement();
+				cml = (CMLCml)(Utils.parseCml(cmlFile)).getRootElement();
 			} catch (Exception e) {
 				LOG.warn("Error parsing CML file, due to: "+e.getMessage());
 			}
@@ -167,7 +192,7 @@ public class CML2FooManager extends AbstractManager {
 					Nodes nonUnitOccNodes = subMol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 					if (!DisorderTool.isDisordered(subMol) && !subMol.hasCloseContacts() && nonUnitOccNodes.size() == 0
 							&& Cif2CmlManager.hasBondOrdersAndCharges(subMol)) {
-						if (CrystalEyeUtils.isBoringMolecule(subMol)) {
+						if (ChemistryUtils.isBoringMolecule(subMol)) {
 							continue;
 						}
 						write2dImages(subMol, pathMinusMime+"_"+count);
@@ -270,7 +295,7 @@ public class CML2FooManager extends AbstractManager {
 				}
 			}
 		}
-		CMLBondSet newBS = new MoleculeTool(mol).getBondSet(newAS);
+		CMLBondSet newBS = MoleculeTool.getOrCreateTool(mol).getBondSet(newAS);
 		CMLMolecule newMol = MoleculeTool.createMolecule(newAS, newBS);
 		List<CMLBond> removeList = new ArrayList<CMLBond>();
 		for (String id : rGroupIds) {
@@ -304,7 +329,7 @@ public class CML2FooManager extends AbstractManager {
 		int subMolCount = 0;
 		boolean sprout = false;
 		for (CMLMolecule subMolecule : subMoleculeList) {
-			MoleculeTool mt = new MoleculeTool(subMolecule);
+			MoleculeTool mt = MoleculeTool.getOrCreateTool(subMolecule);
 			List<CMLMolecule> fragmentList = new ArrayList<CMLMolecule>();
 			if ("chain-nuc".equals(fragType)) {
 				molecule = new CMLMolecule(molecule);
@@ -312,7 +337,7 @@ public class CML2FooManager extends AbstractManager {
 				ValencyTool.removeMetalAtomsAndBonds(subMolecule);
 				new ConnectionTableTool(subMolecule).partitionIntoMolecules();
 				for (CMLMolecule subSubMol : subMolecule.getDescendantsOrMolecule()) {
-					fragmentList.addAll(new MoleculeTool(subSubMol).getChainMolecules());
+					fragmentList.addAll(MoleculeTool.getOrCreateTool(subSubMol).getChainMolecules());
 				}
 			} else if ("ring-nuc".equals(fragType)) {
 				molecule = new CMLMolecule(molecule);
@@ -320,7 +345,7 @@ public class CML2FooManager extends AbstractManager {
 				ValencyTool.removeMetalAtomsAndBonds(subMolecule);
 				new ConnectionTableTool(subMolecule).partitionIntoMolecules();
 				for (CMLMolecule subSubMol : subMolecule.getDescendantsOrMolecule()) {
-					fragmentList.addAll(new MoleculeTool(subSubMol).getRingNucleiMolecules());
+					fragmentList.addAll(MoleculeTool.getOrCreateTool(subSubMol).getRingNucleiMolecules());
 				}
 				sprout = true;
 			} else if ("cluster-nuc".equals(fragType)) {
@@ -339,7 +364,7 @@ public class CML2FooManager extends AbstractManager {
 			int count = 0;
 			for (CMLMolecule fragment : fragmentList) {
 				count++;
-				CMLAtomSet atomSet = new CMLAtomSet(subMolecule, new MoleculeTool(fragment).getAtomSet().getAtomIDs());
+				CMLAtomSet atomSet = new CMLAtomSet(subMolecule, MoleculeTool.getOrCreateTool(fragment).getAtomSet().getAtomIDs());
 				writeFragmentFiles(molecule, subMolecule, compoundClass, fragment, fragType, subMolCount, count, 
 						dir, id, depth);
 				if (sprout) {
@@ -349,7 +374,7 @@ public class CML2FooManager extends AbstractManager {
 					if (nucCount < spCount) {
 						writeFragmentFiles(molecule, subMolecule, compoundClass, sproutMol, fragType+"-sprout-1", subMolCount, count, 
 								dir, id, depth);
-						CMLAtomSet spAtomSet = new CMLAtomSet(subMolecule, new MoleculeTool(sproutMol).getAtomSet().getAtomIDs());
+						CMLAtomSet spAtomSet = new CMLAtomSet(subMolecule, MoleculeTool.getOrCreateTool(sproutMol).getAtomSet().getAtomIDs());
 						CMLMolecule sprout2Mol = mt.sprout(spAtomSet);
 						int sp2Count = sprout2Mol.getAtomCount();
 						if (spCount < sp2Count && sp2Count < molecule.getAtomCount()) {
@@ -378,7 +403,7 @@ public class CML2FooManager extends AbstractManager {
 			File dir, String id, int depth) {
 		CMLMolecule subMolCopy = new CMLMolecule(subMolecule);
 		CMLMolecule fragCopy = new CMLMolecule(fragment);
-		CMLAtomSet atomSet = new CMLAtomSet(subMolCopy, new MoleculeTool(fragCopy).getAtomSet().getAtomIDs());
+		CMLAtomSet atomSet = new CMLAtomSet(subMolCopy, MoleculeTool.getOrCreateTool(fragCopy).getAtomSet().getAtomIDs());
 		CMLMolecule molR = addAndMarkFragmentRAtoms(subMolCopy, atomSet);
 
 		addInChIToRGroupMolecule(molR);
@@ -396,7 +421,7 @@ public class CML2FooManager extends AbstractManager {
 		addDoi(molR);
 		molR.setId(subMolecule.getId()+"_"+fragType+"_"+subMolCount+"_"+count);
 		String outfile = getOutfile(dir, id, fragType, "", subMolCount, count, COMPLETE_CML_MIME);
-		IOUtils.writeXML(new Document(molR), outfile);
+		Utils.writeXML(new Document(molR), outfile);
 		String pathMinusMime = Utils.getPathMinusMimeSet(outfile);
 		for (CMLAtom atom : molR.getAtoms()) {
 			if ("R".equals(atom.getChemicalElement().getSymbol())) {
@@ -413,7 +438,7 @@ public class CML2FooManager extends AbstractManager {
 			if (!DisorderTool.isDisordered(mol) && !mol.hasCloseContacts() && nonUnitOccNodes.size() == 0
 					&& Cif2CmlManager.hasBondOrdersAndCharges(mol)) {
 				moiCount++;
-				if (CrystalEyeUtils.isBoringMolecule(mol)) continue;
+				if (ChemistryUtils.isBoringMolecule(mol)) continue;
 				// remove crystal nodes from molecule if they exist
 				Nodes crystNodes = mol.query(".//"+CMLCrystal.NS, CML_XPATH);
 				for (int i = 0; i < crystNodes.size(); i++) {
@@ -425,7 +450,7 @@ public class CML2FooManager extends AbstractManager {
 				String outPath = moiDir+"/"+moiName+COMPLETE_CML_MIME;
 				String pathMinusMime = outPath.substring(0,outPath.indexOf(COMPLETE_CML_MIME));
 				addDoi(mol);
-				IOUtils.writeXML(new Document((Element)mol.copy()), outPath);
+				Utils.writeXML(new Document((Element)mol.copy()), outPath);
 				String smallPngPath = pathMinusMime+".small.png";
 				String pngPath = pathMinusMime+".png";
 				write2dImage(pngPath, mol, 600, 600, true);
@@ -455,7 +480,7 @@ public class CML2FooManager extends AbstractManager {
 		int subMol = 0;
 		for (CMLMolecule subMolecule : subMoleculeList) {
 			CMLMolecule subMolCopy = new CMLMolecule(subMolecule);
-			MoleculeTool subMoleculeTool = new MoleculeTool(subMolecule);
+			MoleculeTool subMoleculeTool = MoleculeTool.getOrCreateTool(subMolecule);
 			subMol++;
 			List<CMLAtom> atoms = subMolecule.getAtoms();
 			int atomCount = 0;
@@ -482,7 +507,7 @@ public class CML2FooManager extends AbstractManager {
 					addDoi(atomR);
 					atomR.setId(subMolecule.getId()+"_atom-nuc_"+subMol+"_"+atomCount);
 					String outfile = getOutfile(dir, id, "atom-nuc", "", subMol, atomCount, COMPLETE_CML_MIME);
-					IOUtils.writeXML(new Document(atomR), outfile);
+					Utils.writeXML(new Document(atomR), outfile);
 					String pathMinusMime = Utils.getPathMinusMimeSet(outfile);
 					for (CMLAtom at : atomR.getAtoms()) {
 						if ("R".equals(at.getChemicalElement().getSymbol())) {
@@ -493,7 +518,7 @@ public class CML2FooManager extends AbstractManager {
 
 					//sprout once
 					CMLMolecule sprout = subMoleculeTool.sprout(singleAtomSet);
-					CMLAtomSet spAtomSet = new CMLAtomSet(subMolecule, new MoleculeTool(sprout).getAtomSet().getAtomIDs());
+					CMLAtomSet spAtomSet = new CMLAtomSet(subMolecule, MoleculeTool.getOrCreateTool(sprout).getAtomSet().getAtomIDs());
 
 					CMLMolecule sproutR = addAndMarkFragmentRAtoms(subMolCopy, spAtomSet);
 					if (sproutR.getAtomCount() == sprout.getAtomCount()) {
@@ -515,7 +540,7 @@ public class CML2FooManager extends AbstractManager {
 					outfile = getOutfile(dir, id, "atom-nuc-sprout-1", "", subMol, atomCount, COMPLETE_CML_MIME);
 					pathMinusMime = Utils.getPathMinusMimeSet(outfile);	          
 
-					IOUtils.writeXML(new Document(sproutR), outfile);
+					Utils.writeXML(new Document(sproutR), outfile);
 					for (CMLAtom at : sproutR.getAtoms()) {
 						if ("R".equals(at.getChemicalElement().getSymbol())) {
 							at.setElementType("Xx");
@@ -528,7 +553,7 @@ public class CML2FooManager extends AbstractManager {
 					int sp2Count = sprout2.getAtomCount();
 					int spCount = sprout.getAtomCount();
 					if (spCount < sp2Count) {
-						CMLAtomSet sp2AtomSet = new CMLAtomSet(subMolecule, new MoleculeTool(sprout2).getAtomSet().getAtomIDs());
+						CMLAtomSet sp2AtomSet = new CMLAtomSet(subMolecule, MoleculeTool.getOrCreateTool(sprout2).getAtomSet().getAtomIDs());
 						CMLMolecule sprout2R = addAndMarkFragmentRAtoms(subMolCopy, sp2AtomSet);
 						if (sprout2R.getAtomCount() == sprout2.getAtomCount()) {
 							continue;
@@ -550,7 +575,7 @@ public class CML2FooManager extends AbstractManager {
 
 						outfile = getOutfile(dir, id, "atom-nuc-sprout-2", "", subMol, atomCount, COMPLETE_CML_MIME);
 						pathMinusMime = Utils.getPathMinusMimeSet(outfile);
-						IOUtils.writeXML(new Document(sprout2R), outfile);
+						Utils.writeXML(new Document(sprout2R), outfile);
 						for (CMLAtom at : sprout2R.getAtoms()) {
 							if ("R".equals(at.getChemicalElement().getSymbol())) {
 								at.setElementType("Xx");

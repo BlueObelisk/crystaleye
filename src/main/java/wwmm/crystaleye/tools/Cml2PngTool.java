@@ -23,8 +23,8 @@ import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.tools.MoleculeTool;
 
-import wwmm.crystaleye.CDKUtils;
-import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.util.CDKUtils;
+import wwmm.crystaleye.util.Utils;
 
 /** 
  * Produces png images for CML molecules using CDK.
@@ -125,7 +125,7 @@ public class Cml2PngTool {
 
 	public static void main(String[] args) throws FileNotFoundException {
 		File cmlFile = new File("E:\\data-test\\cif\\acta\\e\\2006\\13-00\\ac2051\\ac2051sup1_I\\ac2051sup1_I.cml.xml");
-		CMLCml cmlCml = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
+		CMLCml cmlCml = (CMLCml)Utils.parseCml(cmlFile).getRootElement();
 		CMLMolecule mol = (CMLMolecule) cmlCml.getFirstCMLChild(CMLMolecule.TAG);
 		mol = CDKUtils.add2DCoords(mol);
 		int count = 1;

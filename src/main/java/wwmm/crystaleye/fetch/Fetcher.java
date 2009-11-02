@@ -5,7 +5,7 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.CrystalEyeProperties;
-import wwmm.crystaleye.WebUtils;
+import wwmm.crystaleye.util.WebUtils;
 
 public abstract class Fetcher {
 	

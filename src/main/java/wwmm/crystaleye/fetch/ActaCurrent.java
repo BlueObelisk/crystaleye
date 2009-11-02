@@ -13,9 +13,9 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.WebUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.WebUtils;
 
 public class ActaCurrent extends CurrentIssueFetcher {
 	
@@ -95,7 +95,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 									Node checkCifLink = checkCifNodes.get(k);
 									String checkCifUrl = ((Element)checkCifLink).getAttributeValue("href");
 									String checkcif = getWebPage(SITE_PREFIX+checkCifUrl);
-									IOUtils.writeText(new File(issueWriteDir+"/"+cifId+"/"+cifId+"sup"+(+1)+".deposited.checkcif.html"), checkcif);
+									Utils.writeText(new File(issueWriteDir+"/"+cifId+"/"+cifId+"sup"+(+1)+".deposited.checkcif.html"), checkcif);
 									sleep();
 								}
 							}
