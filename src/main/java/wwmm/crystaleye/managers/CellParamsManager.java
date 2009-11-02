@@ -18,7 +18,6 @@ import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
@@ -26,19 +25,13 @@ import wwmm.crystaleye.IssueDate;
 public class CellParamsManager extends AbstractManager {
 	
 	private static final Logger LOG = Logger.getLogger(CellParamsManager.class);
-
-	private CrystalEyeProperties properties;
+	
+	private CellParamsManager() {
+		;
+	}
 
 	public CellParamsManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
-	}
-
-	public CellParamsManager(String propertiesPath) {
-		this(new File(propertiesPath));
-	}
-
-	private void setProperties(File propertiesFile) {
-		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -146,7 +139,8 @@ public class CellParamsManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		CellParamsManager d = new CellParamsManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		CellParamsManager d = new CellParamsManager(propsFile);
 		d.execute();
 	}
 }

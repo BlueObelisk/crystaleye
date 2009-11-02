@@ -49,7 +49,6 @@ import org.xmlcml.cml.tools.DisorderTool;
 import org.xmlcml.cml.tools.MoleculeTool;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.FreemarkerUtils;
 import wwmm.crystaleye.IOUtils;
@@ -69,8 +68,6 @@ import freemarker.template.Template;
 public class WebpageManager extends AbstractManager {
 	
 	private static final Logger LOG = Logger.getLogger(WebpageManager.class);
-
-	private CrystalEyeProperties properties;
 
 	private String writeDir;
 	private String publisherAbbreviation;
@@ -102,14 +99,6 @@ public class WebpageManager extends AbstractManager {
 
 	public WebpageManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
-	}
-
-	public WebpageManager(String propertiesPath) {
-		this(new File(propertiesPath));
-	}
-
-	private void setProperties(File propertiesFile) {
-		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -1225,7 +1214,8 @@ public class WebpageManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		WebpageManager web = new WebpageManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		WebpageManager web = new WebpageManager(propsFile);
 		web.execute();
 	}
 	

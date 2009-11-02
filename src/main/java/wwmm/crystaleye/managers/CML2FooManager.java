@@ -15,9 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.vecmath.Point2d;
-import javax.vecmath.Vector2d;
-
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -27,10 +24,6 @@ import nu.xom.Text;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.openscience.cdk.smiles.SmilesGenerator;
 import org.xmlcml.cml.base.CMLUtil;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLAtomParity;
@@ -52,7 +45,6 @@ import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CDKUtils;
-import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
@@ -60,30 +52,21 @@ import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.tools.Cml2PngTool;
 import wwmm.crystaleye.tools.InchiTool;
+import wwmm.crystaleye.tools.SmilesTool;
 
 public class CML2FooManager extends AbstractManager {
 
 	private static final Logger LOG = Logger.getLogger(CML2FooManager.class);
 
-	private CrystalEyeProperties properties;
-
 	private String doi;
 	static final int MAX_RINGS = 15;
 
-	public CML2FooManager() {
+	private CML2FooManager() {
 		;
 	}
 
 	public CML2FooManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
-	}
-
-	public CML2FooManager(String propertiesPath) {
-		this(new File(propertiesPath));
-	}
-
-	private void setProperties(File propertiesFile) {
-		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -222,40 +205,6 @@ public class CML2FooManager extends AbstractManager {
 			identifier.appendChild(new Text(smiles));
 			mol.appendChild(identifier);
 		}
-	}
-
-	private String calculateSmiles(CMLMolecule mol) {
-		SmilesGenerator generator = new SmilesGenerator();
-		String smiles = "";
-		StringBuffer sb = new StringBuffer();
-		int count = 0;
-		for (CMLMolecule subMol : mol.getDescendantsOrMolecule()) {
-			if (count > 0) {
-				sb.append(".");
-			}
-			IMolecule molecule = CDKUtils.createMolecule(subMol);
-			StructureDiagramGenerator sdg = new StructureDiagramGenerator();
-			sdg.setMolecule(molecule);
-			if (molecule.getAtomCount() == 1) {
-				molecule.getAtom(0).setPoint2d(new Point2d(0, 0));
-			} else {
-				try {
-					sdg.generateCoordinates(new Vector2d(0, 1));
-					molecule = sdg.getMolecule();
-				} catch (Exception e) {
-					LOG.warn("Error generating molecule coordinates: "+e.getMessage());
-				}
-			}
-			try {
-				smiles = generator.createChiralSMILES(molecule, new boolean[20]);
-			} catch (CDKException e) {
-				LOG.warn("Error calculating SMILES for mol "+mol.getId()+" : "+e.getMessage());
-				return null;
-			}
-			sb.append(smiles);
-			count++;
-		}
-		return sb.toString();
 	}
 
 	private void write2dImage(String path, CMLMolecule molecule, int width, int height, boolean showH) {
@@ -435,7 +384,8 @@ public class CML2FooManager extends AbstractManager {
 		addInChIToRGroupMolecule(molR);
 		if (!compoundClass.equals(CompoundClass.INORGANIC.toString())) {
 			if (getNumberOfRings(fragCopy) < MAX_RINGS) {
-				String smiles = calculateSmiles(fragCopy);
+				SmilesTool tool = new SmilesTool(fragCopy);
+				String smiles = tool.generateSmiles();
 				if (smiles != null) {
 					addSmiles2Molecule(smiles, molR);
 				}
@@ -475,7 +425,7 @@ public class CML2FooManager extends AbstractManager {
 				String outPath = moiDir+"/"+moiName+COMPLETE_CML_MIME;
 				String pathMinusMime = outPath.substring(0,outPath.indexOf(COMPLETE_CML_MIME));
 				addDoi(mol);
-				IOUtils.writeXML(new Document(mol), outPath);
+				IOUtils.writeXML(new Document((Element)mol.copy()), outPath);
 				String smallPngPath = pathMinusMime+".small.png";
 				String pngPath = pathMinusMime+".png";
 				write2dImage(pngPath, mol, 600, 600, true);
@@ -520,12 +470,12 @@ public class CML2FooManager extends AbstractManager {
 					CMLMolecule atomMol = new CMLMolecule();
 					atomMol.addAtom((CMLAtom)atom.copy());
 
-					String smiles = "";
 					if (!compoundClass.equals(CompoundClass.INORGANIC.toString())) {
 						// need to calculate inchi and smiles before R groups added
 						addInChIToRGroupMolecule(atomR);
-						smiles = calculateSmiles(atomMol);
-						addSmiles2Molecule(smiles, atomR);
+						SmilesTool tool = new SmilesTool(atomMol);
+						String atomMolSmiles = tool.generateSmiles();
+						addSmiles2Molecule(atomMolSmiles, atomR);
 					}
 
 					addAtomSequenceNumbers(atomR);
@@ -553,8 +503,9 @@ public class CML2FooManager extends AbstractManager {
 					addInChIToRGroupMolecule(sproutR);
 					if (!compoundClass.equals(CompoundClass.INORGANIC.toString())) {
 						if (getNumberOfRings(sprout) < MAX_RINGS) {
-							smiles = calculateSmiles(sprout);
-							addSmiles2Molecule(smiles, sproutR);
+							SmilesTool tool = new SmilesTool(sprout);
+							String sproutSmiles = tool.generateSmiles();
+							addSmiles2Molecule(sproutSmiles, sproutR);
 						}
 					}
 
@@ -587,8 +538,9 @@ public class CML2FooManager extends AbstractManager {
 						if (!compoundClass.equals(CompoundClass.INORGANIC.toString())) {
 							// need to calculated inchi and smiles before R groups added
 							if (getNumberOfRings(sprout2) < MAX_RINGS) {
-								smiles = calculateSmiles(sprout2);
-								addSmiles2Molecule(smiles, sprout2R);
+								SmilesTool tool = new SmilesTool(sprout2);
+								String sprout2Smiles = tool.generateSmiles();
+								addSmiles2Molecule(sprout2Smiles, sprout2R);
 							}
 						}
 
@@ -655,7 +607,8 @@ public class CML2FooManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		CML2FooManager acta = new CML2FooManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		CML2FooManager acta = new CML2FooManager(propsFile);
 		acta.execute();
 	}
 }

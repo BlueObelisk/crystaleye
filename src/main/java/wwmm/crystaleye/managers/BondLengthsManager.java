@@ -61,7 +61,6 @@ import org.xmlcml.cml.tools.MoleculeTool;
 import org.xmlcml.euclid.Point3;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
@@ -97,8 +96,6 @@ public class BondLengthsManager extends AbstractManager {
 	private final double PROTOCOL_MAX_TEMP = 200.0;
 	private final double PROTOCOL_MAX_RF = 0.05;
 
-	private CrystalEyeProperties properties;
-
 	private Set<String> changedBonds;
 
 	private String jmolLoadForSummary;
@@ -113,17 +110,13 @@ public class BondLengthsManager extends AbstractManager {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		dNow = formatter.format(date);
 	}
+	
+	private BondLengthsManager() {
+		;
+	}
 
 	public BondLengthsManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
-	}
-
-	public BondLengthsManager(String propertiesPath) {
-		this(new File(propertiesPath));
-	}
-
-	private void setProperties(File propertiesFile) {
-		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -996,7 +989,8 @@ public class BondLengthsManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		BondLengthsManager d = new BondLengthsManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		BondLengthsManager d = new BondLengthsManager(propsFile);
 		d.execute();
 	}
 	

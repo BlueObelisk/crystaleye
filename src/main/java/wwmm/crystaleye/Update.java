@@ -1,5 +1,7 @@
 package wwmm.crystaleye;
 
+import java.io.File;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -55,79 +57,80 @@ public class Update {
 		if (propsPath == null) {
 			throw new RuntimeException("No properties path set.");
 		}
+		File propsFile = new File(propsPath);
 		if (args.length == 2) {
-			runall(propsPath);
+			runall(propsFile);
 		} else {
 			if (cl.hasOption("all")) {
-				runall(propsPath);
+				runall(propsFile);
 			}
 			if (cl.hasOption("fetch")) {
-				FetchManager fetch = new FetchManager(propsPath);
+				FetchManager fetch = new FetchManager(propsFile);
 				fetch.run();
 			}
 			if (cl.hasOption("cif2cml")) {
-				Cif2CmlManager cif2Cml = new Cif2CmlManager(propsPath);
+				Cif2CmlManager cif2Cml = new Cif2CmlManager(propsFile);
 				cif2Cml.execute();
 			}
 			if (cl.hasOption("cml2foo")) {
-				CML2FooManager cml2Foo = new CML2FooManager(propsPath);
+				CML2FooManager cml2Foo = new CML2FooManager(propsFile);
 				cml2Foo.execute();
 			}
 			if (cl.hasOption("cml2rdf")) {
-				Cml2RdfManager cml2rdf = new Cml2RdfManager(propsPath);
+				Cml2RdfManager cml2rdf = new Cml2RdfManager(propsFile);
 				cml2rdf.execute();
 			}
 			if (cl.hasOption("webpage")) {
-				WebpageManager webpage = new WebpageManager(propsPath);
+				WebpageManager webpage = new WebpageManager(propsFile);
 				webpage.execute();
 			}
 			if (cl.hasOption("doilist")) {
-				DoiListManager dois = new DoiListManager(propsPath);
+				DoiListManager dois = new DoiListManager(propsFile);
 				dois.execute();
 			}
 			if (cl.hasOption("cellparams")) {
-				CellParamsManager cell = new CellParamsManager(propsPath);
+				CellParamsManager cell = new CellParamsManager(propsFile);
 				cell.execute();
 			}
 			if (cl.hasOption("bondlengths")) {
 				/*
-				BondLengthsManager bond = new BondLengthsManager(propsPath);
+				BondLengthsManager bond = new BondLengthsManager(propsFile);
 				bond.execute();
 				*/
 			}
 			if (cl.hasOption("smiles")) {
-				SmilesListManager smi = new SmilesListManager(propsPath);
+				SmilesListManager smi = new SmilesListManager(propsFile);
 				smi.execute();
 			}
 			if (cl.hasOption("rss")) {
-				RSSManager rss = new RSSManager(propsPath);
+				RSSManager rss = new RSSManager(propsFile);
 				rss.execute();
 			}
 		}
 	}
 	
-	private void runall(String propsPath) {
-		FetchManager fetch = new FetchManager(propsPath);
+	private void runall(File propsFile) {
+		FetchManager fetch = new FetchManager(propsFile);
 		fetch.run();
-		Cif2CmlManager cif2Cml = new Cif2CmlManager(propsPath);
+		Cif2CmlManager cif2Cml = new Cif2CmlManager(propsFile);
 		cif2Cml.execute();
-		CML2FooManager cml2Foo = new CML2FooManager(propsPath);
+		CML2FooManager cml2Foo = new CML2FooManager(propsFile);
 		cml2Foo.execute();
-		Cml2RdfManager cml2rdf = new Cml2RdfManager(propsPath);
+		Cml2RdfManager cml2rdf = new Cml2RdfManager(propsFile);
 		cml2rdf.execute();
-		WebpageManager webpage = new WebpageManager(propsPath);
+		WebpageManager webpage = new WebpageManager(propsFile);
 		webpage.execute();
-		DoiListManager dois = new DoiListManager(propsPath);
+		DoiListManager dois = new DoiListManager(propsFile);
 		dois.execute();
-		CellParamsManager cell = new CellParamsManager(propsPath);
+		CellParamsManager cell = new CellParamsManager(propsFile);
 		cell.execute();
 		/*
-		BondLengthsManager bond = new BondLengthsManager(propsPath);
+		BondLengthsManager bond = new BondLengthsManager(propsFile);
 		bond.execute();
 		*/
-		SmilesListManager smi = new SmilesListManager(propsPath);
+		SmilesListManager smi = new SmilesListManager(propsFile);
 		smi.execute();
-		RSSManager rss = new RSSManager(propsPath);
+		RSSManager rss = new RSSManager(propsFile);
 		rss.execute();
 	}
 

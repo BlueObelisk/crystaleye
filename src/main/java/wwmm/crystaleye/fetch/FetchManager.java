@@ -1,5 +1,7 @@
 package wwmm.crystaleye.fetch;
 
+import java.io.File;
+
 /**
  * @TODO Abstract Fetcher to an interface that each implementation uses. Then we
  *       can use Spring / something to inject the list of fetchers to call
@@ -8,33 +10,30 @@ package wwmm.crystaleye.fetch;
  */
 public class FetchManager {
 
-    String propertiesPath;
+    private File propsFile;
 
-    public FetchManager() {
+    private FetchManager() {
+    	;
     }
 
-    public FetchManager(String propertiesPath) {
-        this.propertiesPath = propertiesPath;
-    }
-
-    public void setPropertiesPath(String propertiesPath) {
-        this.propertiesPath = propertiesPath;
+    public FetchManager(File propsFile) {
+        this.propsFile = propsFile;
     }
 
     public void run() {
-        ActaCurrent acta = new ActaCurrent(propertiesPath);
+        ActaCurrent acta = new ActaCurrent(propsFile);
         acta.execute();
         
-        AcsCurrent acs = new AcsCurrent(propertiesPath);
+        AcsCurrent acs = new AcsCurrent(propsFile);
         acs.execute();
 
-        RscCurrent rsc = new RscCurrent(propertiesPath);
+        RscCurrent rsc = new RscCurrent(propsFile);
         rsc.execute();
 
-        ChemSocJapanCurrent japan = new ChemSocJapanCurrent(propertiesPath);
+        ChemSocJapanCurrent japan = new ChemSocJapanCurrent(propsFile);
         japan.execute();
         
-        ElsevierCurrent elsevier = new ElsevierCurrent(propertiesPath);
+        ElsevierCurrent elsevier = new ElsevierCurrent(propsFile);
         elsevier.execute();
     }
 }

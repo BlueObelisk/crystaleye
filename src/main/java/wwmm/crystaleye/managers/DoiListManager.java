@@ -21,7 +21,6 @@ import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.element.CMLScalar;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
@@ -29,19 +28,13 @@ import wwmm.crystaleye.IssueDate;
 public class DoiListManager extends AbstractManager {
 
 	private static final Logger LOG = Logger.getLogger(DoiListManager.class);
-	
-	private CrystalEyeProperties properties;
 
+	private DoiListManager() {
+		;
+	}
+	
 	public DoiListManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
-	}
-
-	public DoiListManager(String propertiesPath) {
-		this(new File(propertiesPath));
-	}
-
-	private void setProperties(File propertiesFile) {
-		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -117,7 +110,8 @@ public class DoiListManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		DoiListManager d = new DoiListManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		DoiListManager d = new DoiListManager(propsFile);
 		d.execute();
 	}
 }
