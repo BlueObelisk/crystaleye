@@ -39,6 +39,7 @@ import nu.xom.Nodes;
 import nu.xom.Text;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.graph.GraphException;
 import org.graph.Point;
@@ -61,14 +62,14 @@ import org.xmlcml.cml.tools.MoleculeTool;
 import org.xmlcml.euclid.Point3;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.site.templates.BondLengthElementIndex;
 import wwmm.crystaleye.site.templates.BondLengthIndex;
 import wwmm.crystaleye.site.templates.CifSummaryToc;
+import wwmm.crystaleye.util.ChemistryUtils;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 
 public class BondLengthsManager extends AbstractManager {
 	
@@ -215,7 +216,7 @@ public class BondLengthsManager extends AbstractManager {
 		BondLengthIndex bli = new BondLengthIndex(elements);
 		String page = bli.getWebpage();
 		String indexPath = bondFolderPath+"/"+"index.html";
-		IOUtils.writeText(new File(indexPath), page);
+		Utils.writeText(new File(indexPath), page);
 
 		for (Iterator it = bondElementsMap.entrySet().iterator(); it.hasNext(); ) {
 			Map.Entry entry = (Map.Entry)it.next();
@@ -224,7 +225,7 @@ public class BondLengthsManager extends AbstractManager {
 			BondLengthElementIndex bei = new BondLengthElementIndex(bondFolderPath, element, set);
 			String webpage = bei.getWebpage();
 			String elementIndexPath = bondFolderPath+"/"+element+"-index.html";
-			IOUtils.writeText(new File(elementIndexPath), webpage);
+			Utils.writeText(new File(elementIndexPath), webpage);
 		}
 	}
 
@@ -267,9 +268,9 @@ public class BondLengthsManager extends AbstractManager {
 						}
 						if (i == 25000) {
 							if (protocolBondsFile.exists()) {
-								IOUtils.appendToFile(protocolBondsFile, sb.toString());
+								Utils.appendToFile(protocolBondsFile, sb.toString());
 							} else {
-								IOUtils.writeText(new File(protocolBondsPath), sb.toString());
+								Utils.writeText(new File(protocolBondsPath), sb.toString());
 							}
 							sb = new StringBuilder();
 							i = 0;
@@ -278,9 +279,9 @@ public class BondLengthsManager extends AbstractManager {
 				}
 				if (i > 0) {
 					if (protocolBondsFile.exists()) {
-						IOUtils.appendToFile(protocolBondsFile, sb.toString());
+						Utils.appendToFile(protocolBondsFile, sb.toString());
 					} else {
-						IOUtils.writeText(new File(protocolBondsPath), sb.toString());
+						Utils.writeText(new File(protocolBondsPath), sb.toString());
 					}
 				}
 				input.close();
@@ -292,7 +293,7 @@ public class BondLengthsManager extends AbstractManager {
 				throw new RuntimeException("Error reading file: "+allBondsPath);
 			}
 			finally {
-				org.apache.commons.io.IOUtils.closeQuietly(input);
+				IOUtils.closeQuietly(input);
 			}
 		}
 	}
@@ -305,13 +306,13 @@ public class BondLengthsManager extends AbstractManager {
 			String allBondsPath = bondLengthsDir+"/"+bondType+CSV_MIME;
 			Document allHist = getHistogram(allBondsPath, bondType, false);
 			String allHistOutPath = bondLengthsDir+"/"+bondType+SVG_MIME;
-			IOUtils.writeXML(allHist, allHistOutPath);
+			Utils.writeXML(allHist, allHistOutPath);
 
 			String protocolBondsPath = bondLengthsDir+"/"+bondType+AFTER_PROTOCOL+CSV_MIME;
 			if (new File(protocolBondsPath).exists()) {
 				Document protocolHist = getHistogram(protocolBondsPath, bondType, true);
 				String protocolHistOutPath = bondLengthsDir+"/"+bondType+AFTER_PROTOCOL+SVG_MIME;
-				IOUtils.writeXML(protocolHist, protocolHistOutPath);
+				Utils.writeXML(protocolHist, protocolHistOutPath);
 			}
 		}	
 	}
@@ -360,7 +361,7 @@ public class BondLengthsManager extends AbstractManager {
 		catch (IOException ex){
 			throw new RuntimeException("Error reading file: "+bondsPath);
 		} finally {
-			org.apache.commons.io.IOUtils.closeQuietly(input);
+			IOUtils.closeQuietly(input);
 		}
 
 		// round the min and max values to 1 decimal place
@@ -470,7 +471,7 @@ public class BondLengthsManager extends AbstractManager {
 			catch (IOException ex){
 				throw new RuntimeException("Error reading file: "+bondsPath);
 			} finally {
-				org.apache.commons.io.IOUtils.closeQuietly(input);
+				IOUtils.closeQuietly(input);
 			}
 
 			String href = bondType+"/"+id+HTML_MIME;
@@ -483,7 +484,7 @@ public class BondLengthsManager extends AbstractManager {
 			String title = "CrystalEye: Structures containing "+bondType+" bonds<br />between "+id+" &Aring;";
 			String header = "Structures containing "+bondType+" bonds<br />between "+id+" &Aring;";
 			CifSummaryToc ocs = new CifSummaryToc(title, header, table, String.valueOf(structureCount), jmolLoadForSummary, imageLoadForSummary, String.valueOf(maxImageForSummary), 2);
-			IOUtils.writeText(new File(htmlPath), ocs.getWebpage());
+			Utils.writeText(new File(htmlPath), ocs.getWebpage());
 
 			Element rect = (Element)rectNodes.get(i);
 			rect.addAttribute(new Attribute("onclick", "move('"+href+"')"));
@@ -657,7 +658,7 @@ public class BondLengthsManager extends AbstractManager {
 	private void addLengthsFromCmlFile(File cmlFile) {
 		CMLCml c = null;
 		try {
-			c = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
+			c = (CMLCml)Utils.parseCml(cmlFile).getRootElement();
 		} catch (Exception e) {
 			LOG.warn("Error parsing CML: "+e.getMessage());
 		}
@@ -800,7 +801,7 @@ public class BondLengthsManager extends AbstractManager {
 			}
 		}
 
-		MoleculeTool mt = new MoleculeTool(molecule);
+		MoleculeTool mt = MoleculeTool.getOrCreateTool(molecule);
 		mt.calculateBondedAtoms(centralAtoms);
 
 		addLengthsToFiles(cml, molecule, centralAtoms, cml.getId());
@@ -971,7 +972,7 @@ public class BondLengthsManager extends AbstractManager {
 			Nodes nonUnitOccNodes = subMol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 			if (!DisorderTool.isDisordered(subMol) && !subMol.hasCloseContacts() && nonUnitOccNodes.size() == 0
 					&& Cif2CmlManager.hasBondOrdersAndCharges(subMol)) {
-				if (CrystalEyeUtils.isBoringMolecule(subMol)) {
+				if (ChemistryUtils.isBoringMolecule(subMol)) {
 					continue;
 				}
 				uniqueSubMols++;
@@ -982,9 +983,9 @@ public class BondLengthsManager extends AbstractManager {
 
 		changedBonds.add(bondTypeId);
 		if (lengthsFile.exists()) {
-			IOUtils.appendToFile(lengthsFile, newContent);
+			Utils.appendToFile(lengthsFile, newContent);
 		} else {
-			IOUtils.writeText(new File(lengthsFile.getAbsolutePath()), newContent);
+			Utils.writeText(new File(lengthsFile.getAbsolutePath()), newContent);
 		}
 	}
 

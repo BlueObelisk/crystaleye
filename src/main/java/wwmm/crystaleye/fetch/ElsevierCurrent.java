@@ -17,8 +17,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.WebUtils;
 import wwmm.crystaleye.tools.Unzip;
+import wwmm.crystaleye.util.WebUtils;
 
 public class ElsevierCurrent extends CurrentIssueFetcher {
 	

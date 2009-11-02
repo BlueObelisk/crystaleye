@@ -12,7 +12,7 @@ import org.xmlcml.cml.element.CMLBond;
 import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLMolecule;
 
-import wwmm.crystaleye.Utils;
+import wwmm.crystaleye.util.Utils;
 
 /**
  * <p>

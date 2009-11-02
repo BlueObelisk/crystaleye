@@ -42,10 +42,10 @@ import org.xmlcml.molutil.ChemicalElement;
 
 import wwmm.atomarchiver.AtomArchiveFeed;
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 
 public class RSSManager extends AbstractManager {
 
@@ -129,7 +129,7 @@ public class RSSManager extends AbstractManager {
 		for (File cmlFile : fileList) {		
 			CMLCml cml = null;
 			try {
-				cml = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
+				cml = (CMLCml)Utils.parseCml(cmlFile).getRootElement();
 			} catch (Exception e) {
 				LOG.warn("Exception whilst reading CML file ("+cmlFile.getAbsolutePath()+"), due to: "+e.getMessage());
 				continue;
@@ -242,7 +242,7 @@ public class RSSManager extends AbstractManager {
 			for (File cmlFile : cmlFileList) {
 				CMLCml cml = null;
 				try {
-					cml = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
+					cml = (CMLCml)Utils.parseCml(cmlFile).getRootElement();
 				} catch (Exception e) {
 					LOG.warn("Exception whilst reading CML file ("+cmlFile.getAbsolutePath()+"), due to: "+e.getMessage());
 					continue;

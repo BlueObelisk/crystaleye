@@ -24,9 +24,8 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.util.Utils;
 
 public abstract class CurrentIssueFetcher extends Fetcher {
 	
@@ -63,7 +62,7 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 	protected boolean checkDownloads(String journalAbbreviation, String year, String issueNum) {
 		String downloadLogPath = properties.getDownloadLogPath();
 		boolean alreadyGot = false;
-		Document doc = IOUtils.parseXml(downloadLogPath);
+		Document doc = Utils.parseXml(downloadLogPath);
 		Nodes nodes = doc.query(".//journal[@abbreviation='"+journalAbbreviation+"']/year[@id='"+year+"']/issue[@id='"+issueNum+"']");
 		if (nodes.size() > 0) {
 			alreadyGot = true;
@@ -73,7 +72,7 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 
 	protected void updateLog(String journalAbbreviation, String year, String issueNum) {
 		String downloadLogPath = properties.getDownloadLogPath();
-		Document doc = IOUtils.parseXml(downloadLogPath);
+		Document doc = Utils.parseXml(downloadLogPath);
 		Element logEl = doc.getRootElement();
 		Nodes publishers = logEl.query("./publisher[@abbreviation='"+PUBLISHER_ABBREVIATION+"']");
 		if (publishers.size() == 1) {
@@ -113,7 +112,7 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 			yearEl.appendChild(getNewIssueElement(issueNum));
 		}
 
-		IOUtils.writeXML(doc, downloadLogPath);
+		Utils.writeXML(doc, downloadLogPath);
 		LOG.info("Updated "+downloadLogPath+" by adding "+year+"-"+issueNum);
 	}
 
@@ -176,10 +175,10 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 	protected void writeFiles(String issueWriteDir, String cifId, int suppNum, String cif, String doi) {
 		String pathPrefix = issueWriteDir+"/"+cifId+"/"+cifId;
 		LOG.info("Writing cif to: "+pathPrefix+"sup"+suppNum+CIF_MIME);
-		IOUtils.writeText(new File(pathPrefix+"sup"+suppNum+CIF_MIME), cif);
+		Utils.writeText(new File(pathPrefix+"sup"+suppNum+CIF_MIME), cif);
 		if (doi != null) {
-			IOUtils.writeText(new File(pathPrefix+DOI_MIME), doi);
+			Utils.writeText(new File(pathPrefix+DOI_MIME), doi);
 		}
-		CrystalEyeUtils.writeDateStamp(pathPrefix+DATE_MIME);
+		Utils.writeDateStamp(pathPrefix+DATE_MIME);
 	}
 }

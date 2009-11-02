@@ -12,8 +12,8 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.WebUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.WebUtils;
 
 public class ChemistryLettersBacklog extends Fetcher {
 	
@@ -72,9 +72,9 @@ public class ChemistryLettersBacklog extends Fetcher {
 								int suppNum = j+1;
 								if (doiElements.size() > 0) {
 									String doi = ((Element)doiElements.get(0)).getValue().substring(4).trim();
-									IOUtils.writeText(new File(cifWriteDir+"/"+cifId+"sup"+suppNum+".doi"), doi);
+									Utils.writeText(new File(cifWriteDir+"/"+cifId+"sup"+suppNum+".doi"), doi);
 								}
-								IOUtils.writeText(new File(cifWriteDir+"/"+cifId+"sup"+suppNum+".cif"), cif);
+								Utils.writeText(new File(cifWriteDir+"/"+cifId+"sup"+suppNum+".cif"), cif);
 								sleep();
 							}
 						}

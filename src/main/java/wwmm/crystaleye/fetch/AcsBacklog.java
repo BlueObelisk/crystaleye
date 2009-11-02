@@ -13,9 +13,8 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.WebUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.WebUtils;
 
 public class AcsBacklog extends Fetcher {
 	
@@ -88,11 +87,11 @@ public class AcsBacklog extends Fetcher {
 	protected void writeFiles(String issueWriteDir, String cifId, int suppNum, String cif, String doi) {
 		String pathPrefix = issueWriteDir+"/"+cifId+"/"+cifId;
 		LOG.info("Writing cif to: "+pathPrefix+"sup"+suppNum+CIF_MIME);
-		IOUtils.writeText(new File(pathPrefix+"sup"+suppNum+CIF_MIME), cif);
+		Utils.writeText(new File(pathPrefix+"sup"+suppNum+CIF_MIME), cif);
 		if (doi != null) {
-			IOUtils.writeText(new File(pathPrefix+DOI_MIME), doi);
+			Utils.writeText(new File(pathPrefix+DOI_MIME), doi);
 		}
-		CrystalEyeUtils.writeDateStamp(pathPrefix+DATE_MIME);
+		Utils.writeDateStamp(pathPrefix+DATE_MIME);
 	}
 
 

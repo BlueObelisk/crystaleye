@@ -13,6 +13,8 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
+import wwmm.crystaleye.util.Utils;
+
 
 public abstract class AbstractManager {
 	
@@ -27,12 +29,12 @@ public abstract class AbstractManager {
 	public void updateProps(String downloadLogPath, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum, String managerTag) {
 		String issueCode = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum;
 		File propsPath = new File(downloadLogPath);
-		Document doc = IOUtils.parseXml(propsPath);
+		Document doc = Utils.parseXml(propsPath);
 		Nodes procNodes = doc.query("//publisher[@abbreviation='"+publisherAbbreviation+"']/journal[@abbreviation='"+journalAbbreviation+"']/year[@id='"+year+"']/issue[@id='"+issueNum+"']/"+managerTag);
 		if (procNodes.size() != 0){
 			Element proc = (Element) procNodes.get(0);
 			proc.getAttribute("value").setValue("true");
-			IOUtils.writeXML(doc, propsPath.getAbsolutePath());
+			Utils.writeXML(doc, propsPath.getAbsolutePath());
 			LOG.info("Updated "+downloadLogPath+" - "+managerTag+"=true ("+issueCode+")");
 		} else {
 			throw new RuntimeException("Attempted to update "+downloadLogPath+" but could not locate element ("+issueCode+")");
@@ -44,7 +46,7 @@ public abstract class AbstractManager {
 		List<IssueDate> outputList = new ArrayList<IssueDate>();
 
 		File logFile = new File(downloadLogPath);
-		Document doc = IOUtils.parseXml(logFile);
+		Document doc = Utils.parseXml(logFile);
 		Nodes issues = doc.query("//publisher[@abbreviation='"+publisherAbbreviation+"']/journal[@abbreviation='"+journalAbbreviation+"']/descendant::issue");
 		if (issues.size() > 0) {
 			for (int i = 0; i < issues.size(); i++) {

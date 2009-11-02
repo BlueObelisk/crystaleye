@@ -51,6 +51,7 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFDataBlock;
@@ -83,15 +84,14 @@ import org.xmlcml.euclid.RealRange;
 import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CDKUtils;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.tools.CheckCifParser;
 import wwmm.crystaleye.tools.InchiTool;
 import wwmm.crystaleye.tools.SmilesTool;
+import wwmm.crystaleye.util.CDKUtils;
+import wwmm.crystaleye.util.ChemistryUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 
 public class Cif2CmlManager extends AbstractManager {
 
@@ -188,7 +188,7 @@ public class Cif2CmlManager extends AbstractManager {
 			// read raw CML back in and convert to 'complete' CML
 			CMLCml cml = null;
 			try { 
-				cml = (CMLCml)IOUtils.parseCml(rawCmlFile).getRootElement();
+				cml = (CMLCml)Utils.parseCml(rawCmlFile).getRootElement();
 			} catch (Exception e) {
 				LOG.warn("Error reading CML, due to: "+e.getMessage());
 				continue;
@@ -205,7 +205,7 @@ public class Cif2CmlManager extends AbstractManager {
 				continue;
 			}
 
-			CompoundClass compoundClass = CrystalEyeUtils.getCompoundClass(molecule);
+			CompoundClass compoundClass = ChemistryUtils.getCompoundClass(molecule);
 			addCompoundClass(cml, compoundClass);
 			try {
 				processDisorder(molecule, compoundClass);
@@ -244,8 +244,8 @@ public class Cif2CmlManager extends AbstractManager {
 				cml.appendChild(mergedMolecule);
 				repositionCMLCrystalElement(cml);
 
-				CrystalEyeUtils.writeDateStamp(pathMinusMime+DATE_MIME);
-				IOUtils.writeXML(cml.getDocument(), pathMinusMime+COMPLETE_CML_MIME);
+				Utils.writeDateStamp(pathMinusMime+DATE_MIME);
+				Utils.writeXML(cml.getDocument(), pathMinusMime+COMPLETE_CML_MIME);
 			} catch (RuntimeException e) {
 				LOG.warn("Error creating complete CML: "+e.getMessage());
 			}
@@ -449,7 +449,7 @@ public class Cif2CmlManager extends AbstractManager {
 					moietyFormulaList.add(moietyFormula);
 				}
 				for (CMLFormula formula : moietyFormulaList) {
-					CMLFormula molForm = new MoleculeTool(molecule).calculateFormula(HydrogenControl.USE_EXPLICIT_HYDROGENS);
+					CMLFormula molForm = MoleculeTool.getOrCreateTool(molecule).calculateFormula(HydrogenControl.USE_EXPLICIT_HYDROGENS);
 					if (molForm.getConciseNoCharge().equals(formula.getConciseNoCharge())) {
 						molCharge = formula.getFormalCharge();
 					}
@@ -635,7 +635,7 @@ public class Cif2CmlManager extends AbstractManager {
 					} catch (Exception e) {
 						LOG.warn("Exception whilst splitting CIF file: "+cifFile);
 					} finally {
-						org.apache.commons.io.IOUtils.closeQuietly(writer);
+						IOUtils.closeQuietly(writer);
 					}
 				}
 			}
@@ -673,7 +673,7 @@ public class Cif2CmlManager extends AbstractManager {
 	private void getCalculatedCheckCif(String cifPath, String pathMinusMime) {
 		String calculatedCheckCif = calculateCheckcif(cifPath);
 		String ccPath = pathMinusMime+".calculated.checkcif.html";
-		IOUtils.writeText(new File(ccPath), calculatedCheckCif);
+		Utils.writeText(new File(ccPath), calculatedCheckCif);
 	}
 
 	private void getPlatonImage(Document doc, String pathMinusMime) {
@@ -740,7 +740,7 @@ public class Cif2CmlManager extends AbstractManager {
 			if (filePost != null) {
 				filePost.releaseConnection();
 			}
-			org.apache.commons.io.IOUtils.closeQuietly(in);
+			IOUtils.closeQuietly(in);
 		}
 		return checkcif;
 	}

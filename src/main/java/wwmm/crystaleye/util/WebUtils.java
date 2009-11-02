@@ -1,4 +1,4 @@
-package wwmm.crystaleye;
+package wwmm.crystaleye.util;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -51,7 +52,7 @@ public class WebUtils {
 			if (method != null) {
 				method.releaseConnection();
 			}
-			org.apache.commons.io.IOUtils.closeQuietly(in);
+			IOUtils.closeQuietly(in);
 		}
 	}
 
@@ -82,8 +83,8 @@ public class WebUtils {
 			if (method != null) {
 				method.releaseConnection();
 			}
-			org.apache.commons.io.IOUtils.closeQuietly(in);
-			org.apache.commons.io.IOUtils.closeQuietly(fos);
+			IOUtils.closeQuietly(in);
+			IOUtils.closeQuietly(fos);
 		}
 	}
 
@@ -120,8 +121,8 @@ public class WebUtils {
 		} catch (Exception e) {
 			throw new RuntimeException("Exception parsing HTML due to: "+e.getMessage(), e);
 		} finally {
-			org.apache.commons.io.IOUtils.closeQuietly(br);
-			org.apache.commons.io.IOUtils.closeQuietly(sr);
+			IOUtils.closeQuietly(br);
+			IOUtils.closeQuietly(sr);
 		}
 	}
 

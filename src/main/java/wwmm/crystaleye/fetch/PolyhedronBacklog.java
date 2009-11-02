@@ -15,8 +15,8 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.WebUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.WebUtils;
 
 public class PolyhedronBacklog {
 	
@@ -36,7 +36,7 @@ public class PolyhedronBacklog {
 	public PolyhedronBacklog(String writeDir, String logPath) {
 		this.writeDir = writeDir;
 		this.logPath = logPath;
-		this.logDoc = IOUtils.parseXml(logPath);
+		this.logDoc = Utils.parseXml(logPath);
 	}
 
 	public void fetch() {
@@ -98,7 +98,7 @@ public class PolyhedronBacklog {
 		} else {
 			throw new RuntimeException("Should have found 1 issueNode, found "+issueNodes.size());
 		}
-		IOUtils.writeXML(logDoc, logPath);
+		Utils.writeXML(logDoc, logPath);
 	}
 
 	public boolean alreadyFinishedIssue(YearAndIssue yi) {

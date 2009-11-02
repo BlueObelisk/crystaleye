@@ -1,4 +1,6 @@
-package wwmm.crystaleye;
+package wwmm.crystaleye.util;
+
+import static wwmm.crystaleye.CrystalEyeConstants.CRYSTALEYE_DATE_FORMAT;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,19 +8,57 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Serializer;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
 
-public class IOUtils {
 
-	private static final Logger LOG = Logger.getLogger(IOUtils.class);
+/**
+ * Utility routines for CrystalEye.
+ *
+ * @author Nick Day
+ */
+public class Utils {
+	
+	private static final Logger LOG = Logger.getLogger(Utils.class);
+	
+	public static double round(double val, int places) {
+		long factor = (long)Math.pow(10,places);
+		val = val * factor;
+		long tmp = Math.round(val);
+		return (double)tmp / factor;
+	}
 
+	public static String getFileNameWithMimes(String filePath) {
+		String fileSep = "/";
+		if (filePath.contains("\\")) {
+			fileSep = "\\";
+		}
+		int idx = filePath.lastIndexOf(fileSep);
+		String nameWithMime = filePath.substring(idx+1, filePath.length());
+		return nameWithMime;
+	}
+
+	public static String getPathMinusMimeSet(File file) {
+		String path = file.getAbsolutePath();
+		String parent = file.getParent();
+		String fileName = path.substring(path.lastIndexOf(File.separator)+1);
+		String fileId = fileName.substring(0,fileName.indexOf("."));
+		return parent+File.separator+fileId;
+	}
+
+	public static String getPathMinusMimeSet(String path) {		
+		return getPathMinusMimeSet(new File(path));
+	}
+	
 	public static void appendToFile(File file, String content) {
 		try {
 			FileWriter fw = new FileWriter(file, true);
@@ -72,7 +112,7 @@ public class IOUtils {
 		} catch (Exception e) {
 			throw new RuntimeException("Exception parsing XML due to: "+e.getMessage(), e);
 		} finally {
-			org.apache.commons.io.IOUtils.closeQuietly(br);
+			IOUtils.closeQuietly(br);
 		}
 		return doc;
 	}
@@ -97,6 +137,17 @@ public class IOUtils {
 		} catch (Exception e) {
 			throw new RuntimeException("Exception parsing CML file due to: "+e.getMessage(), e);
 		}
+	}
+	
+	public static String getDate() {
+		Date date = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat(CRYSTALEYE_DATE_FORMAT);
+		return formatter.format(date);
+	}
+
+	public static void writeDateStamp(String path) {
+		String dNow = getDate();
+		Utils.writeText(new File(path), dNow);
 	}
 
 }

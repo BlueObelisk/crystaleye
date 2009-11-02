@@ -31,8 +31,10 @@ import nu.xom.XPathContext;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIFUtil;
+import org.xmlcml.cml.converters.cif.CrystalEyeUtils.FragmentType;
 import org.xmlcml.cml.element.CMLArray;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLCml;
@@ -49,20 +51,19 @@ import org.xmlcml.cml.tools.DisorderTool;
 import org.xmlcml.cml.tools.MoleculeTool;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.FreemarkerUtils;
-import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
-import wwmm.crystaleye.Utils;
-import wwmm.crystaleye.WebUtils;
-import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
-import wwmm.crystaleye.CrystalEyeUtils.DisorderType;
-import wwmm.crystaleye.CrystalEyeUtils.FragmentType;
 import wwmm.crystaleye.site.templates.CifSummaryToc;
 import wwmm.crystaleye.site.templates.FragmentSummaryToc;
 import wwmm.crystaleye.site.templates.MoietySummaryToc;
 import wwmm.crystaleye.site.templates.SingleCifSummary;
 import wwmm.crystaleye.site.templates.SingleStructureSummary;
+import wwmm.crystaleye.util.ChemistryUtils;
+import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.FreemarkerUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.WebUtils;
+import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
+import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
 import freemarker.template.Template;
 
 public class WebpageManager extends AbstractManager {
@@ -229,14 +230,14 @@ public class WebpageManager extends AbstractManager {
 		} catch (Exception e) {
 			throw new RuntimeException("Exception writing file ("+path+"), due to: "+e.getMessage(), e);
 		} finally {
-			org.apache.commons.io.IOUtils.closeQuietly(bw);
+			IOUtils.closeQuietly(bw);
 		}
 	}
 
 	private void createTableOfContents(List<File> cmlFileList, String issueSummaryDir) {
 		String entryLink = issueSummaryDir+"index.html";
 		String page = this.createOverallCifSummaryPage(cmlFileList);
-		IOUtils.writeText(new File(entryLink), page);
+		Utils.writeText(new File(entryLink), page);
 		this.getFilesForSummaryDisplay(cmlFileList, issueSummaryDir);
 	}
 
@@ -249,14 +250,14 @@ public class WebpageManager extends AbstractManager {
 		if (summaryPage == null) {
 			return;
 		}
-		IOUtils.writeText(new File(cifParentPath+"/"+id+".cif.summary.html"), summaryPage);
+		Utils.writeText(new File(cifParentPath+"/"+id+".cif.summary.html"), summaryPage);
 	}
 
 	private void createMoietyAndFragmentTocs(File cmlFile) {
 		String moiPagePath = Utils.getPathMinusMimeSet(cmlFile)+".moieties.toc.html";
 		String moiPage = this.createOverallMoietySummaryPages(cmlFile);
 		if (moiPage != null) {
-			IOUtils.writeText(new File(moiPagePath), moiPage);
+			Utils.writeText(new File(moiPagePath), moiPage);
 		}
 	}
 
@@ -276,7 +277,7 @@ public class WebpageManager extends AbstractManager {
 							if (summaryPage == null) {
 								continue;
 							}
-							IOUtils.writeText(new File(moiFolder+"/"+id+".moiety.summary.html"), summaryPage);
+							Utils.writeText(new File(moiFolder+"/"+id+".moiety.summary.html"), summaryPage);
 						}
 					}
 				}
@@ -293,7 +294,7 @@ public class WebpageManager extends AbstractManager {
 		String cmlPath = structCmlFile.getAbsolutePath();
 		CMLMolecule mol = null;
 		try {
-			mol = (CMLMolecule)IOUtils.parseCml(cmlPath).getRootElement();
+			mol = (CMLMolecule)Utils.parseCml(cmlPath).getRootElement();
 		} catch(Exception e) {
 			LOG.warn("Error parsing CML file ("+e.getMessage()+"), due to: "+e.getMessage());
 		}
@@ -352,7 +353,7 @@ public class WebpageManager extends AbstractManager {
 		String id = fileName.substring(0,fileName.indexOf("."));
 		CMLCml cml = null;
 		try {
-			cml = (CMLCml)IOUtils.parseCml(cmlPath).getRootElement();
+			cml = (CMLCml)Utils.parseCml(cmlPath).getRootElement();
 		} catch(Exception e) {
 			LOG.warn("Cannot parse CML file ("+cmlFile+"), due to: "+e.getMessage());
 		}
@@ -639,7 +640,7 @@ public class WebpageManager extends AbstractManager {
 			String fragPagePath = Utils.getPathMinusMimeSet(moiCmlFile)+".fragments.toc.html";
 			String fragPage = this.createOverallFragmentSummaryPages(moiCmlFile);
 			if (fragPage != null) {
-				IOUtils.writeText(new File(fragPagePath), fragPage);
+				Utils.writeText(new File(fragPagePath), fragPage);
 			}
 			for (FragmentType fragType : FragmentType.values()) {
 				String name = fragType.toString();
@@ -653,7 +654,7 @@ public class WebpageManager extends AbstractManager {
 							String fileName = path.substring(path.lastIndexOf(File.separator)+1);
 							String id = fileName.substring(0,fileName.indexOf("."));
 							String summaryPage = this.createSingleStructureSummary(file, "Fragment Summary", 7);
-							IOUtils.writeText(new File(fragFolder+"/"+id+".fragment.summary.html"), summaryPage);
+							Utils.writeText(new File(fragFolder+"/"+id+".fragment.summary.html"), summaryPage);
 						}
 					}
 				}
@@ -700,7 +701,7 @@ public class WebpageManager extends AbstractManager {
 						if (file.getAbsolutePath().matches("[^\\.]*"+COMPLETE_CML_MIME_REGEX)) {
 							Document doc = null;
 							try {
-								doc = IOUtils.parseCml(file);
+								doc = Utils.parseCml(file);
 							} catch (Exception e) {
 								LOG.warn("Error parsing CML file: "+e.getMessage());
 							}
@@ -869,7 +870,7 @@ public class WebpageManager extends AbstractManager {
 	private void addOverallMoietyRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {
 		Document doc = null;
 		try {
-			doc = IOUtils.parseCml(cmlFile);
+			doc = Utils.parseCml(cmlFile);
 		} catch(Exception e) {
 			LOG.warn("Error parsing CML file: "+e.getMessage());
 		}
@@ -882,7 +883,7 @@ public class WebpageManager extends AbstractManager {
 		StringWriter sw = new StringWriter();
 		String formula = "";
 		try {
-			CMLFormula form = new MoleculeTool(mol).calculateFormula(HydrogenControl.USE_EXPLICIT_HYDROGENS);
+			CMLFormula form = MoleculeTool.getOrCreateTool(mol).calculateFormula(HydrogenControl.USE_EXPLICIT_HYDROGENS);
 			form.writeHTML(sw);
 			formula = sw.toString();
 		} catch (IOException e) {
@@ -913,7 +914,7 @@ public class WebpageManager extends AbstractManager {
 	private void addOverallFragmentRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray summaryArray) {
 		Document doc = null;
 		try {
-			doc = IOUtils.parseCml(cmlFile);
+			doc = Utils.parseCml(cmlFile);
 		} catch(Exception e) {
 			LOG.warn("Error parsing CML file: "+e.getMessage());
 		}
@@ -929,7 +930,7 @@ public class WebpageManager extends AbstractManager {
 		StringWriter sw = new StringWriter();
 		String formula = "";
 		try {
-			CMLFormula form = new MoleculeTool(mol).calculateFormula(HydrogenControl.USE_EXPLICIT_HYDROGENS);
+			CMLFormula form = MoleculeTool.getOrCreateTool(mol).calculateFormula(HydrogenControl.USE_EXPLICIT_HYDROGENS);
 			form.writeHTML(sw);
 			formula = sw.toString();
 		} catch (IOException e) {
@@ -955,7 +956,7 @@ public class WebpageManager extends AbstractManager {
 		for (File file : cmlFileList) {
 			Document doc = null;
 			try {
-				doc = IOUtils.parseCml(file);
+				doc = Utils.parseCml(file);
 			} catch(Exception e) {
 				LOG.warn("Cannot parse "+file.getAbsolutePath()+": "+e.getMessage());
 			}
@@ -1041,7 +1042,7 @@ public class WebpageManager extends AbstractManager {
 	private void addOverallCifRowValues(File cmlFile, CMLTable table, CMLArray formulaArray, CMLArray doiArray, CMLArray summaryArray) {		
 		Document doc = null;
 		try {
-			doc = IOUtils.parseCml(cmlFile);
+			doc = Utils.parseCml(cmlFile);
 		} catch(Exception e) {
 			LOG.warn("Error parsing CML file: "+e.getMessage());
 		}
@@ -1133,7 +1134,7 @@ public class WebpageManager extends AbstractManager {
 			int maxImage = 0;
 			for (CMLMolecule mo : CrystalEyeUtils.getUniqueSubMolecules((CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG))) {
 				try {
-					if (CrystalEyeUtils.isBoringMolecule(mo)) {
+					if (ChemistryUtils.isBoringMolecule(mo)) {
 						continue;
 					}
 				} catch (Exception e) {

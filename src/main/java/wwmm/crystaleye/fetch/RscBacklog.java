@@ -10,8 +10,8 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.WebUtils;
+import wwmm.crystaleye.util.Utils;
+import wwmm.crystaleye.util.WebUtils;
 
 
 public class RscBacklog extends Fetcher {
@@ -94,7 +94,7 @@ public class RscBacklog extends Fetcher {
 
 					String cif = WebUtils.fetchWebPage(cifLink);
 					String path = writeDir+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+"/"+issue+"/"+cifId+"/"+cifId+"sup"+cifLinkNum+".cif";
-					IOUtils.writeText(new File(path), cif);
+					Utils.writeText(new File(path), cif);
 				}
 			}
 		}
