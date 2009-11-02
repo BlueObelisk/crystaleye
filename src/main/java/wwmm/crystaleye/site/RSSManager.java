@@ -45,8 +45,8 @@ import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
-import wwmm.crystaleye.fetch.IssueDate;
 
 public class RSSManager extends AbstractManager {
 
@@ -406,7 +406,7 @@ public class RSSManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		RSSManager rss = new RSSManager("c:/Users/ned24/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		RSSManager rss = new RSSManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
 		rss.execute();
 	}
 }

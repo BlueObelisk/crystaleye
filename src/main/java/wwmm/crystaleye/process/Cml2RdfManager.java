@@ -16,7 +16,7 @@ import org.xmlcml.cml.converters.rdf.cml.CML2OWLRDFConverter;
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
-import wwmm.crystaleye.fetch.IssueDate;
+import wwmm.crystaleye.IssueDate;
 
 public class Cml2RdfManager extends AbstractManager {
 	

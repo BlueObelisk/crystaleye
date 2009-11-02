@@ -93,9 +93,9 @@ import wwmm.crystaleye.CDKUtils;
 import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
-import wwmm.crystaleye.fetch.IssueDate;
 import wwmm.crystaleye.tools.CheckCifParser;
 import wwmm.crystaleye.tools.InchiTool;
 
