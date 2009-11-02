@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.log4j.Logger;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -27,6 +28,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class WebUtils {
 	
+	private static final Logger LOG = Logger.getLogger(WebUtils.class);
+
 	public static String fetchWebPage(String url) {
 		HttpClient client = new HttpClient();
 		InputStream in = null;
@@ -38,7 +41,7 @@ public class WebUtils {
 		try {
 			statusCode = client.executeMethod(method);
 			if (statusCode != HttpStatus.SC_OK) {
-				System.err.println("Method failed: "+method.getStatusLine());
+				LOG.warn("Method failed: "+method.getStatusLine());
 			}
 			in = method.getResponseBodyAsStream();
 			return org.apache.commons.io.IOUtils.toString(in);
@@ -51,7 +54,7 @@ public class WebUtils {
 			org.apache.commons.io.IOUtils.closeQuietly(in);
 		}
 	}
-	
+
 	public static void saveFileFromUrl(String url, String outPath) {
 		HttpClient client = new HttpClient();
 		GetMethod method = new GetMethod(url);
@@ -64,7 +67,7 @@ public class WebUtils {
 		try {
 			statusCode = client.executeMethod(method);
 			if (statusCode != HttpStatus.SC_OK) {
-				System.err.println("Method failed: "+method.getStatusLine());
+				LOG.warn("Method failed: "+method.getStatusLine());
 			}
 			in = method.getResponseBodyAsStream();
 			fos = new FileOutputStream(outPath);
@@ -83,7 +86,7 @@ public class WebUtils {
 			org.apache.commons.io.IOUtils.closeQuietly(fos);
 		}
 	}
-	
+
 	public static Document parseWebPage(String url) {
 		return parseAndTidyHtml(fetchWebPage(url));
 	}
@@ -107,7 +110,7 @@ public class WebUtils {
 
 		return parseAndTidyHtml(html);
 	}
-	
+
 	public static Document parseAndTidyHtml(String html) {
 		StringReader sr = new StringReader(html);
 		BufferedReader br = new BufferedReader(sr);

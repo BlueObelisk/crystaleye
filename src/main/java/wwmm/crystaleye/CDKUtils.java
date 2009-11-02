@@ -50,17 +50,12 @@ public class CDKUtils {
 		} catch (CDKException e) {
 			throw new RuntimeException("CDK Error reading molecule: "+e.getMessage());
 		} finally {
-			if (bais != null)
-				try {
-					bais.close();
-				} catch (IOException e) {
-					System.err.println("Cannot close input stream: "+bais);
-				}
+			org.apache.commons.io.IOUtils.closeQuietly(bais);
 		}
 		return cdkMol;
 	}
 
-	public static IMolecule cmlMol2CdkMol(CMLMolecule cmlMol) {
+	public static IMolecule createMolecule(CMLMolecule cmlMol) {
 		//FIXME - remove this section and fix CDK instead!
 		CMLCrystal cryst = (CMLCrystal)cmlMol.getFirstCMLChild(CMLCrystal.TAG);
 		CMLCrystal crystCopy = null;
@@ -124,12 +119,7 @@ public class CDKUtils {
 		} catch (CDKException e) {
 			throw new RuntimeException("CDK Error reading molecule: "+e.getMessage());
 		} finally {
-			if (bais != null)
-				try {
-					bais.close();
-				} catch (IOException e) {
-					System.err.println("Cannot close input stream: "+bais);
-				}
+			org.apache.commons.io.IOUtils.closeQuietly(bais);
 		}
 		//FIXME - remove this section and fix CDK instead!
 		if (formCopy != null) cmlMol.appendChild(formCopy);
@@ -139,7 +129,7 @@ public class CDKUtils {
 	}
 
 	public static CMLMolecule add2DCoords(CMLMolecule molecule) {
-		IMolecule mol = cmlMol2CdkMol(molecule);
+		IMolecule mol = createMolecule(molecule);
 		for (int i = 0; i < mol.getAtomCount(); i++) {
 			IAtom atom = mol.getAtom(i);
 			atom.setPoint2d(null);

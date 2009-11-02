@@ -77,7 +77,7 @@ public class CellParamsManager extends AbstractManager {
 					try {
 						cml = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
 					} catch(Exception e) {
-						System.err.println("Error parsing CML: "+e.getMessage());
+						LOG.warn("Error parsing CML: "+e.getMessage());
 					}
 					if (cml == null){
 						continue;

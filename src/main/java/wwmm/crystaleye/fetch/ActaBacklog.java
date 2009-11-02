@@ -94,7 +94,7 @@ public class ActaBacklog extends Fetcher {
 							String doi = ((Element)doiNodes.get(0)).getValue().substring(4);
 							IOUtils.writeText(new File(cifWriteDir+"/"+cifId.substring(0,cifId.length()-4)+".doi"), doi);
 						} else {
-							System.err.println("Could not find the DOI for this toc entry.");
+							LOG.warn("Could not find the DOI for this toc entry.");
 						}
 						Nodes checkCifNodes = tocEntry.query(".//x:img[contains(@src,'/"+journalAbbreviation+"/graphics/checkcifborder.gif')]/parent::x:*", X_XHTML);
 						if (checkCifNodes.size() > 0) {

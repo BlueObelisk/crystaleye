@@ -93,7 +93,7 @@ public class ChemSocJapanCurrent extends CurrentIssueFetcher {
 										if (reader != null) reader.close();
 									}
 									catch (IOException ex){
-										System.err.println("Cannot close reader: " + reader);
+										LOG.warn("Cannot close reader: " + reader);
 									}
 								}
 							}

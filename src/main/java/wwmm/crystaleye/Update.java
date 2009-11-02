@@ -5,6 +5,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.fetch.FetchManager;
 import wwmm.crystaleye.managers.CML2FooManager;
@@ -17,6 +18,8 @@ import wwmm.crystaleye.managers.SmilesListManager;
 import wwmm.crystaleye.managers.WebpageManager;
 
 public class Update {
+	
+	private static final Logger LOG = Logger.getLogger(Update.class);
 
 	public static void main(String[] args) {
 		Update launcher = new Update();
@@ -44,7 +47,7 @@ public class Update {
 		try {
 			cl = parser.parse(options, args);
 		} catch(ParseException e) {
-			e.printStackTrace();
+			LOG.warn("Exception parsing command line: "+e.getMessage());
 			return;
 		}
 

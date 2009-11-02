@@ -87,7 +87,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 							if (doiNodes.size() > 0) {
 								doi = ((Element)doiNodes.get(0)).getValue().substring(4);
 							} else {
-								System.err.println("Could not find the DOI for this toc entry.");
+								LOG.warn("Could not find the DOI for this toc entry.");
 							}
 							Nodes checkCifNodes = tocEntry.query(".//x:img[contains(@src,'/"+journalAbbreviation+"/graphics/checkcifborder.gif')]/parent::x:*", X_XHTML);
 							if (checkCifNodes.size() > 0) {

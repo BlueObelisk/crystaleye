@@ -173,7 +173,7 @@ public class BondLengthsManager extends AbstractManager {
 					try { 
 						addLengthsFromCmlFile(cmlFile);
 					} catch (OutOfMemoryError e) {
-						System.err.println("Out of memory processing CML file: "+cmlFile.getAbsolutePath());
+						LOG.warn("Out of memory processing CML file: "+cmlFile.getAbsolutePath());
 					}
 				}
 			}
@@ -299,14 +299,7 @@ public class BondLengthsManager extends AbstractManager {
 				throw new RuntimeException("Error reading file: "+allBondsPath);
 			}
 			finally {
-				try {
-					if (input!= null) {
-						input.close();
-					}
-				}
-				catch (IOException ex) {
-					ex.printStackTrace();
-				}
+				org.apache.commons.io.IOUtils.closeQuietly(input);
 			}
 		}
 	}
@@ -373,16 +366,8 @@ public class BondLengthsManager extends AbstractManager {
 		}
 		catch (IOException ex){
 			throw new RuntimeException("Error reading file: "+bondsPath);
-		}
-		finally {
-			try {
-				if (input!= null) {
-					input.close();
-				}
-			}
-			catch (IOException ex) {
-				ex.printStackTrace();
-			}
+		} finally {
+			org.apache.commons.io.IOUtils.closeQuietly(input);
 		}
 
 		// round the min and max values to 1 decimal place
@@ -401,7 +386,7 @@ public class BondLengthsManager extends AbstractManager {
 		try {
 			layout.setNXTickMarks(10);
 		} catch (GraphException e1) {
-			System.err.println("Problem setting NXTickMarks");
+			LOG.warn("Problem setting NXTickMarks");
 		}
 
 		Histogram hist1 = new Histogram(layout);
@@ -418,7 +403,7 @@ public class BondLengthsManager extends AbstractManager {
 			doc = new Document(hist1.getSVG());
 			SVGInterpretter svgi = new SVGInterpretter (hist1);
 		} catch (GraphException e) {
-			System.err.println(e.getMessage());
+			LOG.warn("Exception creating histogram, due to: "+e.getMessage());
 		}
 
 		Element svg = doc.getRootElement();
@@ -491,16 +476,8 @@ public class BondLengthsManager extends AbstractManager {
 			}
 			catch (IOException ex){
 				throw new RuntimeException("Error reading file: "+bondsPath);
-			}
-			finally {
-				try {
-					if (input!= null) {
-						input.close();
-					}
-				}
-				catch (IOException ex) {
-					ex.printStackTrace();
-				}
+			} finally {
+				org.apache.commons.io.IOUtils.closeQuietly(input);
 			}
 
 			String href = bondType+"/"+id+HTML_MIME;
@@ -689,7 +666,7 @@ public class BondLengthsManager extends AbstractManager {
 		try {
 			c = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
 		} catch (Exception e) {
-			System.err.println("Error parsing CML: "+e.getMessage());
+			LOG.warn("Error parsing CML: "+e.getMessage());
 		}
 		if (c == null) {
 			return;
@@ -722,7 +699,7 @@ public class BondLengthsManager extends AbstractManager {
 					try {
 						processAllAtomCrystal(cml);
 					} catch (OutOfMemoryError e) {
-						System.err.println("Out of memory processing: "+cmlFile.getAbsolutePath());
+						LOG.warn("Out of memory processing: "+cmlFile.getAbsolutePath());
 						processDiscreteMoleculeCrystal(c);
 					}
 				} else {
@@ -732,7 +709,7 @@ public class BondLengthsManager extends AbstractManager {
 				try {
 					processAllAtomCrystal(cml);
 				} catch (OutOfMemoryError e) {
-					System.err.println("Out of memory processing: "+cmlFile.getAbsolutePath());
+					LOG.warn("Out of memory processing: "+cmlFile.getAbsolutePath());
 					processDiscreteMoleculeCrystal(c);
 				}
 			} else {
@@ -747,7 +724,7 @@ public class BondLengthsManager extends AbstractManager {
 			temp = tempNodes.get(0).getValue();
 		} else {
 			temp = "";
-			System.err.println("Could not retrieve cell measurement temperature: "+cml.getId());
+			LOG.warn("Could not retrieve cell measurement temperature: "+cml.getId());
 		}
 
 		Nodes rFactorNodes = cml.query(".//cml:scalar[@dictRef='iucr:_refine_ls_r_factor_gt']", CML_XPATH);
@@ -755,7 +732,7 @@ public class BondLengthsManager extends AbstractManager {
 			rf = rFactorNodes.get(0).getValue();
 		} else {
 			rf = "";
-			System.err.println("Could not retrieve r factor gt: "+cml.getId());
+			LOG.warn("Could not retrieve r factor gt: "+cml.getId());
 		}
 
 		Nodes doiNodes = cml.query(".//cml:scalar[@dictRef='idf:doi']", CML_XPATH);
@@ -889,7 +866,7 @@ public class BondLengthsManager extends AbstractManager {
 		if (aslNodes.size() == 1) {
 			return aslNodes.get(0).getValue();
 		} else {
-			System.err.println("Could not find _atom_site_label for atom "+atom.getId());
+			LOG.warn("Could not find _atom_site_label for atom "+atom.getId());
 			return null;
 		}
 	}

@@ -229,7 +229,7 @@ public class PolyhedronBacklog {
 		try {
 			Thread.sleep(((int)(maxTime*Math.random())));
 		} catch (InterruptedException e) {
-			System.err.println("Sleep interrupted.");
+			LOG.warn("Sleep interrupted.");
 		}
 	}
 

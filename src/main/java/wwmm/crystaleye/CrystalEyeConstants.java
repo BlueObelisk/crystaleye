@@ -124,6 +124,5 @@ public interface CrystalEyeConstants {
 	 * miscellaneous
 	 */
 	public static final int MAX_CIF_SIZE_IN_BYTES = 2621440;
-	public static final String NEWLINE = System.getProperty("line.separator");
 	public static final String COMPLETE_CML_MIME_REGEX = COMPLETE_CML_MIME.replaceAll("\\.", "\\\\.");
 }
