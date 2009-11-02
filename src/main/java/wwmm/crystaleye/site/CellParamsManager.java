@@ -21,7 +21,7 @@ import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.fetch.IssueDate;
+import wwmm.crystaleye.IssueDate;
 
 public class CellParamsManager extends AbstractManager {
 	
@@ -136,12 +136,17 @@ public class CellParamsManager extends AbstractManager {
 				}
 			}
 		}
-		IOUtils.appendToFile(new File(properties.getCellParamsFilePath()), sb.toString());
+		
+		File cellParamsFile = new File(properties.getCellParamsFilePath());
+		if (!cellParamsFile.exists()) {
+			IOUtils.writeText(cellParamsFile, sb.toString());
+		} else {
+			IOUtils.appendToFile(cellParamsFile, sb.toString());
+		}
 	}
 
 	public static void main(String[] args) {
-		//CellParamsManager d = new CellParamsManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
-		CellParamsManager d = new CellParamsManager("e:/data-test/docs/cif-flow-props.txt");
+		CellParamsManager d = new CellParamsManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
 		d.execute();
 	}
 }

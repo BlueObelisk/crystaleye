@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.IssueDate;
 
 public abstract class CurrentIssueFetcher extends Fetcher {
 	

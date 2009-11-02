@@ -13,6 +13,7 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
+import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.WebUtils;
 
 public class RscCurrent extends CurrentIssueFetcher {

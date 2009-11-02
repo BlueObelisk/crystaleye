@@ -24,7 +24,7 @@ import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.fetch.IssueDate;
+import wwmm.crystaleye.IssueDate;
 
 public class DoiListManager extends AbstractManager {
 
@@ -117,8 +117,7 @@ public class DoiListManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		//DoiListManager d = new DoiListManager("e:/crystaleye-test2/docs/cif-flow-props.txt");
-		DoiListManager d = new DoiListManager("e:/data-test/docs/cif-flow-props.txt");
+		DoiListManager d = new DoiListManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
 		d.execute();
 	}
 }

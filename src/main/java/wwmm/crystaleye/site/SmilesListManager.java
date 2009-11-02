@@ -14,6 +14,7 @@ import java.util.List;
 import nu.xom.Nodes;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
 import org.xmlcml.cml.element.CMLCml;
@@ -24,7 +25,7 @@ import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
-import wwmm.crystaleye.fetch.IssueDate;
+import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.tools.Execute;
 
 public class SmilesListManager extends AbstractManager {
@@ -77,8 +78,13 @@ public class SmilesListManager extends AbstractManager {
 	
 	private void updateIndex() {
 		String smilesListPath = properties.getSmilesListPath();
-		String command = "babel "+smilesListPath+" -ofs";
-		Execute.run(command);
+		if (SystemUtils.IS_OS_WINDOWS) {
+			String[] command = {"cmd.exe", "/C", "babel", smilesListPath, "-ofs"};
+			Execute.run(command);
+		} else {
+			String[] command = {"babel", smilesListPath, "-ofs"};
+			Execute.run(command);
+		}
 	}
 
 	public void process(String issueWriteDir) {
@@ -108,9 +114,9 @@ public class SmilesListManager extends AbstractManager {
 							System.err.println("Could not find SMILES in file "+cmlFile.getAbsolutePath());
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
-					} catch (OutOfMemoryError o) {
-						System.err.println("SKIPPING: out of memory error processing: "+cmlFile.getAbsolutePath());
+						LOG.warn("Exception while calculating SMILES, due to: "+e.getMessage());
+					} catch (OutOfMemoryError e) {
+						LOG.warn("SKIPPING: out of memory error processing: "+cmlFile.getAbsolutePath());
 					}
 				}
 			}
@@ -124,7 +130,7 @@ public class SmilesListManager extends AbstractManager {
 	}
 	
 	public static void main(String[] args) {
-		SmilesListManager d = new SmilesListManager("c:/Users/ned24/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		SmilesListManager d = new SmilesListManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
 		d.execute();
 	}
 }

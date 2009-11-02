@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,12 +57,12 @@ import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.FreemarkerUtils;
 import wwmm.crystaleye.IOUtils;
+import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.WebUtils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.CrystalEyeUtils.DisorderType;
 import wwmm.crystaleye.CrystalEyeUtils.FragmentType;
-import wwmm.crystaleye.fetch.IssueDate;
 import wwmm.crystaleye.process.Cif2CmlManager;
 import wwmm.crystaleye.site.templates.CifSummaryToc;
 import wwmm.crystaleye.site.templates.FragmentSummaryToc;
@@ -76,6 +77,7 @@ public class WebpageManager extends AbstractManager {
 
 	private CrystalEyeProperties properties;
 
+	private String writeDir;
 	private String publisherAbbreviation;
 	private String publisherTitle;
 	private String journalAbbreviation;
@@ -116,7 +118,7 @@ public class WebpageManager extends AbstractManager {
 	}
 
 	public void execute() {
-		String writeDir = properties.getWriteDir();
+		writeDir = properties.getWriteDir();
 		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
 		for (String publisherAbbreviation : publisherAbbreviations) {
 			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
@@ -204,6 +206,31 @@ public class WebpageManager extends AbstractManager {
 			}
 		}
 	}
+	
+	private Map<String, Object> getTemplateMap(File journalDir) {
+		Map<String, Object> templateMap = new HashMap<String, Object>();
+		templateMap.put("publisherFullTitle", publisherTitle);
+		templateMap.put("publisherAbbreviation", publisherAbbreviation);
+		templateMap.put("journalFullTitle", journalTitle);
+		templateMap.put("journalAbbreviation", journalAbbreviation);
+		
+		List<Map<String, Object>> years = new ArrayList<Map<String, Object>>();
+		for (File yearDir : journalDir.listFiles()) {
+			Map<String, Object> year = new HashMap<String, Object>();
+			year.put("num", yearDir.getName());
+			List<Map<String, Object>> issues = new ArrayList<Map<String, Object>>();
+			for (File issueDir : yearDir.listFiles()) {
+				Map<String, Object> issue = new HashMap<String, Object>();
+				issue.put("num", issueDir.getName());
+				issues.add(issue);
+			}
+			year.put("issues", issues);
+			years.add(year);
+		}
+		Collections.reverse(years);
+		templateMap.put("years", years);
+		return templateMap;
+	}
 
 	private void updateSummaryLinkPage(String summaryWriteDir) {
 		String path = summaryWriteDir+"/"+publisherAbbreviation+"-"+journalAbbreviation+".html";
@@ -211,26 +238,10 @@ public class WebpageManager extends AbstractManager {
 		BufferedWriter bw = null;
 		try {
 			bw = new BufferedWriter(new FileWriter(new File(path)));
-			
-			// TODO - remove ----------------------------------
-			Map<String, Object> rootMap = new HashMap<String, Object>();
-			rootMap.put("publisherFullTitle", "Royal Society of Chemistry");
-			rootMap.put("publisherAbbreviation", "rsc");
-			rootMap.put("journalFullTitle", "Dalton Transactions");
-			rootMap.put("journalAbbreviation", "dt");
-			List<Map> years = new ArrayList<Map>();
-			Map<String, Object> year = new HashMap<String, Object>();
-			year.put("num", "2009");
-			List<Map> issues = new ArrayList<Map>();
-			Map<String, Object> issue = new HashMap<String, Object>();
-			issue.put("num", "88");
-			issues.add(issue);
-			year.put("issues", issues);
-			years.add(year);
-			rootMap.put("years", years);
-			//-----------------------------------------------
-			
-			tpl.process(rootMap, bw);
+			String journalDirPath =  writeDir+"/"+publisherAbbreviation+"/"+journalAbbreviation;
+			File journalDir = new File(journalDirPath);
+			Map<String, Object> templateMap = getTemplateMap(journalDir);
+			tpl.process(templateMap, bw);
 		} catch (Exception e) {
 			throw new RuntimeException("Exception writing file ("+path+"), due to: "+e.getMessage(), e);
 		} finally {

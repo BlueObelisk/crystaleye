@@ -13,7 +13,6 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.fetch.IssueDate;
 
 public abstract class AbstractManager {
 	
