@@ -5,8 +5,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 public class Execute {
+	
+	private static final Logger LOG = Logger.getLogger(Execute.class);
 
 	public void run(String[] cmd) {
 		try {        
@@ -18,7 +21,7 @@ public class Execute {
 			outputGobbler.start();
 			int exitVal = proc.waitFor();       
 		} catch (Throwable t) {
-			t.printStackTrace();
+			LOG.warn("Problem running command ("+cmd+"): "+t.getMessage());
 		}
 	}
 	

@@ -98,12 +98,12 @@ public class DoiListManager extends AbstractManager {
 							parts[k-1]+".cif.summary.html";
 							sb.append(doi+"="+cifSummaryUrl+"\n");
 						} else {
-							System.err.println("Could not find DOI in file "+cmlFile.getAbsolutePath());
+							LOG.warn("Could not find DOI in file "+cmlFile.getAbsolutePath());
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
+						LOG.warn("Exception whilst updating DOI list file ("+doiListPath+"): "+e.getMessage());
 					} catch (OutOfMemoryError o) {
-						System.err.println("SKIPPING: out of memory error processing: "+cmlFile.getAbsolutePath());
+						LOG.warn("Out of memory error processing: "+cmlFile.getAbsolutePath());
 					}
 				}
 			}

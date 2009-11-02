@@ -10,12 +10,8 @@ import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -310,7 +306,7 @@ public class WebpageManager extends AbstractManager {
 		try {
 			mol = (CMLMolecule)IOUtils.parseCml(cmlPath).getRootElement();
 		} catch(Exception e) {
-			System.err.println("Error parsing CML file: "+e.getMessage());
+			LOG.warn("Error parsing CML file ("+e.getMessage()+"), due to: "+e.getMessage());
 		}
 		if (mol == null) {
 			return null;
@@ -369,7 +365,7 @@ public class WebpageManager extends AbstractManager {
 		try {
 			cml = (CMLCml)IOUtils.parseCml(cmlPath).getRootElement();
 		} catch(Exception e) {
-			System.err.println("Cannot parse CML file: "+e.getMessage());
+			LOG.warn("Cannot parse CML file ("+cmlFile+"), due to: "+e.getMessage());
 		}
 		if (cml == null) {
 			return "";
@@ -390,7 +386,7 @@ public class WebpageManager extends AbstractManager {
 					sw.close();
 				}
 			} catch (IOException e) {
-				System.err.println("Error writing formula moiety HTML");
+				LOG.warn("Error writing formula moiety HTML: "+e.getMessage());
 			}
 			try {
 				if ("iucr:_chemical_formula_sum".equalsIgnoreCase(formula.getDictRef())) {
@@ -401,7 +397,7 @@ public class WebpageManager extends AbstractManager {
 					sw.close();
 				}
 			} catch (IOException e) {
-				System.err.println("Error writing formula sum HTML");
+				LOG.warn("Error writing formula sum HTML: "+e.getMessage());
 			}
 		}
 
@@ -451,7 +447,7 @@ public class WebpageManager extends AbstractManager {
 				title = matcher.replaceAll(replaceStr);
 			}
 		} catch (Exception e) {
-			System.err.println("Could not translate CIF string to ISO: "+title);
+			LOG.warn("Could not translate CIF string to ISO: "+title);
 			title = "";
 		}
 
@@ -717,7 +713,7 @@ public class WebpageManager extends AbstractManager {
 							try {
 								doc = IOUtils.parseCml(file);
 							} catch (Exception e) {
-								System.err.println("Error parsing CML file: "+e.getMessage());
+								LOG.warn("Error parsing CML file: "+e.getMessage());
 							}
 							if (doc == null) {
 								continue;
@@ -839,7 +835,7 @@ public class WebpageManager extends AbstractManager {
 		try {
 			table.writeHTML(sw);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.warn("Exception whilst creating HTML: "+e.getMessage());
 		}
 
 		return sw.getBuffer().toString();
@@ -875,7 +871,7 @@ public class WebpageManager extends AbstractManager {
 		try {
 			table.writeHTML(sw);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.warn("Exception whilst creating HTML: "+e.getMessage());
 		}
 
 		return sw.getBuffer().toString();
@@ -886,7 +882,7 @@ public class WebpageManager extends AbstractManager {
 		try {
 			doc = IOUtils.parseCml(cmlFile);
 		} catch(Exception e) {
-			System.err.println("Error parsing CML file: "+e.getMessage());
+			LOG.warn("Error parsing CML file: "+e.getMessage());
 		}
 		if (doc == null) {
 			return;
@@ -930,7 +926,7 @@ public class WebpageManager extends AbstractManager {
 		try {
 			doc = IOUtils.parseCml(cmlFile);
 		} catch(Exception e) {
-			System.err.println("Error parsing CML file: "+e.getMessage());
+			LOG.warn("Error parsing CML file: "+e.getMessage());
 		}
 		if (doc == null) {
 			return;
@@ -972,7 +968,7 @@ public class WebpageManager extends AbstractManager {
 			try {
 				doc = IOUtils.parseCml(file);
 			} catch(Exception e) {
-				System.err.println("Cannot parse "+file.getAbsolutePath()+": "+e.getMessage());
+				LOG.warn("Cannot parse "+file.getAbsolutePath()+": "+e.getMessage());
 			}
 			if (doc == null) {
 				continue;
@@ -1047,7 +1043,7 @@ public class WebpageManager extends AbstractManager {
 		try {
 			table.writeHTML(sw);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.warn("Exception whilst creating HTML: "+e.getMessage());
 		}
 
 		return sw.getBuffer().toString();
@@ -1058,7 +1054,7 @@ public class WebpageManager extends AbstractManager {
 		try {
 			doc = IOUtils.parseCml(cmlFile);
 		} catch(Exception e) {
-			System.err.println("Error parsing CML file: "+e.getMessage());
+			LOG.warn("Error parsing CML file: "+e.getMessage());
 		}
 		CMLCml cml = (CMLCml) doc.getRootElement();
 		String cmlPath = cmlFile.getAbsolutePath();
@@ -1221,64 +1217,10 @@ public class WebpageManager extends AbstractManager {
 			String articleName = articleFile.getName();
 			File destFile = new File(dataDir+"/"+articleName);
 			try {
-				copyDirectory(articleFile, destFile);
+				FileUtils.copyDirectory(articleFile, destFile);
 			} catch (IOException e) {
 				throw new RuntimeException("Error copying directory: "+articleFile.getAbsolutePath()+" to: "+destFile.getAbsolutePath(), e);
 			}
-		}
-	}
-
-	// Copies all files under srcDir to dstDir.
-	// If dstDir does not exist, it will be created.
-	// If dstDir does exist, then it will be deleted and replaced
-	public void copyDirectory(File srcDir, File dstDir) throws IOException {
-		if (srcDir.isDirectory()) {
-			if (!dstDir.exists()) {
-				dstDir.mkdir();
-			} else if (dstDir.exists()) {
-				FileUtils.deleteDirectory(dstDir);
-			}
-
-			String[] children = srcDir.list();
-			for (int i=0; i<children.length; i++) {
-				copyDirectory(new File(srcDir, children[i]),
-						new File(dstDir, children[i]));
-			}
-		} else {
-			try {
-				copy(srcDir, dstDir);
-			} catch (Exception e) {
-				throw new RuntimeException("Problem copying file from "+srcDir.getAbsolutePath()
-						+" to "+dstDir.getAbsolutePath(), e);
-			}
-		}
-	}
-
-	void copy(File src, File dst) throws Exception {
-		if (!dst.getParentFile().exists()) {
-			dst.getParentFile().mkdirs();
-		}
-		InputStream in = null;
-		OutputStream out = null;
-		try {
-			in = new FileInputStream(src);
-			out = new FileOutputStream(dst);
-
-			// Transfer bytes from in to out
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (in != null)
-				in.close();
-			if (out != null)
-				out.close();
 		}
 	}
 

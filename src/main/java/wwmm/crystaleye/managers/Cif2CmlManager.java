@@ -175,7 +175,7 @@ public class Cif2CmlManager extends AbstractManager {
 		try {
 			splitCifList = this.createSplitCifs(file);
 		} catch (Exception e) {
-			System.err.println("Could not split cif file: "+file.getAbsolutePath());
+			LOG.warn("Could not split cif file: "+file.getAbsolutePath());
 			return;
 		}
 		for (File splitCifFile : splitCifList) {
@@ -208,7 +208,7 @@ public class Cif2CmlManager extends AbstractManager {
 			try { 
 				cml = (CMLCml)IOUtils.parseCml(rawCmlFile).getRootElement();
 			} catch (Exception e) {
-				System.err.println("Error reading CML.");
+				LOG.warn("Error reading CML, due to: "+e.getMessage());
 				continue;
 			}
 
@@ -231,7 +231,7 @@ public class Cif2CmlManager extends AbstractManager {
 				try {
 					mergedMolecule = createFinalStructure(molecule, compoundClass);
 				} catch (Exception e) {
-					System.err.println("Could not calculate final structure.");
+					LOG.warn("Could not calculate final structure, due to: "+e.getMessage());
 					continue;
 				}
 				boolean isPolymeric = false;
@@ -263,7 +263,7 @@ public class Cif2CmlManager extends AbstractManager {
 				CrystalEyeUtils.writeDateStamp(pathMinusMime+DATE_MIME);
 				IOUtils.writeXML(cml.getDocument(), pathMinusMime+COMPLETE_CML_MIME);
 			} catch (RuntimeException e) {
-				System.err.println("Error creating complete CML: "+e.getMessage());
+				LOG.warn("Error creating complete CML: "+e.getMessage());
 			}
 		}
 	}
@@ -382,7 +382,7 @@ public class Cif2CmlManager extends AbstractManager {
 				formula.normalize();
 				cmlMol.appendChild(formula);
 			} catch (RuntimeException e) {
-				System.err.println("Could not generate CMLFormula: "+e.getMessage());
+				LOG.warn("Could not generate CMLFormula, due to: "+e.getMessage());
 			}
 
 			//FIXME - remove this section and fix CDK instead!
@@ -408,8 +408,7 @@ public class Cif2CmlManager extends AbstractManager {
 					CDKUtils.add2DCoords(cmlMol);
 					new StereochemistryTool(cmlMol).addWedgeHatchBonds();
 				} catch (Exception e) {
-					e.printStackTrace();
-					System.err.println("Exception adding wedge/hatch bonds to molecule "+cmlMol.getId());;
+					LOG.warn("Exception adding wedge/hatch bonds to molecule "+cmlMol.getId());;
 				}
 				if (!compoundClass.equals(CompoundClass.INORGANIC) && 
 						(CML2FooManager.getNumberOfRings(cmlMol) < CML2FooManager.MAX_RINGS)) {
@@ -472,7 +471,7 @@ public class Cif2CmlManager extends AbstractManager {
 				try {
 					st.add3DStereo();
 				} catch (RuntimeException e) {
-					System.err.println("Error adding 3D stereochemistry.");
+					LOG.warn("Error adding 3D stereochemistry, due to: "+e.getMessage());
 				}
 				ValencyTool.addMetalAtomsAndBonds(subMol, metalMap);
 			}
@@ -539,9 +538,9 @@ public class Cif2CmlManager extends AbstractManager {
 	private void processDisorder(CMLMolecule molecule, CompoundClass compoundClass) {
 		// sort disorder out per molecule rather than per crystal.  This way if the disorder is
 		// invalid for one molecule, we may be able to resolve others within the crystal.
-		MoleculeTool moleculeTool = new MoleculeTool(molecule);
-		moleculeTool.createCartesiansFromFractionals();
-		new MoleculeTool(molecule).calculateBondedAtoms();
+		MoleculeTool molTool = MoleculeTool.getOrCreateTool(molecule);
+		molTool.createCartesiansFromFractionals();
+		molTool.calculateBondedAtoms();
 		ConnectionTableTool ct = new ConnectionTableTool(molecule);
 		// don't want to partition inorganics before resolving disorder as
 		// chance is that atoms related by disorder won't be connected so partitioning
@@ -555,7 +554,7 @@ public class Cif2CmlManager extends AbstractManager {
 				DisorderTool dt = new DisorderTool(mo, dm);
 				dt.resolveDisorder();
 			} catch (RuntimeException e) {
-				e.printStackTrace();
+				LOG.info("Error processing disorder");
 			}
 		}
 		ct.flattenMolecules();
@@ -597,8 +596,8 @@ public class Cif2CmlManager extends AbstractManager {
 		}
 	}
 
-	private List<File> createSplitCifs(File file) {
-		String fileName = file.getAbsolutePath();
+	private List<File> createSplitCifs(File cifFile) {
+		String fileName = cifFile.getAbsolutePath();
 		List<File> splitCifList = new ArrayList<File>();
 		// split the found CIF
 		try {
@@ -608,7 +607,7 @@ public class Cif2CmlManager extends AbstractManager {
 			parser.setCheckDuplicates(true);
 			parser.setBlockIdsAsIntegers(false);
 
-			CIF cif = (CIF) parser.parse(new BufferedReader(new FileReader(file))).getRootElement();
+			CIF cif = (CIF) parser.parse(new BufferedReader(new FileReader(cifFile))).getRootElement();
 
 			List<CIFDataBlock> blockList = cif.getDataBlockList();
 			CIFDataBlock global = null;
@@ -621,8 +620,7 @@ public class Cif2CmlManager extends AbstractManager {
 					Nodes mmCifNodes = loop.query("./@names[contains(.,'_atom_site.type_symbol') and " +
 					"contains(.,'_atom_site.id')]");
 					if (mmCifNodes.size() > 0) {
-						System.err.println("CIF is an mmCIF, cannot process: "+file.getAbsolutePath());
-						throw new RuntimeException("CIF is an mmCIF, cannot process: "+file.getAbsolutePath());
+						LOG.warn("CIF is an mmCIF, cannot process: "+cifFile.getAbsolutePath());
 					}
 				}
 			}
@@ -665,7 +663,7 @@ public class Cif2CmlManager extends AbstractManager {
 						chemBlockId = chemBlockId.replaceAll("'", "-");
 						chemBlockId = chemBlockId.replaceAll("\"", "-");
 						chemBlockId = chemBlockId.replaceAll(",", "-");
-						String cifPathMinusMime = Utils.getPathMinusMimeSet(file);
+						String cifPathMinusMime = Utils.getPathMinusMimeSet(cifFile);
 						String cifId = cifPathMinusMime.substring(cifPathMinusMime.lastIndexOf(File.separator)+1);
 						String cifParent = cifPathMinusMime.substring(0,cifPathMinusMime.lastIndexOf(File.separator));
 						File splitCifParent = new File(cifParent+"/"+cifId+"_"+chemBlockId);
@@ -677,14 +675,10 @@ public class Cif2CmlManager extends AbstractManager {
 						cifNew.writeCIF(writer);
 						writer.close();
 						splitCifList.add(splitCifFile);
-					} catch (CIFException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
+					} catch (Exception e) {
+						LOG.warn("Exception whilst splitting CIF file: "+cifFile);
 					} finally {
-						if (writer != null) {
-							writer.close();
-						}
+						org.apache.commons.io.IOUtils.closeQuietly(writer);
 					}
 				}
 			}
@@ -736,7 +730,7 @@ public class Cif2CmlManager extends AbstractManager {
 				String file = imageLink.substring(imageLink.lastIndexOf(File.separator)+1);
 				url = new URL(prefix+file); 
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				throw new RuntimeException("Platon image has malformed url: "+e.getMessage(), e);
 			}
 			BufferedImage image = null;
 			try {
@@ -773,7 +767,7 @@ public class Cif2CmlManager extends AbstractManager {
 				HttpClient client = new HttpClient();
 				int statusCode = client.executeMethod(filePost);
 				if (statusCode != HttpStatus.SC_OK) {
-					System.err.println("Could not connect to the IUCr Checkcif service.");
+					LOG.warn("Could not connect to the IUCr Checkcif service.");
 					continue;
 				}
 				in = filePost.getResponseBodyAsStream();
@@ -784,18 +778,12 @@ public class Cif2CmlManager extends AbstractManager {
 				}
 			}
 		} catch (IOException e) {
-			System.err.println("Error calculating checkcif.");
+			LOG.warn("Error calculating checkcif, due to: "+e.getMessage());
 		} finally {
 			if (filePost != null) {
 				filePost.releaseConnection();
 			}
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					System.err.println("Error closing InputStream: "+in);
-				}
-			}
+			org.apache.commons.io.IOUtils.closeQuietly(in);
 		}
 		return checkcif;
 	}
@@ -860,9 +848,9 @@ public class Cif2CmlManager extends AbstractManager {
 				}
 				IMolecule molecule = null;
 				try {
-					molecule = CDKUtils.cmlMol2CdkMol(subMol);
+					molecule = CDKUtils.createMolecule(subMol);
 				} catch (Exception e) {
-					System.err.println("Exception creating CDK molecule");
+					LOG.warn("Exception creating CDK molecule, due to: "+e.getMessage());
 					continue;
 				}
 				StructureDiagramGenerator sdg = new StructureDiagramGenerator();
@@ -874,14 +862,14 @@ public class Cif2CmlManager extends AbstractManager {
 						sdg.generateCoordinates(new Vector2d(0, 1));
 						molecule = sdg.getMolecule();
 					} catch (Exception e) {
-						System.err.println("Error generating molecule coordinates for SMILES generation: "+e.getMessage());
+						LOG.warn("Error generating molecule coordinates for SMILES generation: "+e.getMessage());
 						continue;
 					}
 				}
 				try {
 					smiles = generator.createChiralSMILES(molecule, new boolean[20]);
 				} catch (CDKException e) {
-					System.err.println("Error calculating SMILES for mol "+mol.getId()+" : "+e.getMessage());
+					LOG.warn("Error calculating SMILES for mol "+mol.getId()+" : "+e.getMessage());
 					return null;
 				}
 				sb.append(smiles);

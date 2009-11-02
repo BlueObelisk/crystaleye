@@ -142,7 +142,7 @@ public class RSSManager extends AbstractManager {
 			try {
 				cml = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
 			} catch (Exception e) {
-				System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
+				LOG.warn("Exception whilst reading CML file ("+cmlFile.getAbsolutePath()+"), due to: "+e.getMessage());
 				continue;
 			}
 			CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
@@ -255,7 +255,7 @@ public class RSSManager extends AbstractManager {
 				try {
 					cml = (CMLCml)IOUtils.parseCml(cmlFile).getRootElement();
 				} catch (Exception e) {
-					System.err.println("CRYSTALEYE ERROR: whilst reading CML file: "+cmlFile.getAbsolutePath());
+					LOG.warn("Exception whilst reading CML file ("+cmlFile.getAbsolutePath()+"), due to: "+e.getMessage());
 					continue;
 				}
 				String cifId = cmlFile.getParentFile().getName();

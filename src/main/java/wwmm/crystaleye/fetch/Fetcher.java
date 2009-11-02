@@ -2,10 +2,14 @@ package wwmm.crystaleye.fetch;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
+
 import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.WebUtils;
 
 public abstract class Fetcher {
+	
+	private static final Logger LOG = Logger.getLogger(Fetcher.class);
 	
 	CrystalEyeProperties properties;
 	protected String PUBLISHER_ABBREVIATION;
@@ -37,7 +41,7 @@ public abstract class Fetcher {
 		try {
 			Thread.sleep(((int)(maxTime*Math.random())));
 		} catch (InterruptedException e) {
-			System.err.println("Sleep interrupted.");
+			LOG.warn("Sleep interrupted.");
 		}
 	}
 

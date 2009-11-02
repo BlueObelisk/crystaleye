@@ -111,7 +111,7 @@ public class SmilesListManager extends AbstractManager {
 								sb.append(smiles+" "+cmlId+"\n");
 							}
 						} else {
-							System.err.println("Could not find SMILES in file "+cmlFile.getAbsolutePath());
+							LOG.warn("Could not find SMILES in file "+cmlFile.getAbsolutePath());
 						}
 					} catch (Exception e) {
 						LOG.warn("Exception while calculating SMILES, due to: "+e.getMessage());
