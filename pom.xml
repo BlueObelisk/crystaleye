@@ -153,12 +153,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>nux</groupId>
-			<artifactId>nux</artifactId>
-			<version>1.6</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>owlapi</groupId>
 			<artifactId>owlapi</artifactId>
 			<version>2.2.0</version>
@@ -166,27 +160,9 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>rome</groupId>
-			<artifactId>rome</artifactId>
-			<version>0.9</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>rome</groupId>
-			<artifactId>rome-content</artifactId>
-			<version>0.4.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>net.sf.saxon</groupId>
 			<artifactId>saxon</artifactId>
 			<version>8.7</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>stax</groupId>
-			<artifactId>stax</artifactId>
-			<version>1.2.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -199,12 +175,6 @@
 			<groupId>javax</groupId>
 			<artifactId>vecmath</artifactId>
 			<version>1.2</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.woodstox</groupId>
-			<artifactId>wstx-asl</artifactId>
-			<version>3.2.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

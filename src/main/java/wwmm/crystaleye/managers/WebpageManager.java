@@ -1,4 +1,4 @@
-package wwmm.crystaleye.site;
+package wwmm.crystaleye.managers;
 
 import static org.xmlcml.cml.base.CMLConstants.CML_NS;
 import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
@@ -63,7 +63,6 @@ import wwmm.crystaleye.WebUtils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.CrystalEyeUtils.DisorderType;
 import wwmm.crystaleye.CrystalEyeUtils.FragmentType;
-import wwmm.crystaleye.process.Cif2CmlManager;
 import wwmm.crystaleye.site.templates.CifSummaryToc;
 import wwmm.crystaleye.site.templates.FragmentSummaryToc;
 import wwmm.crystaleye.site.templates.MoietySummaryToc;

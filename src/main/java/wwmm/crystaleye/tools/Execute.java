@@ -8,7 +8,7 @@ import org.apache.commons.io.IOUtils;
 
 public class Execute {
 
-	public static void run(String[] cmd) {
+	public void run(String[] cmd) {
 		try {        
 			Runtime rt = Runtime.getRuntime();
 			Process proc = rt.exec(cmd);
@@ -22,7 +22,7 @@ public class Execute {
 		}
 	}
 	
-	private static class StreamGobbler extends Thread {
+	private class StreamGobbler extends Thread {
 		
 		private InputStream is;
 

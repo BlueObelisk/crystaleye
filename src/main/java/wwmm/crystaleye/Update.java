@@ -7,14 +7,14 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import wwmm.crystaleye.fetch.FetchManager;
-import wwmm.crystaleye.process.CML2FooManager;
-import wwmm.crystaleye.process.Cif2CmlManager;
-import wwmm.crystaleye.process.Cml2RdfManager;
-import wwmm.crystaleye.site.CellParamsManager;
-import wwmm.crystaleye.site.DoiListManager;
-import wwmm.crystaleye.site.RSSManager;
-import wwmm.crystaleye.site.SmilesListManager;
-import wwmm.crystaleye.site.WebpageManager;
+import wwmm.crystaleye.managers.CML2FooManager;
+import wwmm.crystaleye.managers.CellParamsManager;
+import wwmm.crystaleye.managers.Cif2CmlManager;
+import wwmm.crystaleye.managers.Cml2RdfManager;
+import wwmm.crystaleye.managers.DoiListManager;
+import wwmm.crystaleye.managers.RSSManager;
+import wwmm.crystaleye.managers.SmilesListManager;
+import wwmm.crystaleye.managers.WebpageManager;
 
 public class Update {
 
