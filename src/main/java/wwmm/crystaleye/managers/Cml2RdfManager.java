@@ -14,25 +14,19 @@ import org.xmlcml.cml.converters.ConverterCommand;
 import org.xmlcml.cml.converters.rdf.cml.CML2OWLRDFConverter;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IssueDate;
 
 public class Cml2RdfManager extends AbstractManager {
 	
 	private static final Logger LOG = Logger.getLogger(Cml2RdfManager.class);
-	private CrystalEyeProperties properties;
 
+	private Cml2RdfManager() {
+		;
+	}
+	
 	public Cml2RdfManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
-	}
-
-	public Cml2RdfManager(String propertiesPath) {
-		this(new File(propertiesPath));
-	}
-
-	private void setProperties(File propertiesFile) {
-		properties = new CrystalEyeProperties(propertiesFile);
 	}
 	
 	public void execute() {
@@ -81,8 +75,8 @@ public class Cml2RdfManager extends AbstractManager {
 	}
 	
 	public static void main(String[] args) {
-		String propsPath = "c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt";
-		Cml2RdfManager manager = new Cml2RdfManager(propsPath);
+		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		Cml2RdfManager manager = new Cml2RdfManager(propsFile);
 		manager.execute();
 	}
 

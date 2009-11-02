@@ -15,7 +15,8 @@ import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
-import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.renderer.Java2DRenderer;
 import org.openscience.cdk.renderer.Renderer2DModel;
 import org.xmlcml.cml.element.CMLCml;
@@ -77,8 +78,14 @@ public class Cml2PngTool {
 	public void renderMolecule(OutputStream out) {		
 		Renderer2DModel model = new Renderer2DModel();
 		Java2DRenderer renderer = new Java2DRenderer(model);
+		IMolecule cdkMol = CDKUtils.getCdkMol(cmlMol);
+		StructureDiagramGenerator sdg = new StructureDiagramGenerator(cdkMol);
+		try {
+			sdg.generateCoordinates();
+		} catch (Exception e) {
+			throw new RuntimeException("Exception while generating 2d coordinates: "+e.getMessage(), e);
+		}
 
-		IAtomContainer cdkMol = CDKUtils.createMolecule(cmlMol);
 		int atomCount = cdkMol.getAtomCount();
 		if (atomCount > 1 && atomCount < 20) {
 			fontSize = 14;

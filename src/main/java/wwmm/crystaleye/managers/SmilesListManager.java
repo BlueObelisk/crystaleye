@@ -22,7 +22,6 @@ import org.xmlcml.cml.element.CMLIdentifier;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
@@ -32,18 +31,12 @@ public class SmilesListManager extends AbstractManager {
 	
 	private static final Logger LOG = Logger.getLogger(SmilesListManager.class);
 
-	private CrystalEyeProperties properties;
+	private SmilesListManager() {
+		;
+	}
 
 	public SmilesListManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
-	}
-
-	public SmilesListManager(String propertiesPath) {
-		this(new File(propertiesPath));
-	}
-
-	private void setProperties(File propertiesFile) {
-		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -130,7 +123,8 @@ public class SmilesListManager extends AbstractManager {
 	}
 	
 	public static void main(String[] args) {
-		SmilesListManager d = new SmilesListManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		SmilesListManager d = new SmilesListManager(propsFile);
 		d.execute();
 	}
 }

@@ -42,7 +42,6 @@ import org.xmlcml.molutil.ChemicalElement;
 
 import wwmm.atomarchiver.AtomArchiveFeed;
 import wwmm.crystaleye.AbstractManager;
-import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
@@ -51,8 +50,6 @@ import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 public class RSSManager extends AbstractManager {
 
 	private static final Logger LOG = Logger.getLogger(RSSManager.class);
-
-	private CrystalEyeProperties properties;
 
 	private String publisherAbbreviation;
 	private String publisherTitle;
@@ -68,28 +65,20 @@ public class RSSManager extends AbstractManager {
 	private String webJournalDirPath;
 	private String author = "Chris Talbot";
 
-	public RSSManager() {
+	private RSSManager() {
 		;
 	}
 
 	public RSSManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
 	}
-
-	public RSSManager(String propertiesPath) {
-		this(new File(propertiesPath));
-	}
-
-	private void setProperties(File propertiesFile) {
-		properties = new CrystalEyeProperties(propertiesFile);
-
+	
+	public void execute() {
 		rootFeedsDir = properties.getRssWriteDir();
 		rootWebFeedsDir = properties.getRootWebFeedsDir();
 		summaryWriteDir = properties.getSummaryWriteDir();
-		webSummaryWriteDir = properties.getWebSummaryWriteDir();		
-	}
-
-	public void execute() {
+		webSummaryWriteDir = properties.getWebSummaryWriteDir();	
+		
 		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
 		for (String publisherAbbreviation : publisherAbbreviations) {
 			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
@@ -406,7 +395,8 @@ public class RSSManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		RSSManager rss = new RSSManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		RSSManager rss = new RSSManager(propsFile);
 		rss.execute();
 	}
 }

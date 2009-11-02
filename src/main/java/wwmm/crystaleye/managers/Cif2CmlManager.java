@@ -31,8 +31,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
-import javax.vecmath.Point2d;
-import javax.vecmath.Vector2d;
 
 import nu.xom.Attribute;
 import nu.xom.Document;
@@ -54,10 +52,6 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.openscience.cdk.smiles.SmilesGenerator;
 import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFDataBlock;
 import org.xmlcml.cif.CIFException;
@@ -90,7 +84,6 @@ import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CDKUtils;
-import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.CrystalEyeUtils;
 import wwmm.crystaleye.IOUtils;
 import wwmm.crystaleye.IssueDate;
@@ -98,12 +91,11 @@ import wwmm.crystaleye.Utils;
 import wwmm.crystaleye.CrystalEyeUtils.CompoundClass;
 import wwmm.crystaleye.tools.CheckCifParser;
 import wwmm.crystaleye.tools.InchiTool;
+import wwmm.crystaleye.tools.SmilesTool;
 
 public class Cif2CmlManager extends AbstractManager {
 
 	private static final Logger LOG = Logger.getLogger(Cif2CmlManager.class);
-
-	private CrystalEyeProperties properties;
 
 	private Cif2CmlManager() {
 		;
@@ -111,14 +103,6 @@ public class Cif2CmlManager extends AbstractManager {
 
 	public Cif2CmlManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
-	}
-
-	public Cif2CmlManager(String propertiesPath) {
-		this(new File(propertiesPath));
-	}
-
-	private void setProperties(File propertiesFile) {
-		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
 	public void execute() {
@@ -201,8 +185,6 @@ public class Cif2CmlManager extends AbstractManager {
 				continue;
 			}
 
-			this.getCalculatedCheckCif(splitCifPath, pathMinusMime);
-
 			// read raw CML back in and convert to 'complete' CML
 			CMLCml cml = null;
 			try { 
@@ -253,6 +235,8 @@ public class Cif2CmlManager extends AbstractManager {
 						add2DStereoSMILESAndInChI(mergedMolecule, compoundClass);
 					}
 				}
+				
+				getCalculatedCheckCif(splitCifPath, pathMinusMime);
 				handleCheckcifs(cml, pathMinusMime);
 				addDoi(cml, pathMinusMime);
 				// need to replace the molecule created from atoms explicit in the CIF with mergedMolecule.
@@ -367,11 +351,6 @@ public class Cif2CmlManager extends AbstractManager {
 			Nodes nonUnitOccNodes = molecule.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 			if (!DisorderTool.isDisordered(molecule) && !molecule.hasCloseContacts() && nonUnitOccNodes.size() == 0
 					&& hasBondOrdersAndCharges(molecule)) {
-				// if mol contains submols (all of which are not disordered!)
-				// then we need to generate InChI/SMILES for the containing mol too
-				if (CML2FooManager.getNumberOfRings(molecule) < CML2FooManager.MAX_RINGS) {
-					calculateAndAddSmilesToMoleculeContainer(molecule);
-				}
 				addInchiToMolecule(molecule);
 			}
 		}
@@ -384,22 +363,6 @@ public class Cif2CmlManager extends AbstractManager {
 			} catch (RuntimeException e) {
 				LOG.warn("Could not generate CMLFormula, due to: "+e.getMessage());
 			}
-
-			//FIXME - remove this section and fix CDK instead!
-			// calculate the inchi for each sub-molecule and append
-			CMLCrystal cryst = (CMLCrystal)cmlMol.getFirstCMLChild(CMLCrystal.TAG);
-			CMLCrystal crystCopy = null;
-			if (cryst != null) {
-				crystCopy = (CMLCrystal)cryst.copy();
-				cryst.detach();
-			}
-			CMLFormula form = (CMLFormula)cmlMol.getFirstCMLChild(CMLFormula.TAG);
-			CMLFormula formCopy = null;
-			if (form != null) {
-				formCopy = (CMLFormula)form.copy();
-				form.detach();
-			}
-			/*-----end section to be removed-----*/
 
 			Nodes nonUnitOccNodes = cmlMol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 			if (!DisorderTool.isDisordered(cmlMol) && !cmlMol.hasCloseContacts() && nonUnitOccNodes.size() == 0
@@ -416,12 +379,6 @@ public class Cif2CmlManager extends AbstractManager {
 				}
 				addInchiToMolecule(cmlMol);
 			}
-
-			//FIXME - remove this section and fix CDK instead!
-			if (formCopy != null) cmlMol.appendChild(formCopy);
-			if (crystCopy != null) cmlMol.appendChild(crystCopy);
-			//------------------------------
-			/*-----end section to be removed------*/
 
 			Nodes bonds = cmlMol.query(".//"+CMLBondArray.NS+"/cml:bond", CML_XPATH);
 			for (int l = 0; l < bonds.size(); l++) {
@@ -806,78 +763,13 @@ public class Cif2CmlManager extends AbstractManager {
 	}
 
 	private void calculateAndAddSmiles(CMLMolecule mol) {
-		String smiles = calculateSmiles(mol);
+		SmilesTool tool = new SmilesTool(mol);
+		String smiles = tool.generateSmiles();
 		if (smiles != null) {
 			Element scalar = new Element("identifier", CML_NS);
 			scalar.addAttribute(new Attribute("convention", "daylight:smiles"));
 			scalar.appendChild(new Text(smiles));
 			mol.appendChild(scalar);
-		}
-	}
-
-	private void calculateAndAddSmilesToMoleculeContainer(CMLMolecule mol) {
-		List<CMLMolecule> subMolList = mol.getDescendantsOrMolecule();
-		int molCount = subMolList.size();
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < molCount; i++) {
-			String smiles = calculateSmiles(subMolList.get(i));
-			if (smiles != null) {
-				sb.append(smiles);
-				if (i < molCount-1) {
-					sb.append(".");
-				}
-			} else {
-				return;
-			}
-		}
-		Element scalar = new Element("identifier", CML_NS);
-		scalar.addAttribute(new Attribute("convention", "daylight:smiles"));
-		scalar.appendChild(new Text(sb.toString()));
-		mol.appendChild(scalar);
-	}
-
-	private String calculateSmiles(CMLMolecule mol) {
-		if (mol.getAtoms().size() > 0) {
-			SmilesGenerator generator = new SmilesGenerator();
-			String smiles = "";
-			StringBuffer sb = new StringBuffer();
-			int count = 0;
-			for (CMLMolecule subMol : mol.getDescendantsOrMolecule()) {
-				if (count > 0) {
-					sb.append(".");
-				}
-				IMolecule molecule = null;
-				try {
-					molecule = CDKUtils.createMolecule(subMol);
-				} catch (Exception e) {
-					LOG.warn("Exception creating CDK molecule, due to: "+e.getMessage());
-					continue;
-				}
-				StructureDiagramGenerator sdg = new StructureDiagramGenerator();
-				sdg.setMolecule(molecule);
-				if (molecule.getAtomCount() == 1) {
-					molecule.getAtom(0).setPoint2d(new Point2d(0, 0));
-				} else {
-					try {
-						sdg.generateCoordinates(new Vector2d(0, 1));
-						molecule = sdg.getMolecule();
-					} catch (Exception e) {
-						LOG.warn("Error generating molecule coordinates for SMILES generation: "+e.getMessage());
-						continue;
-					}
-				}
-				try {
-					smiles = generator.createChiralSMILES(molecule, new boolean[20]);
-				} catch (CDKException e) {
-					LOG.warn("Error calculating SMILES for mol "+mol.getId()+" : "+e.getMessage());
-					return null;
-				}
-				sb.append(smiles);
-				count++;
-			}
-			return sb.toString();
-		} else {
-			return null;
 		}
 	}
 
@@ -1029,7 +921,8 @@ public class Cif2CmlManager extends AbstractManager {
 	}		
 
 	public static void main(String[] args) {
-		Cif2CmlManager acta = new Cif2CmlManager("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		Cif2CmlManager acta = new Cif2CmlManager(propsFile);
 		acta.execute();
 	}
 }

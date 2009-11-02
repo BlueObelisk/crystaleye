@@ -16,7 +16,13 @@ import org.apache.log4j.Logger;
 
 public abstract class AbstractManager {
 	
+	protected CrystalEyeProperties properties;
+	
 	private static final Logger LOG = Logger.getLogger(AbstractManager.class);
+	
+	protected void setProperties(File propertiesFile) {
+		properties = new CrystalEyeProperties(propertiesFile);
+	}
 
 	public void updateProps(String downloadLogPath, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum, String managerTag) {
 		String issueCode = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum;
