@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.converters.cif.CrystalEyeUtils.FragmentType;
 import org.xmlcml.cml.element.CMLArray;
+import org.xmlcml.cml.element.CMLArrayList;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLCrystal;
@@ -45,10 +46,13 @@ import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLScalar;
 import org.xmlcml.cml.element.CMLSymmetry;
 import org.xmlcml.cml.element.CMLTable;
+import org.xmlcml.cml.element.CMLTableRowList;
 import org.xmlcml.cml.element.CMLMolecule.HydrogenControl;
 import org.xmlcml.cml.element.CMLTable.TableType;
 import org.xmlcml.cml.tools.DisorderTool;
 import org.xmlcml.cml.tools.MoleculeTool;
+import org.xmlcml.cml.tools.TableRowListTool;
+import org.xmlcml.cml.tools.TableTool;
 
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.IssueDate;
@@ -67,7 +71,7 @@ import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
 import freemarker.template.Template;
 
 public class WebpageManager extends AbstractManager {
-	
+
 	private static final Logger LOG = Logger.getLogger(WebpageManager.class);
 
 	private String writeDir;
@@ -116,31 +120,10 @@ public class WebpageManager extends AbstractManager {
 				List<IssueDate> unprocessedDates = this.getUnprocessedDates(downloadLogPath, publisherAbbreviation, journalAbbreviation, WEBPAGE, CML2FOO);
 				if (unprocessedDates.size() != 0) {
 					for (IssueDate date : unprocessedDates) {
-						jmolLoadForSummary = "";
-						imageLoadForSummary = "";
-						summaryRowCount = 0;
-						structureCount = 0;
-						maxImageForSummary = 0;
-
-						jmolLoadForFrags = "";
-						imageLoadForFrags = "";
-						fragRowCount = 0;
-						fragCount = 0;
-
-						jmolLoadForMois = "";
-						imageLoadForMois = "";
-						moiRowCount = 0;
-						moiCount = 0;
-
-						this.publisherAbbreviation = publisherAbbreviation;
-						this.journalAbbreviation = journalAbbreviation;
-						this.year = date.getYear();
-						this.issueNum = date.getIssue();
 						String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
 								publisherAbbreviation+"/"+journalAbbreviation+
-								"/"+year+"/"+issueNum);
-						this.process(issueWriteDir);
-						removeCreatedFiles(issueWriteDir);
+								"/"+date.getYear()+"/"+date.getIssue());
+						this.process(issueWriteDir, publisherAbbreviation, journalAbbreviation, date.getYear(), date.getIssue());
 						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, WEBPAGE);
 					}
 				} else {
@@ -151,26 +134,51 @@ public class WebpageManager extends AbstractManager {
 		}
 	}
 
-	public void process(String issueWriteDir) {
-		List<File> fileList = new ArrayList<File>();
-		if (new File(issueWriteDir).exists()) {
-			fileList = CrystalEyeUtils.getDataDirFileList(issueWriteDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
-			if (fileList.size() > 0) {
-				for (File cmlFile : fileList ) {
-					LOG.info("Creating webpages for CML file "+cmlFile.getAbsolutePath());
-					// create moiety and fragment tocs
-					this.createMoietyAndFragmentTocs(cmlFile);
-					// create moiety and fragment summary html pages
-					this.createMoietyAndFragmentHtmls(cmlFile);
-					// create cif summaries
-					this.createCifSummaries(cmlFile);
-				}
-				String summaryWriteDir = properties.getSummaryWriteDir();
-				String issueSummaryDir = summaryWriteDir+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+issueNum+"/";
-				createTableOfContents(fileList, issueSummaryDir);
-				updateSummaryLinkPage(summaryWriteDir);
-			}
+	public void process(String issueWriteDir, String publisherAbbreviation, String journalAbbreviation, String year, String issue) {
+		jmolLoadForSummary = "";
+		imageLoadForSummary = "";
+		summaryRowCount = 0;
+		structureCount = 0;
+		maxImageForSummary = 0;
+
+		jmolLoadForFrags = "";
+		imageLoadForFrags = "";
+		fragRowCount = 0;
+		fragCount = 0;
+
+		jmolLoadForMois = "";
+		imageLoadForMois = "";
+		moiRowCount = 0;
+		moiCount = 0;
+
+		this.publisherAbbreviation = publisherAbbreviation;
+		this.journalAbbreviation = journalAbbreviation;
+		this.year = year;
+		this.issueNum = issue;
+		if (!new File(issueWriteDir).exists()) {
+			LOG.warn("Could not find expected issue directory at: "+issueWriteDir);
+			return;
 		}
+		List<File> fileList = CrystalEyeUtils.getDataDirFileList(issueWriteDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
+		if (fileList.size() == 0) {
+			LOG.warn("Probable bug, could not find any complete CML files in : "+issueWriteDir);
+			return;
+		}
+		for (File cmlFile : fileList ) {
+			LOG.info("Creating webpages for CML file "+cmlFile.getAbsolutePath());
+			// create moiety and fragment tocs
+			this.createMoietyAndFragmentTocs(cmlFile);
+			// create moiety and fragment summary html pages
+			this.createMoietyAndFragmentHtmls(cmlFile);
+			// create cif summaries
+			this.createCifSummaries(cmlFile);
+		}
+		String summaryWriteDir = properties.getSummaryWriteDir();
+		String issueSummaryDir = summaryWriteDir+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+issueNum+"/";
+		createTableOfContents(fileList, issueSummaryDir);
+		updateSummaryLinkPage(summaryWriteDir);
+
+		removeCreatedFiles(issueWriteDir);
 	}
 
 	private void removeCreatedFiles(String issueWriteDir) {
@@ -191,14 +199,15 @@ public class WebpageManager extends AbstractManager {
 			}
 		}
 	}
-	
+
 	private Map<String, Object> getTemplateMap(File journalDir) {
 		Map<String, Object> templateMap = new HashMap<String, Object>();
+		templateMap.put("pageTitle", "CrystalEye: Browse Structures");
 		templateMap.put("publisherFullTitle", publisherTitle);
 		templateMap.put("publisherAbbreviation", publisherAbbreviation);
 		templateMap.put("journalFullTitle", journalTitle);
 		templateMap.put("journalAbbreviation", journalAbbreviation);
-		
+
 		List<Map<String, Object>> years = new ArrayList<Map<String, Object>>();
 		for (File yearDir : journalDir.listFiles()) {
 			Map<String, Object> year = new HashMap<String, Object>();
@@ -236,8 +245,7 @@ public class WebpageManager extends AbstractManager {
 
 	private void createTableOfContents(List<File> cmlFileList, String issueSummaryDir) {
 		String entryLink = issueSummaryDir+"index.html";
-		String page = this.createOverallCifSummaryPage(cmlFileList);
-		Utils.writeText(new File(entryLink), page);
+		createOverallCifSummaryPage(entryLink, cmlFileList);
 		this.getFilesForSummaryDisplay(cmlFileList, issueSummaryDir);
 	}
 
@@ -949,7 +957,7 @@ public class WebpageManager extends AbstractManager {
 		fragRowCount++;
 	}
 
-	private String createOverallCifSummaryPage(List<File> cmlFileList) {
+	private void createOverallCifSummaryPage(String pagePath, List<File> cmlFileList) {
 		List<File> organicList = new ArrayList<File>();
 		List<File> organometallicList = new ArrayList<File>();
 		List<File> inorganicList = new ArrayList<File>();
@@ -977,6 +985,7 @@ public class WebpageManager extends AbstractManager {
 				}
 			}
 		}
+
 		StringBuffer sb = new StringBuffer();
 		if (organicList.size() > 0) {
 			String organicTable = this.createOverallCifSummaryTable(organicList);
@@ -994,7 +1003,7 @@ public class WebpageManager extends AbstractManager {
 		String title = "Crystallography Summary";
 		String header = publisherTitle+"<br />"+journalTitle+", "+year+", issue "+issueNum;
 		CifSummaryToc ocs = new CifSummaryToc(title, header, table, String.valueOf(structureCount), jmolLoadForSummary, imageLoadForSummary, String.valueOf(maxImageForSummary), 0);	
-		return ocs.getWebpage();
+		Utils.writeText(new File(pagePath), ocs.getWebpage());
 	}
 
 	private String createOverallCifSummaryTable(List<File> cmlFileList) {
@@ -1029,11 +1038,21 @@ public class WebpageManager extends AbstractManager {
 		}
 
 		table.setColumns(columns);
+		
+		CMLArrayList arrayList = new CMLArrayList();
+		arrayList.addArray(formulaArray);
+		arrayList.addArray(doiArray);
+		arrayList.addArray(summaryArray);
 		StringWriter sw = new StringWriter();
 		try {
-			table.writeHTML(sw);
+			sw.write("<table border='1'>");
+			CMLTableRowList tableRowList = TableTool.createTableRowList(arrayList);
+			new TableRowListTool(tableRowList).writeHTML(sw);
+			sw.write("\n</table>");
 		} catch (IOException e) {
 			LOG.warn("Exception whilst creating HTML: "+e.getMessage());
+		} finally {
+			IOUtils.closeQuietly(sw);
 		}
 
 		return sw.getBuffer().toString();
@@ -1088,7 +1107,12 @@ public class WebpageManager extends AbstractManager {
 				throw new RuntimeException("Problem writing HTML of formula.", e);
 			}
 		}
-		moietyS = (moietyS == ".") ? sumS : moietyS;
+		if ("<span class='formula'>".equalsIgnoreCase(moietyS) ||
+				moietyS == null || 
+				"".equalsIgnoreCase(moietyS) ||
+				".".equalsIgnoreCase(moietyS)) {
+			moietyS = sumS;
+		}
 
 		// check for disorder in the structure, if so then need to indicate this on the page
 		Nodes unprocNodes = cml.query(".//"+CMLScalar.NS+"[contains(@dictRef,'"+DisorderTool.UNRESOLVED_DISORDER_DICTREF+"')]", CML_XPATH);
@@ -1177,13 +1201,17 @@ public class WebpageManager extends AbstractManager {
 	}
 
 	private void getFilesForSummaryDisplay(List<File> cmlFileList, String issueSummaryDir) {
-		String dataDir = issueSummaryDir+"data";
-		String displayDir = issueSummaryDir+"/"+"display";
-		File file = new File(dataDir);
-		if (!file.exists()) {
-			file.mkdirs();
+		String dataDirPath = issueSummaryDir+"data";
+		String displayDirPath = issueSummaryDir+"/"+"display";
+		File dataDir = new File(dataDirPath);
+		if (!dataDir.exists()) {
+			dataDir.mkdirs();
 		}
-		
+		File displayDir = new File(displayDirPath);
+		if (!displayDir.exists()) {
+			displayDir.mkdirs();
+		}
+
 		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet0.jar", issueSummaryDir+"/"+"JmolApplet0.jar");
 		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet1.jar", issueSummaryDir+"/"+"JmolApplet1.jar");
 		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet2.jar", issueSummaryDir+"/"+"JmolApplet2.jar");
@@ -1194,19 +1222,22 @@ public class WebpageManager extends AbstractManager {
 		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/summary.js", issueSummaryDir+"/"+"summary.js");
 		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/Jmol.js", issueSummaryDir+"/"+"Jmol.js");
 
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/eprints.css", displayDir+"/"+"eprints.css");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/summary.css", displayDir+"/"+"summary.css");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/top.gif", displayDir+"/"+"top.gif");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/bonds.css", displayDir+"/"+"bonds.css");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/fragsummary.css", displayDir+"/"+"fragsummary.css");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/placeholder.bmp", displayDir+"/"+"placeholder.bmp");
+		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/eprints.css", displayDirPath+"/"+"eprints.css");
+		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/summary.css", displayDirPath+"/"+"summary.css");
+		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/top.gif", displayDirPath+"/"+"top.gif");
+		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/bonds.css", displayDirPath+"/"+"bonds.css");
+		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/fragsummary.css", displayDirPath+"/"+"fragsummary.css");
+		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/placeholder.bmp", displayDirPath+"/"+"placeholder.bmp");
 
 		// retrieve data files from issueWriteDir
 		for (File cmlFile : cmlFileList) {
 			File articleFile = cmlFile.getParentFile().getParentFile();
 			String articleName = articleFile.getName();
-			File destFile = new File(dataDir+"/"+articleName);
+			File destFile = new File(dataDirPath+"/"+articleName);
 			try {
+				if (destFile.exists()) {
+					FileUtils.deleteDirectory(destFile);
+				}
 				FileUtils.copyDirectory(articleFile, destFile);
 			} catch (IOException e) {
 				throw new RuntimeException("Error copying directory: "+articleFile.getAbsolutePath()+" to: "+destFile.getAbsolutePath(), e);
@@ -1219,5 +1250,5 @@ public class WebpageManager extends AbstractManager {
 		WebpageManager web = new WebpageManager(propsFile);
 		web.execute();
 	}
-	
+
 }

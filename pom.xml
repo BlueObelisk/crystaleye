@@ -94,7 +94,7 @@
 		<dependency>
 			<groupId>freemarker</groupId>
 			<artifactId>freemarker</artifactId>
-			<version>2.3.8</version>
+			<version>2.3.9</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -129,7 +129,7 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>wwmm</groupId>
+			<groupId>joegraphy</groupId>
 			<artifactId>joegraphy</artifactId>
 			<version>0.1</version>
 			<scope>compile</scope>
@@ -158,12 +158,6 @@
 			<version>2.2.0</version>
 			<scope>compile</scope>
 			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.saxon</groupId>
-			<artifactId>saxon</artifactId>
-			<version>8.7</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ccil.cowan.tagsoup</groupId>
