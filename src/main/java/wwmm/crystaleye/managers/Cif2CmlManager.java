@@ -104,7 +104,7 @@ public class Cif2CmlManager extends AbstractManager {
 	public Cif2CmlManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
 	}
-
+	
 	public void execute() {
 		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
 		for (String publisherAbbreviation : publisherAbbreviations) {
@@ -145,15 +145,6 @@ public class Cif2CmlManager extends AbstractManager {
 		if (fileTooLarge(file)) {
 			return;
 		}
-
-		/* -- what this method should really look like.
-		File cifXmlFile = convertCifToCifxml(cifFile);
-		List<File> splitCifXmls = splitCifxml(cifXmlFile);
-		for (File splitCifxmlFile : splitCifXmls) {
-			File rawCmlFile = convertCifxmlToRawCml(splitCifxmlFile);
-			File completeCmlFile = convertRawCmlToCompleteCml(rawCmlFile);
-		}
-		 */
 
 		List<File> splitCifList = null;
 		try {
@@ -342,10 +333,6 @@ public class Cif2CmlManager extends AbstractManager {
 	}
 
 	private void add2DStereoSMILESAndInChI(CMLMolecule molecule, CompoundClass compoundClass) {
-		if (containsUnknownBondOrder(molecule)) {
-			return;
-		}
-
 		List<CMLMolecule> molList = molecule.getDescendantsOrMolecule();
 		if (molList.size() > 1) {
 			Nodes nonUnitOccNodes = molecule.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
@@ -385,17 +372,6 @@ public class Cif2CmlManager extends AbstractManager {
 				this.addBondLength((CMLBond)bonds.get(l), cmlMol);	
 			}	
 		}	
-	}
-
-	private boolean containsUnknownBondOrder(CMLMolecule molecule) {
-		boolean b = false;
-		for (CMLBond bond : molecule.getBonds()) {
-			if (CMLBond.UNKNOWN_ORDER.equals(bond.getOrder())) {
-				b = true;
-				break;
-			}
-		}
-		return b;
 	}
 
 	private void calculateBondsAnd3DStereo(CMLCml cml, CMLMolecule mergedMolecule) {

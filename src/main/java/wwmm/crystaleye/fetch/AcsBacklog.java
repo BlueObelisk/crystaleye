@@ -53,7 +53,6 @@ public class AcsBacklog extends Fetcher {
 		}
 
 		Nodes suppLinks = doc.query(".//x:a[contains(@href,'/doi/suppl/10.1021')]", X_XHTML);
-		LOG.debug("supplinks: "+suppLinks.size());
 		sleep();
 		if (suppLinks.size() > 0) {
 			for (int j = 0; j < suppLinks.size(); j++) {
