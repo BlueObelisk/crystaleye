@@ -17,50 +17,50 @@ import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.WebUtils;
 
 public class ActaBacklog extends Fetcher {
-	
+
 	private static final Logger LOG = Logger.getLogger(ActaBacklog.class);
 
 	private static final String SITE_PREFIX = "http://journals.iucr.org";
 	private static final String PUBLISHER_ABBREVIATION = "acta";
 
-    String journalAbbreviation;
-    String year;
-    String issueNum;
-    String issuePart;
+	String journalAbbreviation;
+	String year;
+	String issueNum;
+	String issuePart;
 
-    public ActaBacklog(String propertiesFile, String journalAbbreviation, String year, String issueNum, String issuePart) {
-    	super(PUBLISHER_ABBREVIATION, propertiesFile);
-        setYear(year);
-        setJournalAbbreviation(journalAbbreviation);
-        setIssueNum(issueNum);
-        setIssuePart(issuePart);
-    }
+	public ActaBacklog(String propertiesFile, String journalAbbreviation, String year, String issueNum, String issuePart) {
+		super(PUBLISHER_ABBREVIATION, propertiesFile);
+		setYear(year);
+		setJournalAbbreviation(journalAbbreviation);
+		setIssueNum(issueNum);
+		setIssuePart(issuePart);
+	}
 
-    public void setYear(String year) {
-        this.year = year;
-    }
+	public void setYear(String year) {
+		this.year = year;
+	}
 
-    public void setIssueNum(String issueNum) {
-        this.issueNum= issueNum;
-    }
-    
-    public void setIssuePart(String issuePart) {
-        this.issuePart= issuePart;
-    }
-    
-    public void setJournalAbbreviation(String journalAbbreviation) {
-        this.journalAbbreviation = journalAbbreviation;
-    }
-	
+	public void setIssueNum(String issueNum) {
+		this.issueNum= issueNum;
+	}
+
+	public void setIssuePart(String issuePart) {
+		this.issuePart= issuePart;
+	}
+
+	public void setJournalAbbreviation(String journalAbbreviation) {
+		this.journalAbbreviation = journalAbbreviation;
+	}
+
 	public void fetch() {
 		String writeDir = properties.getWriteDir();
 		String issueWriteDir = writeDir+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+
 		"/"+year+"/"+issueNum+"-"+issuePart;
 		Pattern pattern = Pattern.compile("http://scripts.iucr.org/cgi-bin/sendcif\\?(.*)");
 		if (writeDir == null || journalAbbreviation == null || year == null || issueNum == null || issuePart == null) {
-            throw new IllegalStateException(
-                    "Make sure all parameters are set before calling fetch() method.");
-        } else {
+			throw new IllegalStateException(
+					"Make sure all parameters are set before calling fetch() method.");
+		} else {
 			String url = "http://journals.iucr.org/"+journalAbbreviation+"/issues/"+year+"/"+issueNum+"/"+issuePart+"/isscontsbdy.html";
 			LOG.info("Fetching CIFs from: "+url);
 			Document doc = WebUtils.parseWebPage(url);
@@ -112,10 +112,64 @@ public class ActaBacklog extends Fetcher {
 			LOG.info("FINISHED FETCHING CIFS FROM "+url);
 		}
 	}
-	
+
 	public static void main(String[] args) {
-		String props = "c:/Users/ned24/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt";
-		ActaBacklog acta = new ActaBacklog(props, "c","2009", "07", "00");
-		acta.fetch();
+		String props = "e:/crystaleye-new/docs/cif-flow-props.txt";
+		for (int i = 1; i < 7; i++) {
+			ActaBacklog acta = new ActaBacklog(props, "a","2009", "0"+i, "00");
+			acta.fetch();
+		}
+		for (int i = 1; i < 7; i++) {
+			ActaBacklog acta = new ActaBacklog(props, "b","2009", "0"+i, "00");
+			acta.fetch();
+		}
+		for (int i = 1; i < 12; i++) {
+			String issue = null;
+			if (i < 10) {
+				issue = "0"+i;
+			} else {
+				issue = ""+i;
+			}
+			ActaBacklog acta = new ActaBacklog(props, "c","2009", issue, "00");
+			acta.fetch();
+		}
+		for (int i = 1; i < 12; i++) {
+			String issue = null;
+			if (i < 10) {
+				issue = "0"+i;
+			} else {
+				issue = ""+i;
+			}
+			ActaBacklog acta = new ActaBacklog(props, "d","2009", issue, "00");
+			acta.fetch();
+		}
+		for (int i = 1; i < 12; i++) {
+			String issue = null;
+			if (i < 10) {
+				issue = "0"+i;
+			} else {
+				issue = ""+i;
+			}
+			ActaBacklog acta = new ActaBacklog(props, "e","2009", issue, "00");
+			acta.fetch();
+		}
+		for (int i = 1; i < 12; i++) {
+			String issue = null;
+			if (i < 10) {
+				issue = "0"+i;
+			} else {
+				issue = ""+i;
+			}
+			ActaBacklog acta = new ActaBacklog(props, "f","2009", issue, "00");
+			acta.fetch();
+		}
+		for (int i = 1; i < 7; i++) {
+			ActaBacklog acta = new ActaBacklog(props, "j","2009", "0"+i, "00");
+			acta.fetch();
+		}
+		for (int i = 1; i < 7; i++) {
+			ActaBacklog acta = new ActaBacklog(props, "s","2009", "0"+i, "00");
+			acta.fetch();
+		}
 	}
 }

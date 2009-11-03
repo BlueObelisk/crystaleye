@@ -1,6 +1,6 @@
 package wwmm.crystaleye.fetch;
 
-import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
+import static wwmm.crystaleye.CrystalEyeConstants.*;
 
 import java.io.File;
 
@@ -10,12 +10,13 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
+import wwmm.crystaleye.CrystalEyeConstants;
 import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.WebUtils;
 
 
 public class RscBacklog extends Fetcher {
-	
+
 	private static final Logger LOG = Logger.getLogger(RscBacklog.class);
 
 	private static final String HOMEPAGE_PREFIX = "http://www.rsc.org";
@@ -93,58 +94,52 @@ public class RscBacklog extends Fetcher {
 					String cifLink = parent+"/"+cifFileName;
 
 					String cif = WebUtils.fetchWebPage(cifLink);
-					String path = writeDir+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+"/"+issue+"/"+cifId+"/"+cifId+"sup"+cifLinkNum+".cif";
-					Utils.writeText(new File(path), cif);
+					String pathMinusMime = writeDir+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+"/"+issue+"/"+cifId+"/"+cifId+"sup"+cifLinkNum;
+					String cifPath = pathMinusMime+".cif";
+					Utils.writeText(new File(cifPath), cif);
+					String doiPath = pathMinusMime+".doi";
+					Utils.writeText(new File(doiPath), CrystalEyeConstants.RSC_DOI_PREFIX+"/"+cifId.toLowerCase());
 				}
 			}
 		}
 	}
 
 	public static void main(String[] args) {
-		String props = "E:\\crystaleye-new\\docs\\cif-flow-props.txt";
-		RscBacklog ore = new RscBacklog(props, "", "", "");
-		
-		ore = new RscBacklog(props, "ob", "2008", "22");
-		ore.fetch();
-		
-		for (int i = 46; i <49; i++) {
-			ore = new RscBacklog(props, "dt", "2008", String.valueOf(i));
-			ore.fetch();
-		}
-		for (int i = 1; i <11; i++) {
-			ore = new RscBacklog(props, "dt", "2009", String.valueOf(i));
-			ore.fetch();
-		}
-		
-		ore = new RscBacklog(props, "gc", "2008", "12");
-		ore.fetch();
-		ore = new RscBacklog(props, "gc", "2009", "1");
-		ore.fetch();
-		ore = new RscBacklog(props, "gc", "2009", "2");
-		ore.fetch();
-		
-		for (int i = 46; i <49; i++) {
-			ore = new RscBacklog(props, "jm", "2008", String.valueOf(i));
-			ore.fetch();
-		}
-		for (int i = 1; i <11; i++) {
-			ore = new RscBacklog(props, "jm", "2009", String.valueOf(i));
-			ore.fetch();
-		}
+		String props = "e:/crystaleye-new/docs/cif-flow-props.txt";
 
-		ore = new RscBacklog(props, "nj", "2008", "12");
-		ore.fetch();
-		ore = new RscBacklog(props, "nj", "2009", "1");
-		ore.fetch();
-		ore = new RscBacklog(props, "nj", "2009", "2");
-		ore.fetch();
-		
-		
-		ore = new RscBacklog(props, "ob", "2008", "24");
-		ore.fetch();
-		for (int i = 1; i <6; i++) {
-			ore = new RscBacklog(props, "ob", "2009", String.valueOf(i));
+		for (int i = 1; i < 44; i++) {
+			RscBacklog ore = new RscBacklog(props, "dt", "2009", ""+i);
 			ore.fetch();
 		}
+		for (int i = 1; i < 44; i++) {
+			RscBacklog ore = new RscBacklog(props, "cc", "2009", ""+i);
+			ore.fetch();
+		}
+		for (int i = 1; i < 12; i++) {
+			RscBacklog ore = new RscBacklog(props, "ce", "2009", ""+i);
+			ore.fetch();
+		}
+		for (int i = 1; i < 44; i++) {
+			RscBacklog ore = new RscBacklog(props, "cp", "2009", ""+i);
+			ore.fetch();
+		}	
+		for (int i = 1; i < 10; i++) {
+			RscBacklog ore = new RscBacklog(props, "gc", "2009", ""+i);
+			ore.fetch();
+		}
+		for (int i = 1; i < 44; i++) {
+			RscBacklog ore = new RscBacklog(props, "jm", "2009", ""+i);
+			ore.fetch();
+		}
+		for (int i = 1; i < 12; i++) {
+			RscBacklog ore = new RscBacklog(props, "nj", "2009", ""+i);
+			ore.fetch();
+		}
+		for (int i = 1; i < 23; i++) {
+			RscBacklog ore = new RscBacklog(props, "ob", "2009", ""+i);
+			ore.fetch();
+		}
+		
+
 	}
 }
