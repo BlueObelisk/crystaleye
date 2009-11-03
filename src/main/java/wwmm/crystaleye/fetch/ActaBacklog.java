@@ -1,5 +1,6 @@
 package wwmm.crystaleye.fetch;
 
+import static wwmm.crystaleye.CrystalEyeConstants.DATE_MIME;
 import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
@@ -103,6 +104,7 @@ public class ActaBacklog extends Fetcher {
 								String checkCifUrl = ((Element)checkCifLink).getAttributeValue("href");
 								String result = WebUtils.fetchWebPage(SITE_PREFIX+checkCifUrl);
 								Utils.writeText(new File(cifWriteDir+"/"+cifId+".deposited.checkcif.html"), result.toString());
+								Utils.writeDateStamp(cifWriteDir+"/"+cifId+DATE_MIME);
 								sleep();
 							}
 						}

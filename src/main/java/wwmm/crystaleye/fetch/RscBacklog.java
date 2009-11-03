@@ -1,6 +1,9 @@
 package wwmm.crystaleye.fetch;
 
-import static wwmm.crystaleye.CrystalEyeConstants.*;
+import static wwmm.crystaleye.CrystalEyeConstants.DATE_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants.DOI_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants.RSC_DOI_PREFIX;
+import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
 
 import java.io.File;
 
@@ -10,7 +13,6 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.CrystalEyeConstants;
 import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.WebUtils;
 
@@ -97,8 +99,9 @@ public class RscBacklog extends Fetcher {
 					String pathMinusMime = writeDir+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+"/"+issue+"/"+cifId+"/"+cifId+"sup"+cifLinkNum;
 					String cifPath = pathMinusMime+".cif";
 					Utils.writeText(new File(cifPath), cif);
-					String doiPath = pathMinusMime+".doi";
-					Utils.writeText(new File(doiPath), CrystalEyeConstants.RSC_DOI_PREFIX+"/"+cifId.toLowerCase());
+					String doiPath = pathMinusMime+DOI_MIME;
+					Utils.writeText(new File(doiPath), RSC_DOI_PREFIX+"/"+cifId.toLowerCase());
+					Utils.writeDateStamp(pathMinusMime+DATE_MIME);
 				}
 			}
 		}
