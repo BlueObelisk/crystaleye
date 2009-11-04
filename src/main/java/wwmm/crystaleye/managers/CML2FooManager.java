@@ -246,7 +246,7 @@ public class CML2FooManager extends AbstractManager {
 			cp.setWidthAndHeight(width, height);
 			cp.renderMolecule(path);
 		} catch (Exception e) {
-			LOG.warn("Could not produce 2D image for molecule.");
+			LOG.warn("Could not produce 2D image for molecule, due to: "+e.getMessage());
 		}
 	}
 

@@ -94,63 +94,25 @@ public class AcsBacklog extends Fetcher {
 	}
 
 
-	/**
-	 * ancham 24
-bichaw 52 
-cmatex 24
-iecred 24
-inocaj 24
-jafcau 24
-jacsat 52
-jmcmar 24
-joceah 24
-langd5 24
-mamobx 24
-orlef7 24
-orgnd7 24
-	 */
 	public static void main(String[] args) {
 		String props = "E:\\crystaleye-new\\docs\\cif-flow-props.txt";
-		String year = "2008";
-		boolean start = false;
-		for (AcsJournal journal : AcsJournal.values()) {
-			String abb = journal.getAbbreviation();
-			if (abb.equals("inocaj") ||
-					abb.equals("jafcau") ||
-					abb.equals("jmcmar") ||
-					abb.equals("joceah") ||
-					abb.equals("langd5") ||
-					abb.equals("mamobx") ||
-					abb.equals("orlef7") ||
-					abb.equals("orgnd7")) {
-				for (int i = 13; i < 25; i++) {
-					AcsBacklog ab = new AcsBacklog(props, journal, "2008", String.valueOf(i));
-					ab.fetch();
-				}
-			}
-		}
-		
-			AcsBacklog ab = new AcsBacklog(props, AcsJournal.CRYSTAL_GROWTH_AND_DESIGN, "2009", "1");
+		/*
+		for (int i = 2; i < 11; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.CRYSTAL_GROWTH_AND_DESIGN, "2009", String.valueOf(i));
 			ab.fetch();
-			for (int i = 1; i < 6; i++) {
-				 ab = new AcsBacklog(props, AcsJournal.INORGANIC_CHEMISTRY, "2009", String.valueOf(i));
-				ab.fetch();
-			}
-			for (int i = 1; i < 7; i++) {
-				ab = new AcsBacklog(props, AcsJournal.JOURNAL_OF_THE_AMERICAN_CHEMICAL_SOCIETY, "2009", String.valueOf(i));
-				ab.fetch();
-			}
-			for (int i = 1; i < 4; i++) {
-				ab = new AcsBacklog(props, AcsJournal.THE_JOURNAL_OF_ORGANIC_CHEMISTRY, "2009", String.valueOf(i));
-				ab.fetch();
-			}
-			for (int i = 1; i < 4; i++) {
-				ab = new AcsBacklog(props, AcsJournal.ORGANOMETALLICS, "2009", String.valueOf(i));
-				ab.fetch();
-			}
-			for (int i = 1; i < 4; i++) {
-				ab = new AcsBacklog(props, AcsJournal.ORGANIC_LETTERS, "2009", String.valueOf(i));
-				ab.fetch();
-			}
+		}
+		for (int i = 16; i < 22; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.INORGANIC_CHEMISTRY, "2009", String.valueOf(i));
+			ab.fetch();
+		}
+		for (int i = 11; i < 44; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.JOURNAL_OF_THE_AMERICAN_CHEMICAL_SOCIETY, "2009", String.valueOf(i));
+			ab.fetch();
+		}
+		*/
+		for (int i = 10; i < 22; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.THE_JOURNAL_OF_ORGANIC_CHEMISTRY, "2009", String.valueOf(i));
+			ab.fetch();
+		}
 	}
 }
