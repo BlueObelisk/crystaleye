@@ -15,7 +15,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.RAW_CML_MIME;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,7 +54,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFDataBlock;
-import org.xmlcml.cif.CIFException;
 import org.xmlcml.cif.CIFParser;
 import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.converters.cif.CIF2CIFXMLConverter;
@@ -487,7 +485,7 @@ public class Cif2CmlManager extends AbstractManager {
 				DisorderTool dt = new DisorderTool(mo, dm);
 				dt.resolveDisorder();
 			} catch (RuntimeException e) {
-				LOG.info("Error processing disorder");
+				LOG.info("Problem processing disorder, due to: "+e.getMessage());
 			}
 		}
 		ct.flattenMolecules();
@@ -511,7 +509,7 @@ public class Cif2CmlManager extends AbstractManager {
 			try {
 				contents = FileUtils.readFileToString(depositedCheckcif);
 			} catch (IOException e) {
-				throw new RuntimeException("Exception reading file: "+depositedCheckcif, e);
+				throw new RuntimeException("Exception reading file ("+depositedCheckcif+"), due to: "+e.getMessage(), e);
 			} 
 			Document deposDoc = new CheckCifParser(contents).parsePublished();
 			cml.appendChild(deposDoc.getRootElement().copy());
@@ -521,7 +519,7 @@ public class Cif2CmlManager extends AbstractManager {
 			try {
 				contents = FileUtils.readFileToString(calculatedCheckcif);
 			} catch (IOException e) {
-				throw new RuntimeException("Exception reading file: "+calculatedCheckcif, e);
+				throw new RuntimeException("Exception reading file ("+calculatedCheckcif+"), due to: "+e.getMessage(), e);
 			}
 			Document calcDoc = new CheckCifParser(contents).parseService();
 			cml.appendChild(calcDoc.getRootElement().copy());
@@ -617,12 +615,8 @@ public class Cif2CmlManager extends AbstractManager {
 					}
 				}
 			}
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Could not find file "+fileName, e);
-		} catch (CIFException e) {
-			throw new RuntimeException("Could not parse CIF in file "+fileName, e);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not read file "+fileName, e);
+		} catch (Exception e) {
+			throw new RuntimeException("Problem parsing CIF ("+fileName+"), due to: "+e.getMessage(), e);
 		}
 		return splitCifList;
 	}
@@ -639,7 +633,7 @@ public class Cif2CmlManager extends AbstractManager {
 			try {
 				doiString = FileUtils.readFileToString(doiFile);
 			} catch (IOException e) {
-				throw new RuntimeException("Exception while reading file: "+doiFile, e);
+				throw new RuntimeException("Exception while reading file ("+doiFile+"), due to: "+e.getMessage(), e);
 			}
 			Element doi = new Element("scalar", CML_NS);
 			doi.addAttribute(new Attribute("dictRef", "idf:doi"));
@@ -673,7 +667,7 @@ public class Cif2CmlManager extends AbstractManager {
 				image = image.getSubimage(14, 15, 590, 443);
 				ImageIO.write(image, "jpeg", new File(pathMinusMime+".platon.jpeg"));
 			} catch (IOException e) {
-				LOG.warn("ERROR: could not read PLATON image, due to: "+e.getMessage());
+				LOG.warn("Could not get PLATON image, due to: "+e.getMessage());
 			}
 		}	
 	}
@@ -726,7 +720,7 @@ public class Cif2CmlManager extends AbstractManager {
 	private CMLMolecule getMolecule(CMLElement cml) {
 		Nodes moleculeNodes = cml.query(CMLMolecule.NS, CML_XPATH);
 		if (moleculeNodes.size() != 1) {
-			throw new RuntimeException("NO MOLECULE FOUND");
+			throw new RuntimeException("BUG: no molecule found.");
 		}
 		return (CMLMolecule) moleculeNodes.get(0);
 	}
@@ -899,7 +893,7 @@ public class Cif2CmlManager extends AbstractManager {
 	}		
 
 	public static void main(String[] args) {
-		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		File propsFile = new File("e:/crystaleye-new/docs/cif-flow-props.txt");
 		Cif2CmlManager acta = new Cif2CmlManager(propsFile);
 		acta.execute();
 	}

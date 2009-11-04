@@ -96,22 +96,8 @@ public class AcsBacklog extends Fetcher {
 
 	public static void main(String[] args) {
 		String props = "E:\\crystaleye-new\\docs\\cif-flow-props.txt";
-		/*
-		for (int i = 2; i < 11; i++) {
-			AcsBacklog ab = new AcsBacklog(props, AcsJournal.CRYSTAL_GROWTH_AND_DESIGN, "2009", String.valueOf(i));
-			ab.fetch();
-		}
-		for (int i = 16; i < 22; i++) {
-			AcsBacklog ab = new AcsBacklog(props, AcsJournal.INORGANIC_CHEMISTRY, "2009", String.valueOf(i));
-			ab.fetch();
-		}
-		for (int i = 11; i < 44; i++) {
+		for (int i = 42; i < 44; i++) {
 			AcsBacklog ab = new AcsBacklog(props, AcsJournal.JOURNAL_OF_THE_AMERICAN_CHEMICAL_SOCIETY, "2009", String.valueOf(i));
-			ab.fetch();
-		}
-		*/
-		for (int i = 10; i < 22; i++) {
-			AcsBacklog ab = new AcsBacklog(props, AcsJournal.THE_JOURNAL_OF_ORGANIC_CHEMISTRY, "2009", String.valueOf(i));
 			ab.fetch();
 		}
 	}

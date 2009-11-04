@@ -14,6 +14,7 @@ import java.util.List;
 import nu.xom.Nodes;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cml.base.CMLBuilder;
@@ -100,7 +101,7 @@ public class SmilesListManager extends AbstractManager {
 							String smiles = smilesNodes.get(0).getValue();
 							smiles = smiles.replaceAll("/", "");
 							smiles = smiles.replaceAll("\\\\", "");
-							if (!smiles.trim().equals("") && !smiles.trim().equals(" ")) {
+							if (!StringUtils.isEmpty(smiles)) {
 								sb.append(smiles+" "+cmlId+"\n");
 							}
 						} else {
