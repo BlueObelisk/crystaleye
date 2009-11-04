@@ -150,7 +150,7 @@ public class Cif2CmlManager extends AbstractManager {
 		try {
 			splitCifList = this.createSplitCifs(file);
 		} catch (Exception e) {
-			LOG.warn("Could not split cif file: "+file.getAbsolutePath());
+			LOG.warn("Could not split cif file ("+file.getAbsolutePath()+"), due to: "+e.getMessage());
 			return;
 		}
 		for (File splitCifFile : splitCifList) {
@@ -358,7 +358,7 @@ public class Cif2CmlManager extends AbstractManager {
 					CDKUtils.add2DCoords(cmlMol);
 					new StereochemistryTool(cmlMol).addWedgeHatchBonds();
 				} catch (Exception e) {
-					LOG.warn("Exception adding wedge/hatch bonds to molecule "+cmlMol.getId());;
+					LOG.warn("Exception adding wedge/hatch bonds to molecule ("+cmlMol.getId()+"), due to: "+e.getMessage());
 				}
 				if (!compoundClass.equals(CompoundClass.INORGANIC) && 
 						(CML2FooManager.getNumberOfRings(cmlMol) < CML2FooManager.MAX_RINGS)) {
@@ -601,7 +601,9 @@ public class Cif2CmlManager extends AbstractManager {
 						String cifParent = cifPathMinusMime.substring(0,cifPathMinusMime.lastIndexOf(File.separator));
 						File splitCifParent = new File(cifParent+"/"+cifId+"_"+chemBlockId);
 						if (!splitCifParent.exists()) {
-							splitCifParent.mkdirs();
+							if (!splitCifParent.mkdirs()) {
+								LOG.warn("Could not create folder at: "+splitCifParent);
+							}
 						}
 						File splitCifFile = new File(splitCifParent,"/"+cifId+"_"+chemBlockId+".cif");
 						writer = new FileWriter(splitCifFile);
@@ -609,7 +611,7 @@ public class Cif2CmlManager extends AbstractManager {
 						writer.close();
 						splitCifList.add(splitCifFile);
 					} catch (Exception e) {
-						LOG.warn("Exception whilst splitting CIF file: "+cifFile);
+						LOG.warn("Exception whilst splitting CIF file ("+cifFile+"), due to: "+e.getMessage());
 					} finally {
 						IOUtils.closeQuietly(writer);
 					}
@@ -671,7 +673,7 @@ public class Cif2CmlManager extends AbstractManager {
 				image = image.getSubimage(14, 15, 590, 443);
 				ImageIO.write(image, "jpeg", new File(pathMinusMime+".platon.jpeg"));
 			} catch (IOException e) {
-				LOG.warn("ERROR: could not read PLATON image");
+				LOG.warn("ERROR: could not read PLATON image, due to: "+e.getMessage());
 			}
 		}	
 	}

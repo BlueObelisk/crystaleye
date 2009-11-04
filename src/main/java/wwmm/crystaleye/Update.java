@@ -49,13 +49,14 @@ public class Update {
 		try {
 			cl = parser.parse(options, args);
 		} catch(ParseException e) {
-			LOG.warn("Exception parsing command line: "+e.getMessage());
+			System.err.println("Problem parsing command line, due to: "+e.getMessage());
 			return;
 		}
 
 		String propsPath = cl.getOptionValue("p");
 		if (propsPath == null) {
-			throw new RuntimeException("No properties path set.");
+			System.err.println("No properties path set.  Set one with the -p option.");
+			return;
 		}
 		File propsFile = new File(propsPath);
 		if (args.length == 2) {
@@ -93,6 +94,7 @@ public class Update {
 				cell.execute();
 			}
 			if (cl.hasOption("bondlengths")) {
+				LOG.info("The bondlengths functionality is currently unavailable.");
 				/*
 				BondLengthsManager bond = new BondLengthsManager(propsFile);
 				bond.execute();
