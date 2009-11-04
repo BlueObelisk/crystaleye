@@ -63,12 +63,12 @@ public class SmilesTool {
 			LOG.warn("Problem generating SMILES from CML: "+e.getMessage());
 			return null;
 		}
-		return result.getOutput().trim();
+		return result.getOutput().trim().split("\\s+")[0];
 	}
 	
 	public static void main(String[] args) throws ValidityException, ParsingException, IOException {
 		String molStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-				"<molecule xmlns=\"http://www.xml-cml.org/schema\">\n" +
+				"<molecule xmlns=\"http://www.xml-cml.org/schema\" id=\"testmol1\">\n" +
 				"<atomArray>\n" +
 					"<atom id=\"a1\" elementType=\"C\" />\n" +
 					"<atom id=\"a2\" elementType=\"H\" />\n" +
