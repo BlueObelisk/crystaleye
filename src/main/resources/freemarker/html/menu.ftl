@@ -6,7 +6,8 @@
 			</a>
 		</li>
 		<li>
-			<a href="http://wwmm-sandbox.ch.cam.ac.uk/crystaleye-search/" shape="rect">
+			<a href="http://wwmm-sandbox.ch.cam.ac.uk/crystaleye-search/"
+				shape="rect">
 				<span>Search</span>
 			</a>
 		</li>

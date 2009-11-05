@@ -1,4 +1,4 @@
-package wwmm.crystaleye.sandbox;
+package ned24.sandbox;
 
 import static wwmm.crystaleye.CrystalEyeConstants.ATOMPUB;
 import static wwmm.crystaleye.CrystalEyeConstants.BONDLENGTHS;
@@ -16,7 +16,7 @@ import java.io.File;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
-import wwmm.atomarchiver.Utils;
+import wwmm.crystaleye.util.Utils;
 
 public class AlteringDownloadLog {
 
