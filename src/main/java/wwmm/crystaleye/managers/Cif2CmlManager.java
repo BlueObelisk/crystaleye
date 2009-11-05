@@ -102,7 +102,7 @@ public class Cif2CmlManager extends AbstractManager {
 	public Cif2CmlManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
 	}
-	
+
 	public void execute() {
 		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
 		for (String publisherAbbreviation : publisherAbbreviations) {
@@ -134,6 +134,7 @@ public class Cif2CmlManager extends AbstractManager {
 			throw new IllegalStateException("Issue directory at "+issueWriteDir+" should exist.");
 		}
 		for (File cifFile : getIssueCifFiles(issueWriteDir)) {
+			LOG.info("Processing CIF file: "+cifFile);
 			handleCif(cifFile, publisherAbbreviation, journalAbbreviation, year, issueNum);
 		}
 	}
@@ -152,6 +153,7 @@ public class Cif2CmlManager extends AbstractManager {
 			return;
 		}
 		for (File splitCifFile : splitCifList) {
+			LOG.info("Processing split CIF file: "+splitCifFile);
 			String splitCifPath = splitCifFile.getAbsolutePath();
 
 			// parse split CIF to split cmls
@@ -187,6 +189,9 @@ public class Cif2CmlManager extends AbstractManager {
 			String id = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum+"_"+suppId;
 			cml.setId(id);
 			CMLMolecule molecule = getMolecule(cml);
+			if (molecule == null) {
+				continue;
+			}
 			molecule.setId(id);
 
 			// don't want to do molecules that are too large, so if > 1000 atoms, then pass
@@ -224,7 +229,7 @@ public class Cif2CmlManager extends AbstractManager {
 						add2DStereoSMILESAndInChI(mergedMolecule, compoundClass);
 					}
 				}
-				
+
 				getCalculatedCheckCif(splitCifPath, pathMinusMime);
 				handleCheckcifs(cml, pathMinusMime);
 				addDoi(cml, pathMinusMime);
@@ -386,7 +391,11 @@ public class Cif2CmlManager extends AbstractManager {
 					// if more than one moiety, try and get the charge from the formula provided by the CIF.
 					getMoietyChargeFromFormula(cml, subMol);
 				}
-				success = subMolTool.adjustBondOrdersAndChargesToValency(molCharge);
+				try {
+					success = subMolTool.adjustBondOrdersAndChargesToValency(molCharge);
+				} catch (OutOfMemoryError e) {
+					success = false;
+				}
 				if (!success) {
 					// tag molecule to say we couldn't find a reasonable set of charges/bond orders for it
 					addNoBondsOrChargesSetFlag(subMol);
@@ -720,7 +729,8 @@ public class Cif2CmlManager extends AbstractManager {
 	private CMLMolecule getMolecule(CMLElement cml) {
 		Nodes moleculeNodes = cml.query(CMLMolecule.NS, CML_XPATH);
 		if (moleculeNodes.size() != 1) {
-			throw new RuntimeException("BUG: no molecule found.");
+			LOG.warn("No molecule found.");
+			return null;
 		}
 		return (CMLMolecule) moleculeNodes.get(0);
 	}

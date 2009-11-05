@@ -1,4 +1,4 @@
-package wwmm.crystaleye.util;
+package wwmm.crystaleye.sandbox;
 
 import java.io.File;
 import java.io.FileInputStream;

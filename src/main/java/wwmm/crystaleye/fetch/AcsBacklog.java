@@ -1,5 +1,6 @@
 package wwmm.crystaleye.fetch;
 
+import static wwmm.crystaleye.CrystalEyeConstants.ACS_DOI_PREFIX;
 import static wwmm.crystaleye.CrystalEyeConstants.CIF_MIME;
 import static wwmm.crystaleye.CrystalEyeConstants.DATE_MIME;
 import static wwmm.crystaleye.CrystalEyeConstants.DOI_MIME;
@@ -57,6 +58,7 @@ public class AcsBacklog extends Fetcher {
 		if (suppLinks.size() > 0) {
 			for (int j = 0; j < suppLinks.size(); j++) {
 				String suppUrlPostfix = ((Element)suppLinks.get(j)).getAttributeValue("href");
+				String doi = ACS_DOI_PREFIX+suppUrlPostfix.substring(suppUrlPostfix.lastIndexOf("/"));
 				String suppUrl = "http://pubs.acs.org"+suppUrlPostfix;
 				int idx = suppUrl.lastIndexOf("/");
 				String cifId = suppUrl.substring(idx+1);
@@ -69,11 +71,6 @@ public class AcsBacklog extends Fetcher {
 						String cifUrl = "http://pubs.acs.org"+((Element)cifLinks.get(k)).getAttributeValue("href");
 						int suppNum = k+1;
 						String cif = getWebPage(cifUrl);
-						Nodes doiAnchors = doc.query("//x:a[contains(@href,'dx.doi.org')]", X_XHTML);
-						String doi = null;
-						if (doiAnchors.size() > 0) {
-							doi = ((Element)doiAnchors.get(0)).getValue();
-						}
 						writeFiles(issueWriteDir, cifId, suppNum, cif, doi);
 						sleep();
 					}
