@@ -147,6 +147,7 @@ public class CML2FooManager extends AbstractManager {
 		}
 		List<File> completeCmlFiles = getCompleteCmlFiles(issueDir);
 		for (File cmlFile : completeCmlFiles) {
+			LOG.info("Now processing: "+cmlFile);
 			String pathMinusMime = Utils.getPathMinusMimeSet(cmlFile);
 			String suppId = pathMinusMime.substring(pathMinusMime.lastIndexOf(File.separator)+1);
 			String articleId = suppId.substring(0,suppId.indexOf("_"));
@@ -632,7 +633,7 @@ public class CML2FooManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		File propsFile = new File("e:/crystaleye-new/docs/cif-flow-props.txt");
 		CML2FooManager acta = new CML2FooManager(propsFile);
 		acta.execute();
 	}

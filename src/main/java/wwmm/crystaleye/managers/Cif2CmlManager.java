@@ -153,95 +153,99 @@ public class Cif2CmlManager extends AbstractManager {
 			return;
 		}
 		for (File splitCifFile : splitCifList) {
-			LOG.info("Processing split CIF file: "+splitCifFile);
-			String splitCifPath = splitCifFile.getAbsolutePath();
-
-			// parse split CIF to split cmls
-			String pathMinusMime = Utils.getPathMinusMimeSet(splitCifFile);
-			String suppId = pathMinusMime.substring(pathMinusMime.lastIndexOf(File.separator)+1);
-			String articleId = suppId.substring(0,suppId.indexOf("_"));
-			articleId = articleId.replaceAll("sup[\\d]*", "");
-			String outfile = pathMinusMime+RAW_CML_MIME;
-
-			// set up and run CIFConverter
 			try {
-				runCIFConverter(splitCifPath, outfile);
-			} catch (Exception e) {
-				LOG.warn("Error converting cif to xml: "+splitCifPath+" - "+e.getMessage());
-				continue;
-			}
+				LOG.info("Processing split CIF file: "+splitCifFile);
+				String splitCifPath = splitCifFile.getAbsolutePath();
 
-			File rawCmlFile = new File(outfile);
-			if (!rawCmlFile.exists()) {
-				continue;
-			}
+				// parse split CIF to split cmls
+				String pathMinusMime = Utils.getPathMinusMimeSet(splitCifFile);
+				String suppId = pathMinusMime.substring(pathMinusMime.lastIndexOf(File.separator)+1);
+				String articleId = suppId.substring(0,suppId.indexOf("_"));
+				articleId = articleId.replaceAll("sup[\\d]*", "");
+				String outfile = pathMinusMime+RAW_CML_MIME;
 
-			// read raw CML back in and convert to 'complete' CML
-			CMLCml cml = null;
-			try { 
-				cml = (CMLCml)Utils.parseCml(rawCmlFile).getRootElement();
-			} catch (Exception e) {
-				LOG.warn("Error reading CML, due to: "+e.getMessage());
-				continue;
-			}
-
-			// set molecule ID from issue information
-			String id = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum+"_"+suppId;
-			cml.setId(id);
-			CMLMolecule molecule = getMolecule(cml);
-			if (molecule == null) {
-				continue;
-			}
-			molecule.setId(id);
-
-			// don't want to do molecules that are too large, so if > 1000 atoms, then pass
-			if (molecule.getAtomCount() > 1000) {
-				continue;
-			}
-
-			CompoundClass compoundClass = ChemistryUtils.getCompoundClass(molecule);
-			addCompoundClass(cml, compoundClass);
-			try {
-				processDisorder(molecule, compoundClass);
-				CMLMolecule mergedMolecule = null;
+				// set up and run CIFConverter
 				try {
-					mergedMolecule = createFinalStructure(molecule, compoundClass);
+					runCIFConverter(splitCifPath, outfile);
 				} catch (Exception e) {
-					LOG.warn("Could not calculate final structure, due to: "+e.getMessage());
+					LOG.warn("Error converting cif to xml: "+splitCifPath+" - "+e.getMessage());
 					continue;
 				}
-				boolean isPolymeric = false;
-				if (!compoundClass.equals(CompoundClass.INORGANIC)) {
-					// if the structure is a polymeric organometal then we want to add 
-					// all atoms to the unit cell1
-					isPolymeric = isPolymericOrganometal(molecule, mergedMolecule, compoundClass);
-					if (!isPolymeric) {
-						isPolymeric = isSiO4(mergedMolecule);
-					}
-					if (isPolymeric) {
-						CrystalTool crystalTool = new CrystalTool(molecule);
-						mergedMolecule = crystalTool.addAllAtomsToUnitCell(true);
-						addPolymericFlag(mergedMolecule);
-					}
-					if (!isPolymeric) {
-						calculateBondsAnd3DStereo(cml, mergedMolecule);
-						rearrangeChiralAtomsInBonds(mergedMolecule);
-						add2DStereoSMILESAndInChI(mergedMolecule, compoundClass);
-					}
+
+				File rawCmlFile = new File(outfile);
+				if (!rawCmlFile.exists()) {
+					continue;
 				}
 
-				getCalculatedCheckCif(splitCifPath, pathMinusMime);
-				handleCheckcifs(cml, pathMinusMime);
-				addDoi(cml, pathMinusMime);
-				// need to replace the molecule created from atoms explicit in the CIF with mergedMolecule.
-				molecule.detach();
-				cml.appendChild(mergedMolecule);
-				repositionCMLCrystalElement(cml);
+				// read raw CML back in and convert to 'complete' CML
+				CMLCml cml = null;
+				try { 
+					cml = (CMLCml)Utils.parseCml(rawCmlFile).getRootElement();
+				} catch (Exception e) {
+					LOG.warn("Error reading CML, due to: "+e.getMessage());
+					continue;
+				}
 
-				Utils.writeDateStamp(pathMinusMime+DATE_MIME);
-				Utils.writeXML(cml.getDocument(), pathMinusMime+COMPLETE_CML_MIME);
-			} catch (RuntimeException e) {
-				LOG.warn("Error creating complete CML: "+e.getMessage());
+				// set molecule ID from issue information
+				String id = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum+"_"+suppId;
+				cml.setId(id);
+				CMLMolecule molecule = getMolecule(cml);
+				if (molecule == null) {
+					continue;
+				}
+				molecule.setId(id);
+
+				// don't want to do molecules that are too large, so if > 1000 atoms, then pass
+				if (molecule.getAtomCount() > 1000) {
+					continue;
+				}
+
+				CompoundClass compoundClass = ChemistryUtils.getCompoundClass(molecule);
+				addCompoundClass(cml, compoundClass);
+				try {
+					processDisorder(molecule, compoundClass);
+					CMLMolecule mergedMolecule = null;
+					try {
+						mergedMolecule = createFinalStructure(molecule, compoundClass);
+					} catch (Exception e) {
+						LOG.warn("Could not calculate final structure, due to: "+e.getMessage());
+						continue;
+					}
+					boolean isPolymeric = false;
+					if (!compoundClass.equals(CompoundClass.INORGANIC)) {
+						// if the structure is a polymeric organometal then we want to add 
+						// all atoms to the unit cell1
+						isPolymeric = isPolymericOrganometal(molecule, mergedMolecule, compoundClass);
+						if (!isPolymeric) {
+							isPolymeric = isSiO4(mergedMolecule);
+						}
+						if (isPolymeric) {
+							CrystalTool crystalTool = new CrystalTool(molecule);
+							mergedMolecule = crystalTool.addAllAtomsToUnitCell(true);
+							addPolymericFlag(mergedMolecule);
+						}
+						if (!isPolymeric) {
+							calculateBondsAnd3DStereo(cml, mergedMolecule);
+							rearrangeChiralAtomsInBonds(mergedMolecule);
+							add2DStereoSMILESAndInChI(mergedMolecule, compoundClass);
+						}
+					}
+
+					getCalculatedCheckCif(splitCifPath, pathMinusMime);
+					handleCheckcifs(cml, pathMinusMime);
+					addDoi(cml, pathMinusMime);
+					// need to replace the molecule created from atoms explicit in the CIF with mergedMolecule.
+					molecule.detach();
+					cml.appendChild(mergedMolecule);
+					repositionCMLCrystalElement(cml);
+
+					Utils.writeDateStamp(pathMinusMime+DATE_MIME);
+					Utils.writeXML(cml.getDocument(), pathMinusMime+COMPLETE_CML_MIME);
+				} catch (RuntimeException e) {
+					LOG.warn("Error creating complete CML: "+e.getMessage());
+				}
+			} catch (OutOfMemoryError e) {
+				LOG.warn("OutOfMemory whilst processing: "+splitCifFile);
 			}
 		}
 	}
@@ -694,7 +698,7 @@ public class Cif2CmlManager extends AbstractManager {
 				count++;
 				File f = new File(cifPath);
 				filePost = new PostMethod(
-				"http://dynhost1.iucr.org/cgi-bin/checkcif.pl");
+						"http://dynhost1.iucr.org/cgi-bin/checkcif.pl");
 				Part[] parts = { new FilePart("file", f),
 						new StringPart("runtype", "fullpublication"),
 						new StringPart("UPLOAD", "Send CIF for checking") };
