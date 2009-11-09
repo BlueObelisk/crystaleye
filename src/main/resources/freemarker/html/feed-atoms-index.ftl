@@ -25,8 +25,8 @@
 						<ul class="normal">
 							<#list atoms as atom>
 							<li style="font-weight: bold;">
-								<a href="./${atom}/feed.xml" shape="rect">
-									${atom}
+								<a href="./${atom.symbol}/feed.xml" shape="rect">
+									${atom.symbol}
 									<a />
 							</li>
 							</#list>

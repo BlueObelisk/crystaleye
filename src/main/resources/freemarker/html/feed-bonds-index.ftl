@@ -27,7 +27,7 @@
 						<ul class="normal">
 							<#list atoms as atom>
 							<li style="font-weight: bold;">
-								<a href="${atom}-index.html" shape="rect">${atom}</a>
+								<a href="${atom.symbol}-index.html" shape="rect">${atom.symbol}</a>
 							</li>
 							</#list>
 						</ul>

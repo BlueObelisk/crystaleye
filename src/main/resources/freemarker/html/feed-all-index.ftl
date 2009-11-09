@@ -24,18 +24,11 @@
 							system:
 						</p>
 						<ul class="normal">
-							<li style="font-weight: bold;">All</li>
-							<ul class="normal">
-								<li>
-									RSS (
-									<a href="./rss/rss_10/feed.xml" shape="rect">rss1</a>
-									|
-									<a href="./rss/rss_20/feed.xml" shape="rect">rss2</a>
-									|
-									<a href="./rss/atom_10/feed.xml" shape="rect">atom1</a>
-									)
-								</li>
-							</ul>
+							<li style="font-weight: bold;">
+								<a href="./feed.xml" shape="rect">
+									All
+								</a>
+							</li>
 						</ul>
 						<br />
 						<br />

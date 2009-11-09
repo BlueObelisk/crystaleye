@@ -749,8 +749,7 @@ public class Cif2CmlManager extends AbstractManager {
 	}
 
 	private void calculateAndAddSmiles(CMLMolecule mol) {
-		SmilesTool tool = new SmilesTool(mol);
-		String smiles = tool.generateSmiles();
+		String smiles = SmilesTool.generateSmiles(mol);
 		if (smiles != null) {
 			Element scalar = new Element("identifier", CML_NS);
 			scalar.addAttribute(new Attribute("convention", "daylight:smiles"));

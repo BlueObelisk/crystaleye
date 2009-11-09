@@ -25,18 +25,18 @@
 						<ul class="normal">
 							<#list publishers as publisher>
 							<li>
-								<span style="font-weight: bold; text-decoration: underline;">${publisher.title}</span>
-							</li>
-							<#list journals as journal>
-							<ul class="normal">
-								<li style="font-weight: bold;">
-									<a href="./${publisher.abbreviation}/${journal.abbreviation}/feed.xml"
-										shape="rect">
-										${journal.title}
+								<span style="font-weight: bold;">${publisher.title}</span>
+								<ul class="normal">
+									<#list publisher.journals as journal>
+									<li>
+										<a
+											href="./${publisher.abbreviation}/${journal.abbreviation}/feed.xml">
+											${journal.title}
 									</a>
-								</li>
-							</ul>
-							</#list>
+									</li>
+									</#list>
+								</ul>
+							</li>
 							</#list>
 						</ul>
 					</div>

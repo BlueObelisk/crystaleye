@@ -20,9 +20,9 @@
 						<p>Subscribe to feeds containing molecules with bonds between C
 							and another element:</p>
 						<ul class="normal">
-							<#list pairs as pair>
+							<#list bonds as bond>
 							<li style="font-weight: bold;">
-								<a href="./${bond}/feed.xml" shape="rect">${bond}</a>
+								<a href="./${bond.symbol}/feed.xml" shape="rect">${bond.symbol}</a>
 							</li>
 							</#list>
 						</ul>
