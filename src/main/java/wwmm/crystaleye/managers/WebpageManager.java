@@ -8,17 +8,12 @@ import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
 import static wwmm.crystaleye.CrystalEyeConstants.POLYMERIC_FLAG_DICTREF;
 import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -68,7 +63,9 @@ import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.WebUtils;
 import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
-import freemarker.template.Template;
+import freemarker.template.SimpleHash;
+import freemarker.template.SimpleSequence;
+import freemarker.template.TemplateHashModel;
 
 public class WebpageManager extends AbstractManager {
 
@@ -200,47 +197,37 @@ public class WebpageManager extends AbstractManager {
 		}
 	}
 
-	private Map<String, Object> getTemplateMap(File journalDir) {
-		Map<String, Object> templateMap = new HashMap<String, Object>();
+	private TemplateHashModel getTemplateMap(File journalDir) {
+		SimpleHash templateMap = new SimpleHash();
 		templateMap.put("pageTitle", "CrystalEye: Browse Structures");
 		templateMap.put("publisherFullTitle", publisherTitle);
 		templateMap.put("publisherAbbreviation", publisherAbbreviation);
 		templateMap.put("journalFullTitle", journalTitle);
 		templateMap.put("journalAbbreviation", journalAbbreviation);
 
-		List<Map<String, Object>> years = new ArrayList<Map<String, Object>>();
+		SimpleSequence years = new SimpleSequence();
 		for (File yearDir : journalDir.listFiles()) {
-			Map<String, Object> year = new HashMap<String, Object>();
+			SimpleHash year = new SimpleHash();
 			year.put("num", yearDir.getName());
-			List<Map<String, Object>> issues = new ArrayList<Map<String, Object>>();
+			SimpleSequence issues = new SimpleSequence();
 			for (File issueDir : yearDir.listFiles()) {
-				Map<String, Object> issue = new HashMap<String, Object>();
+				SimpleHash issue = new SimpleHash();
 				issue.put("num", issueDir.getName());
 				issues.add(issue);
 			}
 			year.put("issues", issues);
 			years.add(year);
 		}
-		Collections.reverse(years);
 		templateMap.put("years", years);
 		return templateMap;
 	}
 
 	private void updateSummaryLinkPage(String summaryWriteDir) {
 		String path = summaryWriteDir+"/"+publisherAbbreviation+"-"+journalAbbreviation+".html";
-		Template tpl = FreemarkerUtils.getHtmlTemplate("journal-issue-index.ftl");
-		BufferedWriter bw = null;
-		try {
-			bw = new BufferedWriter(new FileWriter(new File(path)));
-			String journalDirPath =  writeDir+"/"+publisherAbbreviation+"/"+journalAbbreviation;
-			File journalDir = new File(journalDirPath);
-			Map<String, Object> templateMap = getTemplateMap(journalDir);
-			tpl.process(templateMap, bw);
-		} catch (Exception e) {
-			throw new RuntimeException("Exception writing file ("+path+"), due to: "+e.getMessage(), e);
-		} finally {
-			IOUtils.closeQuietly(bw);
-		}
+		String journalDirPath =  writeDir+"/"+publisherAbbreviation+"/"+journalAbbreviation;
+		File journalDir = new File(journalDirPath);
+		TemplateHashModel templateMap = getTemplateMap(journalDir);
+		FreemarkerUtils.writeHtmlTemplate("journal-issue-index.ftl", new File(path), templateMap);
 	}
 
 	private void createTableOfContents(List<File> cmlFileList, String issueSummaryDir) {

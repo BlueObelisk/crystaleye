@@ -57,13 +57,9 @@
 							install scripts that make on-the-fly changes to specific web
 							pages. This Greasemonkey script (which was created by modifying
 							<a
-								href="http://baoilleach.blogspot.com/2007/04/add-quotes-from-postgenomic-and.html"
-								shape="rect">Noel O'Boyle's</a>
-							extension to
-							<a
 								href="http://pbeltrao.blogspot.com/2006/05/postgenomics-script-for-firefox-i-am.html"
-								shape="rect">Pedro Beltr�o's</a>
-							original script) is activated whenever you browse a publisher's
+								shape="rect">Pedro Beltrao's</a>
+							script) is activated whenever you browse a publisher's
 							website that is scraped by CrystalEye.
 						</p>
 						<p>If you were browsing the table of contents for a particular

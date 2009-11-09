@@ -410,8 +410,7 @@ public class CML2FooManager extends AbstractManager {
 		addInChIToRGroupMolecule(molR);
 		if (!compoundClass.equals(CompoundClass.INORGANIC.toString())) {
 			if (getNumberOfRings(fragCopy) < MAX_RINGS) {
-				SmilesTool tool = new SmilesTool(fragCopy);
-				String smiles = tool.generateSmiles();
+				String smiles = SmilesTool.generateSmiles(fragCopy);
 				if (smiles != null) {
 					addSmiles2Molecule(smiles, molR);
 				}
@@ -499,8 +498,7 @@ public class CML2FooManager extends AbstractManager {
 					if (!compoundClass.equals(CompoundClass.INORGANIC.toString())) {
 						// need to calculate inchi and smiles before R groups added
 						addInChIToRGroupMolecule(atomR);
-						SmilesTool tool = new SmilesTool(atomMol);
-						String atomMolSmiles = tool.generateSmiles();
+						String atomMolSmiles = SmilesTool.generateSmiles(atomMol);
 						addSmiles2Molecule(atomMolSmiles, atomR);
 					}
 
@@ -529,8 +527,7 @@ public class CML2FooManager extends AbstractManager {
 					addInChIToRGroupMolecule(sproutR);
 					if (!compoundClass.equals(CompoundClass.INORGANIC.toString())) {
 						if (getNumberOfRings(sprout) < MAX_RINGS) {
-							SmilesTool tool = new SmilesTool(sprout);
-							String sproutSmiles = tool.generateSmiles();
+							String sproutSmiles= SmilesTool.generateSmiles(sprout);
 							addSmiles2Molecule(sproutSmiles, sproutR);
 						}
 					}
@@ -564,8 +561,7 @@ public class CML2FooManager extends AbstractManager {
 						if (!compoundClass.equals(CompoundClass.INORGANIC.toString())) {
 							// need to calculated inchi and smiles before R groups added
 							if (getNumberOfRings(sprout2) < MAX_RINGS) {
-								SmilesTool tool = new SmilesTool(sprout2);
-								String sprout2Smiles = tool.generateSmiles();
+								String sprout2Smiles = SmilesTool.generateSmiles(sprout2);
 								addSmiles2Molecule(sprout2Smiles, sprout2R);
 							}
 						}
