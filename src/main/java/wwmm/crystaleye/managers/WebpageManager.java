@@ -374,8 +374,8 @@ public class WebpageManager extends AbstractManager {
 
 		for (int i = 0; i < formulaElements.size(); i++) {
 			CMLFormula formula = (CMLFormula) formulaElements.get(i);
-			formula.normalize();
 			try {
+				formula.normalize();
 				if ("iucr:_chemical_formula_moiety".equalsIgnoreCase(formula.getDictRef())) {
 					StringWriter sw = new StringWriter();
 					formula.writeHTML(sw);
@@ -383,7 +383,7 @@ public class WebpageManager extends AbstractManager {
 					formulaMoi = formulaMoi.replaceAll("\\(", "<wbr />\\(");
 					sw.close();
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOG.warn("Error writing formula moiety HTML: "+e.getMessage());
 			}
 			try {
@@ -1038,7 +1038,7 @@ public class WebpageManager extends AbstractManager {
 		}
 
 		table.setColumns(columns);
-		
+
 		CMLArrayList arrayList = new CMLArrayList();
 		arrayList.addArray(formulaArray);
 		arrayList.addArray(doiArray);
@@ -1246,7 +1246,7 @@ public class WebpageManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		File propsFile = new File("e:/crystaleye-new/docs/cif-flow-props.txt");
 		WebpageManager web = new WebpageManager(propsFile);
 		web.execute();
 	}
