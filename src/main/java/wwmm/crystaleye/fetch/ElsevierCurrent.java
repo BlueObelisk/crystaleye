@@ -134,7 +134,7 @@ public class ElsevierCurrent extends CurrentIssueFetcher {
 	}
 
 	public static void main(String[] args) {
-		ElsevierCurrent els = new ElsevierCurrent("e:/data-test/docs/cif-flow-props.txt");
+		ElsevierCurrent els = new ElsevierCurrent("E:\\crystaleye-new\\docs\\cif-flow-props.txt");
 		els.execute();
 	}
 }

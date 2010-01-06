@@ -16,7 +16,7 @@ import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLMolecule;
 
-import wwmm.crystaleye.tools.MinimalCmlTool;
+import wwmm.crystaleye.tools.MinimalCmlCrystalTool;
 
 public class CDKUtils {
 	
@@ -39,7 +39,7 @@ public class CDKUtils {
 	}
 
 	public static CMLMolecule add2DCoords(CMLMolecule molecule) {
-		CMLMolecule minimalMol = new MinimalCmlTool(molecule).getMinimalMol();
+		CMLMolecule minimalMol = new MinimalCmlCrystalTool(molecule).getMinimalMol();
 		IMolecule mol = getCdkMol(minimalMol);
 		for (int i = 0; i < mol.getAtomCount(); i++) {
 			IAtom atom = mol.getAtom(i);

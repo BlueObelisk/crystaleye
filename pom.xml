@@ -160,6 +160,12 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>wwmm</groupId>
+			<artifactId>pub-crawler</artifactId>
+			<version>0.1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.ccil.cowan.tagsoup</groupId>
 			<artifactId>tagsoup</artifactId>
 			<version>1.0.1</version>

@@ -79,6 +79,12 @@ public class ActaCurrent extends CurrentIssueFetcher {
 						} else {
 							throw new RuntimeException("Could not find the CIF ID.");
 						}
+						
+						// REMOVE
+						if ("http://scripts.iucr.org/cgi-bin/sendcif?bk5088sup1".equals(cifUrl)) {
+							continue;
+						}
+						
 						String cif = getWebPage(cifUrl);
 						String doi = null;
 
@@ -111,7 +117,7 @@ public class ActaCurrent extends CurrentIssueFetcher {
 	}
 
 	public static void main(String[] args) {
-		ActaCurrent acta = new ActaCurrent("e:/data-test/docs/cif-flow-props.txt");
+		ActaCurrent acta = new ActaCurrent("e:/crystaleye-new/docs/cif-flow-props.txt");
 		acta.execute();
 	}
 }

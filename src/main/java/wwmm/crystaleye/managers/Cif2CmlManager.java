@@ -13,13 +13,8 @@ import static wwmm.crystaleye.CrystalEyeConstants.POLYMERIC_FLAG_DICTREF;
 import static wwmm.crystaleye.CrystalEyeConstants.RAW_CML_MIME;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,27 +29,13 @@ import javax.imageio.ImageIO;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
-import nu.xom.Elements;
 import nu.xom.Nodes;
 import nu.xom.Text;
 import nu.xom.XPathContext;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.xmlcml.cif.CIF;
-import org.xmlcml.cif.CIFDataBlock;
-import org.xmlcml.cif.CIFParser;
 import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.converters.cif.CIF2CIFXMLConverter;
 import org.xmlcml.cml.converters.cif.CIFXML2CMLConverter;
@@ -84,9 +65,12 @@ import org.xmlcml.molutil.ChemicalElement.Type;
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.tools.CheckCifParser;
+import wwmm.crystaleye.tools.CheckCifTool;
 import wwmm.crystaleye.tools.InchiTool;
 import wwmm.crystaleye.tools.SmilesTool;
+import wwmm.crystaleye.tools.SplitCifTool;
 import wwmm.crystaleye.util.CDKUtils;
+import wwmm.crystaleye.util.CMLUtils;
 import wwmm.crystaleye.util.ChemistryUtils;
 import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
@@ -139,17 +123,17 @@ public class Cif2CmlManager extends AbstractManager {
 		}
 	}
 
-	private void handleCif(File file, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum) {
+	private void handleCif(File cifFile, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum) {
 		// calculate number of bytes in the file - if it is too large then do not try to parse
-		if (fileTooLarge(file)) {
+		if (fileTooLarge(cifFile)) {
 			return;
 		}
 
 		List<File> splitCifList = null;
 		try {
-			splitCifList = this.createSplitCifs(file);
+			splitCifList = new SplitCifTool().split(cifFile);
 		} catch (Exception e) {
-			LOG.warn("Could not split cif file ("+file.getAbsolutePath()+"), due to: "+e.getMessage());
+			LOG.warn("Could not split cif file ("+cifFile.getAbsolutePath()+"), due to: "+e.getMessage());
 			return;
 		}
 		for (File splitCifFile : splitCifList) {
@@ -189,7 +173,7 @@ public class Cif2CmlManager extends AbstractManager {
 				// set molecule ID from issue information
 				String id = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum+"_"+suppId;
 				cml.setId(id);
-				CMLMolecule molecule = getMolecule(cml);
+				CMLMolecule molecule = getFirstParentMolecule(cml);
 				if (molecule == null) {
 					continue;
 				}
@@ -226,12 +210,12 @@ public class Cif2CmlManager extends AbstractManager {
 						}
 						if (!isPolymeric) {
 							calculateBondsAnd3DStereo(cml, mergedMolecule);
-							rearrangeChiralAtomsInBonds(mergedMolecule);
+							CMLUtils.rearrangeChiralAtomsInCMLBondIds(mergedMolecule);
 							add2DStereoSMILESAndInChI(mergedMolecule, compoundClass);
 						}
 					}
 
-					getCalculatedCheckCif(splitCifPath, pathMinusMime);
+					getCalculatedCheckCif(splitCifFile, pathMinusMime);
 					handleCheckcifs(cml, pathMinusMime);
 					addDoi(cml, pathMinusMime);
 					// need to replace the molecule created from atoms explicit in the CIF with mergedMolecule.
@@ -345,7 +329,7 @@ public class Cif2CmlManager extends AbstractManager {
 			Nodes nonUnitOccNodes = molecule.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 			if (!DisorderTool.isDisordered(molecule) && !molecule.hasCloseContacts() && nonUnitOccNodes.size() == 0
 					&& hasBondOrdersAndCharges(molecule)) {
-				addInchiToMolecule(molecule);
+				CMLUtils.addInchiToMolecule(molecule);
 			}
 		}
 		for (CMLMolecule cmlMol : molList) {
@@ -369,9 +353,9 @@ public class Cif2CmlManager extends AbstractManager {
 				}
 				if (!compoundClass.equals(CompoundClass.INORGANIC) && 
 						(CML2FooManager.getNumberOfRings(cmlMol) < CML2FooManager.MAX_RINGS)) {
-					calculateAndAddSmiles(cmlMol);
+					CMLUtils.calculateAndAddSmiles(cmlMol);
 				}
-				addInchiToMolecule(cmlMol);
+				CMLUtils.addInchiToMolecule(cmlMol);
 			}
 
 			Nodes bonds = cmlMol.query(".//"+CMLBondArray.NS+"/cml:bond", CML_XPATH);
@@ -405,7 +389,7 @@ public class Cif2CmlManager extends AbstractManager {
 					addNoBondsOrChargesSetFlag(subMol);
 				}
 			} else {
-				setAllBondOrders(subMol, CMLBond.SINGLE);
+				CMLUtils.setAllBondOrders(subMol, CMLBond.SINGLE);
 			}
 			if (success) {
 				// remove metals before adding stereochemistry - otherwise
@@ -504,12 +488,6 @@ public class Cif2CmlManager extends AbstractManager {
 		ct.flattenMolecules();
 	}
 
-	private void setAllBondOrders(CMLMolecule molecule, String order) {
-		for (CMLBond bond : molecule.getBonds()) {
-			bond.setOrder(order);
-		}
-	}
-
 	private void handleCheckcifs(CMLCml cml, String pathMinusMime) {
 		String depositedCheckcifPath = pathMinusMime.substring(0,pathMinusMime.lastIndexOf(File.separator));
 		String depCCParent = new File(depositedCheckcifPath).getParent();
@@ -540,101 +518,6 @@ public class Cif2CmlManager extends AbstractManager {
 		}
 	}
 
-	private List<File> createSplitCifs(File cifFile) {
-		String fileName = cifFile.getAbsolutePath();
-		List<File> splitCifList = new ArrayList<File>();
-		// split the found CIF
-		try {
-			CIFParser parser = new CIFParser();
-			parser.setSkipHeader(true);
-			parser.setSkipErrors(true);
-			parser.setCheckDuplicates(true);
-			parser.setBlockIdsAsIntegers(false);
-
-			CIF cif = (CIF) parser.parse(new BufferedReader(new FileReader(cifFile))).getRootElement();
-
-			List<CIFDataBlock> blockList = cif.getDataBlockList();
-			CIFDataBlock global = null;
-			String globalBlockId = "";
-			for (CIFDataBlock block : blockList) {
-				// check whether CIF is an mmCIF or not - we can't process mmCIFs so throw an exception if it is
-				Elements loops = block.getChildElements("loop");
-				for (int i = 0; i < loops.size(); i++) {
-					Element loop = loops.get(i);
-					Nodes mmCifNodes = loop.query("./@names[contains(.,'_atom_site.type_symbol') and " +
-					"contains(.,'_atom_site.id')]");
-					if (mmCifNodes.size() > 0) {
-						LOG.warn("CIF is an mmCIF, cannot process: "+cifFile.getAbsolutePath());
-					}
-				}
-			}
-			for (CIFDataBlock block : blockList) {		
-				Nodes crystalNodes = block.query(".//item[@name='_cell_length_a']");
-				Nodes moleculeNodes = block.query(".//loop[contains(@names,'_atom_site_label')]");
-				Nodes symmetryNodes = block.query(".//loop[contains(@names,'_symmetry_equiv_pos_as_xyz')]");
-				if (crystalNodes.size() == 0 && moleculeNodes.size() == 0 && symmetryNodes.size() == 0) {
-					global = block;
-					globalBlockId = block.getId();
-					break;
-				}
-			}
-			for (CIFDataBlock block : blockList) {
-				if (block.getId().equalsIgnoreCase(globalBlockId)) {
-					continue;
-				} else {
-					CIF cifNew = new CIF();
-					block.detach();
-					if (global != null) {
-						global.detach();
-					}
-					Writer writer = null; 
-					try {
-						if (global != null) {
-							cifNew.add(global);
-						}
-						cifNew.add(block);
-						String chemBlockId = block.getId();
-						chemBlockId = chemBlockId.replaceAll("\\.", "-");
-						chemBlockId = chemBlockId.replaceAll(":", "-");
-						chemBlockId = chemBlockId.replaceAll("/", "-");
-						chemBlockId = chemBlockId.replaceAll("\\\\", "-");
-						chemBlockId = chemBlockId.replaceAll("_", "-");
-						chemBlockId = chemBlockId.replaceAll("%", "-");
-						chemBlockId = chemBlockId.replaceAll("\\*", "-");
-						chemBlockId = chemBlockId.replaceAll("\\?", "-");
-						chemBlockId = chemBlockId.replaceAll(">", "-");
-						chemBlockId = chemBlockId.replaceAll("<", "-");
-						chemBlockId = chemBlockId.replaceAll("'", "-");
-						chemBlockId = chemBlockId.replaceAll("\"", "-");
-						chemBlockId = chemBlockId.replaceAll(",", "-");
-						String cifPathMinusMime = Utils.getPathMinusMimeSet(cifFile);
-						String cifId = cifPathMinusMime.substring(cifPathMinusMime.lastIndexOf(File.separator)+1);
-						String cifParent = cifPathMinusMime.substring(0,cifPathMinusMime.lastIndexOf(File.separator));
-						File splitCifParent = new File(cifParent+"/"+cifId+"_"+chemBlockId);
-						if (!splitCifParent.exists()) {
-							if (!splitCifParent.mkdirs()) {
-								LOG.warn("Could not create folder at: "+splitCifParent);
-							}
-						}
-						File splitCifFile = new File(splitCifParent,"/"+cifId+"_"+chemBlockId+".cif");
-						writer = new FileWriter(splitCifFile);
-						cifNew.writeCIF(writer);
-						writer.close();
-						splitCifList.add(splitCifFile);
-					} catch (Exception e) {
-						LOG.warn("Exception whilst splitting CIF file ("+cifFile+"), due to: "+e.getMessage());
-					} finally {
-						IOUtils.closeQuietly(writer);
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new RuntimeException("Problem parsing CIF ("+fileName+"), due to: "+e.getMessage(), e);
-		}
-		return splitCifList;
-	}
-
-
 	private void addDoi(CMLCml cml, String pathMinusMime) {
 		String parent = pathMinusMime.substring(0,pathMinusMime.lastIndexOf(File.separator));
 		parent = new File(parent).getParent();
@@ -655,10 +538,9 @@ public class Cif2CmlManager extends AbstractManager {
 		}
 	}
 
-	private void getCalculatedCheckCif(String cifPath, String pathMinusMime) {
-		String calculatedCheckCif = calculateCheckcif(cifPath);
-		String ccPath = pathMinusMime+".calculated.checkcif.html";
-		Utils.writeText(new File(ccPath), calculatedCheckCif);
+	private void getCalculatedCheckCif(File cifFile, String pathMinusMime) {
+		String calculatedCheckCif = new CheckCifTool().getCheckcifString(cifFile);
+		Utils.writeText(new File(pathMinusMime+".calculated.checkcif.html"), calculatedCheckCif);
 	}
 
 	private void getPlatonImage(Document doc, String pathMinusMime) {
@@ -685,77 +567,13 @@ public class Cif2CmlManager extends AbstractManager {
 		}	
 	}
 
-	private String calculateCheckcif(String cifPath) {
-		PostMethod filePost = null;
-		InputStream in = null;
-		String checkcif = "";
-
-		int maxTries = 5;
-		int count = 0;
-		boolean finished = false;
-		try {
-			while(count < maxTries && !finished) {
-				count++;
-				File f = new File(cifPath);
-				filePost = new PostMethod(
-						"http://dynhost1.iucr.org/cgi-bin/checkcif.pl");
-				Part[] parts = { new FilePart("file", f),
-						new StringPart("runtype", "fullpublication"),
-						new StringPart("UPLOAD", "Send CIF for checking") };
-				filePost.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
-						new DefaultHttpMethodRetryHandler(5, false));
-				filePost.setRequestEntity(new MultipartRequestEntity(parts,
-						filePost.getParams()));
-				HttpClient client = new HttpClient();
-				int statusCode = client.executeMethod(filePost);
-				if (statusCode != HttpStatus.SC_OK) {
-					LOG.warn("Could not connect to the IUCr Checkcif service.");
-					continue;
-				}
-				in = filePost.getResponseBodyAsStream();
-				checkcif = org.apache.commons.io.IOUtils.toString(in);
-				in.close();
-				if (checkcif.length() > 0) {
-					finished = true;
-				}
-			}
-		} catch (IOException e) {
-			LOG.warn("Error calculating checkcif, due to: "+e.getMessage());
-		} finally {
-			if (filePost != null) {
-				filePost.releaseConnection();
-			}
-			IOUtils.closeQuietly(in);
-		}
-		return checkcif;
-	}
-
-	private CMLMolecule getMolecule(CMLElement cml) {
+	private CMLMolecule getFirstParentMolecule(CMLElement cml) {
 		Nodes moleculeNodes = cml.query(CMLMolecule.NS, CML_XPATH);
 		if (moleculeNodes.size() != 1) {
 			LOG.warn("No molecule found.");
 			return null;
 		}
 		return (CMLMolecule) moleculeNodes.get(0);
-	}
-
-	private void addInchiToMolecule(CMLMolecule molecule) {
-		InchiTool tool = new InchiTool(molecule);
-		String inchi = tool.generateInchi("");
-		CMLIdentifier identifier = new CMLIdentifier();
-		identifier.setConvention("iupac:inchi");
-		identifier.appendChild(new Text(inchi));
-		molecule.appendChild(identifier);
-	}
-
-	private void calculateAndAddSmiles(CMLMolecule mol) {
-		String smiles = SmilesTool.generateSmiles(mol);
-		if (smiles != null) {
-			Element scalar = new Element("identifier", CML_NS);
-			scalar.addAttribute(new Attribute("convention", "daylight:smiles"));
-			scalar.appendChild(new Text(smiles));
-			mol.appendChild(scalar);
-		}
 	}
 
 	private void addBondLength(CMLBond bond, CMLMolecule cmlMol) {
@@ -826,7 +644,9 @@ public class Cif2CmlManager extends AbstractManager {
 			if (newMetalAtomIdList.size() > originalMetalAtomList.size()) {
 				// check old atoms for bonds to atoms with new IDs (as described in point 'a' above)
 				for (CMLAtom atom : originalMolecule.getAtoms()) {
-					if (isPolymeric) break;
+					if (isPolymeric) {
+						break;
+					}
 					String atomId = atom.getId();
 					Set<String> origSet = new HashSet<String>();
 					for (CMLAtom ligand : atom.getLigandAtoms()) {
@@ -836,7 +656,7 @@ public class Cif2CmlManager extends AbstractManager {
 					if (ligandAtoms.size() > origSet.size()) {
 						List<String> idList = new ArrayList<String>();
 						for (CMLAtom ligand : ligandAtoms) {
-							String idStart = getIdStart(ligand.getId());
+							String idStart = getIdPrefix(ligand.getId());
 							if (idStart == null) {
 								idList.add(ligand.getId());
 							} else {
@@ -845,12 +665,12 @@ public class Cif2CmlManager extends AbstractManager {
 						}
 						Collections.sort(idList);
 						for (CMLAtom a : mergedMolecule.getAtoms()) {
-							String aStart = getIdStart(a.getId());
+							String aStart = getIdPrefix(a.getId());
 							if (aStart != null) {
 								if (aStart.equals(atomId)) {
 									List<String> ligandIdList = new ArrayList<String>();
 									for (CMLAtom l : a.getLigandAtoms()) {
-										String lStart = getIdStart(l.getId());
+										String lStart = getIdPrefix(l.getId());
 										if (lStart == null) {
 											ligandIdList.add(l.getId());
 										} else {
@@ -872,38 +692,13 @@ public class Cif2CmlManager extends AbstractManager {
 		return isPolymeric;
 	}
 
-	private String getIdStart(String id) {
+	private String getIdPrefix(String id) {
 		if (id.contains(S_UNDER)) {
 			return id.substring(0,id.indexOf(S_UNDER));		
 		} else {
 			return null;
 		}
-	}
-
-	public void rearrangeChiralAtomsInBonds(CMLMolecule molecule) {
-		for (CMLMolecule subMol : molecule.getDescendantsOrMolecule()) {
-			StereochemistryTool st = new StereochemistryTool(subMol);
-			List<CMLAtom> chiralAtoms = st.getChiralAtoms();
-			List<CMLBond> toRemove = new ArrayList<CMLBond>();
-			List<CMLBond> toAdd = new ArrayList<CMLBond>();
-			for (CMLBond bond : subMol.getBonds()) {
-				CMLAtom secondAtom = bond.getAtom(1);
-				if (chiralAtoms.contains(secondAtom)) {
-					CMLBond newBond = new CMLBond(bond);
-					newBond.setAtomRefs2(bond.getAtom(1).getId()+" "+bond.getAtom(0).getId());
-					newBond.resetId(bond.getAtom(1).getId()+"_"+bond.getAtom(0).getId());
-					toAdd.add(newBond);
-					toRemove.add(bond);
-				}
-			}
-			for (CMLBond bond : toRemove) {
-				bond.detach();
-			}
-			for (CMLBond bond : toAdd) {
-				subMol.addBond(bond);
-			}
-		}
-	}		
+	}	
 
 	public static void main(String[] args) {
 		File propsFile = new File("e:/crystaleye-new/docs/cif-flow-props.txt");
