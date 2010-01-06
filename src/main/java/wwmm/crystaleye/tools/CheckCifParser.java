@@ -48,10 +48,11 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * <p>
  * Also note that the structure of CheckCIF HTML is horrible, with
- * virtually no nesting and no semantic naming going on.  This is
+ * virtually no nesting and no semantic naming.  This is
  * why the code looks rather labyrinthine.  In fact, I wrote this 
- * back in 2005 (now early 2009) and I can't even remember what half of 
- * it does.  But it works.  For now.  I hope Jim doesn't read this.
+ * back in 2005 (now early 2009) before I realised that docos are
+ * *a good idea* and now I can't even remember what half of it 
+ * does.  But it works.  For now.  I hope Jim doesn't read this.
  * </p>
  * 
  * @author Nick Day

@@ -17,14 +17,15 @@ import wwmm.crystaleye.util.Utils;
 /**
  * <p>
  * Takes a CML Molecule and strips away all parts that are not
- * necessary to describe the molecular skeleton.
+ * necessary to describe a crystals unit cell and contained
+ * connection tables.
  * </p>
  * 
  * @author Nick Day
  * @version 0.1
  *
  */
-public class MinimalCmlTool {
+public class MinimalCmlCrystalTool {
 
 	private CMLMolecule oldMol;
 	private CMLMolecule minimalMol;
@@ -32,11 +33,11 @@ public class MinimalCmlTool {
 	private static int NUM_DECIMAL_PLACES = 3;
 
 	// hide the default constructor
-	private MinimalCmlTool() {
+	private MinimalCmlCrystalTool() {
 		;
 	}
 
-	public MinimalCmlTool(CMLMolecule mol) {
+	public MinimalCmlCrystalTool(CMLMolecule mol) {
 		this.oldMol = mol;
 	}
 

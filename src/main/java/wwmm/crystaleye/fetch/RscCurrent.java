@@ -91,7 +91,7 @@ public class RscCurrent extends CurrentIssueFetcher {
 	}
 
 	public static void main(String[] args) {
-		RscCurrent rsc = new RscCurrent("c:\\workspace\\crystaleye-trunk-data\\docs\\cif-flow-props.txt");
+		RscCurrent rsc = new RscCurrent("e:\\crystaleye-new\\docs\\cif-flow-props.txt");
 		rsc.execute();
 	}
 }

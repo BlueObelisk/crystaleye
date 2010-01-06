@@ -93,8 +93,40 @@ public class AcsBacklog extends Fetcher {
 
 	public static void main(String[] args) {
 		String props = "E:\\crystaleye-new\\docs\\cif-flow-props.txt";
-		for (int i = 42; i < 44; i++) {
+		for (int i = 23; i < 25; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.CHEMISTRY_OF_MATERIALS, "2009", String.valueOf(i));
+			ab.fetch();
+		}
+		for (int i = 23; i < 25; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.INORGANIC_CHEMISTRY, "2009", String.valueOf(i));
+			ab.fetch();
+		}
+		for (int i = 44; i < 53; i++) {
 			AcsBacklog ab = new AcsBacklog(props, AcsJournal.JOURNAL_OF_THE_AMERICAN_CHEMICAL_SOCIETY, "2009", String.valueOf(i));
+			ab.fetch();
+		}
+		for (int i = 7; i < 13; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.JOURNAL_OF_COMBINATORIAL_CHEMISTRY, "2009", String.valueOf(i));
+			ab.fetch();
+		}
+		for (int i = 11; i < 12; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.JOURNAL_OF_NATURAL_PRODUCTS, "2009", String.valueOf(i));
+			ab.fetch();
+		}
+		for (int i = 23; i < 25; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.THE_JOURNAL_OF_ORGANIC_CHEMISTRY, "2009", String.valueOf(i));
+			ab.fetch();
+		}
+		for (int i = 23; i < 25; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.MACROMOLECULES, "2009", String.valueOf(i));
+			ab.fetch();
+		}
+		for (int i = 23; i < 25; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.ORGANOMETALLICS, "2009", String.valueOf(i));
+			ab.fetch();
+		}
+		for (int i = 23; i < 25; i++) {
+			AcsBacklog ab = new AcsBacklog(props, AcsJournal.ORGANIC_LETTERS, "2009", String.valueOf(i));
 			ab.fetch();
 		}
 	}

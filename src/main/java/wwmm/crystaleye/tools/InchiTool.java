@@ -29,8 +29,16 @@ public class InchiTool {
 	CMLMolecule molecule;
 
 	private static final Logger LOG = Logger.getLogger(InchiTool.class);
+	
+	public InchiTool() {
+		;
+	}
 
 	public InchiTool(CMLMolecule molecule) {
+		this.molecule = molecule;
+	}
+	
+	public void setMolecule(CMLMolecule molecule) {
 		this.molecule = molecule;
 	}
 
@@ -75,6 +83,9 @@ public class InchiTool {
 	 * <code>JniInchiInput</code>.
 	 */
 	private JniInchiInput getInchiInput(String options) throws JniInchiException {
+		if (molecule == null) {
+			throw new IllegalStateException("Must set molecule before calling this method.");
+		}
 		JniInchiInput input = new JniInchiInput(options);
 		Map<String, JniInchiAtom> jniAtomList = new HashMap<String, JniInchiAtom>(molecule.getAtomCount());
 		for (CMLAtom atom : molecule.getAtoms()) {

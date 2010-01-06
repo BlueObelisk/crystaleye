@@ -117,15 +117,7 @@ public class ActaBacklog extends Fetcher {
 
 	public static void main(String[] args) {
 		String props = "e:/crystaleye-new/docs/cif-flow-props.txt";
-		for (int i = 1; i < 7; i++) {
-			ActaBacklog acta = new ActaBacklog(props, "a","2009", "0"+i, "00");
-			acta.fetch();
-		}
-		for (int i = 1; i < 7; i++) {
-			ActaBacklog acta = new ActaBacklog(props, "b","2009", "0"+i, "00");
-			acta.fetch();
-		}
-		for (int i = 1; i < 12; i++) {
+		for (int i = 12; i < 13; i++) {
 			String issue = null;
 			if (i < 10) {
 				issue = "0"+i;
@@ -135,17 +127,7 @@ public class ActaBacklog extends Fetcher {
 			ActaBacklog acta = new ActaBacklog(props, "c","2009", issue, "00");
 			acta.fetch();
 		}
-		for (int i = 1; i < 12; i++) {
-			String issue = null;
-			if (i < 10) {
-				issue = "0"+i;
-			} else {
-				issue = ""+i;
-			}
-			ActaBacklog acta = new ActaBacklog(props, "d","2009", issue, "00");
-			acta.fetch();
-		}
-		for (int i = 1; i < 12; i++) {
+		for (int i = 12; i < 13; i++) {
 			String issue = null;
 			if (i < 10) {
 				issue = "0"+i;
@@ -153,24 +135,6 @@ public class ActaBacklog extends Fetcher {
 				issue = ""+i;
 			}
 			ActaBacklog acta = new ActaBacklog(props, "e","2009", issue, "00");
-			acta.fetch();
-		}
-		for (int i = 1; i < 12; i++) {
-			String issue = null;
-			if (i < 10) {
-				issue = "0"+i;
-			} else {
-				issue = ""+i;
-			}
-			ActaBacklog acta = new ActaBacklog(props, "f","2009", issue, "00");
-			acta.fetch();
-		}
-		for (int i = 1; i < 7; i++) {
-			ActaBacklog acta = new ActaBacklog(props, "j","2009", "0"+i, "00");
-			acta.fetch();
-		}
-		for (int i = 1; i < 7; i++) {
-			ActaBacklog acta = new ActaBacklog(props, "s","2009", "0"+i, "00");
 			acta.fetch();
 		}
 	}
