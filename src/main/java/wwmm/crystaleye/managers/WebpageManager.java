@@ -56,6 +56,7 @@ import wwmm.crystaleye.site.templates.FragmentSummaryToc;
 import wwmm.crystaleye.site.templates.MoietySummaryToc;
 import wwmm.crystaleye.site.templates.SingleCifSummary;
 import wwmm.crystaleye.site.templates.SingleStructureSummary;
+import wwmm.crystaleye.util.CMLUtils;
 import wwmm.crystaleye.util.ChemistryUtils;
 import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.FreemarkerUtils;
@@ -1153,7 +1154,7 @@ public class WebpageManager extends AbstractManager {
 					// don't do anything - assume isn't boring
 				}
 				Nodes nonUnitOccNodes = mo.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
-				if (DisorderTool.isDisordered(mo) || mo.hasCloseContacts() || nonUnitOccNodes.size() != 0 || !Cif2CmlManager.hasBondOrdersAndCharges(mo)) {
+				if (DisorderTool.isDisordered(mo) || mo.hasCloseContacts() || nonUnitOccNodes.size() != 0 || !CMLUtils.hasBondOrdersAndCharges(mo)) {
 					continue;
 				}
 				maxImage++;

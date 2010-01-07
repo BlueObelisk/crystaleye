@@ -8,6 +8,8 @@ public interface CrystalEyeConstants {
 	
 	public static final String CRYSTALEYE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";	
 	
+	public static final int MAX_RINGS_FOR_SMILES_CALCULATION = 15;
+	
 	/*
 	 * process flags for download log
 	 */
