@@ -1,17 +1,22 @@
 package wwmm.crystaleye.util;
 
 import static org.xmlcml.cml.base.CMLConstants.CML_NS;
+import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
+import static wwmm.crystaleye.CrystalEyeConstants.NO_BONDS_OR_CHARGES_FLAG_DICTREF;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import nu.xom.Attribute;
 import nu.xom.Element;
+import nu.xom.Nodes;
 import nu.xom.Text;
 
+import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLBond;
 import org.xmlcml.cml.element.CMLIdentifier;
+import org.xmlcml.cml.element.CMLMetadata;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.tools.StereochemistryTool;
 
@@ -21,6 +26,23 @@ import wwmm.crystaleye.tools.SmilesTool;
 
 public class CMLUtils {
 	
+	public static CMLMolecule getFirstParentMolecule(CMLElement cml) {
+		Nodes moleculeNodes = cml.query(CMLMolecule.NS, CML_XPATH);
+		if (moleculeNodes.size() != 1) {
+			return null;
+		}
+		return (CMLMolecule) moleculeNodes.get(0);
+	}
+	
+	public static boolean hasBondOrdersAndCharges(CMLMolecule molecule) {
+		boolean hasBOAC = true;
+		Nodes flagNodes = molecule.query(".//"+CMLMetadata.NS+"[@dictRef='"+NO_BONDS_OR_CHARGES_FLAG_DICTREF+"']", CML_XPATH);
+		if (flagNodes.size() > 0) {
+			hasBOAC = false;
+		}
+		return hasBOAC;
+	}
+	
 	/**
 	 * <p>
 	 * Calculates the InChI for the provided CMLMolecule and appends
@@ -29,7 +51,7 @@ public class CMLUtils {
 	 * 
 	 * @param molecule
 	 */
-	public static void addInchiToMolecule(CMLMolecule molecule) {
+	public static void calculateAndAddInchi(CMLMolecule molecule) {
 		InchiTool tool = new InchiTool(molecule);
 		String inchi = tool.generateInchi("");
 		CMLIdentifier identifier = new CMLIdentifier();

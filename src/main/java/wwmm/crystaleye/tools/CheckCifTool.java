@@ -39,7 +39,7 @@ public class CheckCifTool {
 	private final String POST_ENDPOINT = "http://dynhost1.iucr.org/cgi-bin/checkcif.pl";
 	private PostMethod postMethod;
 	
-	private static final Logger LOG = Logger.getLogger(CheckCifParser.class);
+	private static final Logger LOG = Logger.getLogger(CheckCifTool.class);
 	
 	/**
 	 * <p>

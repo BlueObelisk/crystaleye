@@ -25,9 +25,8 @@ public class SplitCifTool {
 	private static final Logger LOG = Logger.getLogger(SplitCifTool.class);
 	
 	public List<File> split(File cifFile) {
-		String fileName = cifFile.getAbsolutePath();
 		List<File> splitCifList = new ArrayList<File>();
-		// split the found CIF
+		
 		try {
 			CIFParser parser = new CIFParser();
 			parser.setSkipHeader(true);
@@ -113,7 +112,7 @@ public class SplitCifTool {
 				}
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("Problem parsing CIF ("+fileName+"), due to: "+e.getMessage(), e);
+			throw new RuntimeException("Problem parsing CIF ("+cifFile+"), due to: "+e.getMessage(), e);
 		}
 		return splitCifList;
 	}

@@ -66,6 +66,7 @@ import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.site.templates.BondLengthElementIndex;
 import wwmm.crystaleye.site.templates.BondLengthIndex;
 import wwmm.crystaleye.site.templates.CifSummaryToc;
+import wwmm.crystaleye.util.CMLUtils;
 import wwmm.crystaleye.util.ChemistryUtils;
 import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.Utils;
@@ -971,7 +972,7 @@ public class BondLengthsManager extends AbstractManager {
 		for (CMLMolecule subMol : uniqueMolList) {	
 			Nodes nonUnitOccNodes = subMol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 			if (!DisorderTool.isDisordered(subMol) && !subMol.hasCloseContacts() && nonUnitOccNodes.size() == 0
-					&& Cif2CmlManager.hasBondOrdersAndCharges(subMol)) {
+					&& CMLUtils.hasBondOrdersAndCharges(subMol)) {
 				if (ChemistryUtils.isBoringMolecule(subMol)) {
 					continue;
 				}

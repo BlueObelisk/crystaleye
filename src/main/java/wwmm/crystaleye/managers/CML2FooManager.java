@@ -6,6 +6,7 @@ import static org.xmlcml.euclid.EuclidConstants.S_UNDER;
 import static wwmm.crystaleye.CrystalEyeConstants.CIF2CML;
 import static wwmm.crystaleye.CrystalEyeConstants.CML2FOO;
 import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants.MAX_RINGS_FOR_SMILES_CALCULATION;
 import static wwmm.crystaleye.CrystalEyeConstants.NED24_NS;
 import static wwmm.crystaleye.CrystalEyeConstants.POLYMERIC_FLAG_DICTREF;
 
@@ -49,6 +50,7 @@ import wwmm.crystaleye.tools.Cml2PngTool;
 import wwmm.crystaleye.tools.InchiTool;
 import wwmm.crystaleye.tools.SmilesTool;
 import wwmm.crystaleye.util.CDKUtils;
+import wwmm.crystaleye.util.CMLUtils;
 import wwmm.crystaleye.util.ChemistryUtils;
 import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.Utils;
@@ -59,7 +61,6 @@ public class CML2FooManager extends AbstractManager {
 	private static final Logger LOG = Logger.getLogger(CML2FooManager.class);
 
 	private String doi;
-	static final int MAX_RINGS = 15;
 
 	private CML2FooManager() {
 		;
@@ -167,7 +168,7 @@ public class CML2FooManager extends AbstractManager {
 				for (CMLMolecule subMol : uniqueMolList) {	
 					Nodes nonUnitOccNodes = subMol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 					if (!DisorderTool.isDisordered(subMol) && !subMol.hasCloseContacts() && nonUnitOccNodes.size() == 0
-							&& Cif2CmlManager.hasBondOrdersAndCharges(subMol)) {
+							&& CMLUtils.hasBondOrdersAndCharges(subMol)) {
 						if (ChemistryUtils.isBoringMolecule(subMol)) {
 							continue;
 						}
@@ -384,7 +385,7 @@ public class CML2FooManager extends AbstractManager {
 
 		addInChIToRGroupMolecule(molR);
 		if (!compoundClass.equals(CompoundClass.INORGANIC.toString())) {
-			if (getNumberOfRings(fragCopy) < MAX_RINGS) {
+			if (getNumberOfRings(fragCopy) < MAX_RINGS_FOR_SMILES_CALCULATION) {
 				String smiles = SmilesTool.generateSmiles(fragCopy);
 				if (smiles != null) {
 					addSmiles2Molecule(smiles, molR);
@@ -411,7 +412,7 @@ public class CML2FooManager extends AbstractManager {
 		for (CMLMolecule mol : mergedMolecule.getDescendantsOrMolecule()) {
 			Nodes nonUnitOccNodes = mol.query(".//"+CMLAtom.NS+"[@occupancy[. < 1]]", CML_XPATH);
 			if (!DisorderTool.isDisordered(mol) && !mol.hasCloseContacts() && nonUnitOccNodes.size() == 0
-					&& Cif2CmlManager.hasBondOrdersAndCharges(mol)) {
+					&& CMLUtils.hasBondOrdersAndCharges(mol)) {
 				moiCount++;
 				if (ChemistryUtils.isBoringMolecule(mol)) continue;
 				// remove crystal nodes from molecule if they exist
@@ -501,7 +502,7 @@ public class CML2FooManager extends AbstractManager {
 					// need to calculated inchi and smiles before R groups added
 					addInChIToRGroupMolecule(sproutR);
 					if (!compoundClass.equals(CompoundClass.INORGANIC.toString())) {
-						if (getNumberOfRings(sprout) < MAX_RINGS) {
+						if (getNumberOfRings(sprout) < MAX_RINGS_FOR_SMILES_CALCULATION) {
 							String sproutSmiles= SmilesTool.generateSmiles(sprout);
 							addSmiles2Molecule(sproutSmiles, sproutR);
 						}
@@ -535,7 +536,7 @@ public class CML2FooManager extends AbstractManager {
 						addInChIToRGroupMolecule(sprout2R);
 						if (!compoundClass.equals(CompoundClass.INORGANIC.toString())) {
 							// need to calculated inchi and smiles before R groups added
-							if (getNumberOfRings(sprout2) < MAX_RINGS) {
+							if (getNumberOfRings(sprout2) < MAX_RINGS_FOR_SMILES_CALCULATION) {
 								String sprout2Smiles = SmilesTool.generateSmiles(sprout2);
 								addSmiles2Molecule(sprout2Smiles, sprout2R);
 							}
