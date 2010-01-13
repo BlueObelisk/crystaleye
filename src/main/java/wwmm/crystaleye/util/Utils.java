@@ -4,7 +4,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.CRYSTALEYE_DATE_FORMAT;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
@@ -77,17 +76,17 @@ public class Utils {
 		}
 	}
 
-	public static void writeXML(Document doc, String fileName)  {
-		File writeFile = new File(fileName).getParentFile();
+	public static void writeXML(File file, Document doc)  {
+		File writeFile = file.getParentFile();
 		if (!writeFile.exists()) {
 			writeFile.mkdirs();
 		}
 		try {
-			Serializer serializer = new Serializer(new FileOutputStream(fileName));
+			Serializer serializer = new Serializer(FileUtils.openOutputStream(file));
 			serializer.setIndent(2);
 			serializer.write(doc);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not write XML file to "+fileName);
+			throw new RuntimeException("Could not write XML file to "+file);
 		}
 	}
 

@@ -28,13 +28,13 @@ public abstract class AbstractManager {
 
 	public void updateProps(String downloadLogPath, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum, String managerTag) {
 		String issueCode = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum;
-		File propsPath = new File(downloadLogPath);
-		Document doc = Utils.parseXml(propsPath);
+		File propsFile = new File(downloadLogPath);
+		Document doc = Utils.parseXml(propsFile);
 		Nodes procNodes = doc.query("//publisher[@abbreviation='"+publisherAbbreviation+"']/journal[@abbreviation='"+journalAbbreviation+"']/year[@id='"+year+"']/issue[@id='"+issueNum+"']/"+managerTag);
 		if (procNodes.size() != 0){
 			Element proc = (Element) procNodes.get(0);
 			proc.getAttribute("value").setValue("true");
-			Utils.writeXML(doc, propsPath.getAbsolutePath());
+			Utils.writeXML(propsFile, doc);
 			LOG.info("Updated "+downloadLogPath+" - "+managerTag+"=true ("+issueCode+")");
 		} else {
 			throw new RuntimeException("Attempted to update "+downloadLogPath+" but could not locate element ("+issueCode+")");

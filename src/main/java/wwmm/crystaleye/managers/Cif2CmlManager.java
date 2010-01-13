@@ -125,7 +125,7 @@ public class Cif2CmlManager extends AbstractManager {
 				
 				CMLCml cml = new RawCml2CompleteCmlTool().convert(rawCmlFile);
 				Utils.writeDateStamp(pathMinusMime+DATE_MIME);
-				Utils.writeXML(cml.getDocument(), pathMinusMime+COMPLETE_CML_MIME);
+				Utils.writeXML(new File(pathMinusMime+COMPLETE_CML_MIME), cml.getDocument());
 				String id = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum+"_"+suppId;
 				setCmlAndParentMolId(cml, id);
 				

@@ -41,7 +41,7 @@ public class FixAcsDois {
 										scalar.setDictRef("idf:doi");
 										scalar.appendChild(new Text(doi));
 										root.appendChild(scalar);
-										Utils.writeXML(root.getDocument(), f.getAbsolutePath());
+										Utils.writeXML(f, root.getDocument());
 									}
 								}
 							}
