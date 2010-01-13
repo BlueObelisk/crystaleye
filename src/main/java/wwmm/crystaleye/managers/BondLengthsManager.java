@@ -307,13 +307,13 @@ public class BondLengthsManager extends AbstractManager {
 			String allBondsPath = bondLengthsDir+"/"+bondType+CSV_MIME;
 			Document allHist = getHistogram(allBondsPath, bondType, false);
 			String allHistOutPath = bondLengthsDir+"/"+bondType+SVG_MIME;
-			Utils.writeXML(allHist, allHistOutPath);
+			Utils.writeXML(new File(allHistOutPath), allHist);
 
 			String protocolBondsPath = bondLengthsDir+"/"+bondType+AFTER_PROTOCOL+CSV_MIME;
 			if (new File(protocolBondsPath).exists()) {
 				Document protocolHist = getHistogram(protocolBondsPath, bondType, true);
 				String protocolHistOutPath = bondLengthsDir+"/"+bondType+AFTER_PROTOCOL+SVG_MIME;
-				Utils.writeXML(protocolHist, protocolHistOutPath);
+				Utils.writeXML(new File(protocolHistOutPath), protocolHist);
 			}
 		}	
 	}

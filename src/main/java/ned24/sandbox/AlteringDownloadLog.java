@@ -78,7 +78,7 @@ public class AlteringDownloadLog {
 			}
 		}
 		
-		Utils.writeXML(doc, logPath+".2");
+		Utils.writeXML(new File(logPath+".2"), doc);
 	}
 
 }

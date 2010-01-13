@@ -98,7 +98,7 @@ public class PolyhedronBacklog {
 		} else {
 			throw new RuntimeException("Should have found 1 issueNode, found "+issueNodes.size());
 		}
-		Utils.writeXML(logDoc, logPath);
+		Utils.writeXML(new File(logPath), logDoc);
 	}
 
 	public boolean alreadyFinishedIssue(YearAndIssue yi) {

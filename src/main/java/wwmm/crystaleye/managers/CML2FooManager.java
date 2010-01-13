@@ -227,7 +227,7 @@ public class CML2FooManager extends AbstractManager {
 		}
 	}
 
-	private String getOutfile(File writeDir, String id, 
+	private String getOutPath(File writeDir, String id, 
 			String fragType, String typePrefix, int subMol, int serial, String mime) {
 		String s = writeDir.getAbsolutePath();
 		File dir = new File(s + "/" + fragType);
@@ -396,9 +396,9 @@ public class CML2FooManager extends AbstractManager {
 		addAtomSequenceNumbers(molR);
 		addDoi(molR);
 		molR.setId(subMolecule.getId()+"_"+fragType+"_"+subMolCount+"_"+count);
-		String outfile = getOutfile(dir, id, fragType, "", subMolCount, count, COMPLETE_CML_MIME);
-		Utils.writeXML(new Document(molR), outfile);
-		String pathMinusMime = Utils.getPathMinusMimeSet(outfile);
+		String outPath = getOutPath(dir, id, fragType, "", subMolCount, count, COMPLETE_CML_MIME);
+		Utils.writeXML(new File(outPath), new Document(molR));
+		String pathMinusMime = Utils.getPathMinusMimeSet(outPath);
 		for (CMLAtom atom : molR.getAtoms()) {
 			if ("R".equals(atom.getChemicalElement().getSymbol())) {
 				atom.setElementType("Xx");
@@ -426,7 +426,7 @@ public class CML2FooManager extends AbstractManager {
 				String outPath = moiDir+"/"+moiName+COMPLETE_CML_MIME;
 				String pathMinusMime = outPath.substring(0,outPath.indexOf(COMPLETE_CML_MIME));
 				addDoi(mol);
-				Utils.writeXML(new Document((Element)mol.copy()), outPath);
+				Utils.writeXML(new File(outPath), new Document((Element)mol.copy()));
 				String smallPngPath = pathMinusMime+".small.png";
 				String pngPath = pathMinusMime+".png";
 				write2dImage(pngPath, mol, 600, 600, true);
@@ -481,9 +481,9 @@ public class CML2FooManager extends AbstractManager {
 					addAtomSequenceNumbers(atomR);
 					addDoi(atomR);
 					atomR.setId(subMolecule.getId()+"_atom-nuc_"+subMol+"_"+atomCount);
-					String outfile = getOutfile(dir, id, "atom-nuc", "", subMol, atomCount, COMPLETE_CML_MIME);
-					Utils.writeXML(new Document(atomR), outfile);
-					String pathMinusMime = Utils.getPathMinusMimeSet(outfile);
+					String outPath = getOutPath(dir, id, "atom-nuc", "", subMol, atomCount, COMPLETE_CML_MIME);
+					Utils.writeXML(new File(outPath), new Document(atomR));
+					String pathMinusMime = Utils.getPathMinusMimeSet(outPath);
 					for (CMLAtom at : atomR.getAtoms()) {
 						if ("R".equals(at.getChemicalElement().getSymbol())) {
 							at.setElementType("Xx");
@@ -511,10 +511,10 @@ public class CML2FooManager extends AbstractManager {
 					addAtomSequenceNumbers(sproutR);
 					addDoi(sproutR);
 					sproutR.setId(subMolecule.getId()+"_atom-nuc-sprout-1_"+subMol+"_"+atomCount);
-					outfile = getOutfile(dir, id, "atom-nuc-sprout-1", "", subMol, atomCount, COMPLETE_CML_MIME);
-					pathMinusMime = Utils.getPathMinusMimeSet(outfile);	          
+					outPath = getOutPath(dir, id, "atom-nuc-sprout-1", "", subMol, atomCount, COMPLETE_CML_MIME);
+					pathMinusMime = Utils.getPathMinusMimeSet(outPath);	          
 
-					Utils.writeXML(new Document(sproutR), outfile);
+					Utils.writeXML(new File(outPath), new Document(sproutR));
 					for (CMLAtom at : sproutR.getAtoms()) {
 						if ("R".equals(at.getChemicalElement().getSymbol())) {
 							at.setElementType("Xx");
@@ -546,9 +546,9 @@ public class CML2FooManager extends AbstractManager {
 						addDoi(sprout2R);
 						sprout2R.setId(subMolecule.getId()+"_atom-nuc-sprout-2_"+subMol+"_"+atomCount);
 
-						outfile = getOutfile(dir, id, "atom-nuc-sprout-2", "", subMol, atomCount, COMPLETE_CML_MIME);
-						pathMinusMime = Utils.getPathMinusMimeSet(outfile);
-						Utils.writeXML(new Document(sprout2R), outfile);
+						outPath = getOutPath(dir, id, "atom-nuc-sprout-2", "", subMol, atomCount, COMPLETE_CML_MIME);
+						pathMinusMime = Utils.getPathMinusMimeSet(outPath);
+						Utils.writeXML(new File(outPath), new Document(sprout2R));
 						for (CMLAtom at : sprout2R.getAtoms()) {
 							if ("R".equals(at.getChemicalElement().getSymbol())) {
 								at.setElementType("Xx");

@@ -112,7 +112,7 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 			yearEl.appendChild(getNewIssueElement(issueNum));
 		}
 
-		Utils.writeXML(doc, downloadLogPath);
+		Utils.writeXML(new File(downloadLogPath), doc);
 		LOG.info("Updated "+downloadLogPath+" by adding "+year+"-"+issueNum);
 	}
 
