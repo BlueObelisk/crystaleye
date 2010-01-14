@@ -3,6 +3,9 @@ package ned24.sandbox;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.xmlcml.cml.base.CMLConstants;
@@ -110,13 +113,20 @@ public class RSSFeedCreationTool implements CMLConstants {
 			for (int j = i; j < 105; j++) {
 				ChemicalElement ce2 = ChemicalElement.getElement(j);
 				String symbol2 = ce2.getSymbol();
-				String feedTitle = "CrystalEye: Structures containing bonds of "+symbol1+"-"+symbol2;
-				String feedDescription = "CrystalEye summary of structures containing bonds of "+symbol1+"-"+symbol2+".";
+				
+				List<String> symbols = new ArrayList<String>(2);
+				symbols.add(symbol1);
+				symbols.add(symbol2);
+				Collections.sort(symbols);
+				String bondStr = symbols.get(0)+"-"+symbols.get(1);
+				
+				String feedTitle = "CrystalEye: Structures containing bonds of "+bondStr;
+				String feedDescription = "CrystalEye summary of structures containing bonds of "+bondStr+".";
 				String feedAuthor = "Chris Talbot";
 				
 				AtomArchiveFeed feed = new AtomArchiveFeed();
-				File feedFile = new File(feedWriteDir+"/bonds/"+symbol1+"-"+symbol2+"/feed.xml");
-				String feedUrl = "http://wwmm.ch.cam.ac.uk/crystaleye/feed/bonds/"+symbol1+"-"+symbol2+"/feed.xml";
+				File feedFile = new File(feedWriteDir+"/bonds/"+bondStr+"/feed.xml");
+				String feedUrl = "http://wwmm.ch.cam.ac.uk/crystaleye/feed/bonds/"+bondStr+"/feed.xml";
 				feed.initFeedWithRandomUuidAsId(feedFile, feedUrl, feedTitle, feedDescription, feedAuthor);
 			}
 		}
@@ -137,7 +147,7 @@ public class RSSFeedCreationTool implements CMLConstants {
 	}
 
 	public static void main(String[] args) {
-		RSSFeedCreationTool c = new RSSFeedCreationTool("e:/crystaleye-new/docs/cif-flow-props.txt");
+		RSSFeedCreationTool c = new RSSFeedCreationTool("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
 
 		c.createJournalRssFeeds();
 		c.createAtomsRssFeeds();

@@ -7,7 +7,7 @@
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
 		<meta http-equiv="imagetoolbar" content="no" />
-		<link href="styles.css" rel="stylesheet" type="text/css" media="all" />
+		<link href="${pathToRoot}styles.css" rel="stylesheet" type="text/css" media="all" />
 		<link rel="alternate" type="application/atom+xml" title="CrystalEye: All structures (Atom 1)"
 			href="http://wwmm.ch.cam.ac.uk/crystaleye/feed/all/rss/atom_10/feed.xml" />
 		<link rel="alternate" type="application/rss+xml" title="CrystalEye: All structures (RSS 1)"

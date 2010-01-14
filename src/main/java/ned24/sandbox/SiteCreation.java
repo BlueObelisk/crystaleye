@@ -44,6 +44,8 @@ public class SiteCreation {
 		File feedHomePage = new File(outDir, "feed/index.html");
 		SimpleHash feedHomeMap = new SimpleHash();
 		feedHomeMap.put("pageTitle", "CrystalEye: RSS feeds");
+		feedHomeMap.put("pathToRoot", "../");
+		feedHomeMap.put("currentMenuSelected", "feeds");
 		FreemarkerUtils.writeHtmlTemplate("feed-homepage.ftl", feedHomePage, feedHomeMap);
 		
 		createAllFeedPages();
@@ -57,6 +59,8 @@ public class SiteCreation {
 		File journalFeedPage = new File(outDir, "feed/journal/index.html");
 		SimpleHash journalFeedMap = new SimpleHash();
 		journalFeedMap.put("pageTitle", "CrystalEye: RSS feeds");
+		journalFeedMap.put("pathToRoot", "../../");
+		journalFeedMap.put("currentMenuSelected", "feeds");
 		SimpleSequence publishers = new SimpleSequence();
 		journalFeedMap.put("publishers", publishers);
 		
@@ -132,6 +136,8 @@ public class SiteCreation {
 		File classFeedPage = new File(outDir, "feed/class/index.html");
 		SimpleHash classFeedMap = new SimpleHash();
 		classFeedMap.put("pageTitle", "CrystalEye: RSS feeds");
+		classFeedMap.put("pathToRoot", "../../");
+		classFeedMap.put("currentMenuSelected", "feeds");
 		FreemarkerUtils.writeHtmlTemplate("feed-class-index.ftl", classFeedPage, classFeedMap);
 	}
 	
@@ -139,6 +145,8 @@ public class SiteCreation {
 		File atomsFeedPage = new File(outDir, "feed/atoms/index.html");
 		SimpleHash atomsFeedMap = new SimpleHash();
 		atomsFeedMap.put("pageTitle", "CrystalEye: RSS feeds");
+		atomsFeedMap.put("pathToRoot", "../../");
+		atomsFeedMap.put("currentMenuSelected", "feeds");
 		SimpleSequence atoms = new SimpleSequence();
 		atomsFeedMap.put("atoms", atoms);
 		for (int i = 1; i < 105; i++) {
@@ -159,6 +167,8 @@ public class SiteCreation {
 		File bondsFeedPage = new File(outDir, "feed/bonds/index.html");
 		SimpleHash bondsFeedMap = new SimpleHash();
 		bondsFeedMap.put("pageTitle", "CrystalEye: RSS feeds");
+		bondsFeedMap.put("pathToRoot", "../../");
+		bondsFeedMap.put("currentMenuSelected", "feeds");
 		SimpleSequence atoms = new SimpleSequence();
 		bondsFeedMap.put("atoms", atoms);
 		for (int i = 1; i < 105; i++) {
@@ -174,6 +184,8 @@ public class SiteCreation {
 		for (int i = 1; i < 105; i++) {
 			SimpleHash bondsFeedMap = new SimpleHash();
 			bondsFeedMap.put("pageTitle", "CrystalEye: RSS feeds");
+			bondsFeedMap.put("pathToRoot", "../../");
+			bondsFeedMap.put("currentMenuSelected", "feeds");
 			SimpleSequence bonds = new SimpleSequence();
 			bondsFeedMap.put("bonds", bonds);
 			ChemicalElement ce1 = ChemicalElement.getElement(i);
@@ -193,6 +205,8 @@ public class SiteCreation {
 		File allFeedPage = new File(outDir, "feed/all/index.html");
 		SimpleHash allFeedMap = new SimpleHash();
 		allFeedMap.put("pageTitle", "CrystalEye: RSS feeds");
+		allFeedMap.put("pathToRoot", "../../");
+		allFeedMap.put("currentMenuSelected", "feeds");
 		FreemarkerUtils.writeHtmlTemplate("feed-all-index.ftl", allFeedPage, allFeedMap);
 	}
 	
@@ -200,11 +214,15 @@ public class SiteCreation {
 		File summaryHomePage = new File(outDir, "summary/index.html");
 		SimpleHash summaryHomeMap = new SimpleHash();
 		summaryHomeMap.put("pageTitle", "CrystalEye: Browse structures");
+		summaryHomeMap.put("pathToRoot", "../");
+		summaryHomeMap.put("currentMenuSelected", "summary");
 		FreemarkerUtils.writeHtmlTemplate("journal-index.ftl", summaryHomePage, summaryHomeMap);
 		
 		File summaryNotesPage = new File(outDir, "summary/notes.html");
 		SimpleHash summaryNotesMap = new SimpleHash();
 		summaryNotesMap.put("pageTitle", "CrystalEye: Points for browsing structures");
+		summaryNotesMap.put("pathToRoot", "../");
+		summaryNotesMap.put("currentMenuSelected", "summary");
 		FreemarkerUtils.writeHtmlTemplate("browsing-notes.ftl", summaryNotesPage, summaryNotesMap);
 	}
 	
@@ -212,6 +230,8 @@ public class SiteCreation {
 		File faqHomePage = new File(outDir, "faq/index.html");
 		SimpleHash map = new SimpleHash();
 		map.put("pageTitle", "CrystalEye: Frequently Asked Questions");
+		map.put("pathToRoot", "../");
+		map.put("currentMenuSelected", "faq");
 		FreemarkerUtils.writeHtmlTemplate("faq.ftl", faqHomePage, map);
 	}
 	
@@ -219,6 +239,8 @@ public class SiteCreation {
 		File gmHomePage = new File(outDir, "gm/index.html");
 		SimpleHash map = new SimpleHash();
 		map.put("pageTitle", "CrystalEye: Greasemonkey");
+		map.put("pathToRoot", "../");
+		map.put("currentMenuSelected", "greasemonkey");
 		FreemarkerUtils.writeHtmlTemplate("greasemonkey.ftl", gmHomePage, map);
 	}
 
@@ -232,7 +254,7 @@ public class SiteCreation {
 	}
 
 	public static void main(String[] args) {
-		File outDir = new File("e:/crystaleye-website-test");
+		File outDir = new File("c:/workspace/crystaleye-website-test");
 		SiteCreation sc = new SiteCreation(outDir);
 		sc.createWebsite();
 	}
@@ -264,7 +286,6 @@ public class SiteCreation {
 			}
 
 		}
-		
 	}
 
 
