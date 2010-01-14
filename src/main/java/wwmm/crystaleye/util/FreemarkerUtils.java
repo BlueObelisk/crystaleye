@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateHashModel;
+import freemarker.template.TemplateModelException;
 
 /**
  * Utility class for generic methods for using the Freemarker
@@ -24,6 +25,13 @@ public class FreemarkerUtils {
 	public static Configuration getConfiguration() {
 		Configuration cfg = new Configuration();
 		cfg.setClassForTemplateLoading(cfg.getClass(), "/freemarker");
+		try {
+			// TODO - move these out to a properties file somewhere.
+			cfg.setSharedVariable("crystaleyeSiteUrl", "http://wwmm.ch.cam.ac.uk/crystaleye");
+			cfg.setSharedVariable("wwmmSandboxSiteUrl", "http://wwmm-sandbox.ch.cam.ac.uk");
+		} catch (TemplateModelException e) {
+			throw new IllegalStateException("This shouldn't happen!.");
+		}
 		return cfg;
 	}
 	

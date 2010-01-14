@@ -7,7 +7,7 @@
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
 		<meta http-equiv="imagetoolbar" content="no" />
-		<link href="../styles.css" rel="stylesheet" type="text/css"
+		<link href="${pathToRoot}styles.css" rel="stylesheet" type="text/css"
 			media="all" />
 	</head>
 	<body>
