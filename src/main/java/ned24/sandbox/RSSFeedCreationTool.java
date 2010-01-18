@@ -147,7 +147,7 @@ public class RSSFeedCreationTool implements CMLConstants {
 	}
 
 	public static void main(String[] args) {
-		RSSFeedCreationTool c = new RSSFeedCreationTool("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
+		RSSFeedCreationTool c = new RSSFeedCreationTool("e:/crystaleye-new/docs/cif-flow-props.txt");
 
 		c.createJournalRssFeeds();
 		c.createAtomsRssFeeds();
