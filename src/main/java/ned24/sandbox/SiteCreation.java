@@ -254,7 +254,7 @@ public class SiteCreation {
 	}
 
 	public static void main(String[] args) {
-		File outDir = new File("c:/workspace/crystaleye-website-test");
+		File outDir = new File("e:/crystaleye-website-test");
 		SiteCreation sc = new SiteCreation(outDir);
 		sc.createWebsite();
 	}

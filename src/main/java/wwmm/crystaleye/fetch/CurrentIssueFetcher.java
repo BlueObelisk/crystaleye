@@ -28,7 +28,7 @@ import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.util.Utils;
 
 public abstract class CurrentIssueFetcher extends Fetcher {
-	
+
 	private static final Logger LOG = Logger.getLogger(CurrentIssueFetcher.class);
 
 	protected CurrentIssueFetcher(String publisherAbbreviation, File propertiesFile) {
@@ -50,24 +50,24 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 			IssueDate issueDate = getCurrentIssueId(journalAbbreviation);
 			String year = issueDate.getYear();
 			String issue = issueDate.getIssue();
-			boolean alreadyGot = checkDownloads(journalAbbreviation, year, issue);
-			String issueWriteDir = properties.getWriteDir()+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+"/"+issue;
-			this.fetch(issueWriteDir, journalAbbreviation, year, issue);
-			if (!alreadyGot) {
+			if (!alreadyDownloadedIssue(journalAbbreviation, year, issue)) {
+				String issueWriteDir = properties.getWriteDir()+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+"/"+issue;
+				this.fetch(issueWriteDir, journalAbbreviation, year, issue);
 				updateLog(journalAbbreviation, year, issue);
+			} else {
+				LOG.info("Already downloaded this issue - skipping!.");
 			}
 		}
 	}
 
-	protected boolean checkDownloads(String journalAbbreviation, String year, String issueNum) {
+	protected boolean alreadyDownloadedIssue(String journalAbbreviation, String year, String issueNum) {
 		String downloadLogPath = properties.getDownloadLogPath();
-		boolean alreadyGot = false;
 		Document doc = Utils.parseXml(downloadLogPath);
 		Nodes nodes = doc.query(".//journal[@abbreviation='"+journalAbbreviation+"']/year[@id='"+year+"']/issue[@id='"+issueNum+"']");
 		if (nodes.size() > 0) {
-			alreadyGot = true;
+			return true;
 		}
-		return alreadyGot;
+		return false;
 	}
 
 	protected void updateLog(String journalAbbreviation, String year, String issueNum) {

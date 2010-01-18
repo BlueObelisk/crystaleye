@@ -110,48 +110,21 @@ public class RscBacklog extends Fetcher {
 	public static void main(String[] args) {
 		String props = "e:/crystaleye-new/docs/cif-flow-props.txt";
 
-		for (int i = 44; i < 49; i++) {
-			RscBacklog ore = new RscBacklog(props, "cc", "2009", ""+i);
-			ore.fetch();
-		}
 		for (int i = 1; i < 3; i++) {
 			RscBacklog ore = new RscBacklog(props, "cc", "2010", ""+i);
-			ore.fetch();
-		}
-		for (int i = 34; i < 49; i++) {
-			RscBacklog ore = new RscBacklog(props, "cp", "2009", ""+i);
-			ore.fetch();
-		}
-		for (int i = 1; i < 3; i++) {
-			RscBacklog ore = new RscBacklog(props, "cp", "2010", ""+i);
-			ore.fetch();
-		}
-		for (int i = 34; i < 49; i++) {
-			RscBacklog ore = new RscBacklog(props, "dt", "2009", ""+i);
 			ore.fetch();
 		}
 		for (int i = 1; i < 3; i++) {
 			RscBacklog ore = new RscBacklog(props, "dt", "2010", ""+i);
 			ore.fetch();
 		}
-		for (int i = 12; i < 13; i++) {
-			RscBacklog ore = new RscBacklog(props, "gc", "2009", ""+i);
-			ore.fetch();
-		}
-		for (int i = 44; i < 49; i++) {
+		
+		for (int i = 45; i < 48; i++) {
 			RscBacklog ore = new RscBacklog(props, "jm", "2009", ""+i);
 			ore.fetch();
 		}
-		for (int i = 1; i < 3; i++) {
-			RscBacklog ore = new RscBacklog(props, "jm", "2010", ""+i);
-			ore.fetch();
-		}
-		for (int i = 23; i < 25; i++) {
-			RscBacklog ore = new RscBacklog(props, "ob", "2009", ""+i);
-			ore.fetch();
-		}
 		for (int i = 1; i < 2; i++) {
-			RscBacklog ore = new RscBacklog(props, "ob", "2010", ""+i);
+			RscBacklog ore = new RscBacklog(props, "jm", "2010", ""+i);
 			ore.fetch();
 		}
 
