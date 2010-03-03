@@ -11,6 +11,8 @@ import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -61,9 +63,9 @@ import wwmm.crystaleye.util.ChemistryUtils;
 import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.FreemarkerUtils;
 import wwmm.crystaleye.util.Utils;
-import wwmm.crystaleye.util.WebUtils;
 import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
+import wwmm.pubcrawler.core.CrawlerHttpClient;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateHashModel;
@@ -1200,22 +1202,27 @@ public class WebpageManager extends AbstractManager {
 			displayDir.mkdirs();
 		}
 
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet0.jar", issueSummaryDir+"/"+"JmolApplet0.jar");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet1.jar", issueSummaryDir+"/"+"JmolApplet1.jar");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet2.jar", issueSummaryDir+"/"+"JmolApplet2.jar");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet3.jar", issueSummaryDir+"/"+"JmolApplet3.jar");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet4.jar", issueSummaryDir+"/"+"JmolApplet4.jar");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet5.jar", issueSummaryDir+"/"+"JmolApplet5.jar");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet6.jar", issueSummaryDir+"/"+"JmolApplet6.jar");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/summary.js", issueSummaryDir+"/"+"summary.js");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/Jmol.js", issueSummaryDir+"/"+"Jmol.js");
+		CrawlerHttpClient httpClient = new CrawlerHttpClient();
+		try {
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet0.jar"), new File(issueSummaryDir+"/"+"JmolApplet0.jar"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet1.jar"), new File(issueSummaryDir+"/"+"JmolApplet1.jar"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet2.jar"), new File(issueSummaryDir+"/"+"JmolApplet2.jar"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet3.jar"), new File(issueSummaryDir+"/"+"JmolApplet3.jar"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet4.jar"), new File(issueSummaryDir+"/"+"JmolApplet4.jar"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet5.jar"), new File(issueSummaryDir+"/"+"JmolApplet5.jar"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet6.jar"), new File(issueSummaryDir+"/"+"JmolApplet6.jar"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/summary.js"), new File(issueSummaryDir+"/"+"summary.js"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/Jmol.js"), new File(issueSummaryDir+"/"+"Jmol.js"));
 
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/eprints.css", displayDirPath+"/"+"eprints.css");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/summary.css", displayDirPath+"/"+"summary.css");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/top.gif", displayDirPath+"/"+"top.gif");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/bonds.css", displayDirPath+"/"+"bonds.css");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/fragsummary.css", displayDirPath+"/"+"fragsummary.css");
-		WebUtils.saveFileFromUrl("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/placeholder.bmp", displayDirPath+"/"+"placeholder.bmp");
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/eprints.css"), new File(displayDirPath+"/"+"eprints.css"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/summary.css"), new File(displayDirPath+"/"+"summary.css"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/top.gif"), new File(displayDirPath+"/"+"top.gif"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/bonds.css"), new File(displayDirPath+"/"+"bonds.css"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/fragsummary.css"), new File(displayDirPath+"/"+"fragsummary.css"));
+			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/placeholder.bmp"), new File(displayDirPath+"/"+"placeholder.bmp"));
+		} catch (URISyntaxException e) {
+			LOG.warn("Problem downloading webpage files: "+e.getMessage());
+		}
 
 		// retrieve data files from issueWriteDir
 		for (File cmlFile : cmlFileList) {

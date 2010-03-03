@@ -62,12 +62,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.4</version>
@@ -156,7 +150,7 @@
 		<dependency>
 			<groupId>wwmm</groupId>
 			<artifactId>pub-crawler</artifactId>
-			<version>0.1</version>
+			<version>0.2.2-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -179,15 +173,15 @@
 		</dependency>
 	</dependencies>
 	<repositories>
-      <repository>
-         <id>wwmm</id>
-         <url>http://wwmm.ch.cam.ac.uk/maven2/</url>
-      </repository>
-   </repositories>
+		<repository>
+			<id>ucc</id>
+			<url>http://maven.ch.cam.ac.uk/m2repo</url>
+		</repository>
+	</repositories>
 	<distributionManagement>
 		<repository>
-			<id>wwmm</id>
-			<url>scp://wwmm.ch.cam.ac.uk/var/www/maven2</url>
+			<id>ucc-snapshots</id>
+			<url>http://maven.ch.cam.ac.uk/content/repositories/snapshots/</url>
 		</repository>
 	</distributionManagement>
 </project>
