@@ -3,9 +3,9 @@ package wwmm.crystaleye.managers;
 import static wwmm.pubcrawler.core.CrawlerConstants.CIF_CONTENT_TYPE;
 
 import java.io.File;
-import java.net.URI;
 import java.util.List;
 
+import org.apache.commons.httpclient.URI;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.CrystalEyeProperties;
