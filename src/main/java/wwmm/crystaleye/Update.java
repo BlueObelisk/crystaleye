@@ -9,12 +9,12 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.fetch.FetchManager;
 import wwmm.crystaleye.managers.CML2FooManager;
 import wwmm.crystaleye.managers.CellParamsManager;
 import wwmm.crystaleye.managers.Cif2CmlManager;
 import wwmm.crystaleye.managers.Cml2RdfManager;
 import wwmm.crystaleye.managers.DoiListManager;
+import wwmm.crystaleye.managers.FetchManager;
 import wwmm.crystaleye.managers.RSSManager;
 import wwmm.crystaleye.managers.SmilesListManager;
 import wwmm.crystaleye.managers.WebpageManager;

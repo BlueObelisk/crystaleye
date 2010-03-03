@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import wwmm.crystaleye.fetch.AcsJournal;
+import wwmm.pubcrawler.core.AcsJournal;
 
 public class AcsJournalPropsLines {
 	

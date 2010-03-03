@@ -10,12 +10,12 @@ import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.FileUtils;
 import org.xmlcml.molutil.ChemicalElement;
 
-import wwmm.crystaleye.fetch.AcsJournal;
-import wwmm.crystaleye.fetch.ActaJournal;
-import wwmm.crystaleye.fetch.ChemSocJapanJournal;
-import wwmm.crystaleye.fetch.NatureJournal;
-import wwmm.crystaleye.fetch.RscJournal;
 import wwmm.crystaleye.util.FreemarkerUtils;
+import wwmm.pubcrawler.core.AcsJournal;
+import wwmm.pubcrawler.core.ActaJournal;
+import wwmm.pubcrawler.core.ChemSocJapanJournal;
+import wwmm.pubcrawler.core.NatureJournal;
+import wwmm.pubcrawler.core.RscJournal;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
 

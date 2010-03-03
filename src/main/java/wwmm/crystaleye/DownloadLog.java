@@ -1,16 +1,12 @@
-package wwmm.crystaleye.fetch;
-
+package wwmm.crystaleye;
 
 import static wwmm.crystaleye.CrystalEyeConstants.ATOMPUB;
 import static wwmm.crystaleye.CrystalEyeConstants.BONDLENGTHS;
 import static wwmm.crystaleye.CrystalEyeConstants.CELLPARAMS;
 import static wwmm.crystaleye.CrystalEyeConstants.CIF2CML;
-import static wwmm.crystaleye.CrystalEyeConstants.CIF_MIME;
 import static wwmm.crystaleye.CrystalEyeConstants.CML2FOO;
 import static wwmm.crystaleye.CrystalEyeConstants.CML2RDF;
-import static wwmm.crystaleye.CrystalEyeConstants.DATE_MIME;
 import static wwmm.crystaleye.CrystalEyeConstants.DOILIST;
-import static wwmm.crystaleye.CrystalEyeConstants.DOI_MIME;
 import static wwmm.crystaleye.CrystalEyeConstants.RSS;
 import static wwmm.crystaleye.CrystalEyeConstants.SMILESLIST;
 import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
@@ -24,57 +20,37 @@ import nu.xom.Nodes;
 
 import org.apache.log4j.Logger;
 
-import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.util.Utils;
 
-public abstract class CurrentIssueFetcher extends Fetcher {
+public class DownloadLog {
 
-	private static final Logger LOG = Logger.getLogger(CurrentIssueFetcher.class);
+	private static final Logger LOG = Logger.getLogger(DownloadLog.class);
 
-	protected CurrentIssueFetcher(String publisherAbbreviation, File propertiesFile) {
-		super(publisherAbbreviation, propertiesFile);
-	}
+	private File logFile;
+	private Document logContents;
 
-	protected CurrentIssueFetcher(String publisherAbbreviation, String propertiesFile) {
-		super(publisherAbbreviation, propertiesFile);
-	}
-
-	protected abstract IssueDate getCurrentIssueId(String journalAbbreviation);
-
-	protected abstract void fetch(String issueWriteDir, String journalAbbreviation, String year, String issueNum);
-
-	public void execute() {
-		String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(PUBLISHER_ABBREVIATION);
-		for (String journalAbbreviation : journalAbbreviations) {
-			LOG.info("Getting TOC of latest issue of "+PUBLISHER_ABBREVIATION.toUpperCase()+" journal "+journalAbbreviation.toUpperCase());
-			IssueDate issueDate = getCurrentIssueId(journalAbbreviation);
-			String year = issueDate.getYear();
-			String issue = issueDate.getIssue();
-			if (!alreadyDownloadedIssue(journalAbbreviation, year, issue)) {
-				String issueWriteDir = properties.getWriteDir()+"/"+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+"/"+issue;
-				this.fetch(issueWriteDir, journalAbbreviation, year, issue);
-				updateLog(journalAbbreviation, year, issue);
-			} else {
-				LOG.info("Already downloaded this issue - skipping!.");
-			}
+	public DownloadLog(File file) {
+		this.logFile = file;
+		if (!logFile.exists()) {
+			String logInitialContents = "<log></log>";
+			Utils.writeText(logFile, logInitialContents);
 		}
+		this.logContents = Utils.parseXml(file);
+	}
+	
+	public DownloadLog(String filepath) {
+		this(new File(filepath));
 	}
 
-	protected boolean alreadyDownloadedIssue(String journalAbbreviation, String year, String issueNum) {
-		String downloadLogPath = properties.getDownloadLogPath();
-		Document doc = Utils.parseXml(downloadLogPath);
-		Nodes nodes = doc.query(".//journal[@abbreviation='"+journalAbbreviation+"']/year[@id='"+year+"']/issue[@id='"+issueNum+"']");
-		if (nodes.size() > 0) {
-			return true;
+	public void updateLog(String publisherAbbreviation, String journalAbbreviation, String year, String issueNum) {
+		Element logEl = logContents.getRootElement();
+		// check issue isn't already in log, if it is then can just stop here
+		Nodes issueNodes = logEl.query("./publisher[@abbreviation='"+publisherAbbreviation+"']/journal[@abbreviation='"+journalAbbreviation+"']/year[@id='"+year+"']/issue[@id='"+issueNum+"']");
+		if(issueNodes.size() > 0) {
+			return;
 		}
-		return false;
-	}
-
-	protected void updateLog(String journalAbbreviation, String year, String issueNum) {
-		String downloadLogPath = properties.getDownloadLogPath();
-		Document doc = Utils.parseXml(downloadLogPath);
-		Element logEl = doc.getRootElement();
-		Nodes publishers = logEl.query("./publisher[@abbreviation='"+PUBLISHER_ABBREVIATION+"']");
+		
+		Nodes publishers = logEl.query("./publisher[@abbreviation='"+publisherAbbreviation+"']");
 		if (publishers.size() == 1) {
 			Element publisherEl = (Element)publishers.get(0);
 			Nodes journals = publisherEl.query("./journal[@abbreviation='"+journalAbbreviation+"']");
@@ -84,15 +60,11 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 				if (years.size() == 1) {
 					Element yearEl = (Element)years.get(0);
 					yearEl.appendChild(getNewIssueElement(issueNum));
-				} else if (years.size() > 1) {
-					throw new RuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+"/"+year+".  Cannot continue.");
 				} else if (years.size() == 0) {
 					Element yearEl = getNewYearElement(year);
 					journalEl.appendChild(yearEl);
 					yearEl.appendChild(getNewIssueElement(issueNum));
 				}
-			} else if (journals.size() > 1) {
-				throw new RuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+"/"+journalAbbreviation+".  Cannot continue.");
 			} else if (journals.size() == 0) {
 				Element journalEl = getNewJournalElement(journalAbbreviation);
 				publisherEl.appendChild(journalEl);
@@ -100,10 +72,8 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 				journalEl.appendChild(yearEl);
 				yearEl.appendChild(getNewIssueElement(issueNum));
 			}
-		} else if (publishers.size() > 1) {
-			throw new RuntimeException("Found more than one entry in the log for "+PUBLISHER_ABBREVIATION+".  Cannot continue.");
 		} else if (publishers.size() == 0) {
-			Element publisherEl = getNewPublisherElement(PUBLISHER_ABBREVIATION);
+			Element publisherEl = getNewPublisherElement(publisherAbbreviation);
 			logEl.appendChild(publisherEl);
 			Element journalEl = getNewJournalElement(journalAbbreviation);
 			publisherEl.appendChild(journalEl);
@@ -112,8 +82,8 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 			yearEl.appendChild(getNewIssueElement(issueNum));
 		}
 
-		Utils.writeXML(new File(downloadLogPath), doc);
-		LOG.info("Updated "+downloadLogPath+" by adding "+year+"-"+issueNum);
+		Utils.writeXML(logFile, logContents);
+		LOG.info("Updated "+logFile+" by adding "+year+"-"+issueNum);
 	}
 
 	private Element getNewIssueElement(String issueNum) {
@@ -172,13 +142,4 @@ public abstract class CurrentIssueFetcher extends Fetcher {
 		return publisherEl;
 	}
 
-	protected void writeFiles(String issueWriteDir, String cifId, int suppNum, String cif, String doi) {
-		String pathPrefix = issueWriteDir+"/"+cifId+"/"+cifId;
-		LOG.info("Writing cif to: "+pathPrefix+"sup"+suppNum+CIF_MIME);
-		Utils.writeText(new File(pathPrefix+"sup"+suppNum+CIF_MIME), cif);
-		if (doi != null) {
-			Utils.writeText(new File(pathPrefix+DOI_MIME), doi);
-		}
-		Utils.writeDateStamp(pathPrefix+DATE_MIME);
-	}
 }
