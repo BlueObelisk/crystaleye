@@ -5,20 +5,33 @@
 	<groupId>wwmm</groupId>
 	<artifactId>crystaleye</artifactId>
 	<version>1.1.1-SNAPSHOT</version>
+	
 	<build>
 		<plugins>
+		
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<archive>
-						<manifestFile>
-							${basedir}/src/main/resources/META-INF/MANIFEST.MF
-						</manifestFile>
-					</archive>
-					<descriptor>descriptor.xml</descriptor>
-				</configuration>
-			</plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.2.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>crystaleye</finalName>
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>wwmm.crystaleye.Update</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+			
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -26,6 +39,7 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -34,8 +48,10 @@
 					</includes>
 				</configuration>
 			</plugin>
+			
 		</plugins>
 	</build>
+	
 	<dependencies>
 		<dependency>
 			<groupId>wwmm</groupId>
@@ -74,12 +90,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.9</version>
@@ -96,13 +106,6 @@
 			<artifactId>jbabel</artifactId>
 			<version>0.1</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.jena</groupId>
-			<artifactId>jena</artifactId>
-			<version>2.4</version>
-			<scope>compile</scope>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>jgrapht</groupId>
@@ -141,22 +144,9 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>owlapi</groupId>
-			<artifactId>owlapi</artifactId>
-			<version>2.2.0</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<groupId>wwmm</groupId>
 			<artifactId>pub-crawler</artifactId>
 			<version>0.2.2-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.ccil.cowan.tagsoup</groupId>
-			<artifactId>tagsoup</artifactId>
-			<version>1.0.1</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -165,24 +155,25 @@
 			<version>1.2</version>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>xom</groupId>
-			<artifactId>xom</artifactId>
-			<version>1.1</version>
-			<scope>compile</scope>
-		</dependency>
 	</dependencies>
+	
 	<repositories>
+	
 		<repository>
 			<id>ucc</id>
 			<url>http://maven.ch.cam.ac.uk/m2repo</url>
 		</repository>
+		
 	</repositories>
+	
 	<distributionManagement>
+	
 		<repository>
 			<id>ucc-snapshots</id>
 			<url>http://maven.ch.cam.ac.uk/content/repositories/snapshots/</url>
 		</repository>
+		
 	</distributionManagement>
+	
 </project>
 

@@ -11,8 +11,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +24,8 @@ import nu.xom.Elements;
 import nu.xom.Nodes;
 import nu.xom.XPathContext;
 
+import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -1220,7 +1220,7 @@ public class WebpageManager extends AbstractManager {
 			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/bonds.css"), new File(displayDirPath+"/"+"bonds.css"));
 			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/fragsummary.css"), new File(displayDirPath+"/"+"fragsummary.css"));
 			httpClient.writeResourceToFile(new URI("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/placeholder.bmp"), new File(displayDirPath+"/"+"placeholder.bmp"));
-		} catch (URISyntaxException e) {
+		} catch (URIException e) {
 			LOG.warn("Problem downloading webpage files: "+e.getMessage());
 		}
 
