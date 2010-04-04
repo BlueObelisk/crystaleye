@@ -13,12 +13,12 @@ import wwmm.crystaleye.DownloadLog;
 import wwmm.crystaleye.util.Utils;
 import wwmm.pubcrawler.core.AcsJournal;
 import wwmm.pubcrawler.core.ActaJournal;
-import wwmm.pubcrawler.core.ArticleDetails;
+import wwmm.pubcrawler.core.ArticleDescription;
 import wwmm.pubcrawler.core.ArticleReference;
 import wwmm.pubcrawler.core.ChemSocJapanJournal;
 import wwmm.pubcrawler.core.CrawlerHttpClient;
 import wwmm.pubcrawler.core.RscJournal;
-import wwmm.pubcrawler.core.SupplementaryResourceDetails;
+import wwmm.pubcrawler.core.SupplementaryResourceDescription;
 import wwmm.pubcrawler.impl.AcsCifIssueCrawler;
 import wwmm.pubcrawler.impl.ActaCifIssueCrawler;
 import wwmm.pubcrawler.impl.ChemSocJapanCifIssueCrawler;
@@ -59,15 +59,15 @@ public class FetchManager {
 	}
 
 	private void executeCrawler(CifIssueCrawler crawler, String publisher, String journal) {
-		List<ArticleDetails> detailsList = crawler.getDetailsForCurrentArticles();
+		List<ArticleDescription> detailsList = crawler.getDetailsForCurrentArticles();
 		String year = null;
 		String issueNum = null;
-		for (ArticleDetails articleDetails : detailsList) {
+		for (ArticleDescription articleDetails : detailsList) {
 			ArticleReference ref = articleDetails.getReference();
 			year = ref.getYear();
 			issueNum = ref.getNumber();
 			LOG.debug("supp resources: "+articleDetails.getSupplementaryResources().size());
-			for (SupplementaryResourceDetails suppDetails : articleDetails.getSupplementaryResources()) {
+			for (SupplementaryResourceDescription suppDetails : articleDetails.getSupplementaryResources()) {
 				LOG.debug("content type: "+suppDetails.getContentType());
 				if (suppDetails.getContentType().contains(CIF_CONTENT_TYPE)) {
 					String cifPath = createOutfilePath(publisher, journal, ref, suppDetails, ".cif");
@@ -90,7 +90,7 @@ public class FetchManager {
 		}
 	}
 
-	private String createOutfilePath(String publisher, String journal, ArticleReference ref, SupplementaryResourceDetails suppDetails, String extension) {
+	private String createOutfilePath(String publisher, String journal, ArticleReference ref, SupplementaryResourceDescription suppDetails, String extension) {
 		String fileId = suppDetails.getFileId();
 		return writeDirPath+"/"+publisher+"/"+journal+"/"+ref.getYear()+"/"+ref.getNumber()+"/"+fileId+"/"+fileId+extension;
 	}

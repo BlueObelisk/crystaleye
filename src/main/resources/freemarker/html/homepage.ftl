@@ -22,6 +22,10 @@
 			<div id="main">
 				<div id="contentcontainer">
 					<div id="content">
+                        <p class="notice">All data on this site is licensed under PDDL and all Open Data buttons point implicitly to the
+                        <a href="http://www.opendatacommons.org/licenses/pddl/1-0/">PDDL licence</a>.</p>
+                        <br />
+                        
 						<p>
 							<b>The aim of the CrystalEye project is to aggregate
 								crystallography from web resources, and to provide methods to
