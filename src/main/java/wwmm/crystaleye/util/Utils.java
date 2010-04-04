@@ -36,16 +36,6 @@ public class Utils {
 		return (double)tmp / factor;
 	}
 
-	public static String getFileNameWithMimes(String filePath) {
-		String fileSep = "/";
-		if (filePath.contains("\\")) {
-			fileSep = "\\";
-		}
-		int idx = filePath.lastIndexOf(fileSep);
-		String nameWithMime = filePath.substring(idx+1, filePath.length());
-		return nameWithMime;
-	}
-
 	public static String getPathMinusMimeSet(File file) {
 		String path = file.getAbsolutePath();
 		String parent = file.getParent();

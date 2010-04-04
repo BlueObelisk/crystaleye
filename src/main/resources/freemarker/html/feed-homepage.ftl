@@ -54,6 +54,9 @@
 							<li>
 								<a href="./bonds/index.html" shape="rect">Bonds</a>
 							</li>
+							<li>
+                                <a href="./moiety/index.html" shape="rect">Moieties</a>
+                            </li>
 						</ul>
 					</div>
 					<!--end content-->

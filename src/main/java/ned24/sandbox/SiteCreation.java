@@ -53,6 +53,7 @@ public class SiteCreation {
 		createBondsFeedPages();
 		createClassFeedPages();
 		createJournalFeedPages();
+		createMoietyFeedPages();
 	}
 	
 	private void createJournalFeedPages() {
@@ -210,6 +211,15 @@ public class SiteCreation {
 		FreemarkerUtils.writeHtmlTemplate("feed-all-index.ftl", allFeedPage, allFeedMap);
 	}
 	
+	private void createMoietyFeedPages() {
+		File moietyFeedPage = new File(outDir, "feed/moiety/index.html");
+		SimpleHash moietyFeedMap = new SimpleHash();
+		moietyFeedMap.put("pageTitle", "CrystalEye: RSS feeds");
+		moietyFeedMap.put("pathToRoot", "../../");
+		moietyFeedMap.put("currentMenuSelected", "feeds");
+		FreemarkerUtils.writeHtmlTemplate("feed-moiety-index.ftl", moietyFeedPage, moietyFeedMap);
+	}
+	
 	private void createSummaryPages() {
 		File summaryHomePage = new File(outDir, "summary/index.html");
 		SimpleHash summaryHomeMap = new SimpleHash();
@@ -254,7 +264,7 @@ public class SiteCreation {
 	}
 
 	public static void main(String[] args) {
-		File outDir = new File("e:/crystaleye-website-test");
+		File outDir = new File("c:/workspace/crystaleye-website");
 		SiteCreation sc = new SiteCreation(outDir);
 		sc.createWebsite();
 	}

@@ -60,7 +60,6 @@ public class RawCml2CompleteCmlTool {
 	private static final int MAX_ATOMS_IN_CRYSTAL = 1000;
 	
 	public CMLCml convert(File rawCmlFile) {
-		// read raw CML back in and convert to 'complete' CML
 		CMLCml cml = null;
 		try { 
 			cml = (CMLCml)Utils.parseCml(rawCmlFile).getRootElement();

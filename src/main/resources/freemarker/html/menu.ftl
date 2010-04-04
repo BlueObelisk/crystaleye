@@ -1,7 +1,7 @@
 <div id="menu">
 	<ul class="menu">
 		<li <#if currentMenuSelected == "home">class="selected"</#if> >
-			<a href="${crystaleyeSiteUrl}index.html" shape="rect">
+			<a href="${crystaleyeSiteUrl}/index.html" shape="rect">
 				<span>Home</span>
 			</a>
 		</li>
