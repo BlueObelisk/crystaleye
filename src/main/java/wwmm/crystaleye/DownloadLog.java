@@ -1,15 +1,15 @@
 package wwmm.crystaleye;
 
-import static wwmm.crystaleye.CrystalEyeConstants.ATOMPUB;
-import static wwmm.crystaleye.CrystalEyeConstants.BONDLENGTHS;
-import static wwmm.crystaleye.CrystalEyeConstants.CELLPARAMS;
-import static wwmm.crystaleye.CrystalEyeConstants.CIF2CML;
-import static wwmm.crystaleye.CrystalEyeConstants.CML2FOO;
-import static wwmm.crystaleye.CrystalEyeConstants.CML2RDF;
-import static wwmm.crystaleye.CrystalEyeConstants.DOILIST;
-import static wwmm.crystaleye.CrystalEyeConstants.RSS;
-import static wwmm.crystaleye.CrystalEyeConstants.SMILESLIST;
-import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.ATOMPUB;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.BONDLENGTHS;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.CELLPARAMS;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.CIF2CML;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.CML2FOO;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.CML2RDF;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.DOILIST;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.RSS;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.SMILESLIST;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.WEBPAGE;
 
 import java.io.File;
 

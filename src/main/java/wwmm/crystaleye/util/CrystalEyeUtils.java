@@ -18,6 +18,31 @@ public class CrystalEyeUtils {
 		PROCESSED,
 		NONE;
 	}
+	
+	public static enum FragmentType {
+		LIGAND ("ligand"),
+		CHAIN_NUC ("chain-nuc"),
+		RING_NUC ("ring-nuc"),
+		RING_NUC_SPROUT_1 ("ring-nuc-sprout-1"),
+		RING_NUC_SPROUT_2 ("ring-nuc-sprout-2"),
+		CLUSTER_NUC ("cluster-nuc"),
+		CLUSTER_NUC_SPROUT_1 ("cluster-nuc-sprout-1"),
+		CLUSTER_NUC_SPROUT_2 ("cluster-nuc-sprout-2"),
+		MOIETY ("moiety"),
+		ATOM_NUC ("atom-nuc"),
+		ATOM_NUC_SPROUT_1 ("atom-nuc-sprout-1"),
+		ATOM_NUC_SPROUT_2 ("atom-nuc-sprout-2");
+
+		private FragmentType(String name) {
+			this.name = name;
+		}
+
+		private final String name;
+
+		public String toString() {
+			return name;
+		}
+	}
 
 	public static List<File> getSummaryDirFileList(String issueDir, String regex) {
 		List<File> fileList = new ArrayList<File>();

@@ -2,7 +2,7 @@ package wwmm.crystaleye;
 
 import nu.xom.XPathContext;
 
-public interface CrystalEyeConstants {
+public interface CrystalEyeConstants_Old {
 	
 	public static final String CRYSTALEYE_HOME_URL = "http://wwmm.ch.cam.ac.uk/crystaleye";
 	

@@ -5,33 +5,33 @@
 	<groupId>wwmm</groupId>
 	<artifactId>crystaleye</artifactId>
 	<version>1.1.1-SNAPSHOT</version>
-	
+
 	<build>
 		<plugins>
-		
+
 			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.2.2</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <finalName>crystaleye</finalName>
-                            <transformers>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>wwmm.crystaleye.Update</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-			
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.2.2</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<finalName>crystaleye</finalName>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>wwmm.crystaleye.Update</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -39,7 +39,7 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -48,10 +48,10 @@
 					</includes>
 				</configuration>
 			</plugin>
-			
+
 		</plugins>
 	</build>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>wwmm</groupId>
@@ -131,18 +131,35 @@
 			<version>5.5.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>cml</groupId>
-			<artifactId>jumbo-converters</artifactId>
-			<version>0.2-SNAPSHOT</version>
+			<artifactId>jumbo-converters-cif</artifactId>
+			<version>0.3-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+		
+		<dependency>
+            <groupId>cml</groupId>
+            <artifactId>jumbo-converters-rdf</artifactId>
+            <version>0.3-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+		
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.13</version>
 			<scope>compile</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>wwmm</groupId>
+			<artifactId>ned24-filesystem-db</artifactId>
+			<version>0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>wwmm</groupId>
 			<artifactId>pub-crawler</artifactId>
@@ -155,25 +172,33 @@
 			<version>1.2</version>
 			<scope>compile</scope>
 		</dependency>
-	</dependencies>
-	
-	<repositories>
-	
-		<repository>
-			<id>ucc</id>
-			<url>http://maven.ch.cam.ac.uk/m2repo</url>
-		</repository>
 		
+		<dependency>
+            <groupId>xom</groupId>
+            <artifactId>xom</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
+        </dependency>
+        
+	</dependencies>
+
+	<repositories>
+
+		<repository>
+			<id>ucc-repo</id>
+			<url>https://maven.ch.cam.ac.uk/m2repo</url>
+		</repository>
+
 	</repositories>
-	
+
 	<distributionManagement>
-	
+
 		<repository>
 			<id>ucc-snapshots</id>
-			<url>http://maven.ch.cam.ac.uk/content/repositories/snapshots/</url>
+			<url>https://maven.ch.cam.ac.uk/content/repositories/snapshots/</url>
 		</repository>
-		
+
 	</distributionManagement>
-	
+
 </project>
 

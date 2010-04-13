@@ -1,6 +1,6 @@
 package wwmm.crystaleye;
 
-import static wwmm.crystaleye.CrystalEyeConstants.VALUE;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.VALUE;
 
 import java.io.File;
 import java.util.ArrayList;

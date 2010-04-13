@@ -1,20 +1,20 @@
 package wwmm.crystaleye.managers;
 
 import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
-import static wwmm.crystaleye.CrystalEyeConstants.ATOM_1_NS;
-import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
-import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
-import static wwmm.crystaleye.CrystalEyeConstants.FEED_FILE_NAME;
-import static wwmm.crystaleye.CrystalEyeConstants.RSS;
-import static wwmm.crystaleye.CrystalEyeConstants.RSS_ALL_DIR_NAME;
-import static wwmm.crystaleye.CrystalEyeConstants.RSS_ATOMS_DIR_NAME;
-import static wwmm.crystaleye.CrystalEyeConstants.RSS_BOND_DIR_NAME;
-import static wwmm.crystaleye.CrystalEyeConstants.RSS_CLASS_DIR_NAME;
-import static wwmm.crystaleye.CrystalEyeConstants.RSS_DESC_VALUE_PREFIX;
-import static wwmm.crystaleye.CrystalEyeConstants.RSS_JOURNAL_DIR_NAME;
-import static wwmm.crystaleye.CrystalEyeConstants.SMALL_PNG_MIME;
-import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
-import static wwmm.crystaleye.CrystalEyeConstants.XHTML_NS;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.ATOM_1_NS;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.COMPLETE_CML_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.COMPLETE_CML_MIME_REGEX;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.FEED_FILE_NAME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.RSS;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.RSS_ALL_DIR_NAME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.RSS_ATOMS_DIR_NAME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.RSS_BOND_DIR_NAME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.RSS_CLASS_DIR_NAME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.RSS_DESC_VALUE_PREFIX;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.RSS_JOURNAL_DIR_NAME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.SMALL_PNG_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.WEBPAGE;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.XHTML_NS;
 
 import java.io.File;
 import java.util.ArrayList;

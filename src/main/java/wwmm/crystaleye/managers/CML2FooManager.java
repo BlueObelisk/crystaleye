@@ -3,12 +3,12 @@ package wwmm.crystaleye.managers;
 import static org.xmlcml.cml.base.CMLConstants.CML_NS;
 import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
 import static org.xmlcml.euclid.EuclidConstants.S_UNDER;
-import static wwmm.crystaleye.CrystalEyeConstants.CIF2CML;
-import static wwmm.crystaleye.CrystalEyeConstants.CML2FOO;
-import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
-import static wwmm.crystaleye.CrystalEyeConstants.MAX_RINGS_FOR_SMILES_CALCULATION;
-import static wwmm.crystaleye.CrystalEyeConstants.NED24_NS;
-import static wwmm.crystaleye.CrystalEyeConstants.POLYMERIC_FLAG_DICTREF;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.CIF2CML;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.CML2FOO;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.COMPLETE_CML_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.MAX_RINGS_FOR_SMILES_CALCULATION;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.NED24_NS;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.POLYMERIC_FLAG_DICTREF;
 
 import java.io.File;
 import java.util.ArrayList;

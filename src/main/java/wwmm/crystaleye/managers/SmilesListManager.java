@@ -1,9 +1,9 @@
 package wwmm.crystaleye.managers;
 
 import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
-import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
-import static wwmm.crystaleye.CrystalEyeConstants.SMILESLIST;
-import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.COMPLETE_CML_MIME_REGEX;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.SMILESLIST;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.WEBPAGE;
 
 import java.io.BufferedReader;
 import java.io.File;

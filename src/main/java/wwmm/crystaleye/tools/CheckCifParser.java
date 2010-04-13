@@ -1,7 +1,7 @@
 package wwmm.crystaleye.tools;
 
-import static wwmm.crystaleye.CrystalEyeConstants.XHTML_NS;
-import static wwmm.crystaleye.CrystalEyeConstants.X_XHTML;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.XHTML_NS;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.X_XHTML;
 
 import java.io.BufferedReader;
 import java.io.File;
