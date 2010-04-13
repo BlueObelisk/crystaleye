@@ -17,7 +17,7 @@ import wwmm.crystaleye.util.Utils;
 /**
  * <p>
  * Takes a CML Molecule and strips away all parts that are not
- * necessary to describe a crystals unit cell and contained
+ * necessary to describe a crystal's unit cell and contained
  * connection tables.
  * </p>
  * 

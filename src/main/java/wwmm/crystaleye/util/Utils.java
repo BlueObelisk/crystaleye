@@ -1,6 +1,6 @@
 package wwmm.crystaleye.util;
 
-import static wwmm.crystaleye.CrystalEyeConstants.CRYSTALEYE_DATE_FORMAT;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.CRYSTALEYE_DATE_FORMAT;
 
 import java.io.BufferedReader;
 import java.io.File;

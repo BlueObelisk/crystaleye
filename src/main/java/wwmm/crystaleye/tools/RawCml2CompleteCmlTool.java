@@ -3,10 +3,10 @@ package wwmm.crystaleye.tools;
 import static org.xmlcml.cml.base.CMLConstants.CML_NS;
 import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
 import static org.xmlcml.euclid.EuclidConstants.S_UNDER;
-import static wwmm.crystaleye.CrystalEyeConstants.MAX_RINGS_FOR_SMILES_CALCULATION;
-import static wwmm.crystaleye.CrystalEyeConstants.NED24_NS;
-import static wwmm.crystaleye.CrystalEyeConstants.NO_BONDS_OR_CHARGES_FLAG_DICTREF;
-import static wwmm.crystaleye.CrystalEyeConstants.POLYMERIC_FLAG_DICTREF;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.MAX_RINGS_FOR_SMILES_CALCULATION;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.NED24_NS;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.NO_BONDS_OR_CHARGES_FLAG_DICTREF;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.POLYMERIC_FLAG_DICTREF;
 
 import java.io.File;
 import java.io.IOException;

@@ -2,7 +2,7 @@ package wwmm.crystaleye.util;
 
 import static org.xmlcml.cml.base.CMLConstants.CML_NS;
 import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
-import static wwmm.crystaleye.CrystalEyeConstants.NO_BONDS_OR_CHARGES_FLAG_DICTREF;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.NO_BONDS_OR_CHARGES_FLAG_DICTREF;
 
 import java.util.ArrayList;
 import java.util.List;

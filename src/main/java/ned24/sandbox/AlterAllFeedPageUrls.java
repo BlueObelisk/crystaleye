@@ -1,6 +1,6 @@
 package ned24.sandbox;
 
-import static wwmm.crystaleye.CrystalEyeConstants.X_ATOM1;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.X_ATOM1;
 
 import java.io.File;
 

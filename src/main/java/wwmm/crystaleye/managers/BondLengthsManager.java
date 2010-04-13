@@ -1,15 +1,15 @@
 package wwmm.crystaleye.managers;
 
 import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
-import static wwmm.crystaleye.CrystalEyeConstants.BONDLENGTHS;
-import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
-import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME_REGEX;
-import static wwmm.crystaleye.CrystalEyeConstants.CSV_MIME;
-import static wwmm.crystaleye.CrystalEyeConstants.HTML_MIME;
-import static wwmm.crystaleye.CrystalEyeConstants.POLYMERIC_FLAG_DICTREF;
-import static wwmm.crystaleye.CrystalEyeConstants.SVG_MIME;
-import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
-import static wwmm.crystaleye.CrystalEyeConstants.X_SVG;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.BONDLENGTHS;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.COMPLETE_CML_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.COMPLETE_CML_MIME_REGEX;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.CSV_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.HTML_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.POLYMERIC_FLAG_DICTREF;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.SVG_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.WEBPAGE;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.X_SVG;
 
 import java.io.BufferedReader;
 import java.io.File;

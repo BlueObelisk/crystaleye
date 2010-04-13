@@ -1,10 +1,10 @@
 package wwmm.crystaleye.managers;
 
-import static wwmm.crystaleye.CrystalEyeConstants.CIF2CML;
-import static wwmm.crystaleye.CrystalEyeConstants.COMPLETE_CML_MIME;
-import static wwmm.crystaleye.CrystalEyeConstants.DATE_MIME;
-import static wwmm.crystaleye.CrystalEyeConstants.MAX_CIF_SIZE_IN_BYTES;
-import static wwmm.crystaleye.CrystalEyeConstants.RAW_CML_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.CIF2CML;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.COMPLETE_CML_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.DATE_MIME;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.MAX_CIF_SIZE_IN_BYTES;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.RAW_CML_MIME;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

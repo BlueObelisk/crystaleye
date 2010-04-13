@@ -9,7 +9,7 @@ import nu.xom.Text;
 import org.xmlcml.cml.base.CMLConstants;
 import org.xmlcml.cml.element.CMLScalar;
 
-import wwmm.crystaleye.CrystalEyeConstants;
+import wwmm.crystaleye.CrystalEyeConstants_Old;
 import wwmm.crystaleye.util.Utils;
 
 public class FixAcsDois {
@@ -23,7 +23,7 @@ public class FixAcsDois {
 					for (File articleDir : issueDir.listFiles()) {
 						String articleId = articleDir.getName();
 						for (File articleFile : articleDir.listFiles()) {
-							String doi = CrystalEyeConstants.ACS_DOI_PREFIX+"/"+articleId;
+							String doi = CrystalEyeConstants_Old.ACS_DOI_PREFIX+"/"+articleId;
 							if (articleFile.getPath().endsWith(".doi")) {
 								Utils.writeText(articleFile, doi);
 							}
