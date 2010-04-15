@@ -1,14 +1,18 @@
 package wwmm.crystaleye.util;
 
 import static org.xmlcml.cml.base.CMLConstants.CML_XPATH;
+import static wwmm.crystaleye.CrystalEyeConstants_Old.NO_BONDS_OR_CHARGES_FLAG_DICTREF;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import nu.xom.Node;
+import nu.xom.Nodes;
 
+import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.base.CMLUtil;
+import org.xmlcml.cml.element.CMLMetadata;
 import org.xmlcml.cml.element.CMLMolecule;
 
 public class CrystalEyeUtils {
@@ -112,6 +116,23 @@ public class CrystalEyeUtils {
 			outputList.add(molecule);
 		}
 		return outputList;
+	}
+	
+	public static CMLMolecule getFirstParentMolecule(CMLElement cml) {
+		Nodes moleculeNodes = cml.query(CMLMolecule.NS, CML_XPATH);
+		if (moleculeNodes.size() != 1) {
+			return null;
+		}
+		return (CMLMolecule) moleculeNodes.get(0);
+	}
+	
+	public static boolean hasBondOrdersAndCharges(CMLMolecule molecule) {
+		boolean hasBOAC = true;
+		Nodes flagNodes = molecule.query(".//"+CMLMetadata.NS+"[@dictRef='"+NO_BONDS_OR_CHARGES_FLAG_DICTREF+"']", CML_XPATH);
+		if (flagNodes.size() > 0) {
+			hasBOAC = false;
+		}
+		return hasBOAC;
 	}
 
 }

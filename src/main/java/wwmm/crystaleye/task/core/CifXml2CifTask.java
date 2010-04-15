@@ -1,4 +1,4 @@
-package wwmm.crystaleye.task.single_structs;
+package wwmm.crystaleye.task.core;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,8 +7,8 @@ import java.io.StringWriter;
 import org.apache.commons.io.IOUtils;
 import org.xmlcml.cif.CIF;
 
-import wwmm.crystaleye.model.CifFileDAO;
-import wwmm.crystaleye.model.CifXmlFileDAO;
+import wwmm.crystaleye.model.core.CifFileDAO;
+import wwmm.crystaleye.model.core.CifXmlFileDAO;
 import wwmm.crystaleye.task.Task;
 
 public class CifXml2CifTask extends Task {
