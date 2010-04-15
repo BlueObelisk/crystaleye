@@ -1,6 +1,6 @@
-package wwmm.crystaleye.model;
+package wwmm.crystaleye.model.core;
 
-import static wwmm.crystaleye.CrystaleyeConstants.*;
+import static wwmm.crystaleye.CrystaleyeConstants.CIFXML_EXTENSION;
 
 import java.io.File;
 

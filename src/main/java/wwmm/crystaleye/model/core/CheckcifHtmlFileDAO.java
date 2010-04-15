@@ -1,4 +1,4 @@
-package wwmm.crystaleye.model;
+package wwmm.crystaleye.model.core;
 
 import static wwmm.crystaleye.CrystaleyeConstants.CHECKCIF_HTML_EXTENSION;
 

@@ -1,11 +1,11 @@
-package wwmm.crystaleye.task.single_structs;
+package wwmm.crystaleye.task.core;
 
 import java.io.File;
 import java.io.IOException;
 
 import nu.xom.Document;
-import wwmm.crystaleye.model.CheckcifHtmlFileDAO;
-import wwmm.crystaleye.model.CheckcifXmlFileDAO;
+import wwmm.crystaleye.model.core.CheckcifHtmlFileDAO;
+import wwmm.crystaleye.model.core.CheckcifXmlFileDAO;
 import wwmm.crystaleye.task.Task;
 import wwmm.crystaleye.tools.CheckCifParser;
 
