@@ -1,9 +1,9 @@
-package wwmm.crystaleye.task.structures;
+package wwmm.crystaleye.task.single_structs;
 
 import java.io.File;
 
-import wwmm.crystaleye.model.structures.CheckcifHtmlFileDAO;
-import wwmm.crystaleye.model.structures.CifFileDAO;
+import wwmm.crystaleye.model.CheckcifHtmlFileDAO;
+import wwmm.crystaleye.model.CifFileDAO;
 import wwmm.crystaleye.task.Task;
 import wwmm.crystaleye.tools.CheckCifTool;
 
