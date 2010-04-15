@@ -124,10 +124,10 @@ public class Cml2PngTool {
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
-		File cmlFile = new File("E:\\data-test\\cif\\acta\\e\\2006\\13-00\\ac2051\\ac2051sup1_I\\ac2051sup1_I.cml.xml");
+		File cmlFile = new File("c:/workspace/test.complete.cml");
 		CMLCml cmlCml = (CMLCml)Utils.parseCml(cmlFile).getRootElement();
 		CMLMolecule mol = (CMLMolecule) cmlCml.getFirstCMLChild(CMLMolecule.TAG);
-		mol = CDKUtils.add2DCoords(mol);
+		//mol = CDKUtils.add2DCoords(mol);
 		int count = 1;
 		for (CMLMolecule subMol : mol.getDescendantsOrMolecule()) {
 			Cml2PngTool cp = new Cml2PngTool(subMol);

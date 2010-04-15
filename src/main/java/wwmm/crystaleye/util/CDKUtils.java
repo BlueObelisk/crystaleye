@@ -25,13 +25,14 @@ public class CDKUtils {
 		try {
 			bis = new BufferedInputStream(new ByteArrayInputStream(cmlMol.toXML().getBytes()));
 			IChemFile cf = (IChemFile) new CMLReader(bis).read(new ChemFile());
-			bis.close();
+			System.out.println(cf.getChemSequence(0).getChemModel(0).getMoleculeSet());
 			IMoleculeSet mols = cf.getChemSequence(0).getChemModel(0).getMoleculeSet();
 			if (mols.getMoleculeCount() > 1) {
 				throw new RuntimeException("CDK found more than one molecule in molecule.");
 			}
 			return mols.getMolecule(0);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("Exception while creating CDK molecule: "+e.getMessage());
 		} finally {
 			IOUtils.closeQuietly(bis);

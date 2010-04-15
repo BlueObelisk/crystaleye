@@ -268,7 +268,7 @@ public class CML2FooManager extends AbstractManager {
 				if (!atomSet.contains(ligand)) {
 					newAS.addAtom(ligand);	
 					rGroupIds.add(ligand.getId());
-					mol.getBond(atom, ligand).setOrder(CMLBond.SINGLE);
+					mol.getBond(atom, ligand).setOrder(CMLBond.SINGLE_S);
 				}
 			}
 		}
@@ -289,7 +289,7 @@ public class CML2FooManager extends AbstractManager {
 						removeList.add(bond);
 					}
 				}
-				bond.setAttribute("order", CMLBond.SINGLE);
+				bond.setAttribute("order", CMLBond.SINGLE_S);
 			}
 		}
 		for (CMLBond bond : removeList) {

@@ -226,7 +226,7 @@ public class RawCml2CompleteCmlTool {
 					addNoBondsOrChargesSetFlag(subMol);
 				}
 			} else {
-				CMLUtils.setAllBondOrders(subMol, CMLBond.SINGLE);
+				CMLUtils.setAllBondOrders(subMol, CMLBond.SINGLE_S);
 			}
 			if (success) {
 				// remove metals before adding stereochemistry - otherwise

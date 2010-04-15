@@ -1,4 +1,4 @@
-package wwmm.crystaleye.model.structures;
+package wwmm.crystaleye.model;
 
 import static wwmm.crystaleye.CrystaleyeConstants.CIFXML_EXTENSION;
 
