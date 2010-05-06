@@ -72,13 +72,13 @@ public class RSSManager extends AbstractManager {
 	public RSSManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
 	}
-	
+
 	public void execute() {
 		rootFeedsDir = properties.getRssWriteDir();
 		rootWebFeedsDir = properties.getRootWebFeedsDir();
 		summaryWriteDir = properties.getSummaryWriteDir();
 		webSummaryWriteDir = properties.getWebSummaryWriteDir();	
-		
+
 		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
 		for (String publisherAbbreviation : publisherAbbreviations) {
 			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
@@ -282,7 +282,7 @@ public class RSSManager extends AbstractManager {
 				cmlEnc.setType("chemical/x-cml");
 				cmlEnc.setTitle("Crystal structure data in CML");
 				encList.add(cmlEnc);
-				
+
 				List<String> pngPathList = new ArrayList<String>();
 				for (File f : cmlFile.getParentFile().listFiles()) {
 					String pngPath = f.getAbsolutePath();
@@ -307,7 +307,7 @@ public class RSSManager extends AbstractManager {
 				entry.setEnclosures(encList);
 				entryList.add(entry);
 			}
-			
+
 			String rssFeedPostfix = "";
 			String feedTitle = "";
 			String feedSubtitle = "CrystalEye: summarizing recently published crystallography.";
@@ -339,7 +339,7 @@ public class RSSManager extends AbstractManager {
 		}
 
 	}
-	
+
 	private Element createEntryHtmlContent(List<String> pngPathList) {
 		Element content = new Element("content", ATOM_1_NS);
 		content.addAttribute(new Attribute("type", "xhtml"));	
@@ -352,7 +352,7 @@ public class RSSManager extends AbstractManager {
 		}
 		return content;
 	}
-	
+
 	private String dataPathToUrl(String path) {
 		String dir = properties.getSummaryWriteDir();
 		String webDir = properties.getWebSummaryWriteDir();
@@ -361,29 +361,34 @@ public class RSSManager extends AbstractManager {
 		path = FilenameUtils.separatorsToUnix(path);
 		return path.replaceAll(dir, webDir);
 	}
-	
+
 	private String getAllFeedTitle() {
 		return "CrystalEye: all structures";
 	}
-	
+
 	private String getJournalFeedTitle(String publisher, String journal) {
 		return "CrystalEye: structures from "+publisher+", "+journal;
 	}
-	
+
 	private String getCompoundClassFeedTitle(String clazz) {
 		return "CrystalEye: "+clazz+" structures";
 	}
-	
+
 	private String getElementFeedTitle(String element) {
 		return "CrystalEye: structures containing "+element; 
 	}
-	
+
 	private String getBondFeedTitle(String bond) {
 		return "CrystalEye: Structures containing bonds of "+bond;
 	}
 
 	private String cifTitle2String(String title) {
-		title = CIFUtil.translateCIF2ISO(title);
+		try {
+			String isoTitle = CIFUtil.translateCIF2ISO(title);
+			title = isoTitle;
+		} catch (Exception e) {
+			LOG.warn("Problem: "+e.getMessage());
+		}
 		title = title.replaceAll("\\\\", "");
 
 		String patternStr = "\\^(\\d+)\\^";

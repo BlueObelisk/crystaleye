@@ -21,7 +21,7 @@
 					<div id="content">
 						<p style="font-weight: bold;">${publisherFullTitle}: ${journalFullTitle}</p>
 						<p>List of issues:</p>
-						<ul>
+						<ul class="normal">
 							<#if years??>
 							<#list years as year>
 							<li>

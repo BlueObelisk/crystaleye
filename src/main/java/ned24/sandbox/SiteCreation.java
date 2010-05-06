@@ -65,19 +65,6 @@ public class SiteCreation {
 		SimpleSequence publishers = new SimpleSequence();
 		journalFeedMap.put("publishers", publishers);
 		
-		SimpleHash acsMap = new SimpleHash();
-		publishers.add(acsMap);
-		SimpleSequence acsJournals = new SimpleSequence();
-		acsMap.put("journals", acsJournals);
-		acsMap.put("title", "American Chemical Society");
-		acsMap.put("abbreviation", "acs");
-		for (AcsJournal acsJournal : AcsJournal.values()) {
-			SimpleHash journal = new SimpleHash();
-			acsJournals.add(journal);
-			journal.put("abbreviation", acsJournal.getAbbreviation());
-			journal.put("title", acsJournal.getFullTitle());
-		}
-		
 		SimpleHash actaMap = new SimpleHash();
 		publishers.add(actaMap);
 		SimpleSequence actaJournals = new SimpleSequence();
@@ -89,6 +76,19 @@ public class SiteCreation {
 			actaJournals.add(journal);
 			journal.put("abbreviation", actaJournal.getAbbreviation());
 			journal.put("title", actaJournal.getFullTitle());
+		}
+		
+		SimpleHash acsMap = new SimpleHash();
+		publishers.add(acsMap);
+		SimpleSequence acsJournals = new SimpleSequence();
+		acsMap.put("journals", acsJournals);
+		acsMap.put("title", "American Chemical Society");
+		acsMap.put("abbreviation", "acs");
+		for (AcsJournal acsJournal : AcsJournal.values()) {
+			SimpleHash journal = new SimpleHash();
+			acsJournals.add(journal);
+			journal.put("abbreviation", acsJournal.getAbbreviation());
+			journal.put("title", acsJournal.getFullTitle());
 		}
 		
 		SimpleHash csjMap = new SimpleHash();
@@ -264,7 +264,7 @@ public class SiteCreation {
 	}
 
 	public static void main(String[] args) {
-		File outDir = new File("c:/workspace/crystaleye-website");
+		File outDir = new File("e:/workspace/crystaleye-website");
 		SiteCreation sc = new SiteCreation(outDir);
 		sc.createWebsite();
 	}

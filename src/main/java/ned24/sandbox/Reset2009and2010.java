@@ -9,10 +9,10 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import wwmm.crystaleye.util.Utils;
 
-public class Rest2009and2010 {
+public class Reset2009and2010 {
 	
 	public static void main(String[] args) {
-		File logFile = new File("C:\\Documents and Settings\\ned24.UCC\\Desktop\\download-log.xml.new");
+		File logFile = new File("C:\\Documents and Settings\\ned24.UCC\\Desktop\\download-log.xml");
 		Document doc = Utils.parseXml(logFile);
 		Nodes yearNds = doc.query(".//year");
 		for (int i = 0; i < yearNds.size(); i++) {
@@ -24,6 +24,9 @@ public class Rest2009and2010 {
 					Node n = childs.get(j);
 					if (n instanceof Element) {
 						Element e= (Element)n;
+						if (e.getLocalName().equals("rss")) {
+							continue;
+						}
 						if ("true".equals(e.getAttributeValue("value"))) {
 							Attribute a = e.getAttribute("value");
 							a.setValue("false");
@@ -33,7 +36,7 @@ public class Rest2009and2010 {
 			}
 		}
 		
-		File outFile = new File("C:\\Documents and Settings\\ned24.UCC\\Desktop\\download-log.xml.new.2");
+		File outFile = new File("C:\\Documents and Settings\\ned24.UCC\\Desktop\\download-log.xml.2");
 		Utils.writeXML(outFile, doc);
 	}
 
