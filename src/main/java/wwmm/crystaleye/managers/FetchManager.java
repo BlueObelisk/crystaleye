@@ -17,10 +17,10 @@ import wwmm.crystaleye.util.Utils;
 import wwmm.pubcrawler.core.AcsJournal;
 import wwmm.pubcrawler.core.ActaJournal;
 import wwmm.pubcrawler.core.ArticleDescription;
-import wwmm.pubcrawler.core.ArticleReference;
 import wwmm.pubcrawler.core.ChemSocJapanJournal;
 import wwmm.pubcrawler.core.CrawlerHttpClient;
 import wwmm.pubcrawler.core.DOI;
+import wwmm.pubcrawler.core.IssueDescription;
 import wwmm.pubcrawler.core.RscJournal;
 import wwmm.pubcrawler.core.SupplementaryResourceDescription;
 import wwmm.pubcrawler.impl.AcsCifIssueCrawler;
@@ -75,7 +75,7 @@ public class FetchManager {
 	}
 
 	private void executeCrawler(CifIssueCrawler crawler, String publisher, String journal) {
-		List<DOI> dois = crawler.getDoisForCurrentArticles();
+		List<DOI> dois = crawler.getCurrentArticlesDois();
 		List<DOI> cifArticleDois = new ArrayList<DOI>();
 		StringBuilder sb = new StringBuilder();
 		for (DOI doi : dois) {
@@ -84,40 +84,40 @@ public class FetchManager {
 				sb.append(doi.getPostfix()+"\n");
 			}
 		}
-		
+
 		List<ArticleDescription> cifArticlesDetails = crawler.getArticleDescriptions(cifArticleDois);
-		String year = null;
-		String issueNum = null;
+		LOG.info("CIF articles to fetch: "+cifArticlesDetails.size());
+		IssueDescription issueDescription = crawler.getCurrentIssueDescription();
+		String year = issueDescription.getYear();
+		String issue = issueDescription.getIssueId();
 		for (ArticleDescription articleDetails : cifArticlesDetails) {
-			ArticleReference ref = articleDetails.getReference();
-			year = ref.getYear();
-			issueNum = ref.getNumber();
+			
 			for (SupplementaryResourceDescription suppDetails : articleDetails.getSupplementaryResources()) {
 				if (suppDetails.getContentType().contains(CIF_CONTENT_TYPE)) {
-					String cifPath = createOutfilePath(publisher, journal, ref, suppDetails, ".cif");
+					String cifPath = createOutfilePath(publisher, journal, year, issue, suppDetails, ".cif");
 					URI cifUri = suppDetails.getURI();
 					httpClient.writeResourceToFile(cifUri, new File(cifPath));
-					String datePath = createOutfilePath(publisher, journal, ref, suppDetails, ".date");
+					String datePath = createOutfilePath(publisher, journal, year, issue, suppDetails, ".date");
 					Utils.writeDateStamp(datePath);
-					String doiPath = createOutfilePath(publisher, journal, ref, suppDetails, ".doi");
+					String doiPath = createOutfilePath(publisher, journal, year, issue, suppDetails, ".doi");
 					Utils.writeText(new File(doiPath), articleDetails.getDoi().toString());
 					LOG.info("Wrote CIF to "+cifPath+" from the resource at "+cifUri.toString());
 				}
 			}
 		}
-		LOG.debug("details list size: "+cifArticlesDetails.size());
 		if (cifArticlesDetails.size() > 0) {
-			if (year == null || issueNum == null) {
-				throw new IllegalStateException("Should never reach here - year and issue should already have been set.");
+			if (year == null || issue == null) {
+				return;
+			} else {
+				new DownloadLog(downloadLogPath).updateLog(publisher, journal, year, issue);
 			}
-			new DownloadLog(downloadLogPath).updateLog(publisher, journal, year, issueNum);
 			Utils.appendToFile(doiIndexFile, sb.toString());
 		}
 	}
 
-	private String createOutfilePath(String publisher, String journal, ArticleReference ref, SupplementaryResourceDescription suppDetails, String extension) {
+	private String createOutfilePath(String publisher, String journal, String year, String issue, SupplementaryResourceDescription suppDetails, String extension) {
 		String fileId = suppDetails.getFileId();
-		return writeDirPath+"/"+publisher+"/"+journal+"/"+ref.getYear()+"/"+ref.getNumber()+"/"+fileId+"/"+fileId+extension;
+		return writeDirPath+"/"+publisher+"/"+journal+"/"+year+"/"+issue+"/"+fileId+"/"+fileId+extension;
 	}
 
 	public static void main(String[] args) {

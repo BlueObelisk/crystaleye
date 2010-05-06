@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -211,11 +213,14 @@ public class WebpageManager extends AbstractManager {
 		templateMap.put("currentMenuSelected", "summary");
 
 		SimpleSequence years = new SimpleSequence();
-		for (File yearDir : journalDir.listFiles()) {
+		List<File> yearDirs = Arrays.asList(journalDir.listFiles());
+		Collections.reverse(yearDirs);
+		for (File yearDir : yearDirs) {
 			SimpleHash year = new SimpleHash();
 			year.put("num", yearDir.getName());
 			SimpleSequence issues = new SimpleSequence();
-			for (File issueDir : yearDir.listFiles()) {
+			List<File> issueDirs = Arrays.asList(yearDir.listFiles());
+			for (File issueDir : issueDirs) {
 				SimpleHash issue = new SimpleHash();
 				issue.put("num", issueDir.getName());
 				issues.add(issue);
@@ -229,7 +234,8 @@ public class WebpageManager extends AbstractManager {
 
 	private void updateSummaryLinkPage(String summaryWriteDir) {
 		String path = summaryWriteDir+"/"+publisherAbbreviation+"-"+journalAbbreviation+".html";
-		String journalDirPath =  writeDir+"/"+publisherAbbreviation+"/"+journalAbbreviation;
+		//String journalDirPath =  writeDir+"/"+publisherAbbreviation+"/"+journalAbbreviation;
+		String journalDirPath =  summaryWriteDir+"/"+publisherAbbreviation+"/"+journalAbbreviation;
 		File journalDir = new File(journalDirPath);
 		TemplateHashModel templateMap = getTemplateMap(journalDir);
 		FreemarkerUtils.writeHtmlTemplate("journal-issue-index.ftl", new File(path), templateMap);

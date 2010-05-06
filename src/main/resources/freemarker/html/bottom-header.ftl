@@ -1,3 +1,3 @@
 <div id="bottomheader">
-	<h1>CrystalEye (beta)</h1>
+	<h1>CrystalEye</h1>
 </div>
