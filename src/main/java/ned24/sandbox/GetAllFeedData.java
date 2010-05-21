@@ -7,9 +7,6 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 import nu.xom.XPathContext;
-
-import org.apache.commons.io.FileUtils;
-
 import wwmm.crystaleye.util.Utils;
 
 public class GetAllFeedData {

@@ -24,18 +24,8 @@ public class GetActa20080910 {
 
 	public static void main(String[] args) {
 		for (ActaJournal actaJournal : ActaJournal.values()) {
-			if (actaJournal.equals(ActaJournal.SECTION_A) ||
-					actaJournal.equals(ActaJournal.SECTION_B) ||
-					actaJournal.equals(ActaJournal.SECTION_C) ||
-					actaJournal.equals(ActaJournal.SECTION_D)) {
-				continue;
-			}
 			for (int i = 2008; i < 2011; i++) {
 				for (int j = 1; j < 13; j++) {
-					if (actaJournal.equals(ActaJournal.SECTION_E) &&
-							i == 2008 && j < 3) {
-						continue;
-					}
 					String year = ""+i;
 					String issue = j+"-00";
 					if (issue.length() == 4) {
@@ -58,22 +48,24 @@ public class GetActa20080910 {
 		for (ArticleDescription articleDetails : cifArticlesDetails) {
 			ArticleReference ref = articleDetails.getReference();
 			for (SupplementaryResourceDescription suppDetails : articleDetails.getSupplementaryResources()) {
+				int count = 1;
 				if (suppDetails.getContentType().contains(CIF_CONTENT_TYPE)) {
-					String cifPath = createOutfilePath(publisher, journal, ref, suppDetails, ".cif");
-					URI cifUri = suppDetails.getURI();
+					String cifPath = createOutfilePath(publisher, journal, year, issue, suppDetails, "sup"+count+".cif");
+					String cifUri = suppDetails.getURL();
 					httpClient.writeResourceToFile(cifUri, new File(cifPath));
-					String datePath = createOutfilePath(publisher, journal, ref, suppDetails, ".date");
+					String datePath = createOutfilePath(publisher, journal, year, issue, suppDetails, ".date");
 					Utils.writeDateStamp(datePath);
-					String doiPath = createOutfilePath(publisher, journal, ref, suppDetails, ".doi");
+					String doiPath = createOutfilePath(publisher, journal, year, issue, suppDetails, ".doi");
 					Utils.writeText(new File(doiPath), articleDetails.getDoi().toString());
+					count++;
 				}
 			}
 		}
 	}
 
-	private static String createOutfilePath(String publisher, String journal, ArticleReference ref, SupplementaryResourceDescription suppDetails, String extension) {
+	private static String createOutfilePath(String publisher, String journal, String year, String issue, SupplementaryResourceDescription suppDetails, String extension) {
 		String fileId = suppDetails.getFileId();
-		return "e:/crystaleye-2010/"+publisher+"/"+journal+"/"+ref.getYear()+"/"+ref.getNumber()+"/"+fileId+"/"+fileId+extension;
+		return "e:/crystaleye-2010/"+publisher+"/"+journal+"/"+year+"/"+issue+"/"+fileId+"/"+fileId+extension;
 	}
 
 }

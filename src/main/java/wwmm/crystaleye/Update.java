@@ -115,7 +115,7 @@ public class Update {
 	private void runall(File propsFile) {
 		LOG.info("Starting FetchManager");
 		FetchManager fetch = new FetchManager(propsFile);
-		fetch.run();
+		//fetch.run();
 		LOG.info("Starting CIF2CMLManager");
 		Cif2CmlManager cif2Cml = new Cif2CmlManager(propsFile);
 		cif2Cml.execute();
