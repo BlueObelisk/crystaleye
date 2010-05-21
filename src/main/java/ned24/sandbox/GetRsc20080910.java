@@ -10,7 +10,6 @@ import org.apache.commons.httpclient.URI;
 import wwmm.crystaleye.util.Utils;
 import wwmm.pubcrawler.BasicHttpClient;
 import wwmm.pubcrawler.core.ArticleDescription;
-import wwmm.pubcrawler.core.ArticleReference;
 import wwmm.pubcrawler.core.DOI;
 import wwmm.pubcrawler.core.IssueDescription;
 import wwmm.pubcrawler.core.RscJournal;
@@ -23,7 +22,9 @@ public class GetRsc20080910 {
 	private static BasicHttpClient httpClient = new BasicHttpClient();
 
 	public static void main(String[] args) {
-		RscJournal rscJournal = RscJournal.CHEMCOMM;
+		RscJournal rscJournal = RscJournal.ORGANIC_AND_BIOMOLECULAR_CHEMISTRY;
+		executeCrawler(new RscCifIssueCrawler(rscJournal), "rsc", rscJournal.getAbbreviation(), "2010", "6");
+		/*
 		for (int i = 2008; i < 2011; i++) {
 			for (int j = 1; j < 49; j++) {
 				if (i == 2010) {
@@ -33,9 +34,17 @@ public class GetRsc20080910 {
 				}
 				String year = ""+i;
 				String issue = ""+j;
-				executeCrawler(new RscCifIssueCrawler(rscJournal), "rsc", rscJournal.getAbbreviation(), year, issue);
+				while (true) {
+					try {
+						executeCrawler(new RscCifIssueCrawler(rscJournal), "rsc", rscJournal.getAbbreviation(), year, issue);
+					} catch (Exception e) {
+						continue;
+					}
+					break;
+				}
 			}
 		}
+		*/
 
 	}
 
@@ -51,7 +60,7 @@ public class GetRsc20080910 {
 			for (SupplementaryResourceDescription suppDetails : articleDetails.getSupplementaryResources()) {
 				if (suppDetails.getContentType().contains(CIF_CONTENT_TYPE)) {
 					String cifPath = createOutfilePath(publisher, journal, year, issue, suppDetails, ".cif");
-					URI cifUri = suppDetails.getURI();
+					String cifUri = suppDetails.getURL();
 					httpClient.writeResourceToFile(cifUri, new File(cifPath));
 					String datePath = createOutfilePath(publisher, journal, year, issue, suppDetails, ".date");
 					Utils.writeDateStamp(datePath);

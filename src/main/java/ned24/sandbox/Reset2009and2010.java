@@ -38,6 +38,7 @@ public class Reset2009and2010 {
 		
 		File outFile = new File("C:\\Documents and Settings\\ned24.UCC\\Desktop\\download-log.xml.2");
 		Utils.writeXML(outFile, doc);
+		System.out.println("ere");
 	}
 
 }
