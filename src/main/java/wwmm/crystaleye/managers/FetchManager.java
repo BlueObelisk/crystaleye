@@ -91,17 +91,29 @@ public class FetchManager {
 		String year = issueDescription.getYear();
 		String issue = issueDescription.getIssueId();
 		for (ArticleDescription articleDetails : cifArticlesDetails) {
-			
+			int count = 1;
 			for (SupplementaryResourceDescription suppDetails : articleDetails.getSupplementaryResources()) {
 				if (suppDetails.getContentType().contains(CIF_CONTENT_TYPE)) {
-					String cifPath = createOutfilePath(publisher, journal, year, issue, suppDetails, ".cif");
-					URI cifUri = suppDetails.getURI();
+					String doiStr = articleDetails.getDoi().toString();
+					String doiPostfix = doiStr.substring(doiStr.lastIndexOf("/")+1);
+					String fileId = "";
+					String cifExtension = "";
+					if (crawler instanceof ActaCifIssueCrawler) {
+						fileId = suppDetails.getFileId();
+						cifExtension = ".cif";
+					} else {
+						fileId = doiPostfix;
+						cifExtension = "sup"+count+".cif";
+					}
+					String cifPath = createOutfilePath(publisher, journal, year, issue, fileId, suppDetails, cifExtension);
+					String cifUri = suppDetails.getURL();
 					httpClient.writeResourceToFile(cifUri, new File(cifPath));
-					String datePath = createOutfilePath(publisher, journal, year, issue, suppDetails, ".date");
+					String datePath = createOutfilePath(publisher, journal, year, issue, fileId, suppDetails, ".date");
 					Utils.writeDateStamp(datePath);
-					String doiPath = createOutfilePath(publisher, journal, year, issue, suppDetails, ".doi");
-					Utils.writeText(new File(doiPath), articleDetails.getDoi().toString());
+					String doiPath = createOutfilePath(publisher, journal, year, issue, fileId, suppDetails, ".doi");
+					Utils.writeText(new File(doiPath), doiStr);
 					LOG.info("Wrote CIF to "+cifPath+" from the resource at "+cifUri.toString());
+					count++;
 				}
 			}
 		}
@@ -111,13 +123,12 @@ public class FetchManager {
 			} else {
 				new DownloadLog(downloadLogPath).updateLog(publisher, journal, year, issue);
 			}
-			Utils.appendToFile(doiIndexFile, sb.toString());
 		}
+		Utils.appendToFile(doiIndexFile, sb.toString());
 	}
 
-	private String createOutfilePath(String publisher, String journal, String year, String issue, SupplementaryResourceDescription suppDetails, String extension) {
-		String fileId = suppDetails.getFileId();
-		return writeDirPath+"/"+publisher+"/"+journal+"/"+year+"/"+issue+"/"+fileId+"/"+fileId+extension;
+	private String createOutfilePath(String publisher, String journal, String year, String issue, String filename, SupplementaryResourceDescription suppDetails, String extension) {
+		return writeDirPath+"/"+publisher+"/"+journal+"/"+year+"/"+issue+"/"+filename.replaceAll("sup\\d+", "")+"/"+filename+extension;
 	}
 
 	public static void main(String[] args) {

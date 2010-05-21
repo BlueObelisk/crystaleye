@@ -98,8 +98,8 @@ public class SmilesTool {
 		return result.getOutput().trim();
 	}
 	
-	public static void main(String[] args) {
-		testIndexGeneration();
+	public static void main(String[] args) throws ValidityException, ParsingException, IOException {
+		testSmilesGeneration();
 	}
 	
 	private static void testIndexGeneration() {
@@ -127,7 +127,7 @@ public class SmilesTool {
 				"</molecule>";
 		CMLMolecule molecule = (CMLMolecule)new CMLBuilder().build(new StringReader(molStr)).getRootElement();
 		String smiles = SmilesTool.generateSmiles(molecule);
-		System.out.println(smiles);
+		System.out.println("generated smiles: "+smiles);
 	}
 
 }
