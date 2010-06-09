@@ -12,7 +12,7 @@ import nu.xom.Nodes;
 
 import org.apache.commons.io.FileUtils;
 
-import wwmm.atomarchiver.Utils;
+import wwmm.crystaleye.util.Utils;
 
 public class AlterForUnFeededIssues {
 
@@ -49,7 +49,7 @@ public class AlterForUnFeededIssues {
 				el.getAttribute("value").setValue("false");
 			}
 		}
-		Utils.writeXML(doc, logPath+".2");
+		Utils.writeXML(new File(logPath+".2"), doc);
 		
 		/*
 		for (String s : set) {

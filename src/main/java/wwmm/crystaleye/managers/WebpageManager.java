@@ -1245,7 +1245,7 @@ public class WebpageManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		File propsFile = new File("e:/crystaleye-new/docs/cif-flow-props.txt");
+		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
 		WebpageManager web = new WebpageManager(propsFile);
 		web.execute();
 	}

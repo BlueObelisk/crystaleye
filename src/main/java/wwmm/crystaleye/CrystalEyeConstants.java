@@ -32,7 +32,6 @@ public interface CrystalEyeConstants {
 	public static final String DOWNLOAD_LOG_PATH = "download.log.path";
 	public static final String WRITE_DIR = "write.dir";
 	public static final String PUBLISHER_ABBREVIATIONS = "publisher.abbreviations";
-	public static final String RSS_FEED_TYPES = "rss.feed.types";
 	public static final String SUMMARY_WRITE_DIR = "summary.write.dir";
 	public static final String WEB_SUMMARY_WRITE_DIR = "web.summary.write.dir";
 	public static final String RSS_WRITE_DIR = "rss.write.dir";
