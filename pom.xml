@@ -24,7 +24,7 @@
                             <transformers>
                                 <transformer
                                     implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>wwmm.crystaleye.Update</mainClass>
+                                    <mainClass>ned24.sandbox.CreateMoietyN3Files</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -59,6 +59,12 @@
 			<version>0.1</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+            <groupId>uk.ac.cam.ch.atomxom</groupId>
+            <artifactId>atomxom-feeds</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 		<dependency>
 			<groupId>cdk</groupId>
 			<artifactId>cdk</artifactId>
@@ -108,15 +114,20 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+            <groupId>com.hp.hpl.jena</groupId>
+            <artifactId>jena</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+		<dependency>
 			<groupId>jgrapht</groupId>
 			<artifactId>jgrapht</artifactId>
 			<version>0.6.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.sf</groupId>
-			<artifactId>jniinchi</artifactId>
-			<version>0.5</version>
+			<groupId>net.sf.jni-inchi</groupId>
+			<artifactId>jni-inchi</artifactId>
+			<version>0.6</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -146,7 +157,7 @@
 		<dependency>
 			<groupId>wwmm</groupId>
 			<artifactId>pub-crawler</artifactId>
-			<version>0.2.3-SNAPSHOT</version>
+			<version>0.2.4-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

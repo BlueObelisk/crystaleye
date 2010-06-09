@@ -471,10 +471,10 @@ public class RawCml2CompleteCmlTool {
 	}
 	
 	public static void main(String[] args) {
-		File file = new File("C:\\Documents and Settings\\ned24.UCC\\Desktop\\test_2\\test_2.cml");
+		File file = new File("C:\\workspace\\crystaleye-trunk-data\\crystaleye-work\\soton\\ecrystals\\2010\\08-06\\1035\\1035_94src104\\1035_94src104.raw.cml.xml");
 		RawCml2CompleteCmlTool tool = new RawCml2CompleteCmlTool();
 		CMLCml cml = tool.convert(file);
-		//System.out.println(cml.toXML());
+		Utils.writeXML(new File("c:/workspace/test.cml.xml"), cml.getDocument());
 	}
 
 }

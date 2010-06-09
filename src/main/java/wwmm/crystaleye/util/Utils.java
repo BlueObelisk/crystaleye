@@ -12,6 +12,7 @@ import java.util.Date;
 
 import nu.xom.Builder;
 import nu.xom.Document;
+import nu.xom.Element;
 import nu.xom.Serializer;
 
 import org.apache.commons.io.FileUtils;
@@ -78,6 +79,10 @@ public class Utils {
 		} catch (IOException e) {
 			throw new RuntimeException("Could not write XML file to "+file);
 		}
+	}
+	
+	public static void writeXML(File file, Element element)  {
+		writeXML(file, new Document((Element)element.copy()));
 	}
 
 	public static Document parseXml(String filePath) {

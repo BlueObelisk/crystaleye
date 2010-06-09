@@ -10,7 +10,6 @@ import static wwmm.crystaleye.CrystalEyeConstants.DOI_INDEX_PATH;
 import static wwmm.crystaleye.CrystalEyeConstants.DOI_LIST_PATH;
 import static wwmm.crystaleye.CrystalEyeConstants.DOWNLOAD_LOG_PATH;
 import static wwmm.crystaleye.CrystalEyeConstants.PUBLISHER_ABBREVIATIONS;
-import static wwmm.crystaleye.CrystalEyeConstants.RSS_FEED_TYPES;
 import static wwmm.crystaleye.CrystalEyeConstants.RSS_ROOT_FEEDS_DIR;
 import static wwmm.crystaleye.CrystalEyeConstants.RSS_WRITE_DIR;
 import static wwmm.crystaleye.CrystalEyeConstants.SLEEP_MAX;
@@ -48,8 +47,6 @@ public class CrystalEyeProperties {
 	// rss
 	private String rssWriteDir;
 	private String rootWebFeedsDir;
-	private String[] feedTypes;
-	private String[] urlSafeFeedTypes;
 
 	// website
 	private String summaryWriteDir;
@@ -130,17 +127,6 @@ public class CrystalEyeProperties {
 		this.spaceGroupXml = properties.getProperty(SPACEGROUP_XML);
 		if (spaceGroupXml == null) {
 			throw new RuntimeException("Could not find entry for "+SPACEGROUP_XML+" in properties file.");
-		}
-		
-		// the types of rss feed that are to be created
-		this.feedTypes = properties.getProperty(RSS_FEED_TYPES).split(",");
-		if (feedTypes == null) {
-			throw new RuntimeException("Could not find entry for "+feedTypes+" in properties file.");
-		}	
-		// rss feed types contain '.' so need to remove them to make the name url safe
-		urlSafeFeedTypes = new String[feedTypes.length];
-		for (int i = 0; i < feedTypes.length; i++) {
-			urlSafeFeedTypes[i] = feedTypes[i].replaceAll("\\.", "");
 		}
 
 		// root folder (on the server) for the crystal summary webpages
@@ -284,10 +270,6 @@ public class CrystalEyeProperties {
 		return spaceGroupXml;
 	}
 	
-	public String[] getFeedTypes() {
-		return feedTypes;
-	}
-	
 	public String getRootWebFeedsDir() {
 		return rootWebFeedsDir;
 	}
@@ -298,10 +280,6 @@ public class CrystalEyeProperties {
 
 	public String getSummaryWriteDir() {
 		return summaryWriteDir;
-	}
-
-	public String[] getUrlSafeFeedTypes() {
-		return urlSafeFeedTypes;
 	}
 
 	public String getWebSummaryWriteDir() {

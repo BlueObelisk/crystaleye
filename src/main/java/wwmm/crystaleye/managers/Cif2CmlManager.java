@@ -261,7 +261,7 @@ public class Cif2CmlManager extends AbstractManager {
 	}	
 
 	public static void main(String[] args) {
-		File propsFile = new File("e:/crystaleye-new/docs/cif-flow-props.txt");
+		File propsFile = new File("c:/workspace/crystaleye-trunk-data/docs/cif-flow-props.txt");
 		Cif2CmlManager acta = new Cif2CmlManager(propsFile);
 		acta.execute();
 	}
