@@ -115,7 +115,7 @@ public class Update {
 	private void runall(File propsFile) {
 		LOG.info("Starting FetchManager");
 		FetchManager fetch = new FetchManager(propsFile);
-		//fetch.run();
+		fetch.run();
 		LOG.info("Starting CIF2CMLManager");
 		Cif2CmlManager cif2Cml = new Cif2CmlManager(propsFile);
 		cif2Cml.execute();
@@ -131,17 +131,16 @@ public class Update {
 		LOG.info("Starting DoiListManager");
 		DoiListManager dois = new DoiListManager(propsFile);
 		dois.execute();
-		LOG.info("Starting CellParamsManager");
-		CellParamsManager cell = new CellParamsManager(propsFile);
-		cell.execute();
+		//LOG.info("Starting CellParamsManager");
+		//CellParamsManager cell = new CellParamsManager(propsFile);
+		//cell.execute();
 		//LOG.info("Starting BondLengthsManager");
 		//BondLengthsManager bond = new BondLengthsManager(propsFile);
 		//bond.execute();
 		
-		// NOT RUNNING THIS AS SMILES DON'T SEEM TO BE ADDED ANY MORE
-		//LOG.info("Starting SmilesManager");
-		//SmilesListManager smi = new SmilesListManager(propsFile);
-		//smi.execute();
+		LOG.info("Starting SmilesManager");
+		SmilesListManager smi = new SmilesListManager(propsFile);
+		smi.execute();
 		LOG.info("Starting RSSManager");
 		RSSManager rss = new RSSManager(propsFile);
 		rss.execute();

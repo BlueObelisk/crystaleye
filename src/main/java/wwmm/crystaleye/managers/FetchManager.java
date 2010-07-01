@@ -75,56 +75,60 @@ public class FetchManager {
 	}
 
 	private void executeCrawler(CifIssueCrawler crawler, String publisher, String journal) {
-		List<DOI> dois = crawler.getCurrentArticlesDois();
-		List<DOI> cifArticleDois = new ArrayList<DOI>();
-		StringBuilder sb = new StringBuilder();
-		for (DOI doi : dois) {
-			if (!doiStrings.contains(doi.getPostfix())) {
-				cifArticleDois.add(doi);
-				sb.append(doi.getPostfix()+"\n");
-			}
-		}
-
-		List<ArticleDescription> cifArticlesDetails = crawler.getArticleDescriptions(cifArticleDois);
-		LOG.info("CIF articles to fetch: "+cifArticlesDetails.size());
-		IssueDescription issueDescription = crawler.getCurrentIssueDescription();
-		String year = issueDescription.getYear();
-		String issue = issueDescription.getIssueId();
-		for (ArticleDescription articleDetails : cifArticlesDetails) {
-			int count = 1;
-			for (SupplementaryResourceDescription suppDetails : articleDetails.getSupplementaryResources()) {
-				if (suppDetails.getContentType().contains(CIF_CONTENT_TYPE)) {
-					String doiStr = articleDetails.getDoi().toString();
-					String doiPostfix = doiStr.substring(doiStr.lastIndexOf("/")+1);
-					String fileId = "";
-					String cifExtension = "";
-					if (crawler instanceof ActaCifIssueCrawler) {
-						fileId = suppDetails.getFileId();
-						cifExtension = ".cif";
-					} else {
-						fileId = doiPostfix;
-						cifExtension = "sup"+count+".cif";
-					}
-					String cifPath = createOutfilePath(publisher, journal, year, issue, fileId, suppDetails, cifExtension);
-					String cifUri = suppDetails.getURL();
-					httpClient.writeResourceToFile(cifUri, new File(cifPath));
-					String datePath = createOutfilePath(publisher, journal, year, issue, fileId, suppDetails, ".date");
-					Utils.writeDateStamp(datePath);
-					String doiPath = createOutfilePath(publisher, journal, year, issue, fileId, suppDetails, ".doi");
-					Utils.writeText(new File(doiPath), doiStr);
-					LOG.info("Wrote CIF to "+cifPath+" from the resource at "+cifUri.toString());
-					count++;
+		try {
+			List<DOI> dois = crawler.getCurrentArticlesDois();
+			List<DOI> cifArticleDois = new ArrayList<DOI>();
+			StringBuilder sb = new StringBuilder();
+			for (DOI doi : dois) {
+				if (!doiStrings.contains(doi.getPostfix())) {
+					cifArticleDois.add(doi);
+					sb.append(doi.getPostfix()+"\n");
 				}
 			}
-		}
-		if (cifArticlesDetails.size() > 0) {
-			if (year == null || issue == null) {
-				return;
-			} else {
-				new DownloadLog(downloadLogPath).updateLog(publisher, journal, year, issue);
+
+			List<ArticleDescription> cifArticlesDetails = crawler.getArticleDescriptions(cifArticleDois);
+			LOG.info("CIF articles to fetch: "+cifArticlesDetails.size());
+			IssueDescription issueDescription = crawler.getCurrentIssueDescription();
+			String year = issueDescription.getYear();
+			String issue = issueDescription.getIssueId();
+			for (ArticleDescription articleDetails : cifArticlesDetails) {
+				int count = 1;
+				for (SupplementaryResourceDescription suppDetails : articleDetails.getSupplementaryResources()) {
+					if (suppDetails.getContentType().contains(CIF_CONTENT_TYPE)) {
+						String doiStr = articleDetails.getDoi().toString();
+						String doiPostfix = doiStr.substring(doiStr.lastIndexOf("/")+1);
+						String fileId = "";
+						String cifExtension = "";
+						if (crawler instanceof ActaCifIssueCrawler) {
+							fileId = suppDetails.getFileId();
+							cifExtension = ".cif";
+						} else {
+							fileId = doiPostfix;
+							cifExtension = "sup"+count+".cif";
+						}
+						String cifPath = createOutfilePath(publisher, journal, year, issue, fileId, suppDetails, cifExtension);
+						String cifUri = suppDetails.getURL();
+						httpClient.writeResourceToFile(cifUri, new File(cifPath));
+						String datePath = createOutfilePath(publisher, journal, year, issue, fileId, suppDetails, ".date");
+						Utils.writeDateStamp(datePath);
+						String doiPath = createOutfilePath(publisher, journal, year, issue, fileId, suppDetails, ".doi");
+						Utils.writeText(new File(doiPath), doiStr);
+						LOG.info("Wrote CIF to "+cifPath+" from the resource at "+cifUri.toString());
+						count++;
+					}
+				}
 			}
+			if (cifArticlesDetails.size() > 0) {
+				if (year == null || issue == null) {
+					return;
+				} else {
+					new DownloadLog(downloadLogPath).updateLog(publisher, journal, year, issue);
+				}
+			}
+			Utils.appendToFile(doiIndexFile, sb.toString());
+		} catch (Exception e) {
+			LOG.warn("Problem crawling latest issue of "+publisher+", "+journal+": "+e.getMessage());
 		}
-		Utils.appendToFile(doiIndexFile, sb.toString());
 	}
 
 	private String createOutfilePath(String publisher, String journal, String year, String issue, String filename, SupplementaryResourceDescription suppDetails, String extension) {
