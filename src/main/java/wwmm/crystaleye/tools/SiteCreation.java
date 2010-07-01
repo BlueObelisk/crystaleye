@@ -56,14 +56,11 @@ public class SiteCreation {
 		createMoietyFeedPages();
 	}
 	
-	private void createJournalFeedPages() {
-		File journalFeedPage = new File(outDir, "feed/journal/index.html");
-		SimpleHash journalFeedMap = new SimpleHash();
-		journalFeedMap.put("pageTitle", "CrystalEye: RSS feeds");
-		journalFeedMap.put("pathToRoot", "../../");
-		journalFeedMap.put("currentMenuSelected", "feeds");
+	private SimpleHash createJournalDescriptionMap() {
+		SimpleHash journalDescriptionMap = new SimpleHash();
+		
 		SimpleSequence publishers = new SimpleSequence();
-		journalFeedMap.put("publishers", publishers);
+		journalDescriptionMap.put("publishers", publishers);
 		
 		SimpleHash actaMap = new SimpleHash();
 		publishers.add(actaMap);
@@ -129,8 +126,16 @@ public class SiteCreation {
 			journal.put("abbreviation", rscJournal.getAbbreviation());
 			journal.put("title", rscJournal.getFullTitle());
 		}
-		
-		FreemarkerUtils.writeHtmlTemplate("feed-journal-index.ftl", journalFeedPage, journalFeedMap);
+		return journalDescriptionMap;
+	}
+	
+	private void createJournalFeedPages() {
+		File journalFeedPage = new File(outDir, "feed/journal/index.html");
+		SimpleHash journalDescriptionMap = createJournalDescriptionMap();
+		journalDescriptionMap.put("pageTitle", "CrystalEye: RSS feeds");
+		journalDescriptionMap.put("pathToRoot", "../../");
+		journalDescriptionMap.put("currentMenuSelected", "feeds");
+		FreemarkerUtils.writeHtmlTemplate("feed-journal-index.ftl", journalFeedPage, journalDescriptionMap);
 	}
 	
 	private void createClassFeedPages() {
@@ -222,7 +227,7 @@ public class SiteCreation {
 	
 	private void createSummaryPages() {
 		File summaryHomePage = new File(outDir, "summary/index.html");
-		SimpleHash summaryHomeMap = new SimpleHash();
+		SimpleHash summaryHomeMap = createJournalDescriptionMap();
 		summaryHomeMap.put("pageTitle", "CrystalEye: Browse structures");
 		summaryHomeMap.put("pathToRoot", "../");
 		summaryHomeMap.put("currentMenuSelected", "summary");
