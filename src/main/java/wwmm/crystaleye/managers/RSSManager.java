@@ -266,6 +266,10 @@ public class RSSManager extends AbstractManager {
 				}
 
 				String rssDescValue = RSS_DESC_VALUE_PREFIX+"DataBlock "+blockId+" in CIF "+cifName.toUpperCase()+" (DOI:"+doi+") from issue "+issueNum+"/"+year+" of "+publisherTitle+", "+journalTitle+".";
+				if ("".equals(title)) {
+					title = rssDescValue;
+				}
+				
 				String entryLink = webJournalDirPath+"/data/"+articleId+"/"+cifId+"/"+cifId+".cif.summary.html";
 				String cmlLink = webJournalDirPath+"/data/"+articleId+"/"+cifId+"/"+cifId+COMPLETE_CML_MIME;
 

@@ -29,6 +29,9 @@ public class CreateMoietyN3Files {
 			if (!publisherDir.isDirectory()) {
 				continue;
 			}
+			if (!"soton".equals(publisherDir.getName())) {
+				continue;
+			}
 			for (File journalDir : publisherDir.listFiles()) {
 				if (!publisherDir.isDirectory()) {
 					continue;

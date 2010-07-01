@@ -24,7 +24,7 @@
                             <transformers>
                                 <transformer
                                     implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>ned24.sandbox.CreateMoietyN3Files</mainClass>
+                                    <mainClass>wwmm.crystaleye.Update</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -157,7 +157,7 @@
 		<dependency>
 			<groupId>wwmm</groupId>
 			<artifactId>pub-crawler</artifactId>
-			<version>0.2.4-SNAPSHOT</version>
+			<version>0.2.6-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
