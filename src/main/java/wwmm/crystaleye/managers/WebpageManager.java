@@ -327,6 +327,9 @@ public class WebpageManager extends AbstractManager {
 		if (nodes.size() != 0) {
 			doi = nodes.get(0).getValue();
 		}
+		if (doi.startsWith("http:")) {
+			doi = doi.replaceAll("http://dx.doi.org/", "");
+		}
 
 		File newFile = structCmlFile;
 		for (int i = 0; i < folderDepth-2; i++) {
