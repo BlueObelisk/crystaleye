@@ -109,7 +109,7 @@ public class RawCml2CompleteCmlTool {
 				}
 			}
 
-			addDoi(cml, pathMinusMime);
+			addDoi(cml, rawCmlFile);
 			// need to replace the molecule created from atoms explicit in the CIF with mergedMolecule.
 			molecule.detach();
 			cml.appendChild(mergedMolecule);
@@ -326,14 +326,17 @@ public class RawCml2CompleteCmlTool {
 		ct.flattenMolecules();
 	}
 
-	private void addDoi(CMLCml cml, String pathMinusMime) {
-		String parent = pathMinusMime.substring(0,pathMinusMime.lastIndexOf(File.separator));
-		parent = new File(parent).getParent();
-		String doiPath = parent+pathMinusMime.substring(pathMinusMime.lastIndexOf(File.separator),pathMinusMime.lastIndexOf("_"));
-		doiPath = doiPath.replaceAll("sup[\\d]*", "")+".doi";
-		File doiFile = new File(doiPath);
-		if (doiFile.exists()) {
-			String doiString = null;
+	private void addDoi(CMLCml cml, File rawCmlFile) {
+		File parentFile = rawCmlFile.getParentFile();
+		File doiFile = null;
+		for (File file : parentFile.listFiles()) {
+			if (file.getAbsolutePath().endsWith(".doi")) {
+				doiFile = file;
+				break;
+			}
+		}
+		if (doiFile != null) {
+			String doiString = "";
 			try {
 				doiString = FileUtils.readFileToString(doiFile);
 			} catch (IOException e) {
