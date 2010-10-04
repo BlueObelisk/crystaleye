@@ -22,14 +22,14 @@ import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.util.Utils;
 
-public class DownloadLog {
+public class ProcessLog {
 
-	private static final Logger LOG = Logger.getLogger(DownloadLog.class);
+	private static final Logger LOG = Logger.getLogger(ProcessLog.class);
 
 	private File logFile;
 	private Document logContents;
 
-	public DownloadLog(File file) {
+	public ProcessLog(File file) {
 		this.logFile = file;
 		if (!logFile.exists()) {
 			String logInitialContents = "<log></log>";
@@ -38,8 +38,12 @@ public class DownloadLog {
 		this.logContents = Utils.parseXml(file);
 	}
 	
-	public DownloadLog(String filepath) {
+	public ProcessLog(String filepath) {
 		this(new File(filepath));
+	}
+	
+	public Document getContents() {
+		return logContents;
 	}
 
 	public void updateLog(String publisherAbbreviation, String journalAbbreviation, String year, String issueNum) {
