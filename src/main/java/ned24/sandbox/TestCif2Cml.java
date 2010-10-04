@@ -1,12 +1,8 @@
 package ned24.sandbox;
 
 import java.io.File;
-import java.util.Collection;
 
-import org.apache.commons.io.FileUtils;
 import org.xmlcml.cml.converters.cif.CIFXML2CMLConverter;
-
-import wwmm.crystaleye.tools.RawCml2CompleteCmlTool;
 
 public class TestCif2Cml {
 	

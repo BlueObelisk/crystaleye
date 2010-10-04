@@ -28,7 +28,7 @@ public abstract class AbstractManager {
 		properties = new CrystalEyeProperties(propertiesFile);
 	}
 
-	public void updateProps(String downloadLogPath, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum, String managerTag) {
+	public void updateProcessLog(String downloadLogPath, String publisherAbbreviation, String journalAbbreviation, String year, String issueNum, String managerTag) {
 		String issueCode = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum;
 		File logFile = new File(downloadLogPath);
 		String logTempPath = downloadLogPath+".temp";
@@ -51,13 +51,13 @@ public abstract class AbstractManager {
 		}
 	}
 
-	public List<IssueDate> getUnprocessedDates(String downloadLogPath, String publisherAbbreviation, 
+	public List<IssueDate> getUnprocessedDates(String processLogPath, String publisherAbbreviation, 
 			String journalAbbreviation, String managerTag, String previousManagerTag) {
 		List<IssueDate> outputList = new ArrayList<IssueDate>();
 
-		File logFile = new File(downloadLogPath);
-		Document doc = Utils.parseXml(logFile);
-		Nodes issues = doc.query("//publisher[@abbreviation='"+publisherAbbreviation+"']/journal[@abbreviation='"+journalAbbreviation+"']/descendant::issue");
+		ProcessLog processLog = new ProcessLog(processLogPath);
+		Document processLogContents = processLog.getContents();
+		Nodes issues = processLogContents.query("//publisher[@abbreviation='"+publisherAbbreviation+"']/journal[@abbreviation='"+journalAbbreviation+"']/descendant::issue");
 		if (issues.size() > 0) {
 			for (int i = 0; i < issues.size(); i++) {
 				Element issueElement = (Element) issues.get(i);
@@ -95,7 +95,7 @@ public abstract class AbstractManager {
 						throw new IllegalStateException("Invalid '"+managerTag+"' value.");
 					}
 				} else {
-					throw new IllegalStateException("Should only be one "+managerTag+" element in "+downloadLogPath+".");
+					throw new IllegalStateException("Should only be one "+managerTag+" element in "+processLogPath+".");
 				}
 			}
 		} else {

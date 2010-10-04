@@ -18,14 +18,16 @@ import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeJournals;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.JournalDetails;
 import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class CellParamsManager extends AbstractManager {
-	
+
 	private static final Logger LOG = Logger.getLogger(CellParamsManager.class);
-	
+
 	private CellParamsManager() {
 		;
 	}
@@ -35,26 +37,24 @@ public class CellParamsManager extends AbstractManager {
 	}
 
 	public void execute() {
-		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
-		for (String publisherAbbreviation : publisherAbbreviations) {
-			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
-			for (String journalAbbreviation : journalAbbreviations) {
-				String downloadLogPath = properties.getDownloadLogPath();
-				List<IssueDate> unprocessedDates = this.getUnprocessedDates(downloadLogPath, publisherAbbreviation, journalAbbreviation, CELLPARAMS, WEBPAGE);
-				if (unprocessedDates.size() != 0) {
-					for (IssueDate date : unprocessedDates) {
-						String summaryWriteDir = properties.getSummaryWriteDir();
-						String year = date.getYear();
-						String issueNum = date.getIssue();
-						String issueWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
-								publisherAbbreviation+"/"+journalAbbreviation+"/"+
-								year+"/"+issueNum);
-						this.process(issueWriteDir);
-						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CELLPARAMS);
-					}
-				} else {
-					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+		String processLogPath = properties.getProcessLogPath();
+		for (JournalDetails journalDetails : new CrystalEyeJournals().getDetails()) {
+			String publisherAbbreviation = journalDetails.getPublisherAbbreviation();
+			String journalAbbreviation = journalDetails.getJournalAbbreviation();
+			List<IssueDate> unprocessedDates = this.getUnprocessedDates(processLogPath, publisherAbbreviation, journalAbbreviation, CELLPARAMS, WEBPAGE);
+			if (unprocessedDates.size() != 0) {
+				for (IssueDate date : unprocessedDates) {
+					String summaryWriteDir = properties.getSummaryDir();
+					String year = date.getYear();
+					String issueNum = date.getIssue();
+					String issueWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
+							publisherAbbreviation+"/"+journalAbbreviation+"/"+
+							year+"/"+issueNum);
+					this.process(issueWriteDir);
+					updateProcessLog(processLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CELLPARAMS);
 				}
+			} else {
+				LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 			}
 		}
 	}
@@ -129,7 +129,7 @@ public class CellParamsManager extends AbstractManager {
 				}
 			}
 		}
-		
+
 		File cellParamsFile = new File(properties.getCellParamsFilePath());
 		if (!cellParamsFile.exists()) {
 			Utils.writeText(cellParamsFile, sb.toString());
