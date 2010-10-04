@@ -40,6 +40,7 @@ import nu.xom.Text;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.NumberUtils;
 import org.apache.log4j.Logger;
 import org.graph.GraphException;
 import org.graph.Point;
@@ -47,8 +48,8 @@ import org.graph.SVGElement;
 import org.hist.Histogram;
 import org.interpret.SVGInterpretter;
 import org.layout.GraphLayout;
-import org.xmlcml.cml.base.CMLUtil;
 import org.xmlcml.cml.base.CMLElement.CoordinateType;
+import org.xmlcml.cml.base.CMLUtil;
 import org.xmlcml.cml.element.CMLAtom;
 import org.xmlcml.cml.element.CMLBond;
 import org.xmlcml.cml.element.CMLCml;
@@ -62,18 +63,20 @@ import org.xmlcml.cml.tools.MoleculeTool;
 import org.xmlcml.euclid.Point3;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeJournals;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.JournalDetails;
 import wwmm.crystaleye.site.templates.BondLengthElementIndex;
 import wwmm.crystaleye.site.templates.BondLengthIndex;
 import wwmm.crystaleye.site.templates.CifSummaryToc;
 import wwmm.crystaleye.util.CMLUtils;
 import wwmm.crystaleye.util.ChemistryUtils;
+import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.Utils;
-import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 
 public class BondLengthsManager extends AbstractManager {
-	
+
 	private static final Logger LOG = Logger.getLogger(BondLengthsManager.class);
 
 	private String temp = "";
@@ -112,7 +115,7 @@ public class BondLengthsManager extends AbstractManager {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		dNow = formatter.format(date);
 	}
-	
+
 	private BondLengthsManager() {
 		;
 	}
@@ -122,36 +125,34 @@ public class BondLengthsManager extends AbstractManager {
 	}
 
 	public void execute() {
-		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
-		for (String publisherAbbreviation : publisherAbbreviations) {
-			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
-			for (String journalAbbreviation : journalAbbreviations) {
-				String downloadLogPath = properties.getDownloadLogPath();
-				List<IssueDate> unprocessedDates = this.getUnprocessedDates(downloadLogPath, publisherAbbreviation, journalAbbreviation, BONDLENGTHS, WEBPAGE);
-				if (unprocessedDates.size() != 0) {
-					for (IssueDate date : unprocessedDates) {
-						String summaryWriteDir = properties.getSummaryWriteDir();
-						String year = date.getYear();
-						String issueNum = date.getIssue();
-						String issueWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
-								publisherAbbreviation+"/"+journalAbbreviation+"/"+
-								year+"/"+issueNum);
-						this.process(issueWriteDir);
-						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, BONDLENGTHS);
-					}
-				} else {
-					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+		String processLogPath = properties.getProcessLogPath();
+		changedBonds = new HashSet<String>();
+		for (JournalDetails journalDetails : new CrystalEyeJournals().getDetails()) {
+			String publisherAbbreviation = journalDetails.getPublisherAbbreviation();
+			String journalAbbreviation = journalDetails.getJournalAbbreviation();
+			List<IssueDate> unprocessedDates = this.getUnprocessedDates(processLogPath, publisherAbbreviation, journalAbbreviation, BONDLENGTHS, WEBPAGE);
+			if (unprocessedDates.size() != 0) {
+				for (IssueDate date : unprocessedDates) {
+					String summaryWriteDir = properties.getSummaryDir();
+					String year = date.getYear();
+					String issueNum = date.getIssue();
+					String issueWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
+							publisherAbbreviation+"/"+journalAbbreviation+"/"+
+							year+"/"+issueNum);
+					this.process(issueWriteDir);
+					updateProcessLog(processLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, BONDLENGTHS);
 				}
+			} else {
+				LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 			}
 		}
-
 		removeVeryCommonBonds(changedBonds);
-		
+
 		generateProtocolBondLengthFiles(changedBonds);
 		generateHistograms(changedBonds);
 		generateHtmlLinkPages();
 	}
-	
+
 	private void removeVeryCommonBonds(Set<String> changedBonds) {
 		changedBonds.remove("C-C");
 		changedBonds.remove("C-H");
@@ -160,7 +161,6 @@ public class BondLengthsManager extends AbstractManager {
 
 	public void process(String issueWriteDir) {		
 		List<File> fileList = new ArrayList<File>();
-		changedBonds = new HashSet<String>();
 		if (new File(issueWriteDir).exists()) {
 			fileList = CrystalEyeUtils.getSummaryDirFileList(issueWriteDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
 			if (fileList.size() > 0) {
@@ -261,6 +261,10 @@ public class BondLengthsManager extends AbstractManager {
 								" ".equals(tempStr) || " ".equals(rfStr) ) {
 							continue;
 						}
+						if (!NumberUtils.isNumber(tempStr) || 
+								!NumberUtils.isNumber(rf)) {
+							continue;
+						}
 						double temp = Double.parseDouble(tempStr);
 						double rf = Double.parseDouble(rfStr);
 						if (temp <= PROTOCOL_MAX_TEMP && rf <= PROTOCOL_MAX_RF) {
@@ -333,6 +337,9 @@ public class BondLengthsManager extends AbstractManager {
 
 					String length = a[LENGTH_COL].trim();
 					if ("".equals(length) || " ".equals(length)) {
+						continue;
+					}
+					if (!NumberUtils.isNumber(length)) {
 						continue;
 					}
 					double d = Double.parseDouble(length);
@@ -456,6 +463,9 @@ public class BondLengthsManager extends AbstractManager {
 
 						String length = a[LENGTH_COL].trim();
 						if ("".equals(length) || " ".equals(length)) {
+							continue;
+						}
+						if (!NumberUtils.isNumber(length)) {
 							continue;
 						}
 						double d = Double.parseDouble(length);
@@ -590,7 +600,7 @@ public class BondLengthsManager extends AbstractManager {
 	}
 
 	private String createOverallCifSummaryTable(List<String> lineList) {
-		String summaryDir = properties.getSummaryWriteDir();
+		String summaryDir = properties.getSummaryDir();
 		Map<String, BondLengthCmlDescription> bMap = new HashMap<String, BondLengthCmlDescription>();
 		for (String line : lineList) {
 			String[] items = line.split(",");
@@ -995,9 +1005,9 @@ public class BondLengthsManager extends AbstractManager {
 		BondLengthsManager d = new BondLengthsManager(propsFile);
 		d.execute();
 	}
-	
+
 	private class BondLengthCmlDescription {
-		
+
 		String cmlPath;
 		String cmlId;
 		Set<String> atomNos;
@@ -1006,7 +1016,7 @@ public class BondLengthsManager extends AbstractManager {
 		String compoundClass;
 		boolean isPolymeric;
 		int uniqueSubMols;
-		
+
 		private BondLengthCmlDescription() {
 			;
 		}
@@ -1097,6 +1107,6 @@ public class BondLengthsManager extends AbstractManager {
 		public int getUniqueSubMols() {
 			return uniqueSubMols;
 		}
-			
+
 	}
 }

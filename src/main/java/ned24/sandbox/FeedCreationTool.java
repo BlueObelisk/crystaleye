@@ -14,7 +14,7 @@ import org.xmlcml.molutil.ChemicalElement;
 import wwmm.atomarchiver.AtomArchiveFeed;
 import wwmm.crystaleye.CrystalEyeProperties;
 
-public class RSSFeedCreationTool implements CMLConstants {
+public class FeedCreationTool implements CMLConstants {
 
 	private CrystalEyeProperties properties;
 
@@ -27,12 +27,12 @@ public class RSSFeedCreationTool implements CMLConstants {
 	private String propertiesPath;
 	private String feedWriteDir;
 
-	public RSSFeedCreationTool(String propPath) {
+	public FeedCreationTool(String propPath) {
 		this.propertiesPath=propPath;
 		setProperties();
 	}
 
-	public RSSFeedCreationTool(File propertiesFile) {
+	public FeedCreationTool(File propertiesFile) {
 		this.setProperties(propertiesFile);
 	}
 
@@ -147,7 +147,7 @@ public class RSSFeedCreationTool implements CMLConstants {
 	}
 
 	public static void main(String[] args) {
-		RSSFeedCreationTool c = new RSSFeedCreationTool("e:/crystaleye-new/docs/cif-flow-props.txt");
+		FeedCreationTool c = new FeedCreationTool("e:/crystaleye-new/docs/cif-flow-props.txt");
 
 		c.createJournalRssFeeds();
 		c.createAtomsRssFeeds();

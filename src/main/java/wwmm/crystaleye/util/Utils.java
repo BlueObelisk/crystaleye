@@ -58,8 +58,16 @@ public class Utils {
 			LOG.warn("IOException: "+e.getMessage());
 		}
 	}
+	
+	public static void ensureParentFile(File file) {
+		File parentFile = file.getParentFile();
+		if (!parentFile.exists()) {
+			parentFile.mkdirs();
+		}
+	}
 
-	public static void writeText(File file, String content) { 
+	public static void writeText(File file, String content) {
+		ensureParentFile(file);
 		try {
 			FileUtils.writeStringToFile(file, content);
 		} catch (IOException e) {

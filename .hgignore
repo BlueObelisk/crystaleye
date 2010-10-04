@@ -1,0 +1,10 @@
+# use glob syntax.
+syntax: glob
+*.classpath
+*.project
+*.settings/*
+target/*
+
+# switch to regexp syntax.
+syntax: regexp
+^\.pc/
