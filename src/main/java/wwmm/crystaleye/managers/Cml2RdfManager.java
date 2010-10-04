@@ -14,46 +14,46 @@ import org.xmlcml.cml.converters.ConverterCommand;
 import org.xmlcml.cml.converters.rdf.cml.CML2OWLRDFConverter;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeJournals;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.JournalDetails;
 import wwmm.crystaleye.util.CrystalEyeUtils;
 
 public class Cml2RdfManager extends AbstractManager {
-	
+
 	private static final Logger LOG = Logger.getLogger(Cml2RdfManager.class);
 
 	private Cml2RdfManager() {
 		;
 	}
-	
+
 	public Cml2RdfManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
 	}
-	
+
 	public void execute() {
-		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
-		for (String publisherAbbreviation : publisherAbbreviations) {
-			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
-			for (String journalAbbreviation : journalAbbreviations) {
-				String downloadLogPath = properties.getDownloadLogPath();
-				List<IssueDate> unprocessedDates = this.getUnprocessedDates(downloadLogPath, publisherAbbreviation, journalAbbreviation, CML2RDF, CML2FOO);
-				if (unprocessedDates.size() != 0) {
-					for (IssueDate date : unprocessedDates) {
-						String writeDir = properties.getWriteDir();
-						String year = date.getYear();
-						String issueNum = date.getIssue();
-						String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
-								publisherAbbreviation+"/"+journalAbbreviation+"/"+
-								year+"/"+issueNum);
-						this.process(issueWriteDir);
-						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CML2RDF);
-					}
-				} else {
-					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+		String processLogPath = properties.getProcessLogPath();
+		for (JournalDetails journalDetails : new CrystalEyeJournals().getDetails()) {
+			String publisherAbbreviation = journalDetails.getPublisherAbbreviation();
+			String journalAbbreviation = journalDetails.getJournalAbbreviation();
+			List<IssueDate> unprocessedDates = this.getUnprocessedDates(processLogPath, publisherAbbreviation, journalAbbreviation, CML2RDF, CML2FOO);
+			if (unprocessedDates.size() != 0) {
+				for (IssueDate date : unprocessedDates) {
+					String writeDir = properties.getCifDir();
+					String year = date.getYear();
+					String issueNum = date.getIssue();
+					String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
+							publisherAbbreviation+"/"+journalAbbreviation+"/"+
+							year+"/"+issueNum);
+					this.process(issueWriteDir);
+					updateProcessLog(processLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CML2RDF);
 				}
+			} else {
+				LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 			}
 		}
 	}
-	
+
 	public void process(String issueWriteDir) {
 		List<File> fileList = new ArrayList<File>();
 		if (new File(issueWriteDir).exists()) {
@@ -73,7 +73,7 @@ public class Cml2RdfManager extends AbstractManager {
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		File propsFile = new File("e:/crystaleye-new/docs/cif-flow-props.txt");
 		Cml2RdfManager manager = new Cml2RdfManager(propsFile);

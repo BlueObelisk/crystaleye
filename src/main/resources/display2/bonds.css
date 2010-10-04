@@ -1,0 +1,107 @@
+* {
+	margin: 0;
+	padding: 0;
+	color: #222;
+}
+
+body {
+	background: #fff;
+}
+
+/* commented backslash hack \*/
+html, body{height:100%;overflow:hidden;}
+/* end mac hack */
+
+* html body {height:100%;margin:52px 0 0 0 ;padding:0 0 0 0;}
+
+html>body #content {
+	position: absolute;
+	overflow-y: scroll;
+	overflow-x: none;
+	width: 49%;
+	top: 50px;
+	left: 0;
+	right: 0px;
+	bottom: 0;
+	background:#fff;
+}
+
+* html #content {
+	height:90%;
+	width: 49%;
+	left: 0%;
+	overflow-y: auto;
+	position:relative;
+	background:#fff;
+}
+
+html>body #render {	
+	position: absolute;
+	width: 49%;
+	top: 60px;
+	left:50%;
+	right: 0;
+	bottom: 0;
+	background:#fff;
+}
+
+* html #render {
+	width: 49%;
+	top: 62px;
+	left: 50%;
+	position:absolute;
+	background:#fff;
+}
+
+#table {
+	float: right;
+	margin-right: 7px;
+	margin-top: 10px;
+}
+
+#header {
+	height: 47px;
+	border-bottom: 3px double #000;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+/*------------------   Formatting styles   ------------------*/
+
+h1 {
+	text-align: center;
+	font: bold 22px/1.3em "Times New Roman";
+	letter-spacing: 2px;
+	padding: 10px 0;
+	font-variant: small-caps;
+}
+
+/*------------------   Table styles   ------------------*/
+
+table {
+	position: relative;
+	font-family: verdana, geneva, arial, sans-serif;
+	text-align: center;
+	color: #222;
+	font-size: 13px;
+	line-height: 15px;
+	border-collapse: collapse;
+	border: 1px solid #000;
+
+}
+
+td {
+	padding-right: 4%;
+	line-height: 22px;
+	border: 1px solid #222;
+}
+
+th {
+	background-color: #222;
+	color: #fff;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-size: 1.1em;
+}

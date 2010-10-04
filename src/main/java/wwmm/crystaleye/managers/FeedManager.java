@@ -42,14 +42,17 @@ import org.xmlcml.molutil.ChemicalElement;
 
 import wwmm.atomarchiver.AtomArchiveFeed;
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeJournals;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.JournalDetails;
+import wwmm.crystaleye.tools.FeedCreationTool;
+import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.Utils;
-import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 
-public class RSSManager extends AbstractManager {
+public class FeedManager extends AbstractManager {
 
-	private static final Logger LOG = Logger.getLogger(RSSManager.class);
+	private static final Logger LOG = Logger.getLogger(FeedManager.class);
 
 	private String publisherAbbreviation;
 	private String publisherTitle;
@@ -58,53 +61,55 @@ public class RSSManager extends AbstractManager {
 	private String year;
 	private String issueNum;
 
-	private String rootFeedsDir;
-	private String rootWebFeedsDir;
-	private String summaryWriteDir;
-	private String webSummaryWriteDir;
+	private String feedDir;
+	private String feedDirUrl;
+	private String summaryDir;
+	private String summaryDirUrl;
 	private String webJournalDirPath;
 	private String author = "Chris Talbot";
 
-	private RSSManager() {
+	private FeedManager() {
 		;
 	}
 
-	public RSSManager(File propertiesFile) {
+	public FeedManager(File propertiesFile) {
 		this.setProperties(propertiesFile);
 	}
 
 	public void execute() {
-		rootFeedsDir = properties.getRssWriteDir();
-		rootWebFeedsDir = properties.getRootWebFeedsDir();
-		summaryWriteDir = properties.getSummaryWriteDir();
-		webSummaryWriteDir = properties.getWebSummaryWriteDir();	
+		feedDir = properties.getFeedDir();
+		feedDirUrl = properties.getFeedDirUrl();
+		summaryDir = properties.getSummaryDir();
+		summaryDirUrl = properties.getWebSummaryWriteDir();	
+		
+		File feedDirFile = new File(feedDir);
+		if (feedDirFile.list().length < 2) {
+			FeedCreationTool feedTool = new FeedCreationTool(feedDirFile, feedDirUrl);
+			feedTool.createJournalRssFeeds();
+			feedTool.createAtomsRssFeeds();
+			feedTool.createBondRssFeeds();
+			feedTool.createClassRssFeeds();
+		}
 
-		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
-		for (String publisherAbbreviation : publisherAbbreviations) {
-			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
-			String[] journalTitles = properties.getPublisherJournalTitles(publisherAbbreviation);
-			int count = 0;
-			for (String journalAbbreviation : journalAbbreviations) {
-				this.publisherTitle = properties.getPublisherTitle(publisherAbbreviation);
-				this.journalTitle = journalTitles[count];
-				String downloadLogPath = properties.getDownloadLogPath();
-				List<IssueDate> unprocessedDates = this.getUnprocessedDates(downloadLogPath, publisherAbbreviation, journalAbbreviation, RSS, WEBPAGE);
-				if (unprocessedDates.size() != 0) {
-					for (IssueDate date : unprocessedDates) {
-						this.publisherAbbreviation = publisherAbbreviation;
-						this.journalAbbreviation = journalAbbreviation;
-						this.year = date.getYear();
-						this.issueNum = date.getIssue();
-						String issueSummaryWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
-								this.publisherAbbreviation+"/"+this.journalAbbreviation+
-								"/"+year+"/"+issueNum);
-						this.process(issueSummaryWriteDir);
-						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, RSS);
-					}
-				} else {
-					LOG.info("No dates to process at this time for "+this.publisherTitle+", "+this.journalTitle);
+		String processLogPath = properties.getProcessLogPath();
+		for (JournalDetails journalDetails : new CrystalEyeJournals().getDetails()) {
+			publisherAbbreviation = journalDetails.getPublisherAbbreviation();
+			journalAbbreviation = journalDetails.getJournalAbbreviation();
+			journalTitle = journalDetails.getJournalTitle();
+			publisherTitle = journalDetails.getPublisherTitle();
+			List<IssueDate> unprocessedDates = this.getUnprocessedDates(processLogPath, publisherAbbreviation, journalAbbreviation, RSS, WEBPAGE);
+			if (unprocessedDates.size() != 0) {
+				for (IssueDate date : unprocessedDates) {
+					this.year = date.getYear();
+					this.issueNum = date.getIssue();
+					String issueSummaryWriteDir = FilenameUtils.separatorsToUnix(summaryDir+"/"+
+							this.publisherAbbreviation+"/"+this.journalAbbreviation+
+							"/"+year+"/"+issueNum);
+					this.process(issueSummaryWriteDir);
+					updateProcessLog(processLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, RSS);
 				}
-				count++;
+			} else {
+				LOG.info("No dates to process at this time for "+this.publisherTitle+", "+this.journalTitle);
 			}
 		}
 	}
@@ -114,7 +119,7 @@ public class RSSManager extends AbstractManager {
 		if (new File(issueWriteDir).exists()) {
 			fileList = CrystalEyeUtils.getSummaryDirFileList(issueWriteDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
 			if (fileList.size() > 0) {
-				webJournalDirPath = webSummaryWriteDir+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+issueNum;
+				webJournalDirPath = summaryDirUrl+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+issueNum;
 				updateRSSFeeds(fileList);
 			}
 		}
@@ -269,7 +274,7 @@ public class RSSManager extends AbstractManager {
 				if ("".equals(title)) {
 					title = rssDescValue;
 				}
-				
+
 				String entryLink = webJournalDirPath+"/data/"+articleId+"/"+cifId+"/"+cifId+".cif.summary.html";
 				String cmlLink = webJournalDirPath+"/data/"+articleId+"/"+cifId+"/"+cifId+COMPLETE_CML_MIME;
 
@@ -334,9 +339,9 @@ public class RSSManager extends AbstractManager {
 			} else {
 				throw new RuntimeException("BUG: should never reach here.");
 			}	
-			String feedFilepath = rootFeedsDir+rssFeedPostfix;
+			String feedFilepath = feedDir+rssFeedPostfix;
 			File feedFile = new File(feedFilepath);
-			String feedUrl = rootWebFeedsDir+rssFeedPostfix;
+			String feedUrl = feedDirUrl+rssFeedPostfix;
 			AtomArchiveFeed archiveFeed = new AtomArchiveFeed();
 			archiveFeed.initFeedWithRandomUuidAsId(feedFile, feedUrl, feedTitle, feedSubtitle, author);
 			archiveFeed.addEntries(feedFile, entryList);
@@ -358,7 +363,7 @@ public class RSSManager extends AbstractManager {
 	}
 
 	private String dataPathToUrl(String path) {
-		String dir = properties.getSummaryWriteDir();
+		String dir = properties.getSummaryDir();
 		String webDir = properties.getWebSummaryWriteDir();
 		dir = FilenameUtils.separatorsToUnix(dir);
 		webDir = FilenameUtils.separatorsToUnix(webDir);
@@ -405,7 +410,7 @@ public class RSSManager extends AbstractManager {
 
 	public static void main(String[] args) {
 		File propsFile = new File("e:/crystaleye-new/docs/cif-flow-props.txt");
-		RSSManager rss = new RSSManager(propsFile);
+		FeedManager rss = new FeedManager(propsFile);
 		rss.execute();
 	}
 }

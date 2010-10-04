@@ -29,7 +29,9 @@ import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeJournals;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.JournalDetails;
 import wwmm.crystaleye.tools.CheckCifParser;
 import wwmm.crystaleye.tools.CheckCifTool;
 import wwmm.crystaleye.tools.RawCml2CompleteCmlTool;
@@ -50,26 +52,24 @@ public class Cif2CmlManager extends AbstractManager {
 	}
 
 	public void execute() {
-		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
-		for (String publisherAbbreviation : publisherAbbreviations) {
-			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
-			for (String journalAbbreviation : journalAbbreviations) {
-				String downloadLogPath = properties.getDownloadLogPath();
-				List<IssueDate> unprocessedDates = this.getUnprocessedDates(downloadLogPath, publisherAbbreviation, journalAbbreviation, CIF2CML, null);
-				if (unprocessedDates.size() != 0) {
-					for (IssueDate date : unprocessedDates) {
-						String writeDir = properties.getWriteDir();
-						String year = date.getYear();
-						String issueNum = date.getIssue();
-						String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
-								publisherAbbreviation+"/"+journalAbbreviation+"/"+
-								year+"/"+issueNum);
-						this.process(issueWriteDir, publisherAbbreviation, journalAbbreviation, year, issueNum);
-						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CIF2CML);
-					}
-				} else {
-					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+		String processLogPath = properties.getProcessLogPath();
+		for (JournalDetails journalDetails : new CrystalEyeJournals().getDetails()) {
+			String publisherAbbreviation = journalDetails.getPublisherAbbreviation();
+			String journalAbbreviation = journalDetails.getJournalAbbreviation();
+			List<IssueDate> unprocessedDates = this.getUnprocessedDates(processLogPath, publisherAbbreviation, journalAbbreviation, CIF2CML, null);
+			if (unprocessedDates.size() != 0) {
+				for (IssueDate date : unprocessedDates) {
+					String writeDir = properties.getCifDir();
+					String year = date.getYear();
+					String issueNum = date.getIssue();
+					String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
+							publisherAbbreviation+"/"+journalAbbreviation+"/"+
+							year+"/"+issueNum);
+					this.process(issueWriteDir, publisherAbbreviation, journalAbbreviation, year, issueNum);
+					updateProcessLog(processLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CIF2CML);
 				}
+			} else {
+				LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 			}
 		}
 	}
@@ -102,7 +102,7 @@ public class Cif2CmlManager extends AbstractManager {
 			if (isLongFile(splitCifFile)) {
 				continue;
 			}
-			
+
 			try {
 				LOG.info("Processing split CIF file: "+splitCifFile);
 				String splitCifPath = splitCifFile.getAbsolutePath();
@@ -126,13 +126,13 @@ public class Cif2CmlManager extends AbstractManager {
 				if (!rawCmlFile.exists()) {
 					continue;
 				}
-				
+
 				CMLCml cml = new RawCml2CompleteCmlTool().convert(rawCmlFile);
 				Utils.writeDateStamp(pathMinusMime+DATE_MIME);
 				Utils.writeXML(new File(pathMinusMime+COMPLETE_CML_MIME), cml.getDocument());
 				String id = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum+"_"+suppId;
 				setCmlAndParentMolId(cml, id);
-				
+
 				calculateCheckCif(splitCifFile, pathMinusMime);
 				handleCheckcifs(cml, pathMinusMime);
 
@@ -143,7 +143,7 @@ public class Cif2CmlManager extends AbstractManager {
 			}
 		}
 	}
-	
+
 	private boolean isLongFile(File file) {
 		String path = file.getAbsolutePath();
 		if (path.contains("cg900220g")) {
@@ -151,7 +151,7 @@ public class Cif2CmlManager extends AbstractManager {
 		}
 		return false;
 	}
-	
+
 	private void setCmlAndParentMolId(CMLCml cml, String id) {
 		cml.setId(id);
 		CMLMolecule molecule = CMLUtils.getFirstParentMolecule(cml);
@@ -159,12 +159,12 @@ public class Cif2CmlManager extends AbstractManager {
 			molecule.setId(id);
 		}
 	}
-	
+
 	private void calculateCheckCif(File cifFile, String pathMinusMime) {
 		String calculatedCheckCif = new CheckCifTool().getCheckcifString(cifFile);
 		Utils.writeText(new File(pathMinusMime+".calculated.checkcif.html"), calculatedCheckCif);
 	}
-	
+
 	private void getPlatonImage(Document doc, String pathMinusMime) {
 		// get platon from parsed checkcif/store
 		Nodes platonLinks = doc.query("//x:checkCif/x:calculated/x:dataBlock/x:platon/x:link", new XPathContext("x", "http://journals.iucr.org/services/cif"));
@@ -188,7 +188,7 @@ public class Cif2CmlManager extends AbstractManager {
 			}
 		}	
 	}
-	
+
 	private void handleCheckcifs(CMLCml cml, String pathMinusMime) {
 		String depositedCheckcifPath = pathMinusMime.substring(0,pathMinusMime.lastIndexOf(File.separator));
 		String depCCParent = new File(depositedCheckcifPath).getParent();
