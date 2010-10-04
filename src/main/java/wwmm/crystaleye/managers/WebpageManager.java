@@ -26,8 +26,6 @@ import nu.xom.Elements;
 import nu.xom.Nodes;
 import nu.xom.XPathContext;
 
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -42,32 +40,34 @@ import org.xmlcml.cml.element.CMLCrystal;
 import org.xmlcml.cml.element.CMLFormula;
 import org.xmlcml.cml.element.CMLMetadata;
 import org.xmlcml.cml.element.CMLMolecule;
+import org.xmlcml.cml.element.CMLMolecule.HydrogenControl;
 import org.xmlcml.cml.element.CMLScalar;
 import org.xmlcml.cml.element.CMLSymmetry;
 import org.xmlcml.cml.element.CMLTable;
-import org.xmlcml.cml.element.CMLTableRowList;
-import org.xmlcml.cml.element.CMLMolecule.HydrogenControl;
 import org.xmlcml.cml.element.CMLTable.TableType;
+import org.xmlcml.cml.element.CMLTableRowList;
 import org.xmlcml.cml.tools.DisorderTool;
 import org.xmlcml.cml.tools.MoleculeTool;
 import org.xmlcml.cml.tools.TableRowListTool;
 import org.xmlcml.cml.tools.TableTool;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeJournals;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.JournalDetails;
 import wwmm.crystaleye.site.templates.CifSummaryToc;
 import wwmm.crystaleye.site.templates.FragmentSummaryToc;
 import wwmm.crystaleye.site.templates.MoietySummaryToc;
 import wwmm.crystaleye.site.templates.SingleCifSummary;
 import wwmm.crystaleye.site.templates.SingleStructureSummary;
+import wwmm.crystaleye.tools.SiteCreation;
 import wwmm.crystaleye.util.CMLUtils;
 import wwmm.crystaleye.util.ChemistryUtils;
+import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 import wwmm.crystaleye.util.CrystalEyeUtils;
+import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
 import wwmm.crystaleye.util.FreemarkerUtils;
 import wwmm.crystaleye.util.Utils;
-import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
-import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
-import wwmm.pubcrawler.core.CrawlerHttpClient;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateHashModel;
@@ -109,29 +109,27 @@ public class WebpageManager extends AbstractManager {
 	}
 
 	public void execute() {
-		writeDir = properties.getWriteDir();
-		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
-		for (String publisherAbbreviation : publisherAbbreviations) {
-			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
-			String[] journalTitles = properties.getPublisherJournalTitles(publisherAbbreviation);
-			int count = 0;
-			for (String journalAbbreviation : journalAbbreviations) {
-				this.publisherTitle = properties.getPublisherTitle(publisherAbbreviation);
-				this.journalTitle = journalTitles[count];
-				String downloadLogPath = properties.getDownloadLogPath();
-				List<IssueDate> unprocessedDates = this.getUnprocessedDates(downloadLogPath, publisherAbbreviation, journalAbbreviation, WEBPAGE, CML2FOO);
-				if (unprocessedDates.size() != 0) {
-					for (IssueDate date : unprocessedDates) {
-						String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
-								publisherAbbreviation+"/"+journalAbbreviation+
-								"/"+date.getYear()+"/"+date.getIssue());
-						this.process(issueWriteDir, publisherAbbreviation, journalAbbreviation, date.getYear(), date.getIssue());
-						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, WEBPAGE);
-					}
-				} else {
-					LOG.info("No dates to process at this time for "+publisherTitle+", "+journalTitle);
+		String processLogPath = properties.getProcessLogPath();
+		writeDir = properties.getCifDir();
+		String webDir = properties.getWebDir();
+		SiteCreation siteTool = new SiteCreation(new File(webDir));
+		siteTool.createWebsite();
+		for (JournalDetails journalDetails : new CrystalEyeJournals().getDetails()) {
+			publisherAbbreviation = journalDetails.getPublisherAbbreviation();
+			journalAbbreviation = journalDetails.getJournalAbbreviation();
+			journalTitle = journalDetails.getJournalTitle();
+			publisherTitle = journalDetails.getPublisherTitle();
+			List<IssueDate> unprocessedDates = this.getUnprocessedDates(processLogPath, publisherAbbreviation, journalAbbreviation, WEBPAGE, CML2FOO);
+			if (unprocessedDates.size() != 0) {
+				for (IssueDate date : unprocessedDates) {
+					String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
+							publisherAbbreviation+"/"+journalAbbreviation+
+							"/"+date.getYear()+"/"+date.getIssue());
+					this.process(issueWriteDir, publisherAbbreviation, journalAbbreviation, date.getYear(), date.getIssue());
+					updateProcessLog(processLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, WEBPAGE);
 				}
-				count++;
+			} else {
+				LOG.info("No dates to process at this time for "+publisherTitle+", "+journalTitle);
 			}
 		}
 	}
@@ -161,9 +159,22 @@ public class WebpageManager extends AbstractManager {
 			LOG.warn("Could not find expected issue directory at: "+issueWriteDir);
 			return;
 		}
-		List<File> fileList = CrystalEyeUtils.getDataDirFileList(issueWriteDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
+		String issueSummaryDir = properties.getSummaryDir()+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+issueNum+"/";
+		String issueDataDir = issueSummaryDir+"data/";
+		
+		for (File file : new File (issueWriteDir).listFiles()) {
+			if (file.isDirectory()) {
+				try {
+					FileUtils.copyDirectoryToDirectory(file, new File(issueDataDir));
+				} catch (IOException e) {
+					LOG.warn("Problem copying directory: "+e.getMessage());
+				}
+			}
+		}
+		
+		List<File> fileList = CrystalEyeUtils.getDataDirFileList(issueDataDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
 		if (fileList.size() == 0) {
-			LOG.warn("Probable bug, could not find any complete CML files in : "+issueWriteDir);
+			LOG.warn("Probable bug, could not find any complete CML files in : "+issueDataDir);
 			return;
 		}
 		for (File cmlFile : fileList ) {
@@ -175,31 +186,9 @@ public class WebpageManager extends AbstractManager {
 			// create cif summaries
 			this.createCifSummaries(cmlFile);
 		}
-		String summaryWriteDir = properties.getSummaryWriteDir();
-		String issueSummaryDir = summaryWriteDir+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+issueNum+"/";
+		
 		createTableOfContents(fileList, issueSummaryDir);
-		updateSummaryLinkPage(summaryWriteDir);
-
-		removeCreatedFiles(issueWriteDir);
-	}
-
-	private void removeCreatedFiles(String issueWriteDir) {
-		File issueWriteFile = new File(issueWriteDir);
-		if (issueWriteFile.exists()) {
-			for (File articleFile : issueWriteFile.listFiles()) {
-				if (articleFile.isDirectory()) {
-					for (File file : articleFile.listFiles()) {
-						if (file.isDirectory()) {
-							try {
-								FileUtils.deleteDirectory(file);
-							} catch (IOException e) {
-								throw new RuntimeException("Exception deleting directory: "+file, e);
-							}
-						}
-					}
-				}
-			}
-		}
+		updateSummaryLinkPage(properties.getSummaryDir());
 	}
 
 	private TemplateHashModel getTemplateMap(File journalDir) {
@@ -327,8 +316,8 @@ public class WebpageManager extends AbstractManager {
 		if (nodes.size() != 0) {
 			doi = nodes.get(0).getValue();
 		}
-		if (doi.startsWith("http:")) {
-			doi = doi.replaceAll("http://dx.doi.org/", "");
+		if (doi.startsWith("http://dx.doi.org/")) {
+			doi = doi.substring(18);
 		}
 
 		File newFile = structCmlFile;
@@ -404,6 +393,9 @@ public class WebpageManager extends AbstractManager {
 		String doi = "";
 		if (doiNodes.size() != 0) {
 			doi = doiNodes.get(0).getValue();
+		}
+		if (doi.startsWith("http://dx.doi.org/")) {
+			doi = doi.substring(18);
 		}
 		String inchi = "";
 		Nodes molNodes = cml.query("./cml:molecule", CML_XPATH);
@@ -1083,6 +1075,9 @@ public class WebpageManager extends AbstractManager {
 			doi = true;
 			doiStr = doiNodes.get(0).getValue();
 		}
+		if (doiStr.startsWith("http://dx.doi.org/")) {
+			doiStr = doiStr.substring(18);
+		}
 
 		/*
 		 * retrieve formula - AS PUBLISHED IN THE CIF - from the CML.
@@ -1202,8 +1197,8 @@ public class WebpageManager extends AbstractManager {
 	}
 
 	private void getFilesForSummaryDisplay(List<File> cmlFileList, String issueSummaryDir) {
-		String dataDirPath = issueSummaryDir+"data";
-		String displayDirPath = issueSummaryDir+"/"+"display";
+		String dataDirPath = issueSummaryDir+"/data";
+		String displayDirPath = issueSummaryDir+"/display";
 		File dataDir = new File(dataDirPath);
 		if (!dataDir.exists()) {
 			dataDir.mkdirs();
@@ -1212,38 +1207,14 @@ public class WebpageManager extends AbstractManager {
 		if (!displayDir.exists()) {
 			displayDir.mkdirs();
 		}
-
-		CrawlerHttpClient httpClient = new CrawlerHttpClient();
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet0.jar", new File(issueSummaryDir+"/"+"JmolApplet0.jar"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet1.jar", new File(issueSummaryDir+"/"+"JmolApplet1.jar"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet2.jar", new File(issueSummaryDir+"/"+"JmolApplet2.jar"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet3.jar", new File(issueSummaryDir+"/"+"JmolApplet3.jar"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet4.jar", new File(issueSummaryDir+"/"+"JmolApplet4.jar"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet5.jar", new File(issueSummaryDir+"/"+"JmolApplet5.jar"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet6.jar", new File(issueSummaryDir+"/"+"JmolApplet6.jar"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/summary.js", new File(issueSummaryDir+"/"+"summary.js"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/Jmol.js", new File(issueSummaryDir+"/"+"Jmol.js"));
-
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/eprints.css", new File(displayDirPath+"/"+"eprints.css"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/summary.css", new File(displayDirPath+"/"+"summary.css"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/top.gif", new File(displayDirPath+"/"+"top.gif"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/bonds.css", new File(displayDirPath+"/"+"bonds.css"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/fragsummary.css", new File(displayDirPath+"/"+"fragsummary.css"));
-		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/placeholder.bmp", new File(displayDirPath+"/"+"placeholder.bmp"));
-
-		// retrieve data files from issueWriteDir
-		for (File cmlFile : cmlFileList) {
-			File articleFile = cmlFile.getParentFile().getParentFile();
-			String articleName = articleFile.getName();
-			File destFile = new File(dataDirPath+"/"+articleName);
-			try {
-				if (destFile.exists()) {
-					FileUtils.deleteDirectory(destFile);
-				}
-				FileUtils.copyDirectory(articleFile, destFile);
-			} catch (IOException e) {
-				throw new RuntimeException("Error copying directory: "+articleFile.getAbsolutePath()+" to: "+destFile.getAbsolutePath(), e);
-			}
+		
+		File display1 = new File("./src/main/resources/display1");
+		File display2 = new File("./src/main/resources/display2");
+		try {
+			FileUtils.copyDirectory(display1, new File(issueSummaryDir));
+			FileUtils.copyDirectory(display2, displayDir);
+		} catch (IOException e1) {
+			LOG.warn("Problem copying CrystalEye display files: "+e1.getMessage());
 		}
 	}
 

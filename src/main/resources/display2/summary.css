@@ -1,0 +1,238 @@
+* {
+	margin: 0;
+	padding: 0;
+	color: #222;
+}
+
+body {
+	background: #fff;
+}
+
+/* commented backslash hack \*/
+html, body{height:100%;overflow:hidden;}
+/* end mac hack */
+
+* html body {height:100%;margin:0;padding:75px 0 320px 0}
+
+#top{
+	background: rgb(241,241,241) url(./top.gif) center center no-repeat;
+	text-align: center;
+	height:74px;
+	width: 798px;
+	left: 50%;
+	margin-left: -400px;
+	position:relative;
+	border-bottom: 1px solid #222;
+	border-left: 1px solid #222;
+	border-right: 1px solid #222;
+	z-index: 50;
+}
+* html #top {
+	position:absolute;
+	top:0;
+	left:50%;
+	margin-left:-400px;
+	width: 800px;
+	height: 75px;
+}
+
+html>body #content {
+	position: absolute;
+	overflow-y: scroll;
+	overflow-x: none;
+	width: 798px;
+	top: 75px;
+	left: 50%;
+	margin-left: -400px;
+	right: 0px;
+	bottom: 320px;
+	background:#fff;
+	border-left: 1px solid #222;
+	border-right: 1px solid #222;
+}
+
+* html #content {
+	height:100%;
+	width: 800px;
+	left: 50%;
+	margin-left: -400px;
+	overflow-y:auto;
+	position:relative;
+	background:#fff;
+	border-left: 1px solid #222;
+	border-right: 1px solid #222;
+}
+
+/*------------------ image rendering -------------------*/
+
+#rendering {
+	background: #eee;
+}
+
+html>body #rendering {
+	position: absolute;
+	width: 768px;
+	top: 100%;
+	left: 50%;
+	margin-left: -400px;
+	margin-top: -320px;
+	right: 0px;
+	bottom: 0px;
+	border-top: 1px solid #222;
+	border-left: 1px solid #222;
+	border-right: 1px solid #222;
+	padding-left: 30px;
+}
+
+* html #rendering {
+	height: 500px;
+	width: 800px;
+	left: 50%;
+	margin-left: -400px;
+	position:relative;
+	border-top: 1px solid #222;
+	border-left: 1px solid #222;
+	border-right: 1px solid #222;
+}
+
+#jmolcontainer {
+	margin-left: 30px;
+}
+
+/* ----------------- navigation -------------------*/
+
+#navigation {	
+	width: 798px;
+	margin: 5px 0;
+}
+
+/* specifically for navigation on moiety TOC pages */
+#moietyStructNav {
+	text-align: center;
+}
+
+html>body #navigation {
+	margin-left: -30px;
+}
+
+#structNav {
+	float: left;
+	display: block;
+	width: 399px;
+	text-align: center;
+}
+
+#imgNav {
+	float: left;
+	display: block;
+	width: 399px;
+	text-align: center;
+}
+
+/*------------------   Formatting styles   ------------------*/
+
+button {
+	margin: 0 2px;
+	height: 22px;
+	width: 40px;
+}
+
+h1 {
+	text-align: center;
+	font: bold 24px/1.3em "Times New Roman";
+	letter-spacing: 2px;
+	margin: 0 0;
+	font-variant: small-caps;
+}
+
+h1.fragments {
+	padding-top: 13px;
+}
+
+p {
+	font-family: verdana, geneva, arial, sans-serif;
+	color: #222;
+	margin: 0;
+	padding: 8px 0;
+	font-size: 14px;
+	line-height: 20px;
+	text-align: center;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+
+span {
+	font-family: verdana, geneva, arial, sans-serif;
+	color: #222;
+	margin: 0;
+	padding: 8px 0;
+	font-size: 12px;
+	line-height: 20px;
+	text-align: center;
+	font-variant: small-caps;
+}
+
+span.formula {
+	font-variant: normal;
+}
+
+a {
+	text-decoration: none;
+}
+
+img {
+	margin-left: 20px;
+	border: 1px solid #222;
+}
+
+img.tick {
+	margin: 0;
+}
+
+span span {
+	display: inline;
+}
+
+.unclicked {}
+
+.clicked {
+	background-color: #ccd;
+}
+
+/*------------------   Table styles   ------------------*/
+
+table {
+	position: relative;
+	width: 100%;
+	margin: 0 auto 0;
+	font-family: verdana, geneva, arial, sans-serif;
+	text-align: center;
+	color: #222;
+	font-size: 12px;
+	line-height: 15px;
+	border-collapse: collapse;
+	border-top: 1px solid #333;
+
+}
+
+td {
+	line-height: 22px;
+	border: 1px solid #222;
+}
+
+td a {
+	width: 100%;
+	display: block;
+}
+
+#frags table td {
+	width: 50%;
+}
+
+th {
+	background-color: #555;
+	color: #fff;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-size: 1.1em;
+}

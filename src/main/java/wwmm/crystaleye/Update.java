@@ -9,13 +9,14 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
 
+import wwmm.crystaleye.managers.BondLengthsManager;
 import wwmm.crystaleye.managers.CML2FooManager;
 import wwmm.crystaleye.managers.CellParamsManager;
 import wwmm.crystaleye.managers.Cif2CmlManager;
 import wwmm.crystaleye.managers.Cml2RdfManager;
 import wwmm.crystaleye.managers.DoiListManager;
+import wwmm.crystaleye.managers.FeedManager;
 import wwmm.crystaleye.managers.FetchManager;
-import wwmm.crystaleye.managers.RSSManager;
 import wwmm.crystaleye.managers.SmilesListManager;
 import wwmm.crystaleye.managers.WebpageManager;
 
@@ -66,9 +67,8 @@ public class Update {
 				runall(propsFile);
 			}
 			if (cl.hasOption("fetch")) {
-				//FIXME uncomment this.
-				//FetchManager fetch = new FetchManager(propsFile);
-				//fetch.run();
+				FetchManager fetch = new FetchManager(propsFile);
+				fetch.run();
 			}
 			if (cl.hasOption("cif2cml")) {
 				Cif2CmlManager cif2Cml = new Cif2CmlManager(propsFile);
@@ -95,18 +95,16 @@ public class Update {
 				cell.execute();
 			}
 			if (cl.hasOption("bondlengths")) {
-				LOG.info("The bondlengths functionality is currently unavailable.");
-				/*
+				//LOG.info("The bondlengths functionality is currently unavailable.");
 				BondLengthsManager bond = new BondLengthsManager(propsFile);
 				bond.execute();
-				*/
 			}
 			if (cl.hasOption("smiles")) {
 				SmilesListManager smi = new SmilesListManager(propsFile);
 				smi.execute();
 			}
 			if (cl.hasOption("rss")) {
-				RSSManager rss = new RSSManager(propsFile);
+				FeedManager rss = new FeedManager(propsFile);
 				rss.execute();
 			}
 		}
@@ -142,7 +140,7 @@ public class Update {
 		SmilesListManager smi = new SmilesListManager(propsFile);
 		smi.execute();
 		LOG.info("Starting RSSManager");
-		RSSManager rss = new RSSManager(propsFile);
+		FeedManager rss = new FeedManager(propsFile);
 		rss.execute();
 	}
 
