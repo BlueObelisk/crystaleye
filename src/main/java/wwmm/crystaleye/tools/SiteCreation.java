@@ -2,18 +2,23 @@ package wwmm.crystaleye.tools;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.xmlcml.molutil.ChemicalElement;
 
 import wwmm.crystaleye.util.FreemarkerUtils;
 import wwmm.pubcrawler.core.AcsJournal;
 import wwmm.pubcrawler.core.ActaJournal;
 import wwmm.pubcrawler.core.ChemSocJapanJournal;
+import wwmm.pubcrawler.core.CrawlerHttpClient;
 import wwmm.pubcrawler.core.NatureJournal;
 import wwmm.pubcrawler.core.RscJournal;
 import freemarker.template.SimpleHash;
@@ -21,8 +26,10 @@ import freemarker.template.SimpleSequence;
 
 public class SiteCreation {
 
+	private static final Logger LOG = Logger.getLogger(SiteCreation.class);
+
 	private File outDir;
-	
+
 	public SiteCreation(File outDir) {
 		this.outDir = outDir;
 	}
@@ -39,7 +46,7 @@ public class SiteCreation {
 			throw new RuntimeException("Problem whilst removing SVN files: "+e.getMessage(), e);
 		}
 	}
-	
+
 	private void createFeedPages() {
 		File feedHomePage = new File(outDir, "feed/index.html");
 		SimpleHash feedHomeMap = new SimpleHash();
@@ -47,7 +54,7 @@ public class SiteCreation {
 		feedHomeMap.put("pathToRoot", "../");
 		feedHomeMap.put("currentMenuSelected", "feeds");
 		FreemarkerUtils.writeHtmlTemplate("feed-homepage.ftl", feedHomePage, feedHomeMap);
-		
+
 		createAllFeedPages();
 		createAtomsFeedPages();
 		createBondsFeedPages();
@@ -55,13 +62,13 @@ public class SiteCreation {
 		createJournalFeedPages();
 		createMoietyFeedPages();
 	}
-	
+
 	private SimpleHash createJournalDescriptionMap() {
 		SimpleHash journalDescriptionMap = new SimpleHash();
-		
+
 		SimpleSequence publishers = new SimpleSequence();
 		journalDescriptionMap.put("publishers", publishers);
-		
+
 		SimpleHash actaMap = new SimpleHash();
 		publishers.add(actaMap);
 		SimpleSequence actaJournals = new SimpleSequence();
@@ -74,7 +81,7 @@ public class SiteCreation {
 			journal.put("abbreviation", actaJournal.getAbbreviation());
 			journal.put("title", actaJournal.getFullTitle());
 		}
-		
+
 		SimpleHash acsMap = new SimpleHash();
 		publishers.add(acsMap);
 		SimpleSequence acsJournals = new SimpleSequence();
@@ -87,7 +94,7 @@ public class SiteCreation {
 			journal.put("abbreviation", acsJournal.getAbbreviation());
 			journal.put("title", acsJournal.getFullTitle());
 		}
-		
+
 		SimpleHash csjMap = new SimpleHash();
 		publishers.add(csjMap);
 		SimpleSequence csjJournals = new SimpleSequence();
@@ -100,7 +107,7 @@ public class SiteCreation {
 			journal.put("abbreviation", csjJournal.getAbbreviation());
 			journal.put("title", csjJournal.getFullTitle());
 		}
-		
+
 		SimpleHash natureMap = new SimpleHash();
 		publishers.add(natureMap);
 		SimpleSequence natureJournals = new SimpleSequence();
@@ -113,7 +120,7 @@ public class SiteCreation {
 			journal.put("abbreviation", natureJournal.getAbbreviation());
 			journal.put("title", natureJournal.getFullTitle());
 		}
-		
+
 		SimpleHash rscMap = new SimpleHash();
 		publishers.add(rscMap);
 		SimpleSequence rscJournals = new SimpleSequence();
@@ -128,7 +135,7 @@ public class SiteCreation {
 		}
 		return journalDescriptionMap;
 	}
-	
+
 	private void createJournalFeedPages() {
 		File journalFeedPage = new File(outDir, "feed/journal/index.html");
 		SimpleHash journalDescriptionMap = createJournalDescriptionMap();
@@ -137,7 +144,7 @@ public class SiteCreation {
 		journalDescriptionMap.put("currentMenuSelected", "feeds");
 		FreemarkerUtils.writeHtmlTemplate("feed-journal-index.ftl", journalFeedPage, journalDescriptionMap);
 	}
-	
+
 	private void createClassFeedPages() {
 		File classFeedPage = new File(outDir, "feed/class/index.html");
 		SimpleHash classFeedMap = new SimpleHash();
@@ -146,7 +153,7 @@ public class SiteCreation {
 		classFeedMap.put("currentMenuSelected", "feeds");
 		FreemarkerUtils.writeHtmlTemplate("feed-class-index.ftl", classFeedPage, classFeedMap);
 	}
-	
+
 	private void createAtomsFeedPages() {
 		File atomsFeedPage = new File(outDir, "feed/atoms/index.html");
 		SimpleHash atomsFeedMap = new SimpleHash();
@@ -163,12 +170,12 @@ public class SiteCreation {
 		}
 		FreemarkerUtils.writeHtmlTemplate("feed-atoms-index.ftl", atomsFeedPage, atomsFeedMap);
 	}
-	
+
 	private void createBondsFeedPages() {
 		createBondsIndex();
 		createBondPairsIndex();
 	}
-	
+
 	private void createBondsIndex() {
 		File bondsFeedPage = new File(outDir, "feed/bonds/index.html");
 		SimpleHash bondsFeedMap = new SimpleHash();
@@ -185,7 +192,7 @@ public class SiteCreation {
 		}
 		FreemarkerUtils.writeHtmlTemplate("feed-bonds-index.ftl", bondsFeedPage, bondsFeedMap);
 	}
-	
+
 	private void createBondPairsIndex() {
 		for (int i = 1; i < 105; i++) {
 			SimpleHash bondsFeedMap = new SimpleHash();
@@ -206,7 +213,7 @@ public class SiteCreation {
 			FreemarkerUtils.writeHtmlTemplate("feed-bondpairs-index.ftl", bondsFeedPage, bondsFeedMap);
 		}
 	}
-	
+
 	private void createAllFeedPages() {
 		File allFeedPage = new File(outDir, "feed/all/index.html");
 		SimpleHash allFeedMap = new SimpleHash();
@@ -215,7 +222,7 @@ public class SiteCreation {
 		allFeedMap.put("currentMenuSelected", "feeds");
 		FreemarkerUtils.writeHtmlTemplate("feed-all-index.ftl", allFeedPage, allFeedMap);
 	}
-	
+
 	private void createMoietyFeedPages() {
 		File moietyFeedPage = new File(outDir, "feed/moiety/index.html");
 		SimpleHash moietyFeedMap = new SimpleHash();
@@ -224,7 +231,7 @@ public class SiteCreation {
 		moietyFeedMap.put("currentMenuSelected", "feeds");
 		FreemarkerUtils.writeHtmlTemplate("feed-moiety-index.ftl", moietyFeedPage, moietyFeedMap);
 	}
-	
+
 	private void createSummaryPages() {
 		File summaryHomePage = new File(outDir, "summary/index.html");
 		SimpleHash summaryHomeMap = createJournalDescriptionMap();
@@ -232,7 +239,7 @@ public class SiteCreation {
 		summaryHomeMap.put("pathToRoot", "../");
 		summaryHomeMap.put("currentMenuSelected", "summary");
 		FreemarkerUtils.writeHtmlTemplate("journal-index.ftl", summaryHomePage, summaryHomeMap);
-		
+
 		File summaryNotesPage = new File(outDir, "summary/notes.html");
 		SimpleHash summaryNotesMap = new SimpleHash();
 		summaryNotesMap.put("pageTitle", "CrystalEye: Points for browsing structures");
@@ -240,7 +247,7 @@ public class SiteCreation {
 		summaryNotesMap.put("currentMenuSelected", "summary");
 		FreemarkerUtils.writeHtmlTemplate("browsing-notes.ftl", summaryNotesPage, summaryNotesMap);
 	}
-	
+
 	private void createFaqPages() {
 		File faqHomePage = new File(outDir, "faq/index.html");
 		SimpleHash map = new SimpleHash();
@@ -249,7 +256,7 @@ public class SiteCreation {
 		map.put("currentMenuSelected", "faq");
 		FreemarkerUtils.writeHtmlTemplate("faq.ftl", faqHomePage, map);
 	}
-	
+
 	private void createGreaseMonkeyPages() {
 		File gmHomePage = new File(outDir, "gm/index.html");
 		SimpleHash map = new SimpleHash();
@@ -260,12 +267,14 @@ public class SiteCreation {
 	}
 
 	private void copySiteFiles() {
-		File siteFilesDir = new File("./src/main/resources/website");
-		try {
-			FileUtils.copyDirectory(siteFilesDir, outDir);
-		} catch (IOException e) {
-			throw new RuntimeException("Couldn't copy website files: "+e.getMessage(), e);
-		}
+		CrawlerHttpClient httpClient = new CrawlerHttpClient();
+		String[] paths = {"index.html", "styles.css", "faq/images/row.gif", "faq/images/whole.gif",
+				"gm/images/no-gm.gif", "gm/images/summary-page.gif", "gm/images/with-gm.gif",
+				"images/browse.gif", "images/mascotmolecule.gif", "images/rss.gif", "images/top.gif",
+				"images/ucc-logo.gif", "images/universityofcambridge.gif"};
+		for (String path : paths) {
+			httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/crystaleye/download/"+path, new File(outDir+"/"+path));
+		}		
 	}
 
 	public static void main(String[] args) {
@@ -274,7 +283,7 @@ public class SiteCreation {
 		sc.createWebsite();
 	}
 
-	
+
 	public static class SvnFileCleaner extends DirectoryWalker {
 
 		public SvnFileCleaner() {

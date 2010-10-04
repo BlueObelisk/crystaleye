@@ -11,6 +11,7 @@ import static wwmm.crystaleye.CrystalEyeConstants.WEBPAGE;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,6 +27,7 @@ import nu.xom.Elements;
 import nu.xom.Nodes;
 import nu.xom.XPathContext;
 
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -68,6 +70,7 @@ import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
 import wwmm.crystaleye.util.FreemarkerUtils;
 import wwmm.crystaleye.util.Utils;
+import wwmm.pubcrawler.core.CrawlerHttpClient;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateHashModel;
@@ -161,7 +164,7 @@ public class WebpageManager extends AbstractManager {
 		}
 		String issueSummaryDir = properties.getSummaryDir()+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+issueNum+"/";
 		String issueDataDir = issueSummaryDir+"data/";
-		
+
 		for (File file : new File (issueWriteDir).listFiles()) {
 			if (file.isDirectory()) {
 				try {
@@ -171,7 +174,7 @@ public class WebpageManager extends AbstractManager {
 				}
 			}
 		}
-		
+
 		List<File> fileList = CrystalEyeUtils.getDataDirFileList(issueDataDir, "[^\\._]*_[^\\.]*"+COMPLETE_CML_MIME_REGEX);
 		if (fileList.size() == 0) {
 			LOG.warn("Probable bug, could not find any complete CML files in : "+issueDataDir);
@@ -186,7 +189,7 @@ public class WebpageManager extends AbstractManager {
 			// create cif summaries
 			this.createCifSummaries(cmlFile);
 		}
-		
+
 		createTableOfContents(fileList, issueSummaryDir);
 		updateSummaryLinkPage(properties.getSummaryDir());
 	}
@@ -1207,7 +1210,26 @@ public class WebpageManager extends AbstractManager {
 		if (!displayDir.exists()) {
 			displayDir.mkdirs();
 		}
-		
+
+		CrawlerHttpClient httpClient = new CrawlerHttpClient();
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet0.jar", new File(issueSummaryDir+"/"+"JmolApplet0.jar"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet1.jar", new File(issueSummaryDir+"/"+"JmolApplet1.jar"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet2.jar", new File(issueSummaryDir+"/"+"JmolApplet2.jar"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet3.jar", new File(issueSummaryDir+"/"+"JmolApplet3.jar"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet4.jar", new File(issueSummaryDir+"/"+"JmolApplet4.jar"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet5.jar", new File(issueSummaryDir+"/"+"JmolApplet5.jar"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/JmolApplet6.jar", new File(issueSummaryDir+"/"+"JmolApplet6.jar"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/summary.js", new File(issueSummaryDir+"/"+"summary.js"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/Jmol.js", new File(issueSummaryDir+"/"+"Jmol.js"));
+
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/eprints.css", new File(displayDirPath+"/"+"eprints.css"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/summary.css", new File(displayDirPath+"/"+"summary.css"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/top.gif", new File(displayDirPath+"/"+"top.gif"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/bonds.css", new File(displayDirPath+"/"+"bonds.css"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/fragsummary.css", new File(displayDirPath+"/"+"fragsummary.css"));
+		httpClient.writeResourceToFile("http://wwmm.ch.cam.ac.uk/download/ned24/cifsummary/placeholder.bmp", new File(displayDirPath+"/"+"placeholder.bmp"));
+
+		/*
 		File display1 = new File("./src/main/resources/display1");
 		File display2 = new File("./src/main/resources/display2");
 		try {
@@ -1216,6 +1238,9 @@ public class WebpageManager extends AbstractManager {
 		} catch (IOException e1) {
 			LOG.warn("Problem copying CrystalEye display files: "+e1.getMessage());
 		}
+		 */
+
+
 	}
 
 	public static void main(String[] args) {
