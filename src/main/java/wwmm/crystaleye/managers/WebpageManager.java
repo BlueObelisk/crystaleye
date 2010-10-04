@@ -68,7 +68,6 @@ import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.CrystalEyeUtils.DisorderType;
 import wwmm.crystaleye.util.FreemarkerUtils;
 import wwmm.crystaleye.util.Utils;
-import wwmm.pubcrawler.core.CrawlerHttpClient;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateHashModel;
