@@ -162,11 +162,8 @@ public class WebpageManager extends AbstractManager {
 		String issueSummaryDir = properties.getSummaryDir()+"/"+publisherAbbreviation+"/"+journalAbbreviation+"/"+year+"/"+issueNum+"/";
 		String issueDataDir = issueSummaryDir+"data/";
 		
-		System.out.println("issuewire: "+issueWriteDir);
 		for (File file : new File (issueWriteDir).listFiles()) {
-			System.out.println("FILE: "+file);
 			if (file.isDirectory()) {
-				System.out.println("IS A DIR: "+file);
 				try {
 					FileUtils.copyDirectoryToDirectory(file, new File(issueDataDir));
 				} catch (IOException e) {
