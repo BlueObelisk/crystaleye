@@ -50,7 +50,6 @@ import wwmm.crystaleye.IssueDate;
 import wwmm.crystaleye.JournalDetails;
 import wwmm.crystaleye.tools.Cml2PngTool;
 import wwmm.crystaleye.tools.InchiTool;
-import wwmm.crystaleye.tools.SiteCreation;
 import wwmm.crystaleye.tools.SmilesTool;
 import wwmm.crystaleye.util.CDKUtils;
 import wwmm.crystaleye.util.CMLUtils;
