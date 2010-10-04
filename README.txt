@@ -31,8 +31,8 @@ Then:
   'crystaleye.properties.example'.  Copy this to your preferred location on your
   machine and rename it to 'crystaleye.properties'.  If you are only going to be 
   using the crawlers and CIF2CML parts of CrystalEye then you only need to set the 
-  cif.dir property.  If you are using anything else, then you will need to also set
-  web.dir and web.dir.url.
+  cif.dir  and web.dir properties.  If you are using anything else, then you will 
+  need to also set web.dir.url.
 
 * To execute the CrystalEye code you need to issue a command of the type
 

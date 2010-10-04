@@ -6,7 +6,7 @@ public class RunCrystaleye {
 	
 	public static void main(String[] args) {
 		String[] as = {"-p", "c:/workspace/my-crystaleye/conf/crystaleye.properties", 
-				"-cml2foo"};
+				"-webpage"};
 		Update.main(as);
 	}
 
