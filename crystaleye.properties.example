@@ -1,0 +1,11 @@
+# the directory that the scraped CIFs will be written to.
+cif.dir=c:/my-crystaleye/cif
+
+# the directory that all the created files will be written to (including the 
+# website).  This directory is structure so that you can simply place this on 
+# a web server, and it will act a website just like the official Crystaleye site.  
+web.dir=c:/my-crystaleye/web
+
+# if you want to make your site available, then the HTTP URL that web.dir 
+# corresponds to must be set below.
+web.dir.url=http://wwmm.ch.cam.ac.uk/crystaleye

@@ -7,12 +7,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.httpclient.URI;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import wwmm.crystaleye.CrystalEyeProperties;
-import wwmm.crystaleye.DownloadLog;
+import wwmm.crystaleye.ProcessLog;
 import wwmm.crystaleye.util.Utils;
 import wwmm.pubcrawler.core.AcsJournal;
 import wwmm.pubcrawler.core.ActaJournal;
@@ -45,12 +44,13 @@ public class FetchManager {
 
 	public FetchManager(File propsFile) {
 		CrystalEyeProperties properties = new CrystalEyeProperties(propsFile);
-		writeDirPath = properties.getWriteDir();
-		downloadLogPath = properties.getDownloadLogPath();
+		writeDirPath = properties.getCifDir();
+		downloadLogPath = properties.getProcessLogPath();
 		String doiIndexPath = properties.getDoiIndexPath();
 		doiIndexFile = new File(doiIndexPath);
 		try {
 			if (!doiIndexFile.exists()) {
+				doiIndexFile.getParentFile().mkdirs();
 				doiIndexFile.createNewFile();
 			}
 			doiStrings = FileUtils.readLines(doiIndexFile);
@@ -60,11 +60,11 @@ public class FetchManager {
 	}
 
 	public void run() {
-		for (AcsJournal acsJournal : AcsJournal.values()) {
-			executeCrawler(new AcsCifIssueCrawler(acsJournal), "acs", acsJournal.getAbbreviation());
-		}
 		for (ActaJournal actaJournal : ActaJournal.values()) {
 			executeCrawler(new ActaCifIssueCrawler(actaJournal), "acta", actaJournal.getAbbreviation());
+		}
+		for (AcsJournal acsJournal : AcsJournal.values()) {
+			executeCrawler(new AcsCifIssueCrawler(acsJournal), "acs", acsJournal.getAbbreviation());
 		}
 		for (ChemSocJapanJournal csjJournal : ChemSocJapanJournal.values()) {
 			executeCrawler(new ChemSocJapanCifIssueCrawler(csjJournal), "chemSocJapan", csjJournal.getAbbreviation());
@@ -122,7 +122,7 @@ public class FetchManager {
 				if (year == null || issue == null) {
 					return;
 				} else {
-					new DownloadLog(downloadLogPath).updateLog(publisher, journal, year, issue);
+					new ProcessLog(downloadLogPath).updateLog(publisher, journal, year, issue);
 				}
 			}
 			Utils.appendToFile(doiIndexFile, sb.toString());

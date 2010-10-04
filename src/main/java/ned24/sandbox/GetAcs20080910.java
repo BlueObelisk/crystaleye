@@ -6,20 +6,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.httpclient.URI;
-
 import wwmm.crystaleye.util.Utils;
 import wwmm.pubcrawler.BasicHttpClient;
 import wwmm.pubcrawler.core.AcsJournal;
 import wwmm.pubcrawler.core.ArticleDescription;
-import wwmm.pubcrawler.core.ArticleReference;
 import wwmm.pubcrawler.core.DOI;
 import wwmm.pubcrawler.core.IssueDescription;
-import wwmm.pubcrawler.core.RscJournal;
 import wwmm.pubcrawler.core.SupplementaryResourceDescription;
 import wwmm.pubcrawler.impl.AcsCifIssueCrawler;
 import wwmm.pubcrawler.impl.CifIssueCrawler;
-import wwmm.pubcrawler.impl.RscCifIssueCrawler;
 
 public class GetAcs20080910 {
 

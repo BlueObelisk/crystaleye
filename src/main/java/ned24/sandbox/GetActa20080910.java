@@ -5,8 +5,6 @@ import static wwmm.pubcrawler.core.CrawlerConstants.CIF_CONTENT_TYPE;
 import java.io.File;
 import java.util.List;
 
-import org.apache.commons.httpclient.URI;
-
 import wwmm.crystaleye.util.Utils;
 import wwmm.pubcrawler.BasicHttpClient;
 import wwmm.pubcrawler.core.ActaJournal;

@@ -39,10 +39,10 @@ import org.xmlcml.cml.tools.ConnectionTableTool;
 import org.xmlcml.cml.tools.CrystalTool;
 import org.xmlcml.cml.tools.DisorderTool;
 import org.xmlcml.cml.tools.DisorderToolControls;
+import org.xmlcml.cml.tools.DisorderToolControls.ProcessControl;
 import org.xmlcml.cml.tools.MoleculeTool;
 import org.xmlcml.cml.tools.StereochemistryTool;
 import org.xmlcml.cml.tools.ValencyTool;
-import org.xmlcml.cml.tools.DisorderToolControls.ProcessControl;
 import org.xmlcml.euclid.RealRange;
 import org.xmlcml.molutil.ChemicalElement.Type;
 
@@ -50,8 +50,8 @@ import wwmm.crystaleye.managers.CML2FooManager;
 import wwmm.crystaleye.util.CDKUtils;
 import wwmm.crystaleye.util.CMLUtils;
 import wwmm.crystaleye.util.ChemistryUtils;
-import wwmm.crystaleye.util.Utils;
 import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
+import wwmm.crystaleye.util.Utils;
 
 public class RawCml2CompleteCmlTool {
 	
@@ -327,7 +327,7 @@ public class RawCml2CompleteCmlTool {
 	}
 
 	private void addDoi(CMLCml cml, File rawCmlFile) {
-		File parentFile = rawCmlFile.getParentFile();
+		File parentFile = rawCmlFile.getParentFile().getParentFile();
 		File doiFile = null;
 		for (File file : parentFile.listFiles()) {
 			if (file.getAbsolutePath().endsWith(".doi")) {

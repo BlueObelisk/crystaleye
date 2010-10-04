@@ -45,16 +45,19 @@ import org.xmlcml.molutil.ChemicalElement;
 import org.xmlcml.molutil.ChemicalElement.Type;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeJournals;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.JournalDetails;
 import wwmm.crystaleye.tools.Cml2PngTool;
 import wwmm.crystaleye.tools.InchiTool;
+import wwmm.crystaleye.tools.SiteCreation;
 import wwmm.crystaleye.tools.SmilesTool;
 import wwmm.crystaleye.util.CDKUtils;
 import wwmm.crystaleye.util.CMLUtils;
 import wwmm.crystaleye.util.ChemistryUtils;
+import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.Utils;
-import wwmm.crystaleye.util.ChemistryUtils.CompoundClass;
 
 public class CML2FooManager extends AbstractManager {
 
@@ -71,26 +74,24 @@ public class CML2FooManager extends AbstractManager {
 	}
 
 	public void execute() {
-		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
-		for (String publisherAbbreviation : publisherAbbreviations) {
-			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
-			for (String journalAbbreviation : journalAbbreviations) {
-				String downloadLogPath = properties.getDownloadLogPath();
-				List<IssueDate> unprocessedDates = this.getUnprocessedDates(downloadLogPath, publisherAbbreviation, journalAbbreviation, CML2FOO, CIF2CML);
-				if (unprocessedDates.size() != 0) {
-					for (IssueDate date : unprocessedDates) {
-						String writeDir = properties.getWriteDir();
-						String year = date.getYear();
-						String issueNum = date.getIssue();
-						String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
-								publisherAbbreviation+"/"+journalAbbreviation+
-								"/"+year+"/"+issueNum);
-						process(issueWriteDir, publisherAbbreviation, journalAbbreviation, year, issueNum);
-						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CML2FOO);
-					}
-				} else {
-					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+		String processLogPath = properties.getProcessLogPath();
+		for (JournalDetails journalDetails : new CrystalEyeJournals().getDetails()) {
+			String publisherAbbreviation = journalDetails.getPublisherAbbreviation();
+			String journalAbbreviation = journalDetails.getJournalAbbreviation();
+			List<IssueDate> unprocessedDates = this.getUnprocessedDates(processLogPath, publisherAbbreviation, journalAbbreviation, CML2FOO, CIF2CML);
+			if (unprocessedDates.size() != 0) {
+				for (IssueDate date : unprocessedDates) {
+					String writeDir = properties.getCifDir();
+					String year = date.getYear();
+					String issueNum = date.getIssue();
+					String issueWriteDir = FilenameUtils.separatorsToUnix(writeDir+"/"+
+							publisherAbbreviation+"/"+journalAbbreviation+
+							"/"+year+"/"+issueNum);
+					process(issueWriteDir, publisherAbbreviation, journalAbbreviation, year, issueNum);
+					updateProcessLog(processLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, CML2FOO);
 				}
+			} else {
+				LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 			}
 		}
 	}

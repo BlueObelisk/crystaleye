@@ -23,13 +23,15 @@ import org.xmlcml.cml.element.CMLIdentifier;
 import org.xmlcml.cml.element.CMLMolecule;
 
 import wwmm.crystaleye.AbstractManager;
+import wwmm.crystaleye.CrystalEyeJournals;
 import wwmm.crystaleye.IssueDate;
+import wwmm.crystaleye.JournalDetails;
 import wwmm.crystaleye.tools.Execute;
 import wwmm.crystaleye.util.CrystalEyeUtils;
 import wwmm.crystaleye.util.Utils;
 
 public class SmilesListManager extends AbstractManager {
-	
+
 	private static final Logger LOG = Logger.getLogger(SmilesListManager.class);
 
 	private SmilesListManager() {
@@ -41,35 +43,34 @@ public class SmilesListManager extends AbstractManager {
 	}
 
 	public void execute() {
-		String[] publisherAbbreviations = properties.getPublisherAbbreviations();
+		String processLogPath = properties.getProcessLogPath();
 		boolean newIssue = false;
-		for (String publisherAbbreviation : publisherAbbreviations) {
-			String[] journalAbbreviations = properties.getPublisherJournalAbbreviations(publisherAbbreviation);
-			for (String journalAbbreviation : journalAbbreviations) {
-				String downloadLogPath = properties.getDownloadLogPath();
-				List<IssueDate> unprocessedDates = this.getUnprocessedDates(downloadLogPath, publisherAbbreviation, journalAbbreviation, SMILESLIST, WEBPAGE);
-				if (unprocessedDates.size() != 0) {
-					for (IssueDate date : unprocessedDates) {
-						newIssue = true;
-						String summaryWriteDir = properties.getSummaryWriteDir();
-						String year = date.getYear();
-						String issueNum = date.getIssue();
-						String issueWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
-								publisherAbbreviation+"/"+journalAbbreviation+"/"+
-								year+"/"+issueNum);
-						this.process(issueWriteDir);
-						updateProps(downloadLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, SMILESLIST);
-					}
-				} else {
-					LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
+		for (JournalDetails journalDetails : new CrystalEyeJournals().getDetails()) {
+			String publisherAbbreviation = journalDetails.getPublisherAbbreviation();
+			String journalAbbreviation = journalDetails.getJournalAbbreviation();
+			List<IssueDate> unprocessedDates = this.getUnprocessedDates(processLogPath, publisherAbbreviation, journalAbbreviation, SMILESLIST, WEBPAGE);
+			if (unprocessedDates.size() != 0) {
+				for (IssueDate date : unprocessedDates) {
+					newIssue = true;
+					String summaryWriteDir = properties.getSummaryDir();
+					String year = date.getYear();
+					String issueNum = date.getIssue();
+					String issueWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
+							publisherAbbreviation+"/"+journalAbbreviation+"/"+
+							year+"/"+issueNum);
+					this.process(issueWriteDir);
+					updateProcessLog(processLogPath, publisherAbbreviation, journalAbbreviation, year, issueNum, SMILESLIST);
 				}
+			} else {
+				LOG.info("No dates to process at this time for "+publisherAbbreviation+" journal "+journalAbbreviation);
 			}
 		}
 		if (newIssue) {
 			updateIndex();
 		}
 	}
-	
+
+
 	private void updateIndex() {
 		String smilesListPath = properties.getSmilesListPath();
 		if (SystemUtils.IS_OS_WINDOWS) {
@@ -122,7 +123,7 @@ public class SmilesListManager extends AbstractManager {
 			Utils.appendToFile(outFile, sb.toString());
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		File propsFile = new File("e:/crystaleye-new/docs/cif-flow-props.txt");
 		SmilesListManager d = new SmilesListManager(propsFile);
