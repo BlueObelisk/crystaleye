@@ -25,6 +25,18 @@ Then:
 3. Copy crystaleye.jar to the place that you'll run it from.
 
 
+=== Updating ===
+
+* If you want to update your CrystalEye code, execute the following commands
+  from your CrystalEye code directory:
+
+		hg pull
+		hg update
+		
+* Then you can do the steps 2 & 3 from the Installation section to install your
+  updated CrystalEye.
+
+
 === Execution ===
 
 * In the root of the 'crystaleye' directory that you cloned is a file called 
