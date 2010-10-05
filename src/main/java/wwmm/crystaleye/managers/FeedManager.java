@@ -32,6 +32,7 @@ import nu.xom.Element;
 import nu.xom.Nodes;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.xmlcml.cif.CIFUtil;
 import org.xmlcml.cml.element.CMLAtom;
@@ -93,10 +94,10 @@ public class FeedManager extends AbstractManager {
 
 		String processLogPath = properties.getProcessLogPath();
 		for (JournalDetails journalDetails : new CrystalEyeJournals().getDetails()) {
-			publisherAbbreviation = journalDetails.getPublisherAbbreviation();
-			journalAbbreviation = journalDetails.getJournalAbbreviation();
-			journalTitle = journalDetails.getJournalTitle();
-			publisherTitle = journalDetails.getPublisherTitle();
+			publisherAbbreviation = StringEscapeUtils.escapeHtml(journalDetails.getPublisherAbbreviation());
+			journalAbbreviation = StringEscapeUtils.escapeHtml(journalDetails.getJournalAbbreviation());
+			journalTitle = StringEscapeUtils.escapeHtml(journalDetails.getJournalTitle());
+			publisherTitle = StringEscapeUtils.escapeHtml(journalDetails.getPublisherTitle());
 			List<IssueDate> unprocessedDates = this.getUnprocessedDates(processLogPath, publisherAbbreviation, journalAbbreviation, RSS, WEBPAGE);
 			if (unprocessedDates.size() != 0) {
 				for (IssueDate date : unprocessedDates) {
@@ -409,8 +410,15 @@ public class FeedManager extends AbstractManager {
 	}
 
 	public static void main(String[] args) {
-		File propsFile = new File("e:/crystaleye-new/docs/cif-flow-props.txt");
-		FeedManager rss = new FeedManager(propsFile);
-		rss.execute();
+		File feedFile = new File("c:/workspace/archive-feed-test/feed.xml");
+		
+		AtomArchiveFeed archiveFeed = new AtomArchiveFeed();
+		archiveFeed.initFeedWithRandomUuidAsId(feedFile, "http://random.com/feed.xml", StringEscapeUtils.escapeHtml("Journal of Chemical & Engineering"), "Feed subtitle here", "Me!");
+		wwmm.atomarchiver.AtomEntry entry = new wwmm.atomarchiver.AtomEntry();
+		List<wwmm.atomarchiver.AtomEntry> entryList = new ArrayList<wwmm.atomarchiver.AtomEntry>();
+		entryList.add(entry);
+		archiveFeed.addEntries(feedFile, entryList);
+		
+		System.out.println(StringEscapeUtils.escapeHtml("Journal of Chemical & Engineering"));
 	}
 }
