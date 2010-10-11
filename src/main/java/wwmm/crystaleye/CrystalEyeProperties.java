@@ -79,7 +79,7 @@ public class CrystalEyeProperties {
 	}
 	
 	public String getBondLengthsDir() {
-		return getWebDir()+"/bond-lengths";
+		return getWebDir()+"/bondlengths";
 	}
 	
 	public String getCellParamsFilePath() {

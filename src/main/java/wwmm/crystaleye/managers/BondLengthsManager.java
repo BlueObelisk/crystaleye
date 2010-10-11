@@ -108,6 +108,14 @@ public class BondLengthsManager extends AbstractManager {
 	private int summaryRowCount;
 	private int structureCount;
 	private int maxImageForSummary;
+	
+	private String publisherAbbreviation;
+	private String journalAbbreviation;
+	private String year;
+	private String issueNum;
+	private String articleId;
+	private String structureId;
+	private String cmlId;
 
 	String dNow;
 	{
@@ -126,16 +134,18 @@ public class BondLengthsManager extends AbstractManager {
 
 	public void execute() {
 		String processLogPath = properties.getProcessLogPath();
+		String bondLengthsDirPath = properties.getBondLengthsDir();
+		new File(bondLengthsDirPath).mkdirs();
 		changedBonds = new HashSet<String>();
 		for (JournalDetails journalDetails : new CrystalEyeJournals().getDetails()) {
-			String publisherAbbreviation = journalDetails.getPublisherAbbreviation();
-			String journalAbbreviation = journalDetails.getJournalAbbreviation();
+			publisherAbbreviation = journalDetails.getPublisherAbbreviation();
+			journalAbbreviation = journalDetails.getJournalAbbreviation();
 			List<IssueDate> unprocessedDates = this.getUnprocessedDates(processLogPath, publisherAbbreviation, journalAbbreviation, BONDLENGTHS, WEBPAGE);
 			if (unprocessedDates.size() != 0) {
 				for (IssueDate date : unprocessedDates) {
 					String summaryWriteDir = properties.getSummaryDir();
-					String year = date.getYear();
-					String issueNum = date.getIssue();
+					year = date.getYear();
+					issueNum = date.getIssue();
 					String issueWriteDir = FilenameUtils.separatorsToUnix(summaryWriteDir+"/"+
 							publisherAbbreviation+"/"+journalAbbreviation+"/"+
 							year+"/"+issueNum);
@@ -166,6 +176,11 @@ public class BondLengthsManager extends AbstractManager {
 			if (fileList.size() > 0) {
 				for (File cmlFile : fileList ) {
 					try { 
+						File structureFolder = cmlFile.getParentFile();
+						File articleFolder = structureFolder.getParentFile();
+						structureId = structureFolder.getName();
+						articleId = articleFolder.getName();
+						cmlId = publisherAbbreviation+"_"+journalAbbreviation+"_"+year+"_"+issueNum+"_"+structureId+"_"+articleId;
 						addLengthsFromCmlFile(cmlFile);
 					} catch (OutOfMemoryError e) {
 						LOG.warn("Out of memory processing CML file: "+cmlFile.getAbsolutePath());
@@ -729,7 +744,7 @@ public class BondLengthsManager extends AbstractManager {
 			temp = tempNodes.get(0).getValue();
 		} else {
 			temp = "";
-			LOG.warn("Could not retrieve cell measurement temperature: "+cml.getId());
+			LOG.warn("Could not retrieve cell measurement temperature: "+cmlId);
 		}
 
 		Nodes rFactorNodes = cml.query(".//cml:scalar[@dictRef='iucr:_refine_ls_r_factor_gt']", CML_XPATH);
@@ -737,7 +752,7 @@ public class BondLengthsManager extends AbstractManager {
 			rf = rFactorNodes.get(0).getValue();
 		} else {
 			rf = "";
-			LOG.warn("Could not retrieve r factor gt: "+cml.getId());
+			LOG.warn("Could not retrieve r factor gt: "+cmlId);
 		}
 
 		Nodes doiNodes = cml.query(".//cml:scalar[@dictRef='idf:doi']", CML_XPATH);
@@ -815,13 +830,13 @@ public class BondLengthsManager extends AbstractManager {
 		MoleculeTool mt = MoleculeTool.getOrCreateTool(molecule);
 		mt.calculateBondedAtoms(centralAtoms);
 
-		addLengthsToFiles(cml, molecule, centralAtoms, cml.getId());
+		addLengthsToFiles(cml, molecule, centralAtoms, cmlId);
 	}
 
 	private void processDiscreteMoleculeCrystal(CMLCml cml) {		
 		CMLMolecule molecule = (CMLMolecule)cml.getFirstCMLChild(CMLMolecule.TAG);
 		for (CMLMolecule subMol : molecule.getDescendantsOrMolecule()) {		
-			addLengthsToFiles(cml, molecule, subMol.getAtoms(), cml.getId());
+			addLengthsToFiles(cml, molecule, subMol.getAtoms(), cmlId);
 		}
 	}
 
