@@ -168,6 +168,7 @@ public class WebpageManager extends AbstractManager {
 		for (File file : new File (issueWriteDir).listFiles()) {
 			if (file.isDirectory()) {
 				try {
+					LOG.info("Copying webpage directory ("+file+") to "+issueDataDir);
 					FileUtils.copyDirectoryToDirectory(file, new File(issueDataDir));
 				} catch (IOException e) {
 					LOG.warn("Problem copying directory: "+e.getMessage());
