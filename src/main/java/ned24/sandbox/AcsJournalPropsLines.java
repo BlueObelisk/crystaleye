@@ -4,7 +4,8 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import wwmm.pubcrawler.core.AcsJournal;
+import wwmm.pubcrawler.core.Journal;
+import wwmm.pubcrawler.journal.acs.AcsJournalIndex;
 
 public class AcsJournalPropsLines {
 	
@@ -14,7 +15,7 @@ public class AcsJournalPropsLines {
 		
 		List<String> titles = new LinkedList<String>();
 		List<String> abbs = new LinkedList<String>();
-		for (AcsJournal journal : AcsJournal.values()) {
+		for (Journal journal : AcsJournalIndex.getIndex().values()) {
 			titles.add(journal.getFullTitle());
 			abbs.add(journal.getAbbreviation());
 		}

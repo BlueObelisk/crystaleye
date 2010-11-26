@@ -7,21 +7,22 @@ import java.util.List;
 
 import wwmm.crystaleye.util.Utils;
 import wwmm.pubcrawler.BasicHttpClient;
-import wwmm.pubcrawler.core.ActaJournal;
 import wwmm.pubcrawler.core.ArticleDescription;
 import wwmm.pubcrawler.core.ArticleReference;
 import wwmm.pubcrawler.core.DOI;
 import wwmm.pubcrawler.core.IssueDescription;
+import wwmm.pubcrawler.core.Journal;
 import wwmm.pubcrawler.core.SupplementaryResourceDescription;
 import wwmm.pubcrawler.impl.ActaCifIssueCrawler;
 import wwmm.pubcrawler.impl.CifIssueCrawler;
+import wwmm.pubcrawler.journal.acta.ActaJournalIndex;
 
 public class GetActa20080910 {
 
 	private static BasicHttpClient httpClient = new BasicHttpClient();
 
 	public static void main(String[] args) {
-		for (ActaJournal actaJournal : ActaJournal.values()) {
+		for (Journal actaJournal : ActaJournalIndex.getIndex().values()) {
 			for (int i = 2008; i < 2011; i++) {
 				for (int j = 1; j < 13; j++) {
 					String year = ""+i;

@@ -1,18 +1,19 @@
 package wwmm.crystaleye;
 
+import wwmm.pubcrawler.core.Journal;
+import wwmm.pubcrawler.journal.acs.AcsJournalIndex;
+import wwmm.pubcrawler.journal.acta.ActaJournalIndex;
+import wwmm.pubcrawler.journal.chemsocjapan.ChemSocJapanJournalIndex;
+import wwmm.pubcrawler.journal.rsc.RscJournalIndex;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import wwmm.pubcrawler.core.AcsJournal;
-import wwmm.pubcrawler.core.ActaJournal;
-import wwmm.pubcrawler.core.ChemSocJapanJournal;
-import wwmm.pubcrawler.core.RscJournal;
 
 public class CrystalEyeJournals {
 	
 	public List<JournalDetails> getDetails() {
 		List<JournalDetails> journalDetails = new ArrayList<JournalDetails>(100);
-		for (AcsJournal journal : AcsJournal.values()) {
+		for (Journal journal : AcsJournalIndex.getIndex().values()) {
 			JournalDetails details = new JournalDetails();
 			details.setPublisherTitle("The American Chemical Society");
 			details.setPublisherAbbreviation("acs");
@@ -20,7 +21,7 @@ public class CrystalEyeJournals {
 			details.setJournalAbbreviation(journal.getAbbreviation());
 			journalDetails.add(details);
 		}
-		for (ActaJournal journal : ActaJournal.values()) {
+		for (Journal journal : ActaJournalIndex.getIndex().values()) {
 			JournalDetails details = new JournalDetails();
 			details.setPublisherTitle("Acta Crystallographica");
 			details.setPublisherAbbreviation("acta");
@@ -28,7 +29,7 @@ public class CrystalEyeJournals {
 			details.setJournalAbbreviation(journal.getAbbreviation());
 			journalDetails.add(details);
 		}
-		for (RscJournal journal : RscJournal.values()) {
+		for (Journal journal : RscJournalIndex.getIndex().values()) {
 			JournalDetails details = new JournalDetails();
 			details.setPublisherTitle("The Royal Society of Chemistry");
 			details.setPublisherAbbreviation("rsc");
@@ -36,7 +37,7 @@ public class CrystalEyeJournals {
 			details.setJournalAbbreviation(journal.getAbbreviation());
 			journalDetails.add(details);
 		}
-		for (ChemSocJapanJournal journal : ChemSocJapanJournal.values()) {
+		for (Journal journal : ChemSocJapanJournalIndex.getIndex().values()) {
 			JournalDetails details = new JournalDetails();
 			details.setPublisherTitle("The Chemical Society of Japan");
 			details.setPublisherAbbreviation("chemSocJapan");

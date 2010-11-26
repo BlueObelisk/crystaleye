@@ -13,20 +13,21 @@ import org.apache.log4j.Logger;
 import wwmm.crystaleye.CrystalEyeProperties;
 import wwmm.crystaleye.ProcessLog;
 import wwmm.crystaleye.util.Utils;
-import wwmm.pubcrawler.core.AcsJournal;
-import wwmm.pubcrawler.core.ActaJournal;
 import wwmm.pubcrawler.core.ArticleDescription;
-import wwmm.pubcrawler.core.ChemSocJapanJournal;
 import wwmm.pubcrawler.core.CrawlerHttpClient;
 import wwmm.pubcrawler.core.DOI;
 import wwmm.pubcrawler.core.IssueDescription;
-import wwmm.pubcrawler.core.RscJournal;
+import wwmm.pubcrawler.core.Journal;
 import wwmm.pubcrawler.core.SupplementaryResourceDescription;
 import wwmm.pubcrawler.impl.AcsCifIssueCrawler;
 import wwmm.pubcrawler.impl.ActaCifIssueCrawler;
 import wwmm.pubcrawler.impl.ChemSocJapanCifIssueCrawler;
 import wwmm.pubcrawler.impl.CifIssueCrawler;
 import wwmm.pubcrawler.impl.RscCifIssueCrawler;
+import wwmm.pubcrawler.journal.acs.AcsJournalIndex;
+import wwmm.pubcrawler.journal.acta.ActaJournalIndex;
+import wwmm.pubcrawler.journal.chemsocjapan.ChemSocJapanJournalIndex;
+import wwmm.pubcrawler.journal.rsc.RscJournalIndex;
 
 public class FetchManager {
 
@@ -60,16 +61,16 @@ public class FetchManager {
 	}
 
 	public void run() {
-		for (ActaJournal actaJournal : ActaJournal.values()) {
+		for (Journal actaJournal : ActaJournalIndex.getIndex().values()) {
 			executeCrawler(new ActaCifIssueCrawler(actaJournal), "acta", actaJournal.getAbbreviation());
 		}
-		for (AcsJournal acsJournal : AcsJournal.values()) {
+		for (Journal acsJournal : AcsJournalIndex.getIndex().values()) {
 			executeCrawler(new AcsCifIssueCrawler(acsJournal), "acs", acsJournal.getAbbreviation());
 		}
-		for (ChemSocJapanJournal csjJournal : ChemSocJapanJournal.values()) {
+		for (Journal csjJournal : ChemSocJapanJournalIndex.getIndex().values()) {
 			executeCrawler(new ChemSocJapanCifIssueCrawler(csjJournal), "chemSocJapan", csjJournal.getAbbreviation());
 		}
-		for (RscJournal rscJournal : RscJournal.values()) {
+		for (Journal rscJournal : RscJournalIndex.getIndex().values()) {
 			executeCrawler(new RscCifIssueCrawler(rscJournal), "rsc", rscJournal.getAbbreviation());
 		}
 	}
