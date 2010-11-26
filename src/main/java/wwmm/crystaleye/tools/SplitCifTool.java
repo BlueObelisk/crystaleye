@@ -14,10 +14,10 @@ import nu.xom.Nodes;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+
 import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFDataBlock;
 import org.xmlcml.cif.CIFParser;
-
 import wwmm.crystaleye.util.Utils;
 
 public class SplitCifTool {

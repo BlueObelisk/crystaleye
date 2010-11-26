@@ -3,7 +3,8 @@ package ned24.sandbox;
 import java.io.File;
 
 import wwmm.crystaleye.util.Utils;
-import wwmm.pubcrawler.core.AcsJournal;
+import wwmm.pubcrawler.core.Journal;
+import wwmm.pubcrawler.journal.acs.AcsJournalIndex;
 
 public class ProduceAcsPropsLines {
 	
@@ -13,12 +14,12 @@ public class ProduceAcsPropsLines {
 		StringBuilder sb = new StringBuilder();
 		sb.append("acs.full.title=The American Chemical Society\n");
 		sb.append("acs.journal.abbreviations=");
-		for (AcsJournal journal : AcsJournal.values()) {
+		for (Journal journal : AcsJournalIndex.getIndex().values()) {
 			sb.append(journal.getAbbreviation()+",");
 		}
 		sb.append("\n");
 		sb.append("acs.journal.full.titles=");
-		for (AcsJournal journal : AcsJournal.values()) {
+		for (Journal journal : AcsJournalIndex.getIndex().values()) {
 			sb.append(journal.getFullTitle()+",");
 		}
 		sb.append("\n");

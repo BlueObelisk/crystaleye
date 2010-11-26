@@ -8,13 +8,13 @@ import java.util.List;
 
 import wwmm.crystaleye.util.Utils;
 import wwmm.pubcrawler.BasicHttpClient;
-import wwmm.pubcrawler.core.AcsJournal;
 import wwmm.pubcrawler.core.ArticleDescription;
 import wwmm.pubcrawler.core.DOI;
 import wwmm.pubcrawler.core.IssueDescription;
 import wwmm.pubcrawler.core.SupplementaryResourceDescription;
 import wwmm.pubcrawler.impl.AcsCifIssueCrawler;
 import wwmm.pubcrawler.impl.CifIssueCrawler;
+import wwmm.pubcrawler.journal.acs.AcsJournalIndex;
 
 public class GetAcs20080910 {
 
@@ -36,7 +36,7 @@ public class GetAcs20080910 {
 		}
 		 */
 
-		executeCrawler(new AcsCifIssueCrawler(AcsJournal.ORGANIC_LETTERS), "acs", "orlef7", "2001", "15");
+		executeCrawler(new AcsCifIssueCrawler(AcsJournalIndex.ORGANIC_LETTERS), "acs", "orlef7", "2001", "15");
 	}
 
 	private static void executeCrawler(CifIssueCrawler crawler, String publisher, String journal, String year, String issue) {

@@ -11,10 +11,10 @@ import wwmm.pubcrawler.core.ArticleDescription;
 import wwmm.pubcrawler.core.ArticleReference;
 import wwmm.pubcrawler.core.DOI;
 import wwmm.pubcrawler.core.IssueDescription;
-import wwmm.pubcrawler.core.RscJournal;
 import wwmm.pubcrawler.core.SupplementaryResourceDescription;
 import wwmm.pubcrawler.impl.CifIssueCrawler;
 import wwmm.pubcrawler.impl.RscCifIssueCrawler;
+import wwmm.pubcrawler.journal.rsc.RscJournalIndex;
 
 public class GetRsc20080910 {
 
@@ -27,7 +27,7 @@ public class GetRsc20080910 {
 			String issue = ""+j;
 			while (true) {
 				try {
-					executeCrawler(new RscCifIssueCrawler(RscJournal.JOURNAL_OF_MATERIALS_CHEMISTRY), "rsc", "jm", "2010", issue);
+					executeCrawler(new RscCifIssueCrawler(RscJournalIndex.JOURNAL_OF_MATERIALS_CHEMISTRY), "rsc", "jm", "2010", issue);
 				} catch (Exception e) {
 					e.printStackTrace();
 					continue;
@@ -39,7 +39,7 @@ public class GetRsc20080910 {
 			String issue = ""+j;
 			while (true) {
 				try {
-					executeCrawler(new RscCifIssueCrawler(RscJournal.JOURNAL_OF_MATERIALS_CHEMISTRY), "rsc", "jm", "2010", issue);
+					executeCrawler(new RscCifIssueCrawler(RscJournalIndex.JOURNAL_OF_MATERIALS_CHEMISTRY), "rsc", "jm", "2010", issue);
 				} catch (Exception e) {
 					e.printStackTrace();
 					continue;
@@ -52,7 +52,7 @@ public class GetRsc20080910 {
 			String issue = ""+j;
 			while (true) {
 				try {
-					executeCrawler(new RscCifIssueCrawler(RscJournal.CHEMCOMM), "rsc", "cc", "2010", issue);
+					executeCrawler(new RscCifIssueCrawler(RscJournalIndex.CHEMICAL_COMMUNICATIONS), "rsc", "cc", "2010", issue);
 				} catch (Exception e) {
 					e.printStackTrace();
 					continue;
@@ -60,16 +60,16 @@ public class GetRsc20080910 {
 				break;
 			}
 		}
-		executeCrawler(new RscCifIssueCrawler(RscJournal.CHEMCOMM), "rsc", "cc", "2010", "23");
-		executeCrawler(new RscCifIssueCrawler(RscJournal.CHEMCOMM), "rsc", "cc", "2010", "24");
+		executeCrawler(new RscCifIssueCrawler(RscJournalIndex.CHEMICAL_COMMUNICATIONS), "rsc", "cc", "2010", "23");
+		executeCrawler(new RscCifIssueCrawler(RscJournalIndex.CHEMICAL_COMMUNICATIONS), "rsc", "cc", "2010", "24");
 		
-		executeCrawler(new RscCifIssueCrawler(RscJournal.CRYSTENGCOMM), "rsc", "ce", "2010", "5");
+		executeCrawler(new RscCifIssueCrawler(RscJournalIndex.CRYST_ENG_COMM), "rsc", "ce", "2010", "5");
 		
 		for (int j = 18; j < 27; j++) {
 			String issue = ""+j;
 			while (true) {
 				try {
-					executeCrawler(new RscCifIssueCrawler(RscJournal.DALTON_TRANSACTIONS), "rsc", "dt", "2010", issue);
+					executeCrawler(new RscCifIssueCrawler(RscJournalIndex.DALTON_TRANSACTIONS), "rsc", "dt", "2010", issue);
 				} catch (Exception e) {
 					e.printStackTrace();
 					continue;
@@ -77,12 +77,12 @@ public class GetRsc20080910 {
 				break;
 			}
 		}
-		executeCrawler(new RscCifIssueCrawler(RscJournal.DALTON_TRANSACTIONS), "rsc", "dt", "2010", "3");
-		executeCrawler(new RscCifIssueCrawler(RscJournal.DALTON_TRANSACTIONS), "rsc", "dt", "2010", "4");
-		executeCrawler(new RscCifIssueCrawler(RscJournal.DALTON_TRANSACTIONS), "rsc", "dt", "2010", "13");
+		executeCrawler(new RscCifIssueCrawler(RscJournalIndex.DALTON_TRANSACTIONS), "rsc", "dt", "2010", "3");
+		executeCrawler(new RscCifIssueCrawler(RscJournalIndex.DALTON_TRANSACTIONS), "rsc", "dt", "2010", "4");
+		executeCrawler(new RscCifIssueCrawler(RscJournalIndex.DALTON_TRANSACTIONS), "rsc", "dt", "2010", "13");
 		
-		executeCrawler(new RscCifIssueCrawler(RscJournal.ORGANIC_AND_BIOMOLECULAR_CHEMISTRY), "rsc", "ob", "2010", "11");
-		executeCrawler(new RscCifIssueCrawler(RscJournal.ORGANIC_AND_BIOMOLECULAR_CHEMISTRY), "rsc", "ob", "2010", "12");
+		executeCrawler(new RscCifIssueCrawler(RscJournalIndex.ORGANIC_AND_BIOMOLECULAR_CHEMISTRY), "rsc", "ob", "2010", "11");
+		executeCrawler(new RscCifIssueCrawler(RscJournalIndex.ORGANIC_AND_BIOMOLECULAR_CHEMISTRY), "rsc", "ob", "2010", "12");
 	}
 
 	private static void executeCrawler(CifIssueCrawler crawler, String publisher, String journal, String year, String issue) {

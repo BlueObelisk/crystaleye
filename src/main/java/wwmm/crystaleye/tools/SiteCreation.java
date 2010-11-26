@@ -15,14 +15,15 @@ import org.apache.log4j.Logger;
 import org.xmlcml.molutil.ChemicalElement;
 
 import wwmm.crystaleye.util.FreemarkerUtils;
-import wwmm.pubcrawler.core.AcsJournal;
-import wwmm.pubcrawler.core.ActaJournal;
-import wwmm.pubcrawler.core.ChemSocJapanJournal;
+import wwmm.pubcrawler.core.Journal;
 import wwmm.pubcrawler.core.CrawlerHttpClient;
-import wwmm.pubcrawler.core.NatureJournal;
-import wwmm.pubcrawler.core.RscJournal;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
+import wwmm.pubcrawler.journal.acs.AcsJournalIndex;
+import wwmm.pubcrawler.journal.acta.ActaJournalIndex;
+import wwmm.pubcrawler.journal.chemsocjapan.ChemSocJapanJournalIndex;
+import wwmm.pubcrawler.journal.nature.NatureJournalIndex;
+import wwmm.pubcrawler.journal.rsc.RscJournalIndex;
 
 public class SiteCreation {
 
@@ -75,7 +76,7 @@ public class SiteCreation {
 		actaMap.put("journals", actaJournals);
 		actaMap.put("title", "Acta Crystallographica");
 		actaMap.put("abbreviation", "acta");
-		for (ActaJournal actaJournal : ActaJournal.values()) {
+		for (Journal actaJournal : ActaJournalIndex.getIndex().values()) {
 			SimpleHash journal = new SimpleHash();
 			actaJournals.add(journal);
 			journal.put("abbreviation", actaJournal.getAbbreviation());
@@ -88,7 +89,7 @@ public class SiteCreation {
 		acsMap.put("journals", acsJournals);
 		acsMap.put("title", "American Chemical Society");
 		acsMap.put("abbreviation", "acs");
-		for (AcsJournal acsJournal : AcsJournal.values()) {
+		for (Journal acsJournal : AcsJournalIndex.getIndex().values()) {
 			SimpleHash journal = new SimpleHash();
 			acsJournals.add(journal);
 			journal.put("abbreviation", acsJournal.getAbbreviation());
@@ -101,7 +102,7 @@ public class SiteCreation {
 		csjMap.put("journals", csjJournals);
 		csjMap.put("title", "Chemical Society of Japan");
 		csjMap.put("abbreviation", "chemSocJapan");
-		for (ChemSocJapanJournal csjJournal : ChemSocJapanJournal.values()) {
+		for (Journal csjJournal : ChemSocJapanJournalIndex.getIndex().values()) {
 			SimpleHash journal = new SimpleHash();
 			csjJournals.add(journal);
 			journal.put("abbreviation", csjJournal.getAbbreviation());
@@ -114,7 +115,7 @@ public class SiteCreation {
 		natureMap.put("journals", natureJournals);
 		natureMap.put("title", "Nature");
 		natureMap.put("abbreviation", "nature");
-		for (NatureJournal natureJournal : NatureJournal.values()) {
+		for (Journal natureJournal : NatureJournalIndex.getIndex().values()) {
 			SimpleHash journal = new SimpleHash();
 			natureJournals.add(journal);
 			journal.put("abbreviation", natureJournal.getAbbreviation());
@@ -127,7 +128,7 @@ public class SiteCreation {
 		rscMap.put("journals", rscJournals);
 		rscMap.put("title", "Royal Society of Chemistry");
 		rscMap.put("abbreviation", "rsc");
-		for (RscJournal rscJournal : RscJournal.values()) {
+		for (Journal rscJournal : RscJournalIndex.getIndex().values()) {
 			SimpleHash journal = new SimpleHash();
 			rscJournals.add(journal);
 			journal.put("abbreviation", rscJournal.getAbbreviation());
