@@ -10,9 +10,9 @@ import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.xmlcml.cml.converters.ConverterCommand;
-import org.xmlcml.cml.converters.rdf.cml.CML2OWLRDFConverter;
 
+import org.xmlcml.cml.converters.Command;
+import org.xmlcml.cml.converters.rdf.cml.CML2OWLRDFConverter;
 import wwmm.crystaleye.AbstractManager;
 import wwmm.crystaleye.CrystalEyeJournals;
 import wwmm.crystaleye.IssueDate;
@@ -62,7 +62,7 @@ public class Cml2RdfManager extends AbstractManager {
 				for (File cmlFile : fileList ) {
 					LOG.info("Converting CML to RDF: "+cmlFile.getAbsolutePath());
 					CML2OWLRDFConverter converter = new CML2OWLRDFConverter();
-					ConverterCommand command = new ConverterCommand();
+                    Command command = new Command();
 					command.setAuxfileName("org/xmlcml/cml/converters/rdf/cml/ontologies/cifCore1.owl");
 					converter.setCommand(command);
 					String filename = cmlFile.getName();
