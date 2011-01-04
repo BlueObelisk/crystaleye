@@ -35,7 +35,7 @@ import wwmm.crystaleye.JournalDetails;
 import wwmm.crystaleye.tools.CheckCifParser;
 import wwmm.crystaleye.tools.CheckCifTool;
 import wwmm.crystaleye.tools.RawCml2CompleteCmlTool;
-import wwmm.crystaleye.tools.SplitCifTool;
+import wwmm.crystaleye.tools.CifFileSplitter;
 import wwmm.crystaleye.util.CMLUtils;
 import wwmm.crystaleye.util.Utils;
 
@@ -93,7 +93,7 @@ public class Cif2CmlManager extends AbstractManager {
 
 		List<File> splitCifList = null;
 		try {
-			splitCifList = new SplitCifTool().split(cifFile);
+			splitCifList = new CifFileSplitter().split(cifFile);
 		} catch (Exception e) {
 			LOG.warn("Could not split cif file ("+cifFile.getAbsolutePath()+"), due to: "+e.getMessage());
 			return;
