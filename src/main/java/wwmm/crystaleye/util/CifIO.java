@@ -46,7 +46,11 @@ public class CifIO {
         FileOutputStream fos = new FileOutputStream(file);
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos, encoding));
-            cif.writeCIF(out);
+            try {
+                cif.writeCIF(out);
+            } finally {
+                IOUtils.closeQuietly(out);
+            }
         } finally {
             IOUtils.closeQuietly(fos);
         }
