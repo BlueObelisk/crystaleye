@@ -1,22 +1,19 @@
 package wwmm.crystaleye.tools;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.Nodes;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-
 import org.xmlcml.cif.CIF;
 import org.xmlcml.cif.CIFDataBlock;
 import org.xmlcml.cif.CIFException;
-import org.xmlcml.cif.CIFParser;
+import wwmm.crystaleye.util.CifIO;
 import wwmm.crystaleye.util.Utils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CifFileSplitter {
 
@@ -25,7 +22,7 @@ public class CifFileSplitter {
     public List<File> split(File cifFile) {
         List<File> splitCifList = new ArrayList<File>();
         try {
-            CIF cif = readCif(cifFile);
+            CIF cif = CifIO.readCif(cifFile, "UTF-8");
 
             List<CIFDataBlock> blockList = cif.getDataBlockList();
 
@@ -60,7 +57,7 @@ public class CifFileSplitter {
                         FileUtils.forceMkdir(splitCifParent);
                     }
                     File splitCifFile = new File(splitCifParent,"/"+cifId+"_"+chemBlockId+".cif");
-                    writeCifFile(cifNew, splitCifFile);
+                    CifIO.writeCif(cifNew, splitCifFile, "UTF-8");
                     splitCifList.add(splitCifFile);
                 } catch (Exception e) {
                     LOG.warn("Exception whilst splitting CIF file ("+cifFile+")", e);
@@ -83,15 +80,7 @@ public class CifFileSplitter {
         return cifNew;
     }
 
-    private void writeCifFile(CIF cifNew, File splitCifFile) throws IOException {
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(splitCifFile), "UTF-8"));
-        try {
-            cifNew.writeCIF(out);
-        } finally {
-            IOUtils.closeQuietly(out);
-        }
-    }
-
+    
     private String normaliseBlockId(String chemBlockId) {
         chemBlockId = chemBlockId.replace('.', '-');
         chemBlockId = chemBlockId.replace(':', '-');
@@ -123,26 +112,6 @@ public class CifFileSplitter {
         return global;
     }
 
-    private CIF readCif(File cifFile) throws CIFException, IOException {
-        CIF cif;
 
-        CIFParser parser = createCifParser();
-        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(cifFile), "UTF-8"));
-        try {
-            cif = (CIF) parser.parse(in).getRootElement();
-        } finally {
-            IOUtils.closeQuietly(in);
-        }
-        return cif;
-    }
-
-    protected CIFParser createCifParser() {
-        CIFParser parser = new CIFParser();
-        parser.setSkipHeader(true);
-        parser.setSkipErrors(true);
-        parser.setCheckDuplicates(true);
-        parser.setBlockIdsAsIntegers(false);
-        return parser;
-    }
 
 }
