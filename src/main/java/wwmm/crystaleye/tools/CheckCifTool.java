@@ -1,26 +1,23 @@
 package wwmm.crystaleye.tools;
 
+import nu.xom.Builder;
+import nu.xom.Document;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.log4j.Logger;
+import wwmm.pubcrawler.BasicHttpClient;
+import wwmm.pubcrawler.Utils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
-import nu.xom.Builder;
-import nu.xom.Document;
-
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-
-import wwmm.pubcrawler.BasicHttpClient;
-import wwmm.pubcrawler.Utils;
 
 /**
  * <p>
@@ -37,11 +34,11 @@ public class CheckCifTool {
 	
 	// The endpoint to which a CIF is posted to calculate the CheckCIF. 
 	private final String POST_ENDPOINT = "http://dynhost1.iucr.org/cgi-bin/checkcif.pl";
-	private PostMethod postMethod;
-	
+
 	private static final Logger LOG = Logger.getLogger(CheckCifTool.class);
-	
-	/**
+    private HttpResponse response;
+
+    /**
 	 * <p>
 	 * Sends the provided CIF file off to the CheckCIF service.  The 
 	 * resulting CheckCIF HTML is returned as a <code>String</code>.
@@ -60,14 +57,24 @@ public class CheckCifTool {
 			throw new RuntimeException("Error converting CheckCIF stream to string.", e);
 		} finally {
 			IOUtils.closeQuietly(in);
-			if (postMethod != null) {
-				postMethod.releaseConnection();
-			}
+            closeQuietly();
 		}
 		return checkcif;
 	}
-	
-	/**
+
+    private void closeQuietly() {
+        if (response != null) {
+            if (response.getEntity() != null) {
+                try {
+                    response.getEntity().consumeContent();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+        }
+    }
+
+    /**
 	 * <p>
 	 * Sends the provided CIF file off to the CheckCIF service.  The 
 	 * resulting CheckCIF HTML is tidied and converted into an XML
@@ -86,9 +93,7 @@ public class CheckCifTool {
 			xml = Utils.parseXml(builder, in);
 		} finally {
 			IOUtils.closeQuietly(in);
-			if (postMethod != null) {
-				postMethod.releaseConnection();
-			}
+            closeQuietly();
 		}
 		return xml;
 	}
@@ -109,24 +114,26 @@ public class CheckCifTool {
 	private InputStream getCheckcifStream(File cifFile) {
 		InputStream in = null;
 		try {
-			postMethod = new PostMethod(POST_ENDPOINT);
-			Part[] parts = { new FilePart("file", cifFile),
-					new StringPart("runtype", "fullpublication"),
-					new StringPart("UPLOAD", "Send CIF for checking") };
-			postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
-					new DefaultHttpMethodRetryHandler(5, false));
-			postMethod.setRequestEntity(new MultipartRequestEntity(parts,
-					postMethod.getParams()));
-			HttpClient client = new HttpClient();
-			int statusCode = client.executeMethod(postMethod);
-			if (statusCode != HttpStatus.SC_OK) {
-				throw new RuntimeException("Non-success status code returned: "+statusCode);
-			}
-			in = postMethod.getResponseBodyAsStream();
+			HttpPost postMethod = new HttpPost(POST_ENDPOINT);
+
+            MultipartEntity entity = new MultipartEntity();
+            entity.addPart("file", new FileBody(cifFile));
+            entity.addPart("runtype", new StringBody("fullpublication"));
+            entity.addPart("UPLOAD", new StringBody("Send CIF for checking"));
+
+//			postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+//					new DefaultHttpMethodRetryHandler(5, false));
+
+            postMethod.setEntity(entity);
+			HttpClient client = new DefaultHttpClient();
+			this.response = client.execute(postMethod);
+            if (HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
+                throw new RuntimeException("Non-success status code returned: "+response);
+            }
+            return response.getEntity().getContent();
 		} catch (IOException e) {
 			throw new RuntimeException("Error calculating checkcif.", e);
 		}
-		return in;
 	}
 	
 	/**
