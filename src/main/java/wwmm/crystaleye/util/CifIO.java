@@ -23,6 +23,11 @@ public class CifIO {
         }
     }
 
+    public static CIF readCif(InputStream in, String encoding) throws IOException, CIFException {
+        InputStreamReader reader = new InputStreamReader(in, encoding);
+        return readCif(reader);
+    }
+
     public static CIF readCif(Reader in) throws IOException, CIFException {
         CIFParser parser = createCifParser();
         try {
@@ -45,14 +50,27 @@ public class CifIO {
     public static void writeCif(CIF cif, File file, String encoding) throws IOException {
         FileOutputStream fos = new FileOutputStream(file);
         try {
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos, encoding));
-            try {
-                cif.writeCIF(out);
-            } finally {
-                IOUtils.closeQuietly(out);
-            }
+            writeCif(cif, fos, encoding);
         } finally {
             IOUtils.closeQuietly(fos);
+        }
+    }
+
+    public static void writeCif(CIF cif, OutputStream out, String encoding) throws IOException {
+        OutputStreamWriter writer = new OutputStreamWriter(out, encoding);
+        try {
+            writeCif(cif, writer);
+        } finally {
+            writer.flush();
+        }
+    }
+
+    public static void writeCif(CIF cif, Writer writer) throws IOException {
+        BufferedWriter out = new BufferedWriter(writer);
+        try {
+            cif.writeCIF(out);
+        } finally {
+            out.flush();
         }
     }
 
