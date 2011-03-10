@@ -596,8 +596,7 @@ public class CML2FooManager extends AbstractManager {
 		for (CMLBond bond : detachBondList) {
 			bond.detach();
 		}
-		InchiTool tool = new InchiTool(molecule);
-		String inchi = tool.generateInchi("");
+		String inchi = InchiTool.generateInchi(molecule, "");
 		CMLIdentifier identifier = new CMLIdentifier();
 		identifier.setConvention("iupac:inchi");
 		identifier.appendChild(new Text(inchi));
