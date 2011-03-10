@@ -16,7 +16,7 @@
     <repositories>
         <repository>
             <id>ucc-repo</id>
-            <url>https://maven.ch.cam.ac.uk/m2repo</url>
+            <url>http://maven.ch.cam.ac.uk/m2repo</url>
         </repository>
     </repositories>
 
@@ -113,7 +113,7 @@
         <dependency>
             <groupId>net.sf.jni-inchi</groupId>
             <artifactId>jni-inchi</artifactId>
-            <version>0.6</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>joegraphy</groupId>
@@ -123,7 +123,7 @@
         <dependency>
             <groupId>cml</groupId>
             <artifactId>jumbo</artifactId>
-            <version>5.5.1-SNAPSHOT</version>
+            <version>6.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>cml</groupId>
@@ -154,6 +154,17 @@
             <groupId>com.google.collections</groupId>
             <artifactId>google-collections</artifactId>
             <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.0.3</version>
         </dependency>
 
         <dependency>
