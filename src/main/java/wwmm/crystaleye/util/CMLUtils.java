@@ -52,8 +52,7 @@ public class CMLUtils {
 	 * @param molecule
 	 */
 	public static void calculateAndAddInchi(CMLMolecule molecule) {
-		InchiTool tool = new InchiTool(molecule);
-		String inchi = tool.generateInchi("");
+		String inchi = InchiTool.generateInchi(molecule, "");
 		CMLIdentifier identifier = new CMLIdentifier();
 		identifier.setConvention("iupac:inchi");
 		identifier.appendChild(new Text(inchi));
@@ -66,7 +65,7 @@ public class CMLUtils {
 	 * it as a CMLIdentifier. 
 	 * </p>
 	 * 
-	 * @param molecule
+	 * @param mol
 	 */
 	public static void calculateAndAddSmiles(CMLMolecule mol) {
 		String smiles = SmilesTool.generateSmiles(mol);
